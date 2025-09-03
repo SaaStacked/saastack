@@ -32,6 +32,12 @@ import type {
   AuthorizeByNothingTestingOnlyResponse,
   AuthorizeByRoleTestingOnlyError,
   AuthorizeByRoleTestingOnlyResponse,
+  AuthorizeOauth2GetData,
+  AuthorizeOauth2GetError,
+  AuthorizeOauth2GetResponse,
+  AuthorizeOauth2PostData,
+  AuthorizeOauth2PostError,
+  AuthorizeOauth2PostResponse,
   CancelBookingData,
   CancelBookingError,
   CancelBookingResponse,
@@ -119,12 +125,18 @@ import type {
   ConfirmSmsDeliveryFailedData,
   ConfirmSmsDeliveryFailedError,
   ConfirmSmsDeliveryFailedResponse,
+  ConsentOauth2ClientForCallerData,
+  ConsentOauth2ClientForCallerError,
+  ConsentOauth2ClientForCallerResponse,
   ContentNegotiationsTestingOnlyData,
   ContentNegotiationsTestingOnlyError,
   ContentNegotiationsTestingOnlyResponse,
   CreateApiKeyData,
   CreateApiKeyError,
   CreateApiKeyResponse,
+  CreateOauth2ClientData,
+  CreateOauth2ClientError,
+  CreateOauth2ClientResponse,
   CreateOrganizationData,
   CreateOrganizationError,
   CreateOrganizationResponse,
@@ -137,6 +149,9 @@ import type {
   DeleteImageData,
   DeleteImageError,
   DeleteImageResponse,
+  DeleteOauth2ClientData,
+  DeleteOauth2ClientError,
+  DeleteOauth2ClientResponse,
   DeleteOrganizationAvatarData,
   DeleteOrganizationAvatarError,
   DeleteOrganizationAvatarResponse,
@@ -161,6 +176,8 @@ import type {
   DownloadImageData,
   DownloadImageError,
   DownloadImageResponse,
+  DownloadStreamTestingOnlyError,
+  DownloadStreamTestingOnlyResponse,
   DrainAllAuditsData,
   DrainAllAuditsError,
   DrainAllAuditsResponse,
@@ -183,6 +200,9 @@ import type {
   ErrorsErrorTestingOnlyResponse,
   ErrorsThrowTestingOnlyError,
   ErrorsThrowTestingOnlyResponse,
+  ExchangeOauth2ForTokensData,
+  ExchangeOauth2ForTokensError,
+  ExchangeOauth2ForTokensResponse,
   ExportSubscriptionsToMigrateData,
   ExportSubscriptionsToMigrateError,
   ExportSubscriptionsToMigrateResponse2,
@@ -201,6 +221,8 @@ import type {
   GetCarData,
   GetCarError,
   GetCarResponse2,
+  GetDiscoveryDocumentError,
+  GetDiscoveryDocumentResponse2,
   GetFeatureFlagData,
   GetFeatureFlagError,
   GetFeatureFlagForCallerData,
@@ -214,6 +236,14 @@ import type {
   GetImageResponse2,
   GetInsecureTestingOnlyError,
   GetInsecureTestingOnlyResponse,
+  GetJsonWebKeySetError,
+  GetJsonWebKeySetResponse2,
+  GetOauth2ClientConsentForCallerData,
+  GetOauth2ClientConsentForCallerError,
+  GetOauth2ClientConsentForCallerResponse,
+  GetOauth2ClientData,
+  GetOauth2ClientError,
+  GetOauth2ClientResponse,
   GetOrganizationData,
   GetOrganizationError,
   GetOrganizationResponse2,
@@ -228,6 +258,14 @@ import type {
   GetSubscriptionData,
   GetSubscriptionError,
   GetSubscriptionResponse2,
+  GetTestingOnlyData,
+  GetTestingOnlyError,
+  GetTestingOnlyResponse,
+  GetUserInfoForCallerError,
+  GetUserInfoForCallerResponse2,
+  GetWithRedirectTestingOnlyData,
+  GetWithRedirectTestingOnlyError,
+  GetWithRedirectTestingOnlyResponse,
   GetWithSimpleArrayTestingOnlyData,
   GetWithSimpleArrayTestingOnlyError,
   GetWithSimpleArrayTestingOnlyResponse,
@@ -292,15 +330,18 @@ import type {
   PostInsecureTestingOnlyData,
   PostInsecureTestingOnlyError,
   PostInsecureTestingOnlyResponse,
+  PostTestingOnlyData,
+  PostTestingOnlyError,
+  PostTestingOnlyResponse,
   PostWithEmptyBodyAndRequiredPropertiesTestingOnlyData,
   PostWithEmptyBodyAndRequiredPropertiesTestingOnlyError,
   PostWithEmptyBodyAndRequiredPropertiesTestingOnlyResponse,
   PostWithEmptyBodyTestingOnlyData,
   PostWithEmptyBodyTestingOnlyError,
   PostWithEmptyBodyTestingOnlyResponse,
-  PostWithEnumTestingOnlyData,
-  PostWithEnumTestingOnlyError,
-  PostWithEnumTestingOnlyResponse,
+  PostWithRedirectTestingOnlyData,
+  PostWithRedirectTestingOnlyError,
+  PostWithRedirectTestingOnlyResponse,
   PostWithRouteParamsAndEmptyBodyTestingOnlyData,
   PostWithRouteParamsAndEmptyBodyTestingOnlyError,
   PostWithRouteParamsAndEmptyBodyTestingOnlyResponse,
@@ -313,6 +354,9 @@ import type {
   RefreshTokenData,
   RefreshTokenError,
   RefreshTokenResponse2,
+  RegenerateOauth2ClientSecretData,
+  RegenerateOauth2ClientSecretError,
+  RegenerateOauth2ClientSecretResponse,
   RegisterCarData,
   RegisterCarError,
   RegisterCarResponse,
@@ -339,6 +383,9 @@ import type {
   RevokeApiKeyData,
   RevokeApiKeyError,
   RevokeApiKeyResponse,
+  RevokeOauth2ClientConsentForCallerData,
+  RevokeOauth2ClientConsentForCallerError,
+  RevokeOauth2ClientConsentForCallerResponse,
   RevokeRefreshTokenData,
   RevokeRefreshTokenError,
   RevokeRefreshTokenResponse,
@@ -372,6 +419,9 @@ import type {
   SearchAllEventNotificationsData,
   SearchAllEventNotificationsError,
   SearchAllEventNotificationsResponse2,
+  SearchAllOauth2ClientsData,
+  SearchAllOauth2ClientsError,
+  SearchAllOauth2ClientsResponse,
   SearchAllSmsDeliveriesData,
   SearchAllSmsDeliveriesError,
   SearchAllSmsDeliveriesResponse2,
@@ -443,6 +493,12 @@ import type {
   UpdateImagePutData,
   UpdateImagePutError,
   UpdateImagePutResponse,
+  UpdateOauth2ClientPatchData,
+  UpdateOauth2ClientPatchError,
+  UpdateOauth2ClientPatchResponse,
+  UpdateOauth2ClientPutData,
+  UpdateOauth2ClientPutError,
+  UpdateOauth2ClientPutResponse,
   UploadImageData,
   UploadImageError,
   UploadImageResponse2,
@@ -770,6 +826,140 @@ export const chargebeeNotifyWebhookEvent = <ThrowOnError extends boolean = false
       url: "/webhooks/chargebee"
     }
   );
+
+/**
+ * Consent for the user to authorize the OAuth2/Open ID Connect client to access their data
+ * (request type: ConsentOAuth2ClientForCallerRequest)
+ */
+export const consentOauth2ClientForCaller = <ThrowOnError extends boolean = false>(
+    options: Options<ConsentOauth2ClientForCallerData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<
+        ConsentOauth2ClientForCallerResponse,
+        ConsentOauth2ClientForCallerError,
+        ThrowOnError
+    >({
+        ...options,
+        url: "/oauth2/clients/{Id}/consent"
+    });
+
+/**
+ * Gets the user's consent status for an OAuth2/Open ID Connect client
+ * (request type: GetOAuth2ClientConsentForCallerRequest)
+ */
+export const getOauth2ClientConsentForCaller = <ThrowOnError extends boolean = false>(
+    options: Options<GetOauth2ClientConsentForCallerData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<
+        GetOauth2ClientConsentForCallerResponse,
+        GetOauth2ClientConsentForCallerError,
+        ThrowOnError
+    >({
+        ...options,
+        url: "/oauth2/clients/{Id}/consent"
+    });
+
+/**
+ * Creates a new OAuth2/Open ID Connect client application
+ * (request type: CreateOAuth2ClientRequest)
+ */
+export const createOauth2Client = <ThrowOnError extends boolean = false>(
+    options?: Options<CreateOauth2ClientData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<CreateOauth2ClientResponse, CreateOauth2ClientError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients"
+    });
+
+/**
+ * Lists all OAuth2/Open ID Connect clients
+ * (request type: SearchAllOAuth2ClientsRequest)
+ */
+export const searchAllOauth2Clients = <ThrowOnError extends boolean = false>(
+    options?: Options<SearchAllOauth2ClientsData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<SearchAllOauth2ClientsResponse, SearchAllOauth2ClientsError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients"
+    });
+
+/**
+ * Deletes an OAuth2/Open ID Connect client
+ * (request type: DeleteOAuth2ClientRequest)
+ */
+export const deleteOauth2Client = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteOauth2ClientData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteOauth2ClientResponse, DeleteOauth2ClientError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients/{Id}"
+    });
+
+/**
+ * Fetches an OAuth2/Open ID Connect client
+ * (request type: GetOAuth2ClientRequest)
+ */
+export const getOauth2Client = <ThrowOnError extends boolean = false>(options: Options<GetOauth2ClientData, ThrowOnError>) =>
+    (options?.client ?? client).get<GetOauth2ClientResponse, GetOauth2ClientError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients/{Id}"
+    });
+
+/**
+ * Updates an existing OAuth2/Open ID Connect client
+ * (request type: UpdateOAuth2ClientRequest)
+ */
+export const updateOauth2ClientPut = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateOauth2ClientPutData, ThrowOnError>
+) =>
+    (options?.client ?? client).put<UpdateOauth2ClientPutResponse, UpdateOauth2ClientPutError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients/{Id}"
+    });
+
+/**
+ * Updates an existing OAuth2/Open ID Connect client
+ * (request type: UpdateOAuth2ClientRequest)
+ */
+export const updateOauth2ClientPatch = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateOauth2ClientPatchData, ThrowOnError>
+) =>
+    (options?.client ?? client).patch<UpdateOauth2ClientPatchResponse, UpdateOauth2ClientPatchError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/clients/{Id}"
+    });
+
+/**
+ * Regenerates the client secret for an OAuth2/Open ID Connect client
+ * (request type: RegenerateOAuth2ClientSecretRequest)
+ */
+export const regenerateOauth2ClientSecret = <ThrowOnError extends boolean = false>(
+    options: Options<RegenerateOauth2ClientSecretData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<
+        RegenerateOauth2ClientSecretResponse,
+        RegenerateOauth2ClientSecretError,
+        ThrowOnError
+    >({
+        ...options,
+        url: "/oauth2/clients/{Id}/secret"
+    });
+
+/**
+ * Revokes the user's consent for an OAuth2/Open ID Connect client
+ * (request type: RevokeOAuth2ClientConsentForCallerRequest)
+ */
+export const revokeOauth2ClientConsentForCaller = <ThrowOnError extends boolean = false>(
+    options: Options<RevokeOauth2ClientConsentForCallerData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<
+        RevokeOauth2ClientConsentForCallerResponse,
+        RevokeOauth2ClientConsentForCallerError,
+        ThrowOnError
+    >({
+        ...options,
+        url: "/oauth2/clients/{Id}/consent/revoke"
+    });
 
 /**
  * Authenticates a user with a username and password
@@ -1423,6 +1613,82 @@ export const verifyCredentialMfaAuthenticatorForCallerPatch = <ThrowOnError exte
   });
 
 /**
+ * Authorizes the user to access the application in Open ID Connect
+ * (request type: AuthorizeOAuth2GetRequest)
+ */
+export const authorizeOauth2Get = <ThrowOnError extends boolean = false>(
+    options: Options<AuthorizeOauth2GetData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<AuthorizeOauth2GetResponse, AuthorizeOauth2GetError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/authorize"
+    });
+
+/**
+ * Authorizes the user to access the application in Open ID Connect
+ * (request type: AuthorizeOAuth2PostRequest)
+ */
+export const authorizeOauth2Post = <ThrowOnError extends boolean = false>(
+    options?: Options<AuthorizeOauth2PostData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<AuthorizeOauth2PostResponse, AuthorizeOauth2PostError, ThrowOnError>({
+        ...options,
+        ...urlSearchParamsBodySerializer,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            ...options?.headers
+        },
+        url: "/oauth2/authorize"
+    });
+
+/**
+ * Exchanges either an authorization code for new tokens, or a refresh_token for new tokens, for the specified grant_type in Open ID Connect
+ * (request type: ExchangeOAuth2ForTokensRequest)
+ */
+export const exchangeOauth2ForTokens = <ThrowOnError extends boolean = false>(
+    options?: Options<ExchangeOauth2ForTokensData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<ExchangeOauth2ForTokensResponse, ExchangeOauth2ForTokensError, ThrowOnError>({
+        ...options,
+        ...urlSearchParamsBodySerializer,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            ...options?.headers
+        },
+        url: "/oauth2/token"
+    });
+
+/**
+ * Fetches the user's info for the authenticated user in Open ID Connect format
+ * (request type: GetUserInfoForCallerRequest)
+ */
+export const getUserInfoForCaller = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+    (options?.client ?? client).get<GetUserInfoForCallerResponse2, GetUserInfoForCallerError, ThrowOnError>({
+        ...options,
+        url: "/oauth2/userinfo"
+    });
+
+/**
+ * Fetches the discovery document for Open ID Connect
+ * (request type: GetDiscoveryDocumentRequest)
+ */
+export const getDiscoveryDocument = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+    (options?.client ?? client).get<GetDiscoveryDocumentResponse2, GetDiscoveryDocumentError, ThrowOnError>({
+        ...options,
+        url: "/.well-known/openid-configuration"
+    });
+
+/**
+ * Fetches the JSON Web Key Set for Open ID Connect JWT verification
+ * (request type: GetJsonWebKeySetRequest)
+ */
+export const getJsonWebKeySet = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+    (options?.client ?? client).get<GetJsonWebKeySetResponse2, GetJsonWebKeySetError, ThrowOnError>({
+        ...options,
+        url: "/.well-known/jwks.json"
+    });
+
+/**
  * Assigns a list of roles to a member of an organization
  * (request type: AssignRolesToOrganizationRequest)
  */
@@ -1701,7 +1967,7 @@ export const recordUse = <ThrowOnError extends boolean = false>(options?: Option
   });
 
 /**
- * Authenticates a user with a single sign-on provider (also auto-registering them the first time)
+ * Authenticates a user with authorization code from a OAuth2 or Open ID Connect single sign-on provider, and auto-registering them the first time
  * (request type: AuthenticateSingleSignOnRequest)
  */
 export const authenticateSingleSignOn = <ThrowOnError extends boolean = false>(
@@ -1967,10 +2233,24 @@ export const destroyAllRepositories = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * Tests download of streams
+ * (request type: DownloadStreamTestingOnlyRequest)
+ */
+export const downloadStreamTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
+  (options?.client ?? client).get<DownloadStreamTestingOnlyResponse, DownloadStreamTestingOnlyError, ThrowOnError>({
+    ...options,
+    url: "/testingonly/download"
+  });
+
+/**
  * Tests errors, by returning an error result
  * (request type: ErrorsErrorTestingOnlyRequest)
  */
-export const errorsErrorTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const errorsErrorTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<ErrorsErrorTestingOnlyResponse, ErrorsErrorTestingOnlyError, ThrowOnError>({
     ...options,
     url: "/testingonly/errors/error"
@@ -2063,27 +2343,39 @@ export const postWithRouteParamsAndEmptyBodyTestingOnly = <ThrowOnError extends 
   });
 
 /**
- * Tests the use of enums in the request
- * (request type: PostWithEnumTestingOnlyRequest)
+ * Tests the use of reference types, values types, and enums anywhere in a GET request
+ * (request type: GetTestingOnlyRequest)
  */
-export const postWithEnumTestingOnly = <ThrowOnError extends boolean = false>(
-  options?: Options<PostWithEnumTestingOnlyData, ThrowOnError>
+export const getTestingOnly = <ThrowOnError extends boolean = false>(
+  options: Options<GetTestingOnlyData, ThrowOnError>
 ) =>
-  (options?.client ?? client).post<PostWithEnumTestingOnlyResponse, PostWithEnumTestingOnlyError, ThrowOnError>({
+  (options?.client ?? client).get<GetTestingOnlyResponse, GetTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/general/enum"
+    url: "/testingonly/general/get/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
   });
 
 /**
- * Tests Search APIs
+ * Tests the use of reference types, values types, and enums anywhere in a POST request
+ * (request type: PostTestingOnlyRequest)
+ */
+export const postTestingOnly = <ThrowOnError extends boolean = false>(
+  options: Options<PostTestingOnlyData, ThrowOnError>
+) =>
+  (options?.client ?? client).post<PostTestingOnlyResponse, PostTestingOnlyError, ThrowOnError>({
+    ...options,
+    url: "/testingonly/general/post/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
+  });
+
+/**
+ * Tests the use of reference types, values types, and enums anywhere in a SEARCH request
  * (request type: SearchTestingOnlyRequest)
  */
 export const searchTestingOnly = <ThrowOnError extends boolean = false>(
-  options?: Options<SearchTestingOnlyData, ThrowOnError>
+  options: Options<SearchTestingOnlyData, ThrowOnError>
 ) =>
   (options?.client ?? client).get<SearchTestingOnlyResponse2, SearchTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/search"
+    url: "/testingonly/general/search/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
   });
 
 /**
@@ -2197,6 +2489,32 @@ export const openApiPostMultiPartFormDataTestingOnly = <ThrowOnError extends boo
     },
     url: "/testingonly/openapi/{Id}/form-data"
   });
+
+/**
+ * Tests the use of a redirect for a GET method
+ * (request type: GetWithRedirectTestingOnlyRequest)
+ */
+export const getWithRedirectTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<GetWithRedirectTestingOnlyData, ThrowOnError>
+) =>
+  (options?.client ?? client).get<GetWithRedirectTestingOnlyResponse, GetWithRedirectTestingOnlyError, ThrowOnError>({
+    ...options,
+    url: "/testingonly/redirect/get"
+  });
+
+/**
+ * Tests the use of a redirect for a POST method
+ * (request type: PostWithRedirectTestingOnlyRequest)
+ */
+export const postWithRedirectTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<PostWithRedirectTestingOnlyData, ThrowOnError>
+) =>
+  (options?.client ?? client).post<PostWithRedirectTestingOnlyResponse, PostWithRedirectTestingOnlyError, ThrowOnError>(
+    {
+      ...options,
+      url: "/testingonly/redirect/post"
+    }
+  );
 
 /**
  * Tests request correlation

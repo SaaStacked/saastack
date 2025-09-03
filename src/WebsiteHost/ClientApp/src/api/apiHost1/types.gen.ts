@@ -48,6 +48,7 @@ export type AuthenticateResponse = {
 
 export type AuthenticateSingleSignOnRequest = {
   authCode: string;
+  code_verifier?: string | null;
   invitationToken?: string | null;
   provider: string;
   termsAndConditionsAccepted?: boolean | null;
@@ -56,6 +57,7 @@ export type AuthenticateSingleSignOnRequest = {
 
 export type AuthenticateTokens = {
   accessToken: AuthenticationToken;
+  idToken?: AuthenticationToken;
   refreshToken: AuthenticationToken;
   userId: string;
 };
@@ -144,6 +146,7 @@ export type ChangeProfileRequest = {
   displayName?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  locale?: string | null;
   phoneNumber?: string | null;
   timezone?: string | null;
 };
@@ -242,12 +245,24 @@ export type ConfirmSmsDeliveryFailedRequest = {
   receiptId: string;
 };
 
+export type ConsentOAuth2ClientForCallerRequest = {
+  consented: boolean;
+  redirectUri?: string | null;
+  scope: string;
+  state?: string | null;
+};
+
 export type CreateAPIKeyRequest = {
   expiresOnUtc?: string | null;
 };
 
 export type CreateAPIKeyResponse = {
   apiKey: string;
+};
+
+export type CreateOAuth2ClientRequest = {
+  name: string;
+  redirectUri?: string | null;
 };
 
 export type CreateOrganizationRequest = {
@@ -395,6 +410,14 @@ export type EventNotification = {
   id: string;
 };
 
+export type ExchangeOAuth2ForTokensResponse = {
+  access_token: string;
+  expires_in: number;
+  id_token?: string;
+  refresh_token?: string;
+  token_type: OAuth2TokenType;
+};
+
 export type ExportSubscriptionsToMigrateResponse = {
   metadata: SearchResultMetadata;
   subscriptions: Array<SubscriptionToMigrate>;
@@ -427,6 +450,21 @@ export type FormatsTestingOnlyResponse = {
   time?: string;
 };
 
+export type GeneralTestingOnlyResponse = {
+  a_camel_enum?: TestingOnlyEnum;
+  a_camel_int?: number;
+  a_camel_string?: string;
+  anEnumProperty?: TestingOnlyEnum;
+  anEnumQueryProperty?: TestingOnlyEnum;
+  anEnumRouteProperty?: TestingOnlyEnum;
+  anIntProperty?: number;
+  anIntQueryProperty?: number;
+  anIntRouteProperty?: number;
+  aStringProperty: string;
+  aStringQueryProperty: string;
+  aStringRouteProperty: string;
+};
+
 export type GetAllFeatureFlagsResponse = {
   flags: Array<FeatureFlag>;
 };
@@ -439,6 +477,10 @@ export type GetCarResponse = {
   car: Car;
 };
 
+export type GetDiscoveryDocumentResponse = {
+  document: OpenIdConnectDiscoveryDocument;
+};
+
 export type GetFeatureFlagResponse = {
   flag: FeatureFlag;
 };
@@ -449,6 +491,22 @@ export type GetIdentityResponse = {
 
 export type GetImageResponse = {
   image: Image;
+};
+
+export type GetJsonWebKeySetResponse = {
+  keys: JsonWebKeySet;
+};
+
+export type GetOAuth2ClientConsentResponse = {
+  consent: OAuth2ClientConsent;
+};
+
+export type GetOAuth2ClientResponse = {
+  client: OAuth2Client;
+};
+
+export type GetOAuth2ClientWithSecretsResponse = {
+  client: OAuth2ClientWithSecrets;
 };
 
 export type GetOrganizationResponse = {
@@ -476,6 +534,10 @@ export type GetRegistrationPersonConfirmationResponse = {
 
 export type GetSubscriptionResponse = {
   subscription: SubscriptionWithPlan;
+};
+
+export type GetUserInfoForCallerResponse = {
+  user: OpenIdConnectUserInfo;
 };
 
 export type HealthCheckResponse = {
@@ -567,6 +629,20 @@ export type InvoiceSummary = {
   nextUtc?: string;
 };
 
+export type JsonWebKey = {
+  alg: string;
+  e?: string;
+  k?: string;
+  kid: string;
+  kty: string;
+  n?: string;
+  use: string;
+};
+
+export type JsonWebKeySet = {
+  keys: Array<JsonWebKey>;
+};
+
 export type ListCredentialMfaAuthenticatorsForCallerResponse = {
   authenticators: Array<CredentialMfaAuthenticator>;
 };
@@ -656,7 +732,7 @@ export type Membership = {
 export type MigrateSubscriptionRequest = {
   providerName?: string | null;
   providerState?: {
-    [key: string]: string | null;
+    [key: string]: string;
   } | null;
 };
 
@@ -671,6 +747,46 @@ export type NotifyDomainEventRequest = {
 
 export type NotifyProvisioningRequest = {
   message: string;
+};
+
+export type OAuth2Client = {
+  name: string;
+  redirectUri?: string;
+  id: string;
+};
+
+export type OAuth2ClientConsent = {
+  clientId: string;
+  isConsented: boolean;
+  scopes: Array<string>;
+  userId: string;
+  id: string;
+};
+
+export type OAuth2ClientWithSecret = {
+  name: string;
+  redirectUri?: string;
+  id: string;
+  expiresOnUtc?: string;
+  secret: string;
+};
+
+export type OAuth2ClientWithSecrets = {
+  name: string;
+  redirectUri?: string;
+  id: string;
+  secrets: Array<OAuthClientSecret>;
+};
+
+export type OAuth2GrantType = "Authorization_Code" | "Refresh_Token" | "Client_Credentials" | "Password" | "Implicit";
+
+export type OAuth2ResponseType = "Code" | "Id_Token" | "Token";
+
+export type OAuth2TokenType = "Bearer";
+
+export type OAuthClientSecret = {
+  expiresOnUtc?: string;
+  reference: string;
 };
 
 export type OpenApiPostTestingOnlyRequest = {
@@ -713,6 +829,43 @@ export type OpenApiTestingOnlyResponse = {
   aRequiredField: string;
   aValueTypeField: boolean;
   message: string;
+};
+
+export type OpenIdConnectCodeChallengeMethod = "Plain" | "S256";
+
+export type OpenIdConnectDiscoveryDocument = {
+  authorizationEndpoint: string;
+  claimsSupported: Array<string>;
+  codeChallengeMethodsSupported: Array<string>;
+  idTokenEncryptionAlgValuesSupported: Array<string>;
+  idTokenSigningAlgValuesSupported: Array<string>;
+  issuer: string;
+  jwksUri: string;
+  registrationEndPoint: string;
+  responseTypesSupported: Array<string>;
+  scopesSupported: Array<string>;
+  subjectTypesSupported: Array<string>;
+  tokenEndpoint: string;
+  tokenEndpointAuthMethodsSupported: Array<string>;
+  tokenEndpointAuthSigningAlgValuesSupported: Array<string>;
+  userInfoEncryptionAlgValuesSupported: Array<string>;
+  userInfoEndpoint: string;
+  userInfoSigningAlgValuesSupported: Array<string>;
+};
+
+export type OpenIdConnectUserInfo = {
+  address: ProfileAddress;
+  email: string;
+  email_verified?: boolean;
+  family_name?: string;
+  given_name?: string;
+  locale: string;
+  name: string;
+  phone_number?: string;
+  phone_number_verified?: boolean;
+  picture: string;
+  sub?: string;
+  zoneinfo?: string;
 };
 
 export type Organization = {
@@ -764,6 +917,18 @@ export type PostInsecureTestingOnlyRequest = {
   [key: string]: unknown;
 };
 
+export type PostTestingOnlyRequest = {
+  a_camel_enum?: TestingOnlyEnum;
+  a_camel_int?: number | null;
+  a_camel_string?: string | null;
+  anEnumProperty?: TestingOnlyEnum;
+  anEnumQueryProperty?: TestingOnlyEnum;
+  anIntProperty?: number | null;
+  anIntQueryProperty?: number | null;
+  aStringProperty?: string | null;
+  aStringQueryProperty?: string | null;
+};
+
 export type PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest = {
   requiredField?: string | null;
 };
@@ -772,9 +937,8 @@ export type PostWithEmptyBodyTestingOnlyRequest = {
   [key: string]: unknown;
 };
 
-export type PostWithEnumTestingOnlyRequest = {
-  anEnum?: TestEnum;
-  aProperty?: string | null;
+export type PostWithRedirectTestingOnlyRequest = {
+  result?: string | null;
 };
 
 export type PostWithRouteParamsAndEmptyBodyTestingOnlyRequest = {
@@ -854,6 +1018,14 @@ export type RefreshTokenResponse = {
   tokens: AuthenticateTokens;
 };
 
+export type RegenerateOAuth2ClientSecretRequest = {
+  [key: string]: unknown;
+};
+
+export type RegenerateOAuth2ClientSecretResponse = {
+  client: OAuth2ClientWithSecret;
+};
+
 export type RegisterCarRequest = {
   /**
    * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
@@ -883,6 +1055,7 @@ export type RegisterPersonCredentialRequest = {
   firstName: string;
   invitationToken?: string | null;
   lastName: string;
+  locale?: string | null;
   password: string;
   termsAndConditionsAccepted?: boolean;
   timezone?: string | null;
@@ -948,6 +1121,11 @@ export type SearchAllEventNotificationsResponse = {
   notifications: Array<EventNotification>;
 };
 
+export type SearchAllOAuth2ClientsResponse = {
+  metadata: SearchResultMetadata;
+  clients: Array<OAuth2Client>;
+};
+
 export type SearchAllSmsDeliveriesResponse = {
   metadata: SearchResultMetadata;
   smses: Array<DeliveredSms>;
@@ -968,7 +1146,19 @@ export type SearchSubscriptionHistoryResponse = {
 
 export type SearchTestingOnlyResponse = {
   metadata: SearchResultMetadata;
-  items: Array<TestResource>;
+  a_camel_enum?: TestingOnlyEnum;
+  a_camel_int?: number;
+  a_camel_string?: string;
+  anEnumProperty?: TestingOnlyEnum;
+  anEnumQueryProperty?: TestingOnlyEnum;
+  anEnumRouteProperty?: TestingOnlyEnum;
+  anIntProperty?: number;
+  anIntQueryProperty?: number;
+  anIntRouteProperty?: number;
+  aStringProperty: string;
+  aStringQueryProperty: string;
+  aStringRouteProperty: string;
+  items?: Array<TestResource>;
 };
 
 export type SendEmailRequest = {
@@ -1086,12 +1276,12 @@ export type TakeOfflineCarRequest = {
   toUtc?: string | null;
 };
 
-export type TestEnum = "Value1" | "Value2" | "Value3";
-
 export type TestResource = {
   aProperty?: string;
   id: string;
 };
+
+export type TestingOnlyEnum = "Value1" | "Value2" | "Value3" | "Value4";
 
 export type TokenType = "OtherToken" | "AccessToken" | "RefreshToken";
 
@@ -1142,6 +1332,11 @@ export type UpdateImageResponse = {
   image: Image;
 };
 
+export type UpdateOAuth2ClientRequest = {
+  name?: string | null;
+  redirectUri?: string | null;
+};
+
 export type UpdateUserResponse = {
   user: EndUser;
 };
@@ -1156,6 +1351,7 @@ export type UserProfile = {
   classification: UserProfileClassification;
   displayName: string;
   emailAddress?: string;
+  locale?: string;
   name: PersonName;
   phoneNumber?: string;
   timezone?: string;
@@ -1171,6 +1367,7 @@ export type UserProfileForCaller = {
   classification: UserProfileClassification;
   displayName: string;
   emailAddress?: string;
+  locale?: string;
   name: PersonName;
   phoneNumber?: string;
   timezone?: string;
@@ -1629,6 +1826,127 @@ export type ChargebeeNotifyWebhookEventResponse = EmptyResponse;
 
 export type ChargebeeNotifyWebhookEventError = ProblemDetails | unknown;
 
+export type ConsentOauth2ClientForCallerData = {
+  body?: ConsentOAuth2ClientForCallerRequest;
+  path: {
+    Id: string;
+  };
+};
+
+export type ConsentOauth2ClientForCallerResponse = GetOAuth2ClientConsentResponse;
+
+export type ConsentOauth2ClientForCallerError = ProblemDetails | unknown;
+
+export type GetOauth2ClientConsentForCallerData = {
+  path: {
+    Id: string;
+  };
+};
+
+export type GetOauth2ClientConsentForCallerResponse = GetOAuth2ClientConsentResponse;
+
+export type GetOauth2ClientConsentForCallerError = ProblemDetails | unknown;
+
+export type CreateOauth2ClientData = {
+  body?: CreateOAuth2ClientRequest;
+};
+
+export type CreateOauth2ClientResponse = GetOAuth2ClientResponse;
+
+export type CreateOauth2ClientError = ProblemDetails | unknown;
+
+export type SearchAllOauth2ClientsData = {
+  query?: {
+    /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+  };
+};
+
+export type SearchAllOauth2ClientsResponse = SearchAllOAuth2ClientsResponse;
+
+export type SearchAllOauth2ClientsError = ProblemDetails | unknown;
+
+export type DeleteOauth2ClientData = {
+  path: {
+    Id: string;
+  };
+};
+
+export type DeleteOauth2ClientResponse = void;
+
+export type DeleteOauth2ClientError = ProblemDetails | unknown;
+
+export type GetOauth2ClientData = {
+  path: {
+    Id: string;
+  };
+};
+
+export type GetOauth2ClientResponse = GetOAuth2ClientWithSecretsResponse;
+
+export type GetOauth2ClientError = ProblemDetails | unknown;
+
+export type UpdateOauth2ClientPutData = {
+  body?: UpdateOAuth2ClientRequest;
+  path: {
+    Id: string;
+  };
+};
+
+export type UpdateOauth2ClientPutResponse = GetOAuth2ClientResponse;
+
+export type UpdateOauth2ClientPutError = ProblemDetails | unknown;
+
+export type UpdateOauth2ClientPatchData = {
+  body?: UpdateOAuth2ClientRequest;
+  path: {
+    Id: string;
+  };
+};
+
+export type UpdateOauth2ClientPatchResponse = GetOAuth2ClientResponse;
+
+export type UpdateOauth2ClientPatchError = ProblemDetails | unknown;
+
+export type RegenerateOauth2ClientSecretData = {
+  body?: RegenerateOAuth2ClientSecretRequest;
+  path: {
+    Id: string;
+  };
+};
+
+export type RegenerateOauth2ClientSecretResponse = RegenerateOAuth2ClientSecretResponse;
+
+export type RegenerateOauth2ClientSecretError = ProblemDetails | unknown;
+
+export type RevokeOauth2ClientConsentForCallerData = {
+  path: {
+    Id: string;
+  };
+};
+
+export type RevokeOauth2ClientConsentForCallerResponse = GetOAuth2ClientConsentResponse;
+
+export type RevokeOauth2ClientConsentForCallerError = ProblemDetails | unknown;
+
 export type AuthenticateCredentialData = {
   body?: AuthenticateCredentialRequest;
 };
@@ -1796,7 +2114,7 @@ export type SearchAllEmailDeliveriesData = {
      * List of fields to sort the results on
      */
     Sort?: string;
-    Tags?: Array<string>;
+    Tags?: string;
   };
 };
 
@@ -2164,6 +2482,69 @@ export type VerifyCredentialMfaAuthenticatorForCallerPatchResponse = Authenticat
 
 export type VerifyCredentialMfaAuthenticatorForCallerPatchError = ProblemDetails | unknown;
 
+export type AuthorizeOauth2GetData = {
+  query: {
+    ClientId?: string;
+    CodeChallenge?: string;
+    CodeChallengeMethod?: string;
+    Nonce?: string;
+    RedirectUri: string;
+    ResponseType: string;
+    Scope: string;
+    State?: string;
+  };
+};
+
+export type AuthorizeOauth2GetResponse = EmptyResponse;
+
+export type AuthorizeOauth2GetError = unknown | ProblemDetails;
+
+export type AuthorizeOauth2PostData = {
+  body?: {
+    clientId: string;
+    codeChallenge?: string;
+    codeChallengeMethod?: unknown;
+    nonce?: string;
+    redirectUri: string;
+    responseType: unknown;
+    scope: string;
+    state?: string;
+  };
+};
+
+export type AuthorizeOauth2PostResponse = EmptyResponse;
+
+export type AuthorizeOauth2PostError = unknown | ProblemDetails;
+
+export type ExchangeOauth2ForTokensData = {
+  body?: {
+    clientId: string;
+    clientSecret: string;
+    code?: string;
+    codeVerifier?: string;
+    grantType: unknown;
+    redirectUri?: string;
+    refreshToken?: string;
+    scope?: string;
+  };
+};
+
+export type ExchangeOauth2ForTokensResponse = ExchangeOAuth2ForTokensResponse;
+
+export type ExchangeOauth2ForTokensError = ProblemDetails | unknown;
+
+export type GetUserInfoForCallerResponse2 = GetUserInfoForCallerResponse;
+
+export type GetUserInfoForCallerError = ProblemDetails | unknown;
+
+export type GetDiscoveryDocumentResponse2 = GetDiscoveryDocumentResponse;
+
+export type GetDiscoveryDocumentError = ProblemDetails | unknown;
+
+export type GetJsonWebKeySetResponse2 = GetJsonWebKeySetResponse;
+
+export type GetJsonWebKeySetError = ProblemDetails | unknown;
+
 export type AssignRolesToOrganizationPutData = {
   body?: AssignRolesToOrganizationRequest;
   path: {
@@ -2450,7 +2831,7 @@ export type SearchAllSmsDeliveriesData = {
      * List of fields to sort the results on
      */
     Sort?: string;
-    Tags?: Array<string>;
+    Tags?: string;
   };
 };
 
@@ -2612,6 +2993,10 @@ export type DestroyAllRepositoriesResponse = EmptyResponse;
 
 export type DestroyAllRepositoriesError = ProblemDetails | unknown;
 
+export type DownloadStreamTestingOnlyResponse = Blob | File;
+
+export type DownloadStreamTestingOnlyError = ProblemDetails | unknown;
+
 export type ErrorsErrorTestingOnlyResponse = StringMessageTestingOnlyResponse;
 
 export type ErrorsErrorTestingOnlyError = ProblemDetails | unknown;
@@ -2630,7 +3015,7 @@ export type FormatsTestingOnlyError = ProblemDetails | unknown;
 
 export type GetWithSimpleArrayTestingOnlyData = {
   query?: {
-    AnArray?: Array<string>;
+    AnArray?: string;
   };
 };
 
@@ -2666,16 +3051,58 @@ export type PostWithRouteParamsAndEmptyBodyTestingOnlyResponse = StringMessageTe
 
 export type PostWithRouteParamsAndEmptyBodyTestingOnlyError = ProblemDetails | unknown;
 
-export type PostWithEnumTestingOnlyData = {
-  body?: PostWithEnumTestingOnlyRequest;
+export type GetTestingOnlyData = {
+  path: {
+    AnEnumRouteProperty: string;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
+  };
+  query?: {
+    ACamelEnumProperty?: string;
+    ACamelIntProperty?: number;
+    ACamelStringProperty?: string;
+    AnEnumProperty?: string;
+    AnEnumQueryProperty?: string;
+    AnIntProperty?: number;
+    AnIntQueryProperty?: number;
+    AStringProperty?: string;
+    AStringQueryProperty?: string;
+  };
 };
 
-export type PostWithEnumTestingOnlyResponse = StringMessageTestingOnlyResponse;
+export type GetTestingOnlyResponse = GeneralTestingOnlyResponse;
 
-export type PostWithEnumTestingOnlyError = ProblemDetails | unknown;
+export type GetTestingOnlyError = ProblemDetails | unknown;
+
+export type PostTestingOnlyData = {
+  body?: PostTestingOnlyRequest;
+  path: {
+    AnEnumRouteProperty: string;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
+  };
+};
+
+export type PostTestingOnlyResponse = GeneralTestingOnlyResponse;
+
+export type PostTestingOnlyError = ProblemDetails | unknown;
 
 export type SearchTestingOnlyData = {
+  path: {
+    AnEnumRouteProperty: string;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
+  };
   query?: {
+    ACamelEnumProperty?: string;
+    ACamelIntProperty?: number;
+    ACamelStringProperty?: string;
+    AnEnumProperty?: string;
+    AnEnumQueryProperty?: string;
+    AnIntProperty?: number;
+    AnIntQueryProperty?: number;
+    AStringProperty?: string;
+    AStringQueryProperty?: string;
     /**
      * List of child resources to embed in the resource
      */
@@ -2755,6 +3182,9 @@ export type OpenApiGetTestingOnlyError = ProblemDetails | unknown;
 export type OpenApiPostTestingOnlyData = {
   body?: OpenApiPostTestingOnlyRequest;
   path: {
+    /**
+     * anid
+     */
     Id: string;
   };
 };
@@ -2766,6 +3196,9 @@ export type OpenApiPostTestingOnlyError = ProblemDetails | unknown;
 export type OpenApiPutTestingOnlyPutData = {
   body?: OpenApiPutTestingOnlyRequest;
   path: {
+    /**
+     * anid
+     */
     Id: string;
   };
 };
@@ -2777,6 +3210,9 @@ export type OpenApiPutTestingOnlyPutError = ProblemDetails | unknown;
 export type OpenApiPutTestingOnlyPatchData = {
   body?: OpenApiPutTestingOnlyRequest;
   path: {
+    /**
+     * anid
+     */
     Id: string;
   };
 };
@@ -2799,6 +3235,24 @@ export type OpenApiPostMultiPartFormDataTestingOnlyData = {
 export type OpenApiPostMultiPartFormDataTestingOnlyResponse = OpenApiTestingOnlyResponse;
 
 export type OpenApiPostMultiPartFormDataTestingOnlyError = ProblemDetails | unknown;
+
+export type GetWithRedirectTestingOnlyData = {
+  query?: {
+    Result?: string;
+  };
+};
+
+export type GetWithRedirectTestingOnlyResponse = StringMessageTestingOnlyResponse;
+
+export type GetWithRedirectTestingOnlyError = ProblemDetails | unknown;
+
+export type PostWithRedirectTestingOnlyData = {
+  body?: PostWithRedirectTestingOnlyRequest;
+};
+
+export type PostWithRedirectTestingOnlyResponse = StringMessageTestingOnlyResponse;
+
+export type PostWithRedirectTestingOnlyError = ProblemDetails | unknown;
 
 export type RequestCorrelationsTestingOnlyResponse = StringMessageTestingOnlyResponse;
 

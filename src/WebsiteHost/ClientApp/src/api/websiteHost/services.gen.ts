@@ -5,6 +5,15 @@ import type {
   AuthenticateData,
   AuthenticateError,
   AuthenticateResponse2,
+  BeffeAnonymousDirectTestingOnlyData,
+  BeffeAnonymousDirectTestingOnlyError,
+  BeffeAnonymousDirectTestingOnlyResponse,
+  BeffeAnonymousTestingOnlyData,
+  BeffeAnonymousTestingOnlyError,
+  BeffeAnonymousTestingOnlyResponse,
+  BeffeHmacDirectTestingOnlyData,
+  BeffeHmacDirectTestingOnlyError,
+  BeffeHmacDirectTestingOnlyResponse,
   GetAllFeatureFlagsError,
   GetAllFeatureFlagsResponse2,
   GetErrorError,
@@ -121,9 +130,7 @@ export const recordCrash = <ThrowOnError extends boolean = false>(options?: Opti
  * Measures an event in the product
  * (request type: RecordMeasureRequest)
  */
-export const recordMeasure = <ThrowOnError extends boolean = false>(
-  options?: Options<RecordMeasureData, ThrowOnError>
-) =>
+export const recordMeasure = <ThrowOnError extends boolean = false>(options?: Options<RecordMeasureData, ThrowOnError>) =>
   (options?.client ?? client).post<RecordMeasureResponse, RecordMeasureError, ThrowOnError>({
     ...options,
     url: "/api/record/measure"
@@ -158,3 +165,43 @@ export const recordUse = <ThrowOnError extends boolean = false>(options?: Option
     ...options,
     url: "/api/record/use"
   });
+
+/**
+ * An example of a request that uses NO authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).
+ * (request type: BeffeAnonymousDirectTestingOnlyRequest)
+ */
+export const beffeAnonymousDirectTestingOnly = <ThrowOnError extends boolean = false>(
+    options?: Options<BeffeAnonymousDirectTestingOnlyData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<
+        BeffeAnonymousDirectTestingOnlyResponse,
+        BeffeAnonymousDirectTestingOnlyError,
+        ThrowOnError
+    >({
+        ...options,
+        url: "/api/testingonly/direct/anonymous"
+    });
+
+/**
+ * An example of a request that uses NO authentication for a BEFFE endpoint
+ * (request type: BeffeAnonymousTestingOnlyRequest)
+ */
+export const beffeAnonymousTestingOnly = <ThrowOnError extends boolean = false>(
+    options?: Options<BeffeAnonymousTestingOnlyData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<BeffeAnonymousTestingOnlyResponse, BeffeAnonymousTestingOnlyError, ThrowOnError>({
+        ...options,
+        url: "/api/testingonly/anonymous"
+    });
+
+/**
+ * An example of a request that uses HMAC authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).
+ * (request type: BeffeHMacDirectTestingOnlyRequest)
+ */
+export const beffeHmacDirectTestingOnly = <ThrowOnError extends boolean = false>(
+    options?: Options<BeffeHmacDirectTestingOnlyData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<BeffeHmacDirectTestingOnlyResponse, BeffeHmacDirectTestingOnlyError, ThrowOnError>({
+        ...options,
+        url: "/api/testingonly/direct/hmac"
+    });
