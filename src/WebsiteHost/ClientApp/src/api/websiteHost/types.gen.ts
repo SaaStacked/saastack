@@ -11,6 +11,22 @@ export type AuthenticateResponse = {
   userId: string;
 };
 
+export type BeffeAnonymousDirectTestingOnlyRequest = {
+  [key: string]: unknown;
+};
+
+export type BeffeAnonymousTestingOnlyRequest = {
+  [key: string]: unknown;
+};
+
+export type BeffeHMacDirectTestingOnlyRequest = {
+  [key: string]: unknown;
+};
+
+export type BeffeTestingOnlyResponse = {
+  callerId: string;
+};
+
 export type EmptyResponse = {
   [key: string]: unknown;
 };
@@ -163,3 +179,27 @@ export type RecordUseData = {
 export type RecordUseResponse = EmptyResponse;
 
 export type RecordUseError = ProblemDetails | unknown;
+
+export type BeffeAnonymousDirectTestingOnlyData = {
+  body?: BeffeAnonymousDirectTestingOnlyRequest;
+};
+
+export type BeffeAnonymousDirectTestingOnlyResponse = BeffeTestingOnlyResponse;
+
+export type BeffeAnonymousDirectTestingOnlyError = ProblemDetails | unknown;
+
+export type BeffeAnonymousTestingOnlyData = {
+  body?: BeffeAnonymousTestingOnlyRequest;
+};
+
+export type BeffeAnonymousTestingOnlyResponse = BeffeTestingOnlyResponse;
+
+export type BeffeAnonymousTestingOnlyError = ProblemDetails | unknown;
+
+export type BeffeHmacDirectTestingOnlyData = {
+  body?: BeffeHMacDirectTestingOnlyRequest;
+};
+
+export type BeffeHmacDirectTestingOnlyResponse = BeffeTestingOnlyResponse;
+
+export type BeffeHmacDirectTestingOnlyError = ProblemDetails | unknown;

@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.4",
   "info": {
     "title": "BackendWithAncillaryAPI",
     "description": "BackendWithAncillaryAPI",
@@ -121,7 +121,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -130,7 +130,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -139,7 +139,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -148,27 +148,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -663,7 +661,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -671,17 +669,16 @@
           {
             "name": "SinceUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -690,7 +687,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -699,27 +696,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1007,7 +1002,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1016,7 +1011,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1025,27 +1020,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1379,7 +1372,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1574,26 +1567,24 @@
           {
             "name": "FromUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "ToUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1602,7 +1593,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1611,7 +1602,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1620,27 +1611,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1755,7 +1744,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1856,7 +1845,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2064,7 +2053,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2073,7 +2062,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2082,7 +2071,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2091,27 +2080,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2444,26 +2431,24 @@
           {
             "name": "FromUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "ToUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2472,7 +2457,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2481,7 +2466,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2490,27 +2475,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2625,7 +2608,7 @@
             "name": "OrganizationId",
             "in": "query",
             "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2634,7 +2617,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2643,7 +2626,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2652,27 +2635,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3081,6 +3062,1114 @@
         }
       }
     },
+    "/oauth2/clients/{Id}/consent": {
+      "post": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Consent for the user to authorize the OAuth2/Open ID Connect client to access their data",
+        "description": "(request type: ConsentOAuth2ClientForCallerRequest)",
+        "operationId": "ConsentOAuth2ClientForCaller",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsentOAuth2ClientForCallerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Gets the user's consent status for an OAuth2/Open ID Connect client",
+        "description": "(request type: GetOAuth2ClientConsentForCallerRequest)",
+        "operationId": "GetOAuth2ClientConsentForCaller",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/oauth2/clients": {
+      "post": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Creates a new OAuth2/Open ID Connect client application",
+        "description": "(request type: CreateOAuth2ClientRequest)",
+        "operationId": "CreateOAuth2Client",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOAuth2ClientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Lists all OAuth2/Open ID Connect clients",
+        "description": "(request type: SearchAllOAuth2ClientsRequest)",
+        "operationId": "SearchAllOAuth2Clients",
+        "parameters": [
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAllOAuth2ClientsResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAllOAuth2ClientsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/oauth2/clients/{Id}": {
+      "delete": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Deletes an OAuth2/Open ID Connect client",
+        "description": "(request type: DeleteOAuth2ClientRequest)",
+        "operationId": "DeleteOAuth2Client",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Fetches an OAuth2/Open ID Connect client",
+        "description": "(request type: GetOAuth2ClientRequest)",
+        "operationId": "GetOAuth2Client",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientWithSecretsResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientWithSecretsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Updates an existing OAuth2/Open ID Connect client",
+        "description": "(request type: UpdateOAuth2ClientRequest)",
+        "operationId": "UpdateOAuth2Client (Put)",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOAuth2ClientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Updates an existing OAuth2/Open ID Connect client",
+        "description": "(request type: UpdateOAuth2ClientRequest)",
+        "operationId": "UpdateOAuth2Client (Patch)",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOAuth2ClientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/oauth2/clients/{Id}/secret": {
+      "post": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Regenerates the client secret for an OAuth2/Open ID Connect client",
+        "description": "(request type: RegenerateOAuth2ClientSecretRequest)",
+        "operationId": "RegenerateOAuth2ClientSecret",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateOAuth2ClientSecretRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegenerateOAuth2ClientSecretResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegenerateOAuth2ClientSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/oauth2/clients/{Id}/consent/revoke": {
+      "delete": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Revokes the user's consent for an OAuth2/Open ID Connect client",
+        "description": "(request type: RevokeOAuth2ClientConsentForCallerRequest)",
+        "operationId": "RevokeOAuth2ClientConsentForCaller",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
     "/credentials/auth": {
       "post": {
         "tags": [
@@ -3391,7 +4480,7 @@
             "name": "UserId",
             "in": "query",
             "required": true,
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4086,7 +5175,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4095,7 +5184,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4104,27 +5193,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4514,7 +5601,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4522,32 +5609,24 @@
           {
             "name": "SinceUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "Tags",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "array",
-              "items": {
-                "required": [
-                  "chars",
-                  "length"
-                ],
-                "type": "string"
-              }
+              "type": "string"
             }
           },
           {
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4556,7 +5635,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4565,27 +5644,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -5139,17 +6216,17 @@
             }
           },
           {
-            "name": "TenantId",
-            "in": "query",
-            "style": "form",
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "UserId",
-            "in": "path",
-            "required": true,
+            "name": "TenantId",
+            "in": "query",
             "style": "simple",
             "schema": {
               "type": "string"
@@ -6987,7 +8064,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -6996,7 +8073,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -7005,27 +8082,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -7224,7 +8299,7 @@
           {
             "name": "MfaToken",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -8384,6 +9459,684 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthenticateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/authorize": {
+      "get": {
+        "tags": [
+          "OAuth2Api"
+        ],
+        "summary": "Authorizes the user to access the application in Open ID Connect",
+        "description": "(request type: AuthorizeOAuth2GetRequest)",
+        "operationId": "AuthorizeOAuth2Get",
+        "parameters": [
+          {
+            "name": "ClientId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CodeChallenge",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CodeChallengeMethod",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nonce",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RedirectUri",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ResponseType",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Scope",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "State",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "The user is redirected to the redirect_uri with the authorization code. Or if failed, if unauthenticated, the redirected to the login website page, or if un-consented to the specified client, then redirected to the consent website page, or if an error occurred, then redirected to the redirect_uri with an error and description."
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OAuth2Api"
+        ],
+        "summary": "Authorizes the user to access the application in Open ID Connect",
+        "description": "(request type: AuthorizeOAuth2PostRequest)",
+        "operationId": "AuthorizeOAuth2Post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "clientId",
+                  "redirectUri",
+                  "responseType",
+                  "scope"
+                ],
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "codeChallenge": {
+                    "type": "string"
+                  },
+                  "codeChallengeMethod": { },
+                  "nonce": {
+                    "type": "string"
+                  },
+                  "redirectUri": {
+                    "type": "string"
+                  },
+                  "responseType": { },
+                  "scope": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "The user is redirected to the redirect_uri with the authorization code. Or if failed, if unauthenticated, the redirected to the login website page, or if un-consented to the specified client, then redirected to the consent website page, or if an error occurred, then redirected to the redirect_uri with an error and description."
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/token": {
+      "post": {
+        "tags": [
+          "OAuth2Api"
+        ],
+        "summary": "Exchanges either an authorization code for new tokens, or a refresh_token for new tokens, for the specified grant_type in Open ID Connect",
+        "description": "(request type: ExchangeOAuth2ForTokensRequest)",
+        "operationId": "ExchangeOAuth2ForTokens",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "clientId",
+                  "clientSecret",
+                  "grantType"
+                ],
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "clientSecret": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "codeVerifier": {
+                    "type": "string"
+                  },
+                  "grantType": { },
+                  "redirectUri": {
+                    "type": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeOAuth2ForTokensResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeOAuth2ForTokensResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "The user is not known, or not registered"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "The user's account is suspended or disabled, and cannot be used"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/userinfo": {
+      "get": {
+        "tags": [
+          "OAuth2Api"
+        ],
+        "summary": "Fetches the user's info for the authenticated user in Open ID Connect format",
+        "description": "(request type: GetUserInfoForCallerRequest)",
+        "operationId": "GetUserInfoForCaller",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoForCallerResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoForCallerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "The token was not authorized using Open ID Connect, or the user is not consented to the client, or the user is unknown or not registered"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "The user's account is suspended or disabled, and cannot be used"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/.well-known/openid-configuration": {
+      "get": {
+        "tags": [
+          "OpenIdConnectApi"
+        ],
+        "summary": "Fetches the discovery document for Open ID Connect",
+        "description": "(request type: GetDiscoveryDocumentRequest)",
+        "operationId": "GetDiscoveryDocument",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDiscoveryDocumentResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDiscoveryDocumentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/jwks.json": {
+      "get": {
+        "tags": [
+          "OpenIdConnectApi"
+        ],
+        "summary": "Fetches the JSON Web Key Set for Open ID Connect JWT verification",
+        "description": "(request type: GetJsonWebKeySetRequest)",
+        "operationId": "GetJsonWebKeySet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJsonWebKeySetResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJsonWebKeySetResponse"
                 }
               }
             }
@@ -9804,7 +11557,7 @@
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -9813,7 +11566,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -9822,27 +11575,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -10774,7 +12525,7 @@
         "tags": [
           "SingleSignOnApi"
         ],
-        "summary": "Authenticates a user with a single sign-on provider (also auto-registering them the first time)",
+        "summary": "Authenticates a user with authorization code from a OAuth2 or Open ID Connect single sign-on provider, and auto-registering them the first time",
         "description": "(request type: AuthenticateSingleSignOnRequest)",
         "operationId": "AuthenticateSingleSignOn",
         "requestBody": {
@@ -10825,7 +12576,7 @@
             }
           },
           "401": {
-            "description": "The provider is not known, or the code is invalid"
+            "description": "The provider is not known, or the authorization code is invalid"
           },
           "402": {
             "description": "Payment Required: The client must have payment information to get the requested response"
@@ -11170,7 +12921,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -11178,32 +12929,24 @@
           {
             "name": "SinceUtc",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
             "name": "Tags",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "array",
-              "items": {
-                "required": [
-                  "chars",
-                  "length"
-                ],
-                "type": "string"
-              }
+              "type": "string"
             }
           },
           {
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -11212,7 +12955,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -11221,27 +12964,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -11989,24 +13730,6 @@
         "operationId": "SearchSubscriptionHistory",
         "parameters": [
           {
-            "name": "FromUtc",
-            "in": "query",
-            "style": "form",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "ToUtc",
-            "in": "query",
-            "style": "form",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
             "name": "Id",
             "in": "path",
             "required": true,
@@ -12016,10 +13739,26 @@
             }
           },
           {
+            "name": "FromUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -12028,7 +13767,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -12037,27 +13776,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -12854,7 +14591,7 @@
           {
             "name": "Format",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -12968,6 +14705,107 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testingonly/download": {
+      "get": {
+        "tags": [
+          "TestingWebApi"
+        ],
+        "summary": "Tests download of streams",
+        "description": "(request type: DownloadStreamTestingOnlyRequest)",
+        "operationId": "DownloadStreamTestingOnly",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -13317,16 +15155,9 @@
           {
             "name": "AnArray",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "array",
-              "items": {
-                "required": [
-                  "chars",
-                  "length"
-                ],
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         ],
@@ -13717,35 +15548,127 @@
         }
       }
     },
-    "/testingonly/general/enum": {
-      "post": {
+    "/testingonly/general/get/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}": {
+      "get": {
         "tags": [
           "TestingWebApi"
         ],
-        "summary": "Tests the use of enums in the request",
-        "description": "(request type: PostWithEnumTestingOnlyRequest)",
-        "operationId": "PostWithEnumTestingOnly",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PostWithEnumTestingOnlyRequest"
-              }
+        "summary": "Tests the use of reference types, values types, and enums anywhere in a GET request",
+        "description": "(request type: GetTestingOnlyRequest)",
+        "operationId": "GetTestingOnly",
+        "parameters": [
+          {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ACamelStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AnIntQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AStringQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
+                  "$ref": "#/components/schemas/GeneralTestingOnlyResponse"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
+                  "$ref": "#/components/schemas/GeneralTestingOnlyResponse"
                 }
               }
             }
@@ -13813,20 +15736,244 @@
         }
       }
     },
-    "/testingonly/search": {
+    "/testingonly/general/post/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}": {
+      "post": {
+        "tags": [
+          "TestingWebApi"
+        ],
+        "summary": "Tests the use of reference types, values types, and enums anywhere in a POST request",
+        "description": "(request type: PostTestingOnlyRequest)",
+        "operationId": "PostTestingOnly",
+        "parameters": [
+          {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTestingOnlyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralTestingOnlyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralTestingOnlyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testingonly/general/search/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}": {
       "get": {
         "tags": [
           "TestingWebApi"
         ],
-        "summary": "Tests Search APIs",
+        "summary": "Tests the use of reference types, values types, and enums anywhere in a SEARCH request",
         "description": "(request type: SearchTestingOnlyRequest)",
         "operationId": "SearchTestingOnly",
         "parameters": [
           {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ACamelStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AnIntQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AStringQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "Embed",
             "in": "query",
             "description": "List of child resources to embed in the resource",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -13835,7 +15982,7 @@
             "name": "Filter",
             "in": "query",
             "description": "List of fields to include and exclude in the search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -13844,27 +15991,25 @@
             "name": "Limit",
             "in": "query",
             "description": "The maximum number of search results to return",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Offset",
             "in": "query",
             "description": "The zero-based index of the first search result",
-            "style": "form",
+            "style": "simple",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "integer"
             }
           },
           {
             "name": "Sort",
             "in": "query",
             "description": "List of fields to sort the results on",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -14271,7 +16416,7 @@
             "name": "OptionalField",
             "in": "query",
             "description": "anoptionalfield",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -14281,7 +16426,7 @@
             "in": "query",
             "description": "arequiredfield",
             "required": true,
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -14376,6 +16521,7 @@
           {
             "name": "Id",
             "in": "path",
+            "description": "anid",
             "required": true,
             "style": "simple",
             "schema": {
@@ -14484,6 +16630,7 @@
           {
             "name": "Id",
             "in": "path",
+            "description": "anid",
             "required": true,
             "style": "simple",
             "schema": {
@@ -14592,6 +16739,7 @@
           {
             "name": "Id",
             "in": "path",
+            "description": "anid",
             "required": true,
             "style": "simple",
             "schema": {
@@ -14749,6 +16897,199 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/OpenApiTestingOnlyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testingonly/redirect/get": {
+      "get": {
+        "tags": [
+          "TestingWebApi"
+        ],
+        "summary": "Tests the use of a redirect for a GET method",
+        "description": "(request type: GetWithRedirectTestingOnlyRequest)",
+        "operationId": "GetWithRedirectTestingOnly",
+        "parameters": [
+          {
+            "name": "Result",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testingonly/redirect/post": {
+      "post": {
+        "tags": [
+          "TestingWebApi"
+        ],
+        "summary": "Tests the use of a redirect for a POST method",
+        "description": "(request type: PostWithRedirectTestingOnlyRequest)",
+        "operationId": "PostWithRedirectTestingOnly",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostWithRedirectTestingOnlyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringMessageTestingOnlyResponse"
                 }
               }
             }
@@ -15633,7 +17974,7 @@
           {
             "name": "Id",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -15739,7 +18080,7 @@
           {
             "name": "OptionalField",
             "in": "query",
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -15748,7 +18089,7 @@
             "name": "RequiredField",
             "in": "query",
             "required": true,
-            "style": "form",
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -17347,6 +19688,10 @@
             "minLength": 1,
             "type": "string"
           },
+          "code_verifier": {
+            "type": "string",
+            "nullable": true
+          },
           "invitationToken": {
             "type": "string",
             "nullable": true
@@ -17375,6 +19720,9 @@
         "type": "object",
         "properties": {
           "accessToken": {
+            "$ref": "#/components/schemas/AuthenticationToken"
+          },
+          "idToken": {
             "$ref": "#/components/schemas/AuthenticationToken"
           },
           "refreshToken": {
@@ -17669,6 +20017,10 @@
             "nullable": true
           },
           "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "locale": {
             "type": "string",
             "nullable": true
           },
@@ -18001,6 +20353,32 @@
         },
         "additionalProperties": false
       },
+      "ConsentOAuth2ClientForCallerRequest": {
+        "required": [
+          "consented",
+          "id",
+          "scope"
+        ],
+        "type": "object",
+        "properties": {
+          "consented": {
+            "type": "boolean"
+          },
+          "redirectUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "scope": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateAPIKeyRequest": {
         "type": "object",
         "properties": {
@@ -18020,6 +20398,23 @@
         "properties": {
           "apiKey": {
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOAuth2ClientRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "redirectUri": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -18539,6 +20934,37 @@
         },
         "additionalProperties": false
       },
+      "ExchangeOAuth2ForTokensResponse": {
+        "required": [
+          "access_token",
+          "expires_in",
+          "expiresIn",
+          "idToken",
+          "refreshToken",
+          "token_type",
+          "tokenType"
+        ],
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "$ref": "#/components/schemas/OAuth2TokenType"
+          }
+        },
+        "additionalProperties": false
+      },
       "ExportSubscriptionsToMigrateResponse": {
         "required": [
           "metadata",
@@ -18655,6 +21081,58 @@
         },
         "additionalProperties": false
       },
+      "GeneralTestingOnlyResponse": {
+        "required": [
+          "aCamelStringProperty",
+          "aStringProperty",
+          "aStringQueryProperty",
+          "aStringRouteProperty"
+        ],
+        "type": "object",
+        "properties": {
+          "a_camel_enum": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "a_camel_int": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "a_camel_string": {
+            "type": "string"
+          },
+          "anEnumProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anEnumQueryProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anEnumRouteProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anIntProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "anIntQueryProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "anIntRouteProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "aStringProperty": {
+            "type": "string"
+          },
+          "aStringQueryProperty": {
+            "type": "string"
+          },
+          "aStringRouteProperty": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetAllFeatureFlagsResponse": {
         "required": [
           "flags"
@@ -18694,6 +21172,18 @@
         },
         "additionalProperties": false
       },
+      "GetDiscoveryDocumentResponse": {
+        "required": [
+          "document"
+        ],
+        "type": "object",
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/OpenIdConnectDiscoveryDocument"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetFeatureFlagResponse": {
         "required": [
           "flag"
@@ -18726,6 +21216,54 @@
         "properties": {
           "image": {
             "$ref": "#/components/schemas/Image"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetJsonWebKeySetResponse": {
+        "required": [
+          "keys"
+        ],
+        "type": "object",
+        "properties": {
+          "keys": {
+            "$ref": "#/components/schemas/JsonWebKeySet"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetOAuth2ClientConsentResponse": {
+        "required": [
+          "consent"
+        ],
+        "type": "object",
+        "properties": {
+          "consent": {
+            "$ref": "#/components/schemas/OAuth2ClientConsent"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetOAuth2ClientResponse": {
+        "required": [
+          "client"
+        ],
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/OAuth2Client"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetOAuth2ClientWithSecretsResponse": {
+        "required": [
+          "client"
+        ],
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/OAuth2ClientWithSecrets"
           }
         },
         "additionalProperties": false
@@ -18809,6 +21347,18 @@
         "properties": {
           "subscription": {
             "$ref": "#/components/schemas/SubscriptionWithPlan"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetUserInfoForCallerResponse": {
+        "required": [
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/OpenIdConnectUserInfo"
           }
         },
         "additionalProperties": false
@@ -19114,6 +21664,54 @@
           "nextUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonWebKey": {
+        "required": [
+          "alg",
+          "kid",
+          "kty",
+          "use"
+        ],
+        "type": "object",
+        "properties": {
+          "alg": {
+            "type": "string"
+          },
+          "e": {
+            "type": "string"
+          },
+          "k": {
+            "type": "string"
+          },
+          "kid": {
+            "type": "string"
+          },
+          "kty": {
+            "type": "string"
+          },
+          "n": {
+            "type": "string"
+          },
+          "use": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonWebKeySet": {
+        "required": [
+          "keys"
+        ],
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonWebKey"
+            }
           }
         },
         "additionalProperties": false
@@ -19433,8 +22031,7 @@
                 "chars",
                 "length"
               ],
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
             "nullable": true
           }
@@ -19479,6 +22076,153 @@
         "properties": {
           "message": {
             "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2Client": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "redirectUri": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2ClientConsent": {
+        "required": [
+          "clientId",
+          "id",
+          "isConsented",
+          "scopes",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "isConsented": {
+            "type": "boolean"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "userId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2ClientWithSecret": {
+        "required": [
+          "id",
+          "name",
+          "secret"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "redirectUri": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "expiresOnUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "secret": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2ClientWithSecrets": {
+        "required": [
+          "id",
+          "name",
+          "secrets"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "redirectUri": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "secrets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OAuthClientSecret"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2GrantType": {
+        "enum": [
+          "Authorization_Code",
+          "Refresh_Token",
+          "Client_Credentials",
+          "Password",
+          "Implicit"
+        ],
+        "type": "string"
+      },
+      "OAuth2ResponseType": {
+        "enum": [
+          "Code",
+          "Id_Token",
+          "Token"
+        ],
+        "type": "string"
+      },
+      "OAuth2TokenType": {
+        "enum": [
+          "Bearer"
+        ],
+        "type": "string"
+      },
+      "OAuthClientSecret": {
+        "required": [
+          "reference"
+        ],
+        "type": "object",
+        "properties": {
+          "expiresOnUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reference": {
             "type": "string"
           }
         },
@@ -19588,6 +22332,219 @@
             "type": "boolean"
           },
           "message": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenIdConnectCodeChallengeMethod": {
+        "enum": [
+          "Plain",
+          "S256"
+        ],
+        "type": "string"
+      },
+      "OpenIdConnectDiscoveryDocument": {
+        "required": [
+          "authorizationEndpoint",
+          "claimsSupported",
+          "codeChallengeMethodsSupported",
+          "idTokenEncryptionAlgValuesSupported",
+          "idTokenSigningAlgValuesSupported",
+          "issuer",
+          "jwksUri",
+          "registrationEndPoint",
+          "responseTypesSupported",
+          "scopesSupported",
+          "subjectTypesSupported",
+          "tokenEndpoint",
+          "tokenEndpointAuthMethodsSupported",
+          "tokenEndpointAuthSigningAlgValuesSupported",
+          "userInfoEncryptionAlgValuesSupported",
+          "userInfoEndpoint",
+          "userInfoSigningAlgValuesSupported"
+        ],
+        "type": "object",
+        "properties": {
+          "authorizationEndpoint": {
+            "type": "string"
+          },
+          "claimsSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "codeChallengeMethodsSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "idTokenEncryptionAlgValuesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "idTokenSigningAlgValuesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "jwksUri": {
+            "type": "string"
+          },
+          "registrationEndPoint": {
+            "type": "string"
+          },
+          "responseTypesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "scopesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "subjectTypesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "tokenEndpoint": {
+            "type": "string"
+          },
+          "tokenEndpointAuthMethodsSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "tokenEndpointAuthSigningAlgValuesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "userInfoEncryptionAlgValuesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "userInfoEndpoint": {
+            "type": "string"
+          },
+          "userInfoSigningAlgValuesSupported": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenIdConnectUserInfo": {
+        "required": [
+          "address",
+          "email",
+          "familyName",
+          "givenName",
+          "locale",
+          "name",
+          "phoneNumber",
+          "picture",
+          "zoneInfo"
+        ],
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/ProfileAddress"
+          },
+          "email": {
+            "type": "string"
+          },
+          "email_verified": {
+            "type": "boolean"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "phone_number_verified": {
+            "type": "boolean"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "sub": {
+            "type": "string"
+          },
+          "zoneinfo": {
             "type": "string"
           }
         },
@@ -19769,6 +22726,53 @@
         "type": "object",
         "additionalProperties": false
       },
+      "PostTestingOnlyRequest": {
+        "required": [
+          "anEnumRouteProperty",
+          "anIntRouteProperty",
+          "aStringRouteProperty"
+        ],
+        "type": "object",
+        "properties": {
+          "a_camel_enum": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "a_camel_int": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "a_camel_string": {
+            "type": "string",
+            "nullable": true
+          },
+          "anEnumProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anEnumQueryProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anIntProperty": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "anIntQueryProperty": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "aStringProperty": {
+            "type": "string",
+            "nullable": true
+          },
+          "aStringQueryProperty": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest": {
         "type": "object",
         "properties": {
@@ -19783,13 +22787,10 @@
         "type": "object",
         "additionalProperties": false
       },
-      "PostWithEnumTestingOnlyRequest": {
+      "PostWithRedirectTestingOnlyRequest": {
         "type": "object",
         "properties": {
-          "anEnum": {
-            "$ref": "#/components/schemas/TestEnum"
-          },
-          "aProperty": {
+          "result": {
             "type": "string",
             "nullable": true
           }
@@ -20062,6 +23063,25 @@
         },
         "additionalProperties": false
       },
+      "RegenerateOAuth2ClientSecretRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "RegenerateOAuth2ClientSecretResponse": {
+        "required": [
+          "client"
+        ],
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/OAuth2ClientWithSecret"
+          }
+        },
+        "additionalProperties": false
+      },
       "RegisterCarRequest": {
         "required": [
           "jurisdiction",
@@ -20166,6 +23186,10 @@
           "lastName": {
             "minLength": 1,
             "type": "string"
+          },
+          "locale": {
+            "type": "string",
+            "nullable": true
           },
           "password": {
             "minLength": 1,
@@ -20372,6 +23396,25 @@
         },
         "additionalProperties": false
       },
+      "SearchAllOAuth2ClientsResponse": {
+        "required": [
+          "clients",
+          "metadata"
+        ],
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/SearchResultMetadata"
+          },
+          "clients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OAuth2Client"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "SearchAllSmsDeliveriesResponse": {
         "required": [
           "metadata",
@@ -20443,13 +23486,56 @@
       },
       "SearchTestingOnlyResponse": {
         "required": [
-          "items",
+          "aCamelStringProperty",
+          "aStringProperty",
+          "aStringQueryProperty",
+          "aStringRouteProperty",
           "metadata"
         ],
         "type": "object",
         "properties": {
           "metadata": {
             "$ref": "#/components/schemas/SearchResultMetadata"
+          },
+          "a_camel_enum": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "a_camel_int": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "a_camel_string": {
+            "type": "string"
+          },
+          "anEnumProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anEnumQueryProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anEnumRouteProperty": {
+            "$ref": "#/components/schemas/TestingOnlyEnum"
+          },
+          "anIntProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "anIntQueryProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "anIntRouteProperty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "aStringProperty": {
+            "type": "string"
+          },
+          "aStringQueryProperty": {
+            "type": "string"
+          },
+          "aStringRouteProperty": {
+            "type": "string"
           },
           "items": {
             "type": "array",
@@ -20827,14 +23913,6 @@
         },
         "additionalProperties": false
       },
-      "TestEnum": {
-        "enum": [
-          "Value1",
-          "Value2",
-          "Value3"
-        ],
-        "type": "string"
-      },
       "TestResource": {
         "required": [
           "id"
@@ -20849,6 +23927,15 @@
           }
         },
         "additionalProperties": false
+      },
+      "TestingOnlyEnum": {
+        "enum": [
+          "Value1",
+          "Value2",
+          "Value3",
+          "Value4"
+        ],
+        "type": "string"
       },
       "TokenType": {
         "enum": [
@@ -20994,6 +24081,23 @@
         },
         "additionalProperties": false
       },
+      "UpdateOAuth2ClientRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "redirectUri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateUserResponse": {
         "required": [
           "user"
@@ -21042,6 +24146,9 @@
             "type": "string"
           },
           "emailAddress": {
+            "type": "string"
+          },
+          "locale": {
             "type": "string"
           },
           "name": {
@@ -21097,6 +24204,9 @@
             "type": "string"
           },
           "emailAddress": {
+            "type": "string"
+          },
+          "locale": {
             "type": "string"
           },
           "name": {

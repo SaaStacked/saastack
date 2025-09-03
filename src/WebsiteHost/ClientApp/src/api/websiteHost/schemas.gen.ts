@@ -35,6 +35,32 @@ export const AuthenticateResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const BeffeAnonymousDirectTestingOnlyRequestSchema = {
+  type: "object",
+  additionalProperties: false
+} as const;
+
+export const BeffeAnonymousTestingOnlyRequestSchema = {
+  type: "object",
+  additionalProperties: false
+} as const;
+
+export const BeffeHMacDirectTestingOnlyRequestSchema = {
+  type: "object",
+  additionalProperties: false
+} as const;
+
+export const BeffeTestingOnlyResponseSchema = {
+  required: ["callerId"],
+  type: "object",
+  properties: {
+    callerId: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const EmptyResponseSchema = {
   type: "object",
   additionalProperties: false

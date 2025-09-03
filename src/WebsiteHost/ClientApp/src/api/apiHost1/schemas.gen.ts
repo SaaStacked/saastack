@@ -159,6 +159,10 @@ export const AuthenticateSingleSignOnRequestSchema = {
       minLength: 1,
       type: "string"
     },
+    code_verifier: {
+      type: "string",
+      nullable: true
+    },
     invitationToken: {
       type: "string",
       nullable: true
@@ -184,6 +188,9 @@ export const AuthenticateTokensSchema = {
   type: "object",
   properties: {
     accessToken: {
+      $ref: "#/components/schemas/AuthenticationToken"
+    },
+    idToken: {
       $ref: "#/components/schemas/AuthenticationToken"
     },
     refreshToken: {
@@ -451,6 +458,10 @@ export const ChangeProfileRequestSchema = {
       nullable: true
     },
     lastName: {
+      type: "string",
+      nullable: true
+    },
+    locale: {
       type: "string",
       nullable: true
     },
@@ -761,6 +772,29 @@ export const ConfirmSmsDeliveryFailedRequestSchema = {
   additionalProperties: false
 } as const;
 
+export const ConsentOAuth2ClientForCallerRequestSchema = {
+  required: ["consented", "id", "scope"],
+  type: "object",
+  properties: {
+    consented: {
+      type: "boolean"
+    },
+    redirectUri: {
+      type: "string",
+      nullable: true
+    },
+    scope: {
+      minLength: 1,
+      type: "string"
+    },
+    state: {
+      type: "string",
+      nullable: true
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const CreateAPIKeyRequestSchema = {
   type: "object",
   properties: {
@@ -779,6 +813,22 @@ export const CreateAPIKeyResponseSchema = {
   properties: {
     apiKey: {
       type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const CreateOAuth2ClientRequestSchema = {
+  required: ["name"],
+  type: "object",
+  properties: {
+    name: {
+      minLength: 1,
+      type: "string"
+    },
+    redirectUri: {
+      type: "string",
+      nullable: true
     }
   },
   additionalProperties: false
@@ -1249,6 +1299,30 @@ export const EventNotificationSchema = {
   additionalProperties: false
 } as const;
 
+export const ExchangeOAuth2ForTokensResponseSchema = {
+  required: ["access_token", "expires_in", "expiresIn", "idToken", "refreshToken", "token_type", "tokenType"],
+  type: "object",
+  properties: {
+    access_token: {
+      type: "string"
+    },
+    expires_in: {
+      type: "integer",
+      format: "int32"
+    },
+    id_token: {
+      type: "string"
+    },
+    refresh_token: {
+      type: "string"
+    },
+    token_type: {
+      $ref: "#/components/schemas/OAuth2TokenType"
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const ExportSubscriptionsToMigrateResponseSchema = {
   required: ["metadata", "subscriptions"],
   type: "object",
@@ -1356,6 +1430,54 @@ export const FormatsTestingOnlyResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const GeneralTestingOnlyResponseSchema = {
+  required: ["aCamelStringProperty", "aStringProperty", "aStringQueryProperty", "aStringRouteProperty"],
+  type: "object",
+  properties: {
+    a_camel_enum: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    a_camel_int: {
+      type: "integer",
+      format: "int32"
+    },
+    a_camel_string: {
+      type: "string"
+    },
+    anEnumProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anEnumQueryProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anEnumRouteProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anIntProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    anIntQueryProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    anIntRouteProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    aStringProperty: {
+      type: "string"
+    },
+    aStringQueryProperty: {
+      type: "string"
+    },
+    aStringRouteProperty: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const GetAllFeatureFlagsResponseSchema = {
   required: ["flags"],
   type: "object",
@@ -1392,6 +1514,17 @@ export const GetCarResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const GetDiscoveryDocumentResponseSchema = {
+  required: ["document"],
+  type: "object",
+  properties: {
+    document: {
+      $ref: "#/components/schemas/OpenIdConnectDiscoveryDocument"
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const GetFeatureFlagResponseSchema = {
   required: ["flag"],
   type: "object",
@@ -1420,6 +1553,50 @@ export const GetImageResponseSchema = {
   properties: {
     image: {
       $ref: "#/components/schemas/Image"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const GetJsonWebKeySetResponseSchema = {
+  required: ["keys"],
+  type: "object",
+  properties: {
+    keys: {
+      $ref: "#/components/schemas/JsonWebKeySet"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const GetOAuth2ClientConsentResponseSchema = {
+  required: ["consent"],
+  type: "object",
+  properties: {
+    consent: {
+      $ref: "#/components/schemas/OAuth2ClientConsent"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const GetOAuth2ClientResponseSchema = {
+  required: ["client"],
+  type: "object",
+  properties: {
+    client: {
+      $ref: "#/components/schemas/OAuth2Client"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const GetOAuth2ClientWithSecretsResponseSchema = {
+  required: ["client"],
+  type: "object",
+  properties: {
+    client: {
+      $ref: "#/components/schemas/OAuth2ClientWithSecrets"
     }
   },
   additionalProperties: false
@@ -1493,6 +1670,17 @@ export const GetSubscriptionResponseSchema = {
   properties: {
     subscription: {
       $ref: "#/components/schemas/SubscriptionWithPlan"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const GetUserInfoForCallerResponseSchema = {
+  required: ["user"],
+  type: "object",
+  properties: {
+    user: {
+      $ref: "#/components/schemas/OpenIdConnectUserInfo"
     }
   },
   additionalProperties: false
@@ -1771,6 +1959,49 @@ export const InvoiceSummarySchema = {
   additionalProperties: false
 } as const;
 
+export const JsonWebKeySchema = {
+  required: ["alg", "kid", "kty", "use"],
+  type: "object",
+  properties: {
+    alg: {
+      type: "string"
+    },
+    e: {
+      type: "string"
+    },
+    k: {
+      type: "string"
+    },
+    kid: {
+      type: "string"
+    },
+    kty: {
+      type: "string"
+    },
+    n: {
+      type: "string"
+    },
+    use: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const JsonWebKeySetSchema = {
+  required: ["keys"],
+  type: "object",
+  properties: {
+    keys: {
+      type: "array",
+      items: {
+        $ref: "#/components/schemas/JsonWebKey"
+      }
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const ListCredentialMfaAuthenticatorsForCallerResponseSchema = {
   required: ["authenticators"],
   type: "object",
@@ -2043,8 +2274,7 @@ export const MigrateSubscriptionRequestSchema = {
       type: "object",
       additionalProperties: {
         required: ["chars", "length"],
-        type: "string",
-        nullable: true
+        type: "string"
       },
       nullable: true
     }
@@ -2085,6 +2315,127 @@ export const NotifyProvisioningRequestSchema = {
   properties: {
     message: {
       minLength: 1,
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OAuth2ClientSchema = {
+  required: ["id", "name"],
+  type: "object",
+  properties: {
+    name: {
+      type: "string"
+    },
+    redirectUri: {
+      type: "string"
+    },
+    id: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OAuth2ClientConsentSchema = {
+  required: ["clientId", "id", "isConsented", "scopes", "userId"],
+  type: "object",
+  properties: {
+    clientId: {
+      type: "string"
+    },
+    isConsented: {
+      type: "boolean"
+    },
+    scopes: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    userId: {
+      type: "string"
+    },
+    id: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OAuth2ClientWithSecretSchema = {
+  required: ["id", "name", "secret"],
+  type: "object",
+  properties: {
+    name: {
+      type: "string"
+    },
+    redirectUri: {
+      type: "string"
+    },
+    id: {
+      type: "string"
+    },
+    expiresOnUtc: {
+      type: "string",
+      format: "date-time"
+    },
+    secret: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OAuth2ClientWithSecretsSchema = {
+  required: ["id", "name", "secrets"],
+  type: "object",
+  properties: {
+    name: {
+      type: "string"
+    },
+    redirectUri: {
+      type: "string"
+    },
+    id: {
+      type: "string"
+    },
+    secrets: {
+      type: "array",
+      items: {
+        $ref: "#/components/schemas/OAuthClientSecret"
+      }
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OAuth2GrantTypeSchema = {
+  enum: ["Authorization_Code", "Refresh_Token", "Client_Credentials", "Password", "Implicit"],
+  type: "string"
+} as const;
+
+export const OAuth2ResponseTypeSchema = {
+  enum: ["Code", "Id_Token", "Token"],
+  type: "string"
+} as const;
+
+export const OAuth2TokenTypeSchema = {
+  enum: ["Bearer"],
+  type: "string"
+} as const;
+
+export const OAuthClientSecretSchema = {
+  required: ["reference"],
+  type: "object",
+  properties: {
+    expiresOnUtc: {
+      type: "string",
+      format: "date-time"
+    },
+    reference: {
       type: "string"
     }
   },
@@ -2181,6 +2532,176 @@ export const OpenApiTestingOnlyResponseSchema = {
       type: "boolean"
     },
     message: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OpenIdConnectCodeChallengeMethodSchema = {
+  enum: ["Plain", "S256"],
+  type: "string"
+} as const;
+
+export const OpenIdConnectDiscoveryDocumentSchema = {
+  required: [
+    "authorizationEndpoint",
+    "claimsSupported",
+    "codeChallengeMethodsSupported",
+    "idTokenEncryptionAlgValuesSupported",
+    "idTokenSigningAlgValuesSupported",
+    "issuer",
+    "jwksUri",
+    "registrationEndPoint",
+    "responseTypesSupported",
+    "scopesSupported",
+    "subjectTypesSupported",
+    "tokenEndpoint",
+    "tokenEndpointAuthMethodsSupported",
+    "tokenEndpointAuthSigningAlgValuesSupported",
+    "userInfoEncryptionAlgValuesSupported",
+    "userInfoEndpoint",
+    "userInfoSigningAlgValuesSupported"
+  ],
+  type: "object",
+  properties: {
+    authorizationEndpoint: {
+      type: "string"
+    },
+    claimsSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    codeChallengeMethodsSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    idTokenEncryptionAlgValuesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    idTokenSigningAlgValuesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    issuer: {
+      type: "string"
+    },
+    jwksUri: {
+      type: "string"
+    },
+    registrationEndPoint: {
+      type: "string"
+    },
+    responseTypesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    scopesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    subjectTypesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    tokenEndpoint: {
+      type: "string"
+    },
+    tokenEndpointAuthMethodsSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    tokenEndpointAuthSigningAlgValuesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    userInfoEncryptionAlgValuesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    },
+    userInfoEndpoint: {
+      type: "string"
+    },
+    userInfoSigningAlgValuesSupported: {
+      type: "array",
+      items: {
+        required: ["chars", "length"],
+        type: "string"
+      }
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const OpenIdConnectUserInfoSchema = {
+  required: ["address", "email", "familyName", "givenName", "locale", "name", "phoneNumber", "picture", "zoneInfo"],
+  type: "object",
+  properties: {
+    address: {
+      $ref: "#/components/schemas/ProfileAddress"
+    },
+    email: {
+      type: "string"
+    },
+    email_verified: {
+      type: "boolean"
+    },
+    family_name: {
+      type: "string"
+    },
+    given_name: {
+      type: "string"
+    },
+    locale: {
+      type: "string"
+    },
+    name: {
+      type: "string"
+    },
+    phone_number: {
+      type: "string"
+    },
+    phone_number_verified: {
+      type: "boolean"
+    },
+    picture: {
+      type: "string"
+    },
+    sub: {
+      type: "string"
+    },
+    zoneinfo: {
       type: "string"
     }
   },
@@ -2327,6 +2848,50 @@ export const PostInsecureTestingOnlyRequestSchema = {
   additionalProperties: false
 } as const;
 
+export const PostTestingOnlyRequestSchema = {
+  required: ["anEnumRouteProperty", "anIntRouteProperty", "aStringRouteProperty"],
+  type: "object",
+  properties: {
+    a_camel_enum: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    a_camel_int: {
+      type: "integer",
+      format: "int32",
+      nullable: true
+    },
+    a_camel_string: {
+      type: "string",
+      nullable: true
+    },
+    anEnumProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anEnumQueryProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anIntProperty: {
+      type: "integer",
+      format: "int32",
+      nullable: true
+    },
+    anIntQueryProperty: {
+      type: "integer",
+      format: "int32",
+      nullable: true
+    },
+    aStringProperty: {
+      type: "string",
+      nullable: true
+    },
+    aStringQueryProperty: {
+      type: "string",
+      nullable: true
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequestSchema = {
   type: "object",
   properties: {
@@ -2343,13 +2908,10 @@ export const PostWithEmptyBodyTestingOnlyRequestSchema = {
   additionalProperties: false
 } as const;
 
-export const PostWithEnumTestingOnlyRequestSchema = {
+export const PostWithRedirectTestingOnlyRequestSchema = {
   type: "object",
   properties: {
-    anEnum: {
-      $ref: "#/components/schemas/TestEnum"
-    },
-    aProperty: {
+    result: {
       type: "string",
       nullable: true
     }
@@ -2592,6 +3154,23 @@ export const RefreshTokenResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const RegenerateOAuth2ClientSecretRequestSchema = {
+  required: ["id"],
+  type: "object",
+  additionalProperties: false
+} as const;
+
+export const RegenerateOAuth2ClientSecretResponseSchema = {
+  required: ["client"],
+  type: "object",
+  properties: {
+    client: {
+      $ref: "#/components/schemas/OAuth2ClientWithSecret"
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const RegisterCarRequestSchema = {
   required: ["jurisdiction", "make", "model", "numberPlate", "year"],
   type: "object",
@@ -2685,6 +3264,10 @@ export const RegisterPersonCredentialRequestSchema = {
     lastName: {
       minLength: 1,
       type: "string"
+    },
+    locale: {
+      type: "string",
+      nullable: true
     },
     password: {
       minLength: 1,
@@ -2876,6 +3459,23 @@ export const SearchAllEventNotificationsResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const SearchAllOAuth2ClientsResponseSchema = {
+  required: ["clients", "metadata"],
+  type: "object",
+  properties: {
+    metadata: {
+      $ref: "#/components/schemas/SearchResultMetadata"
+    },
+    clients: {
+      type: "array",
+      items: {
+        $ref: "#/components/schemas/OAuth2Client"
+      }
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const SearchAllSmsDeliveriesResponseSchema = {
   required: ["metadata", "smses"],
   type: "object",
@@ -2937,11 +3537,51 @@ export const SearchSubscriptionHistoryResponseSchema = {
 } as const;
 
 export const SearchTestingOnlyResponseSchema = {
-  required: ["items", "metadata"],
+  required: ["aCamelStringProperty", "aStringProperty", "aStringQueryProperty", "aStringRouteProperty", "metadata"],
   type: "object",
   properties: {
     metadata: {
       $ref: "#/components/schemas/SearchResultMetadata"
+    },
+    a_camel_enum: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    a_camel_int: {
+      type: "integer",
+      format: "int32"
+    },
+    a_camel_string: {
+      type: "string"
+    },
+    anEnumProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anEnumQueryProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anEnumRouteProperty: {
+      $ref: "#/components/schemas/TestingOnlyEnum"
+    },
+    anIntProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    anIntQueryProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    anIntRouteProperty: {
+      type: "integer",
+      format: "int32"
+    },
+    aStringProperty: {
+      type: "string"
+    },
+    aStringQueryProperty: {
+      type: "string"
+    },
+    aStringRouteProperty: {
+      type: "string"
     },
     items: {
       type: "array",
@@ -3274,11 +3914,6 @@ export const TakeOfflineCarRequestSchema = {
   additionalProperties: false
 } as const;
 
-export const TestEnumSchema = {
-  enum: ["Value1", "Value2", "Value3"],
-  type: "string"
-} as const;
-
 export const TestResourceSchema = {
   required: ["id"],
   type: "object",
@@ -3291,6 +3926,11 @@ export const TestResourceSchema = {
     }
   },
   additionalProperties: false
+} as const;
+
+export const TestingOnlyEnumSchema = {
+  enum: ["Value1", "Value2", "Value3", "Value4"],
+  type: "string"
 } as const;
 
 export const TokenTypeSchema = {
@@ -3419,6 +4059,22 @@ export const UpdateImageResponseSchema = {
   additionalProperties: false
 } as const;
 
+export const UpdateOAuth2ClientRequestSchema = {
+  required: ["id"],
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      nullable: true
+    },
+    redirectUri: {
+      type: "string",
+      nullable: true
+    }
+  },
+  additionalProperties: false
+} as const;
+
 export const UpdateUserResponseSchema = {
   required: ["user"],
   type: "object",
@@ -3458,6 +4114,9 @@ export const UserProfileSchema = {
       type: "string"
     },
     emailAddress: {
+      type: "string"
+    },
+    locale: {
       type: "string"
     },
     name: {
@@ -3512,6 +4171,9 @@ export const UserProfileForCallerSchema = {
       type: "string"
     },
     emailAddress: {
+      type: "string"
+    },
+    locale: {
       type: "string"
     },
     name: {
