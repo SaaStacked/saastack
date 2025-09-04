@@ -86,6 +86,6 @@ export default defineConfig({
     target: 'esnext'
   },
   resolve: {
-    extensions: ['.ts', '.js', '.json']
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
   }
 });

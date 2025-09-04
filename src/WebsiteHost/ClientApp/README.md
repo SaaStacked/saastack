@@ -33,15 +33,6 @@ You can update those at any time by running `npm run update:apis`
 
 For this to work properly you must run both the BEFFE and the BACKEND APIs locally, so that the OpenAPI swagger endpoint is reachable.
 
-## Build Commands
-
-- `npm run build` - Build for production using Vite
-- `npm run build:releasefordeploy` - Build for production deployment
-- `npm run dev` - Start Vite development server with hot reload, then open the browser at `http://localhost:5173`
-- `npm run preview` - Preview production build locally
-- `npm run clean` - Remove generated bundle files and manifest
-- `npm run update:apis` - Update API client code from OpenAPI specifications
-
 ## Testing
 
 We use [Vitest](https://vitest.dev/) for unit testing, which provides a Jest-compatible API with better performance and native TypeScript support.

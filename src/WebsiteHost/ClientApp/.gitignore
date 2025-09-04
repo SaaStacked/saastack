@@ -19,3 +19,7 @@ npm-debug.log*
 
 # tests
 junit.xml
+
+#storybook
+*storybook.log
+storybook-static

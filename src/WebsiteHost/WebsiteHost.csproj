@@ -45,5 +45,8 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+    <ItemGroup>
+        <None Include="ClientApp\.storybook\*.*" />
+    </ItemGroup>
 
 </Project>
