@@ -62,7 +62,7 @@ jobs:
       - name: Package (ApiHost1) for Deploy
         run: dotnet publish --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "src/ApiHost1/ApiHost1.csproj" --output ".\publish\ApiHost1" /p:HostingPlatform=${{env.HOSTED_ON}}
       - name: Package (WebsiteHost) for Deploy
-        run: dotnet publish --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "src/WebsiteHost/WebsiteHost.csproj" --output ".\publish\WebsiteHost" /p:HostingPlatform=${{env.HOSTED_ON}}
+        run: dotnet publish --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "src/WebsiteHost/WebsiteHost.csproj" --output ".\publish\WebsiteHost" /p:HostingPlatform=${{env.HOSTED_ON}} /p:EnvironmentName=Production
       - name: Package (AzureFunctions) for Deploy
         run: dotnet publish --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "src/AzureFunctions.Api.WorkerHost/AzureFunctions.Api.WorkerHost.csproj" --output ".\publish\AzureFunctions.Api.WorkerHost" /p:HostingPlatform=${{env.HOSTED_ON}}
       - name: Upload (ApiHost1) artifacts

@@ -1,6 +1,6 @@
-import { AzureRecorder } from "./recorders/azureRecorder";
-import { AwsRecorder } from "./recorders/awsRecorder";
-import { NoOpRecorder } from "./recorders/noOpRecorder";
+import { AzureRecorder } from './recorders/azureRecorder';
+import { AwsRecorder } from './recorders/awsRecorder';
+import { NoOpRecorder } from './recorders/noOpRecorder';
 
 export interface Recorder {
   crash: (error: Error, message?: string) => void;
@@ -12,10 +12,10 @@ export interface Recorder {
 }
 
 export const enum SeverityLevel {
-  Debug = "Debug",
-  Information = "Information",
-  Warning = "Warning",
-  Error = "Error"
+  Debug = 'Debug',
+  Information = 'Information',
+  Warning = 'Warning',
+  Error = 'Error'
 }
 
 class LazyLoadingRecorder implements Recorder {
@@ -56,12 +56,12 @@ class LazyLoadingRecorder implements Recorder {
       return;
     }
 
-    if (window.isHostedOn === "AZURE") {
+    if (window.isHostedOn === 'AZURE') {
       this.recorder = new AzureRecorder();
       return;
     }
 
-    if (window.isHostedOn === "AWS") {
+    if (window.isHostedOn === 'AWS') {
       this.recorder = new AwsRecorder();
       return;
     }

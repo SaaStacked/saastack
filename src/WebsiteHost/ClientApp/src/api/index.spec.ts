@@ -1,7 +1,8 @@
-import axios from "axios";
-import { client as apiHost1 } from "./apiHost1";
-import { initializeApiClient } from "./index";
-import { client as websiteHost } from "./websiteHost";
+import axios from 'axios';
+import { client as apiHost1 } from './apiHost1';
+import { initializeApiClient } from './index';
+import { client as websiteHost } from './websiteHost';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 interface FulfilledHandler<T> {
   (value: T): T | Promise<T>;
@@ -17,7 +18,7 @@ interface AxiosInterceptorHandleItem<V> {
   synchronous: boolean;
 }
 
-describe("Handle 403 Forbidden", () => {
+describe('Handle 403 Forbidden', () => {
   let handler: AxiosInterceptorHandleItem<any>;
 
   beforeEach(() => {
@@ -26,15 +27,15 @@ describe("Handle 403 Forbidden", () => {
     handler = apiHost1.instance.interceptors.response.handlers[0];
   });
 
-  it("should ignore ordinary request that succeeds", async () =>
-    expect(handler.fulfilled({ data: "adata" })).toStrictEqual({
-      data: "adata"
+  it('should ignore ordinary request that succeeds', async () =>
+    expect(handler.fulfilled({ data: 'adata' })).toStrictEqual({
+      data: 'adata'
     }));
 
-  it("should reject an ordinary request that fails", async () =>
+  it('should reject an ordinary request that fails', async () =>
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 404
       })
@@ -42,13 +43,13 @@ describe("Handle 403 Forbidden", () => {
       response: {}
     }));
 
-  it("should reject a forbidden request that is not CSRF", async () => {
+  it('should reject a forbidden request that is not CSRF', async () => {
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {
           data: {
-            title: "atitle"
+            title: 'atitle'
           }
         },
         status: 403
@@ -59,13 +60,13 @@ describe("Handle 403 Forbidden", () => {
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it("should redirect to login, when a forbidden request that is CSRF", async () => {
+  it('should redirect to login, when a forbidden request that is CSRF', async () => {
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {
           data: {
-            title: "csrf_violation"
+            title: 'csrf_violation'
           }
         },
         status: 403
@@ -73,11 +74,11 @@ describe("Handle 403 Forbidden", () => {
     ).rejects.toMatchObject({
       response: {}
     });
-    expect(window.location.assign).toHaveBeenCalledWith("/login");
+    expect(window.location.assign).toHaveBeenCalledWith('/login');
   });
 });
 
-describe("Handle 401 Unauthorized", () => {
+describe('Handle 401 Unauthorized', () => {
   let handler: AxiosInterceptorHandleItem<any>;
 
   beforeEach(() => {
@@ -86,15 +87,15 @@ describe("Handle 401 Unauthorized", () => {
     handler = apiHost1.instance.interceptors.response.handlers[0];
   });
 
-  it("should ignore ordinary request that succeeds", async () =>
-    expect(handler.fulfilled({ data: "adata" })).toStrictEqual({
-      data: "adata"
+  it('should ignore ordinary request that succeeds', async () =>
+    expect(handler.fulfilled({ data: 'adata' })).toStrictEqual({
+      data: 'adata'
     }));
 
-  it("should reject an ordinary request that fails", async () =>
+  it('should reject an ordinary request that fails', async () =>
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 404
       })
@@ -102,10 +103,10 @@ describe("Handle 401 Unauthorized", () => {
       response: {}
     }));
 
-  it("should reject an ignored request URL", async () =>
+  it('should reject an ignored request URL', async () =>
     await expect(
       handler.rejected({
-        config: { url: "/api/auth/refresh" },
+        config: { url: '/api/auth/refresh' },
         response: {},
         status: 404
       })
@@ -113,90 +114,90 @@ describe("Handle 401 Unauthorized", () => {
       response: {}
     }));
 
-  it("should call refreshToken() and retry original API, when unauthorized request", async () => {
+  it('should call refreshToken() and retry original API, when unauthorized request', async () => {
+    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 200, isAxiosError: false });
+
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 401
       })
     ).resolves.toMatchObject({
-      config: { url: "aurl" },
-      data: {},
       status: 200
     });
-    expect(websiteHost.post).toHaveBeenCalledWith({ url: "/api/auth/refresh" });
-    expect(axios.request).toHaveBeenCalledWith({ url: "aurl" });
+    expect(websiteHost.post).toHaveBeenCalledWith({ url: '/api/auth/refresh' });
+    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it("should redirect to login, when refreshToken() fails with 423 error", async () => {
-    jest
-      .mocked(websiteHost.post)
-      .mockImplementationOnce((config) => Promise.resolve({ config, status: 423, isAxiosError: true } as any));
+  it('should redirect to login, when refreshToken() fails with 423 error', async () => {
+    vi.mocked(websiteHost.post).mockImplementationOnce((config) =>
+      Promise.resolve({ config, status: 423, isAxiosError: true } as any)
+    );
 
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 401
       })
     ).rejects.toMatchObject({
-      config: { url: "/api/auth/refresh" },
+      config: { url: '/api/auth/refresh' },
       status: 423,
       isAxiosError: true
     });
-    expect(window.location.assign).toHaveBeenCalledWith("/login");
+    expect(window.location.assign).toHaveBeenCalledWith('/login');
   });
 
-  it("should reject with other error, when refreshToken() fails with other error", async () => {
-    jest
-      .mocked(websiteHost.post)
-      .mockImplementationOnce((config) => Promise.resolve({ config, status: 400, isAxiosError: true } as any));
+  it('should reject with other error, when refreshToken() fails with other error', async () => {
+    vi.mocked(websiteHost.post).mockImplementationOnce((config) =>
+      Promise.resolve({ config, status: 400, isAxiosError: true } as any)
+    );
 
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 401
       })
     ).rejects.toMatchObject({
-      config: { url: "/api/auth/refresh" },
+      config: { url: '/api/auth/refresh' },
       status: 400,
       isAxiosError: true
     });
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it("should redirect to login, when retried original API fails with unauthorized", async () => {
-    (axios as jest.Mocked<typeof axios>).request.mockResolvedValue({ response: {}, status: 401, isAxiosError: true });
+  it('should redirect to login, when retried original API fails with unauthorized', async () => {
+    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 401, isAxiosError: true });
 
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 401
       })
     ).rejects.toMatchObject({
       response: {}
     });
-    expect(axios.request).toHaveBeenCalledWith({ url: "aurl" });
-    expect(window.location.assign).toHaveBeenCalledWith("/login");
+    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
+    expect(window.location.assign).toHaveBeenCalledWith('/login');
   });
 
-  it("should redirect to login, when retried original API fails with other error", async () => {
-    (axios as jest.Mocked<typeof axios>).request.mockResolvedValue({ response: {}, status: 400, isAxiosError: true });
+  it('should redirect to login, when retried original API fails with other error', async () => {
+    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 400, isAxiosError: true });
 
     await expect(
       handler.rejected({
-        config: { url: "aurl" },
+        config: { url: 'aurl' },
         response: {},
         status: 401
       })
     ).rejects.toMatchObject({
       response: {}
     });
-    expect(axios.request).toHaveBeenCalledWith({ url: "aurl" });
+    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 });

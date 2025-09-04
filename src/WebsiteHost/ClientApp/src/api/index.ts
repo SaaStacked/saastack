@@ -1,34 +1,34 @@
-import axios, { AxiosError, HttpStatusCode } from "axios";
-import { client as apiHost1 } from "./apiHost1/services.gen";
-import { client as websiteHost, refreshToken } from "./websiteHost/services.gen";
-import { recorder } from "../recorder";
-import { ProblemDetails } from "./websiteHost";
-import { UsageConstants } from "../UsageConstants";
+import axios, { AxiosError, HttpStatusCode } from 'axios';
+import { client as apiHost1 } from './apiHost1/services.gen';
+import { client as websiteHost, refreshToken } from './websiteHost/services.gen';
+import { recorder } from '../recorder';
+import { ProblemDetails } from './websiteHost';
+import { UsageConstants } from '../UsageConstants';
 
-const unRetryableRequestUrls: string[] = ["/api/auth/refresh", "/api/auth"];
-const loginPath = "/login";
+const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
+const loginPath = '/login';
 
 // This function sets up the appropriate request headers and handlers,
 // as detailed in docs/design-principles/0110-back-end-for-front-end.md
 function initializeApiClient() {
-  const csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute("content");
+  const csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute('content');
   apiHost1.setConfig({
-    baseURL: `${process.env.WEBSITEHOSTBASEURL}/api`,
+    baseURL: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}/api`,
     headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      "anti-csrf-tok": csrfToken
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'anti-csrf-tok': csrfToken
     },
     paramsSerializer: {
       indexes: null // To prevent axios from encoding array indexes in the query string
     }
   });
   websiteHost.setConfig({
-    baseURL: `${process.env.WEBSITEHOSTBASEURL}`,
+    baseURL: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}`,
     headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      "anti-csrf-tok": csrfToken
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'anti-csrf-tok': csrfToken
     },
     paramsSerializer: {
       indexes: null // To prevent axios from encoding array indexes in the query string
@@ -49,7 +49,7 @@ async function handleUnauthorizedResponse(error: AxiosError) {
   if (
     error.status === HttpStatusCode.Forbidden &&
     problem != undefined &&
-    problem.response?.data.title === "csrf_violation"
+    problem.response?.data.title === 'csrf_violation'
   ) {
     forceLogin();
     return Promise.reject(error);

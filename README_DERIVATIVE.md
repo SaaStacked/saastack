@@ -149,11 +149,14 @@ In the `Infrastructure.External.IntegrationTests` project, create a new file cal
 
 ## Build the Website
 
-* `cd src/WebsiteHost/ClientApp`
-* `npm install`
-* `npm run build`
+1. Copy `.env` to `.env.local`
+    > Note: Do not add this file to source control
+2. Run the following commands in a terminal:
+   * `cd src/WebsiteHost/ClientApp`
+   * `npm install`
+   * `npm run build`
 
-> Note: As a result of this build step you should see new bundle file (e.g. `0123456789abcdef.bundle.js`) appear in the `wwwroot` folder. This file should never be added to source control.
+> Note: As a result of these build steps you should see new bundle file (e.g. `0123456789abcdef.bundle.js` and `0123456789abcdef.bundle.css`) appear in the `wwwroot` folder. These files should never be added to source control.
 
 # Build & Deploy
 

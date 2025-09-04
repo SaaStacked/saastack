@@ -1,17 +1,17 @@
-import { ApplicationInsights, SeverityLevel as AISeverityLevel } from "@microsoft/applicationinsights-web";
-import { SeverityLevel } from "../recorder";
-import { BrowserRecorder } from "./browserRecorder";
+import { ApplicationInsights, SeverityLevel as AISeverityLevel } from '@microsoft/applicationinsights-web';
+import { SeverityLevel } from '../recorder';
+import { BrowserRecorder } from './browserRecorder';
 
-const appInsightsKey = process.env.APPLICATIONINSIGHTS_CONNECTIONSTRING;
-const applicationInsightsEnabled = process.env.NODE_ENV === "production";
+const appInsightsKey = import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTIONSTRING;
+const applicationInsightsEnabled = import.meta.env.MODE === 'production';
 
 if (applicationInsightsEnabled && !appInsightsKey) {
-  console.warn("SaaStack: Application Insights instrumentation key is missing from the environment variable file.");
+  console.error('SaaStack: Application Insights instrumentation key is not configured for production');
 }
 
 const appInsights = new ApplicationInsights({
   config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTIONSTRING
+    connectionString: import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTIONSTRING
   }
 });
 

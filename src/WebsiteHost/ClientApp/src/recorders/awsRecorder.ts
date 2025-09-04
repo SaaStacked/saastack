@@ -1,5 +1,5 @@
-import { SeverityLevel } from "../recorder";
-import { BrowserRecorder } from "./browserRecorder";
+import { SeverityLevel } from '../recorder';
+import { BrowserRecorder } from './browserRecorder';
 
 export class AwsRecorder extends BrowserRecorder {
   crash(error: Error, message?: string): void {

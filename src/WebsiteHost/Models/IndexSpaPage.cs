@@ -8,7 +8,11 @@ public class IndexSpaPage
 
     public required string IsHostedOn { get; set; }
 
+    public required bool IsJsAppBundled { get; set; }
+
     public bool IsTestingOnly { get; set; }
 
-    public required string JsBundleName { get; set; }
+    public required string JsAppCssPath { get; set; }
+
+    public required string JsAppJsPath { get; set; }
 }

@@ -3,36 +3,35 @@
   "version": "1.0.0",
   "description": "A BEFFE website host",
   "scripts": {
-    "build": "webpack --mode=development",
-    "build:releasefordeploy": "webpack --mode=production --node-env=production",
-    "test": "jest",
-    "test:ci": "jest --ci --collectCoverage --testTimeout=20000",
+    "build": "vite build --mode development",
+    "build:releasefordeploy": "vite build --mode production",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test": "vitest --config vitest.config.ts",
+    "test:ci": "vitest --config vitest.config.ts --coverage",
     "update:apis": "ts-node tools/update-apis.mjs"
   },
   "author": "jezzsantos",
   "license": "https://github.com/jezzsantos/saastack/blob/main/LICENSE",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-typescript": "^7.26.0",
     "@hey-api/openapi-ts": "^0.53.7",
-    "@types/jest": "^29.5.14",
-    "@types/node": "^18.19.54",
-    "assets-webpack-plugin": "^7.1.1",
-    "babel-jest": "^29.7.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "jest-junit": "^16.0.0",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "dotenv": "^16.4.7",
+    "jsdom": "^26.1.0",
     "prettier": "^3.3.3",
-    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
-    "webpack-cli": "^5.1.4"
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@hey-api/client-axios": "^0.2.7",
     "@microsoft/applicationinsights-web": "^3.3.4",
     "axios": "^1.7.7",
-    "dotenv-webpack": "^8.1.0"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   }
 }
