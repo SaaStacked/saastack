@@ -168,11 +168,11 @@ namespace WebsiteHost {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Webpack output file &apos;{0}&apos; was not found in the project. Please run `npm build` to produce this output file from WebPack.
+        ///   Looks up a localized string similar to Vite output file &apos;{0}&apos; was not found in the project. Please run `npm run build` to produce this output file from Vite.
         /// </summary>
-        internal static string WebPackBundler_InvalidBundle {
+        internal static string ViteBundler_InvalidBundle {
             get {
-                return ResourceManager.GetString("WebPackBundler_InvalidBundle", resourceCulture);
+                return ResourceManager.GetString("ViteBundler_InvalidBundle", resourceCulture);
             }
         }
     }

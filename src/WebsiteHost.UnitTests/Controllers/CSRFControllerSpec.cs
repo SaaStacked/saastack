@@ -7,7 +7,6 @@ using Infrastructure.Web.Hosting.Common.Pipeline;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Moq;
 using WebsiteHost.ApplicationServices;
 using WebsiteHost.Controllers;
@@ -25,14 +24,16 @@ public class CSRFControllerSpec
 
     public CSRFControllerSpec()
     {
-        var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.Setup(x => x.ContentRootPath)
-            .Returns("apath");
         _csrfService = new Mock<CSRFMiddleware.ICSRFService>();
-        var webPackBundler = new Mock<IWebPackBundler>();
-        webPackBundler.Setup(x => x.GetBundleName("apath"))
-            .Returns("abundle");
-        _controller = new TestController(hostEnvironment.Object, _csrfService.Object, webPackBundler.Object);
+        var jsAppBundler = new Mock<IJsAppBundler>();
+        jsAppBundler.Setup(x => x.GetBundleOptions())
+            .Returns(new JsAppBundleOptions
+            {
+                JsPath = "ajspath",
+                CssPath = "acsspath",
+                IsBundled = true
+            });
+        _controller = new TestController(_csrfService.Object, jsAppBundler.Object);
         _cookies = new Mock<IRequestCookieCollection>();
         _controller.ControllerContext.HttpContext = new DefaultHttpContext
         {
@@ -62,7 +63,6 @@ public class CSRFControllerSpec
         model.IsHostedOn.Should().Be("AWS");
 #endif
         model.IsTestingOnly.Should().BeTrue();
-        model.JsBundleName.Should().Be("abundle");
         _csrfService.Verify(x => x.CreateTokens(Optional<string>.None));
     }
 
@@ -113,9 +113,8 @@ public class CSRFControllerSpec
 
 public class TestController : CSRFController
 {
-    public TestController(IHostEnvironment hostEnvironment, CSRFMiddleware.ICSRFService csrfService,
-        IWebPackBundler webPackBundler) : base(
-        hostEnvironment, csrfService, webPackBundler)
+    public TestController(CSRFMiddleware.ICSRFService csrfService,
+        IJsAppBundler jsAppBundler) : base(csrfService, jsAppBundler)
     {
     }
 

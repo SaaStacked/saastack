@@ -6,7 +6,7 @@ import {
   formDataBodySerializer,
   type Options,
   urlSearchParamsBodySerializer
-} from "@hey-api/client-axios";
+} from '@hey-api/client-axios';
 import type {
   AssignPlatformRolesData,
   AssignPlatformRolesError,
@@ -523,7 +523,7 @@ import type {
   VerifyPasswordResetData,
   VerifyPasswordResetError,
   VerifyPasswordResetResponse
-} from "./types.gen";
+} from './types.gen';
 
 export const client = createClient(createConfig());
 
@@ -534,7 +534,7 @@ export const client = createClient(createConfig());
 export const createApiKey = <ThrowOnError extends boolean = false>(options?: Options<CreateApiKeyData, ThrowOnError>) =>
   (options?.client ?? client).post<CreateApiKeyResponse, CreateApiKeyError, ThrowOnError>({
     ...options,
-    url: "/apikeys"
+    url: '/apikeys'
   });
 
 /**
@@ -546,7 +546,7 @@ export const searchAllApiKeysForCaller = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchAllApiKeysForCallerResponse, SearchAllApiKeysForCallerError, ThrowOnError>({
     ...options,
-    url: "/apikeys"
+    url: '/apikeys'
   });
 
 /**
@@ -556,7 +556,7 @@ export const searchAllApiKeysForCaller = <ThrowOnError extends boolean = false>(
 export const deleteApiKey = <ThrowOnError extends boolean = false>(options: Options<DeleteApiKeyData, ThrowOnError>) =>
   (options?.client ?? client).delete<DeleteApiKeyResponse, DeleteApiKeyError, ThrowOnError>({
     ...options,
-    url: "/apikeys/{Id}"
+    url: '/apikeys/{Id}'
   });
 
 /**
@@ -566,7 +566,7 @@ export const deleteApiKey = <ThrowOnError extends boolean = false>(options: Opti
 export const revokeApiKey = <ThrowOnError extends boolean = false>(options: Options<RevokeApiKeyData, ThrowOnError>) =>
   (options?.client ?? client).delete<RevokeApiKeyResponse, RevokeApiKeyError, ThrowOnError>({
     ...options,
-    url: "/apikeys/{Id}/revoke"
+    url: '/apikeys/{Id}/revoke'
   });
 
 /**
@@ -576,27 +576,31 @@ export const revokeApiKey = <ThrowOnError extends boolean = false>(options: Opti
 export const deliverAudit = <ThrowOnError extends boolean = false>(options?: Options<DeliverAuditData, ThrowOnError>) =>
   (options?.client ?? client).post<DeliverAuditResponse, DeliverAuditError, ThrowOnError>({
     ...options,
-    url: "/audits/deliver"
+    url: '/audits/deliver'
   });
 
 /**
  * Drains all the pending audit messages
  * (request type: DrainAllAuditsRequest)
  */
-export const drainAllAudits = <ThrowOnError extends boolean = false>(options?: Options<DrainAllAuditsData, ThrowOnError>) =>
+export const drainAllAudits = <ThrowOnError extends boolean = false>(
+  options?: Options<DrainAllAuditsData, ThrowOnError>
+) =>
   (options?.client ?? client).post<DrainAllAuditsResponse, DrainAllAuditsError, ThrowOnError>({
     ...options,
-    url: "/audits/drain"
+    url: '/audits/drain'
   });
 
 /**
  * Lists all audits since the specified date, for the specified organization
  * (request type: SearchAllAuditsRequest)
  */
-export const searchAllAudits = <ThrowOnError extends boolean = false>(options?: Options<SearchAllAuditsData, ThrowOnError>) =>
+export const searchAllAudits = <ThrowOnError extends boolean = false>(
+  options?: Options<SearchAllAuditsData, ThrowOnError>
+) =>
   (options?.client ?? client).get<SearchAllAuditsResponse2, SearchAllAuditsError, ThrowOnError>({
     ...options,
-    url: "/audits"
+    url: '/audits'
   });
 
 /**
@@ -606,7 +610,7 @@ export const searchAllAudits = <ThrowOnError extends boolean = false>(options?: 
 export const refreshToken = <ThrowOnError extends boolean = false>(options?: Options<RefreshTokenData, ThrowOnError>) =>
   (options?.client ?? client).post<RefreshTokenResponse2, RefreshTokenError, ThrowOnError>({
     ...options,
-    url: "/tokens/refresh"
+    url: '/tokens/refresh'
   });
 
 /**
@@ -618,7 +622,7 @@ export const revokeRefreshToken = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<RevokeRefreshTokenResponse, RevokeRefreshTokenError, ThrowOnError>({
     ...options,
-    url: "/tokens/{RefreshToken}"
+    url: '/tokens/{RefreshToken}'
   });
 
 /**
@@ -634,7 +638,7 @@ export const exportSubscriptionsToMigrate = <ThrowOnError extends boolean = fals
     ThrowOnError
   >({
     ...options,
-    url: "/subscriptions/export"
+    url: '/subscriptions/export'
   });
 
 /**
@@ -646,7 +650,7 @@ export const migrateSubscriptionPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<MigrateSubscriptionPutResponse, MigrateSubscriptionPutError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/migrate"
+    url: '/subscriptions/{Id}/migrate'
   });
 
 /**
@@ -658,17 +662,19 @@ export const migrateSubscriptionPatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<MigrateSubscriptionPatchResponse, MigrateSubscriptionPatchError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/migrate"
+    url: '/subscriptions/{Id}/migrate'
   });
 
 /**
  * Cancels a booking
  * (request type: CancelBookingRequest)
  */
-export const cancelBooking = <ThrowOnError extends boolean = false>(options: Options<CancelBookingData, ThrowOnError>) =>
+export const cancelBooking = <ThrowOnError extends boolean = false>(
+  options: Options<CancelBookingData, ThrowOnError>
+) =>
   (options?.client ?? client).delete<CancelBookingResponse, CancelBookingError, ThrowOnError>({
     ...options,
-    url: "/bookings/{Id}"
+    url: '/bookings/{Id}'
   });
 
 /**
@@ -678,7 +684,7 @@ export const cancelBooking = <ThrowOnError extends boolean = false>(options: Opt
 export const makeBooking = <ThrowOnError extends boolean = false>(options?: Options<MakeBookingData, ThrowOnError>) =>
   (options?.client ?? client).post<MakeBookingResponse2, MakeBookingError, ThrowOnError>({
     ...options,
-    url: "/bookings"
+    url: '/bookings'
   });
 
 /**
@@ -690,7 +696,7 @@ export const searchAllBookings = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchAllBookingsResponse2, SearchAllBookingsError, ThrowOnError>({
     ...options,
-    url: "/bookings"
+    url: '/bookings'
   });
 
 /**
@@ -700,7 +706,7 @@ export const searchAllBookings = <ThrowOnError extends boolean = false>(
 export const deleteCar = <ThrowOnError extends boolean = false>(options: Options<DeleteCarData, ThrowOnError>) =>
   (options?.client ?? client).delete<DeleteCarResponse, DeleteCarError, ThrowOnError>({
     ...options,
-    url: "/cars/{Id}"
+    url: '/cars/{Id}'
   });
 
 /**
@@ -710,7 +716,7 @@ export const deleteCar = <ThrowOnError extends boolean = false>(options: Options
 export const getCar = <ThrowOnError extends boolean = false>(options: Options<GetCarData, ThrowOnError>) =>
   (options?.client ?? client).get<GetCarResponse2, GetCarError, ThrowOnError>({
     ...options,
-    url: "/cars/{Id}"
+    url: '/cars/{Id}'
   });
 
 /**
@@ -720,17 +726,19 @@ export const getCar = <ThrowOnError extends boolean = false>(options: Options<Ge
 export const registerCar = <ThrowOnError extends boolean = false>(options?: Options<RegisterCarData, ThrowOnError>) =>
   (options?.client ?? client).post<RegisterCarResponse, RegisterCarError, ThrowOnError>({
     ...options,
-    url: "/cars"
+    url: '/cars'
   });
 
 /**
  * Lists all the cars
  * (request type: SearchAllCarsRequest)
  */
-export const searchAllCars = <ThrowOnError extends boolean = false>(options?: Options<SearchAllCarsData, ThrowOnError>) =>
+export const searchAllCars = <ThrowOnError extends boolean = false>(
+  options?: Options<SearchAllCarsData, ThrowOnError>
+) =>
   (options?.client ?? client).get<SearchAllCarsResponse2, SearchAllCarsError, ThrowOnError>({
     ...options,
-    url: "/cars"
+    url: '/cars'
   });
 
 /**
@@ -742,7 +750,7 @@ export const scheduleMaintenanceCarPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<ScheduleMaintenanceCarPutResponse, ScheduleMaintenanceCarPutError, ThrowOnError>({
     ...options,
-    url: "/cars/{Id}/maintain"
+    url: '/cars/{Id}/maintain'
   });
 
 /**
@@ -758,7 +766,7 @@ export const scheduleMaintenanceCarPatch = <ThrowOnError extends boolean = false
     ThrowOnError
   >({
     ...options,
-    url: "/cars/{Id}/maintain"
+    url: '/cars/{Id}/maintain'
   });
 
 /**
@@ -770,7 +778,7 @@ export const searchAllAvailableCars = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchAllAvailableCarsResponse, SearchAllAvailableCarsError, ThrowOnError>({
     ...options,
-    url: "/cars/available"
+    url: '/cars/available'
   });
 
 /**
@@ -786,7 +794,7 @@ export const searchAllCarUnavailabilities = <ThrowOnError extends boolean = fals
     ThrowOnError
   >({
     ...options,
-    url: "/cars/{Id}/unavailabilities"
+    url: '/cars/{Id}/unavailabilities'
   });
 
 /**
@@ -798,7 +806,7 @@ export const takeOfflineCarPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<TakeOfflineCarPutResponse, TakeOfflineCarPutError, ThrowOnError>({
     ...options,
-    url: "/cars/{Id}/offline"
+    url: '/cars/{Id}/offline'
   });
 
 /**
@@ -810,7 +818,7 @@ export const takeOfflineCarPatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<TakeOfflineCarPatchResponse, TakeOfflineCarPatchError, ThrowOnError>({
     ...options,
-    url: "/cars/{Id}/offline"
+    url: '/cars/{Id}/offline'
   });
 
 /**
@@ -823,7 +831,7 @@ export const chargebeeNotifyWebhookEvent = <ThrowOnError extends boolean = false
   (options?.client ?? client).post<ChargebeeNotifyWebhookEventResponse, ChargebeeNotifyWebhookEventError, ThrowOnError>(
     {
       ...options,
-      url: "/webhooks/chargebee"
+      url: '/webhooks/chargebee'
     }
   );
 
@@ -832,134 +840,136 @@ export const chargebeeNotifyWebhookEvent = <ThrowOnError extends boolean = false
  * (request type: ConsentOAuth2ClientForCallerRequest)
  */
 export const consentOauth2ClientForCaller = <ThrowOnError extends boolean = false>(
-    options: Options<ConsentOauth2ClientForCallerData, ThrowOnError>
+  options: Options<ConsentOauth2ClientForCallerData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<
-        ConsentOauth2ClientForCallerResponse,
-        ConsentOauth2ClientForCallerError,
-        ThrowOnError
-    >({
-        ...options,
-        url: "/oauth2/clients/{Id}/consent"
-    });
+  (options?.client ?? client).post<
+    ConsentOauth2ClientForCallerResponse,
+    ConsentOauth2ClientForCallerError,
+    ThrowOnError
+  >({
+    ...options,
+    url: '/oauth2/clients/{Id}/consent'
+  });
 
 /**
  * Gets the user's consent status for an OAuth2/Open ID Connect client
  * (request type: GetOAuth2ClientConsentForCallerRequest)
  */
 export const getOauth2ClientConsentForCaller = <ThrowOnError extends boolean = false>(
-    options: Options<GetOauth2ClientConsentForCallerData, ThrowOnError>
+  options: Options<GetOauth2ClientConsentForCallerData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<
-        GetOauth2ClientConsentForCallerResponse,
-        GetOauth2ClientConsentForCallerError,
-        ThrowOnError
-    >({
-        ...options,
-        url: "/oauth2/clients/{Id}/consent"
-    });
+  (options?.client ?? client).get<
+    GetOauth2ClientConsentForCallerResponse,
+    GetOauth2ClientConsentForCallerError,
+    ThrowOnError
+  >({
+    ...options,
+    url: '/oauth2/clients/{Id}/consent'
+  });
 
 /**
  * Creates a new OAuth2/Open ID Connect client application
  * (request type: CreateOAuth2ClientRequest)
  */
 export const createOauth2Client = <ThrowOnError extends boolean = false>(
-    options?: Options<CreateOauth2ClientData, ThrowOnError>
+  options?: Options<CreateOauth2ClientData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<CreateOauth2ClientResponse, CreateOauth2ClientError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients"
-    });
+  (options?.client ?? client).post<CreateOauth2ClientResponse, CreateOauth2ClientError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients'
+  });
 
 /**
  * Lists all OAuth2/Open ID Connect clients
  * (request type: SearchAllOAuth2ClientsRequest)
  */
 export const searchAllOauth2Clients = <ThrowOnError extends boolean = false>(
-    options?: Options<SearchAllOauth2ClientsData, ThrowOnError>
+  options?: Options<SearchAllOauth2ClientsData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<SearchAllOauth2ClientsResponse, SearchAllOauth2ClientsError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients"
-    });
+  (options?.client ?? client).get<SearchAllOauth2ClientsResponse, SearchAllOauth2ClientsError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients'
+  });
 
 /**
  * Deletes an OAuth2/Open ID Connect client
  * (request type: DeleteOAuth2ClientRequest)
  */
 export const deleteOauth2Client = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteOauth2ClientData, ThrowOnError>
+  options: Options<DeleteOauth2ClientData, ThrowOnError>
 ) =>
-    (options?.client ?? client).delete<DeleteOauth2ClientResponse, DeleteOauth2ClientError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients/{Id}"
-    });
+  (options?.client ?? client).delete<DeleteOauth2ClientResponse, DeleteOauth2ClientError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients/{Id}'
+  });
 
 /**
  * Fetches an OAuth2/Open ID Connect client
  * (request type: GetOAuth2ClientRequest)
  */
-export const getOauth2Client = <ThrowOnError extends boolean = false>(options: Options<GetOauth2ClientData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetOauth2ClientResponse, GetOauth2ClientError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients/{Id}"
-    });
+export const getOauth2Client = <ThrowOnError extends boolean = false>(
+  options: Options<GetOauth2ClientData, ThrowOnError>
+) =>
+  (options?.client ?? client).get<GetOauth2ClientResponse, GetOauth2ClientError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients/{Id}'
+  });
 
 /**
  * Updates an existing OAuth2/Open ID Connect client
  * (request type: UpdateOAuth2ClientRequest)
  */
 export const updateOauth2ClientPut = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateOauth2ClientPutData, ThrowOnError>
+  options: Options<UpdateOauth2ClientPutData, ThrowOnError>
 ) =>
-    (options?.client ?? client).put<UpdateOauth2ClientPutResponse, UpdateOauth2ClientPutError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients/{Id}"
-    });
+  (options?.client ?? client).put<UpdateOauth2ClientPutResponse, UpdateOauth2ClientPutError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients/{Id}'
+  });
 
 /**
  * Updates an existing OAuth2/Open ID Connect client
  * (request type: UpdateOAuth2ClientRequest)
  */
 export const updateOauth2ClientPatch = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateOauth2ClientPatchData, ThrowOnError>
+  options: Options<UpdateOauth2ClientPatchData, ThrowOnError>
 ) =>
-    (options?.client ?? client).patch<UpdateOauth2ClientPatchResponse, UpdateOauth2ClientPatchError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/clients/{Id}"
-    });
+  (options?.client ?? client).patch<UpdateOauth2ClientPatchResponse, UpdateOauth2ClientPatchError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/clients/{Id}'
+  });
 
 /**
  * Regenerates the client secret for an OAuth2/Open ID Connect client
  * (request type: RegenerateOAuth2ClientSecretRequest)
  */
 export const regenerateOauth2ClientSecret = <ThrowOnError extends boolean = false>(
-    options: Options<RegenerateOauth2ClientSecretData, ThrowOnError>
+  options: Options<RegenerateOauth2ClientSecretData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<
-        RegenerateOauth2ClientSecretResponse,
-        RegenerateOauth2ClientSecretError,
-        ThrowOnError
-    >({
-        ...options,
-        url: "/oauth2/clients/{Id}/secret"
-    });
+  (options?.client ?? client).post<
+    RegenerateOauth2ClientSecretResponse,
+    RegenerateOauth2ClientSecretError,
+    ThrowOnError
+  >({
+    ...options,
+    url: '/oauth2/clients/{Id}/secret'
+  });
 
 /**
  * Revokes the user's consent for an OAuth2/Open ID Connect client
  * (request type: RevokeOAuth2ClientConsentForCallerRequest)
  */
 export const revokeOauth2ClientConsentForCaller = <ThrowOnError extends boolean = false>(
-    options: Options<RevokeOauth2ClientConsentForCallerData, ThrowOnError>
+  options: Options<RevokeOauth2ClientConsentForCallerData, ThrowOnError>
 ) =>
-    (options?.client ?? client).delete<
-        RevokeOauth2ClientConsentForCallerResponse,
-        RevokeOauth2ClientConsentForCallerError,
-        ThrowOnError
-    >({
-        ...options,
-        url: "/oauth2/clients/{Id}/consent/revoke"
-    });
+  (options?.client ?? client).delete<
+    RevokeOauth2ClientConsentForCallerResponse,
+    RevokeOauth2ClientConsentForCallerError,
+    ThrowOnError
+  >({
+    ...options,
+    url: '/oauth2/clients/{Id}/consent/revoke'
+  });
 
 /**
  * Authenticates a user with a username and password
@@ -970,7 +980,7 @@ export const authenticateCredential = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<AuthenticateCredentialResponse, AuthenticateCredentialError, ThrowOnError>({
     ...options,
-    url: "/credentials/auth"
+    url: '/credentials/auth'
   });
 
 /**
@@ -982,7 +992,7 @@ export const completeCredentialReset = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<CompleteCredentialResetResponse, CompleteCredentialResetError, ThrowOnError>({
     ...options,
-    url: "/credentials/{Token}/reset/complete"
+    url: '/credentials/{Token}/reset/complete'
   });
 
 /**
@@ -998,7 +1008,7 @@ export const confirmRegistrationPersonCredential = <ThrowOnError extends boolean
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/confirm-registration"
+    url: '/credentials/confirm-registration'
   });
 
 /**
@@ -1014,7 +1024,7 @@ export const getRegistrationPersonConfirmation = <ThrowOnError extends boolean =
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/confirm-registration"
+    url: '/credentials/confirm-registration'
   });
 
 /**
@@ -1026,7 +1036,7 @@ export const registerPersonCredential = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<RegisterPersonCredentialResponse2, RegisterPersonCredentialError, ThrowOnError>({
     ...options,
-    url: "/credentials/register"
+    url: '/credentials/register'
   });
 
 /**
@@ -1038,7 +1048,7 @@ export const initiatePasswordReset = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<InitiatePasswordResetResponse, InitiatePasswordResetError, ThrowOnError>({
     ...options,
-    url: "/credentials/reset"
+    url: '/credentials/reset'
   });
 
 /**
@@ -1050,7 +1060,7 @@ export const resendPasswordReset = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<ResendPasswordResetResponse, ResendPasswordResetError, ThrowOnError>({
     ...options,
-    url: "/credentials/{Token}/reset/resend"
+    url: '/credentials/{Token}/reset/resend'
   });
 
 /**
@@ -1062,7 +1072,7 @@ export const verifyPasswordReset = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<VerifyPasswordResetResponse, VerifyPasswordResetError, ThrowOnError>({
     ...options,
-    url: "/credentials/{Token}/reset/verify"
+    url: '/credentials/{Token}/reset/verify'
   });
 
 /**
@@ -1074,7 +1084,7 @@ export const drainAllEventNotifications = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).post<DrainAllEventNotificationsResponse, DrainAllEventNotificationsError, ThrowOnError>({
     ...options,
-    url: "/event_notifications/drain"
+    url: '/event_notifications/drain'
   });
 
 /**
@@ -1086,7 +1096,7 @@ export const notifyDomainEvent = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<NotifyDomainEventResponse, NotifyDomainEventError, ThrowOnError>({
     ...options,
-    url: "/event_notifications"
+    url: '/event_notifications'
   });
 
 /**
@@ -1099,7 +1109,7 @@ export const searchAllEventNotifications = <ThrowOnError extends boolean = false
   (options?.client ?? client).get<SearchAllEventNotificationsResponse2, SearchAllEventNotificationsError, ThrowOnError>(
     {
       ...options,
-      url: "/event_notifications"
+      url: '/event_notifications'
     }
   );
 
@@ -1112,7 +1122,7 @@ export const confirmEmailDelivered = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<ConfirmEmailDeliveredResponse, ConfirmEmailDeliveredError, ThrowOnError>({
     ...options,
-    url: "/emails/delivered"
+    url: '/emails/delivered'
   });
 
 /**
@@ -1124,17 +1134,19 @@ export const confirmEmailDeliveryFailed = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).post<ConfirmEmailDeliveryFailedResponse, ConfirmEmailDeliveryFailedError, ThrowOnError>({
     ...options,
-    url: "/emails/failed"
+    url: '/emails/failed'
   });
 
 /**
  * Drains all the pending email messages
  * (request type: DrainAllEmailsRequest)
  */
-export const drainAllEmails = <ThrowOnError extends boolean = false>(options?: Options<DrainAllEmailsData, ThrowOnError>) =>
+export const drainAllEmails = <ThrowOnError extends boolean = false>(
+  options?: Options<DrainAllEmailsData, ThrowOnError>
+) =>
   (options?.client ?? client).post<DrainAllEmailsResponse, DrainAllEmailsError, ThrowOnError>({
     ...options,
-    url: "/emails/drain"
+    url: '/emails/drain'
   });
 
 /**
@@ -1146,7 +1158,7 @@ export const searchAllEmailDeliveries = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchAllEmailDeliveriesResponse2, SearchAllEmailDeliveriesError, ThrowOnError>({
     ...options,
-    url: "/emails"
+    url: '/emails'
   });
 
 /**
@@ -1156,7 +1168,7 @@ export const searchAllEmailDeliveries = <ThrowOnError extends boolean = false>(
 export const sendEmail = <ThrowOnError extends boolean = false>(options?: Options<SendEmailData, ThrowOnError>) =>
   (options?.client ?? client).post<SendEmailResponse, SendEmailError, ThrowOnError>({
     ...options,
-    url: "/emails/send"
+    url: '/emails/send'
   });
 
 /**
@@ -1168,7 +1180,7 @@ export const assignPlatformRoles = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<AssignPlatformRolesResponse, AssignPlatformRolesError, ThrowOnError>({
     ...options,
-    url: "/users/{Id}/roles"
+    url: '/users/{Id}/roles'
   });
 
 /**
@@ -1180,7 +1192,7 @@ export const unassignPlatformRolesPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<UnassignPlatformRolesPutResponse, UnassignPlatformRolesPutError, ThrowOnError>({
     ...options,
-    url: "/users/{Id}/roles"
+    url: '/users/{Id}/roles'
   });
 
 /**
@@ -1192,17 +1204,19 @@ export const unassignPlatformRolesPatch = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).patch<UnassignPlatformRolesPatchResponse, UnassignPlatformRolesPatchError, ThrowOnError>({
     ...options,
-    url: "/users/{Id}/roles"
+    url: '/users/{Id}/roles'
   });
 
 /**
  * Fetches the named feature flag, for all users, or for a specific user, and optionally for a specific tenancy
  * (request type: GetFeatureFlagRequest)
  */
-export const getFeatureFlag = <ThrowOnError extends boolean = false>(options: Options<GetFeatureFlagData, ThrowOnError>) =>
+export const getFeatureFlag = <ThrowOnError extends boolean = false>(
+  options: Options<GetFeatureFlagData, ThrowOnError>
+) =>
   (options?.client ?? client).get<GetFeatureFlagResponse2, GetFeatureFlagError, ThrowOnError>({
     ...options,
-    url: "/flags/{UserId}/{Name}"
+    url: '/flags/{UserId}/{Name}'
   });
 
 /**
@@ -1212,7 +1226,7 @@ export const getFeatureFlag = <ThrowOnError extends boolean = false>(options: Op
 export const getAllFeatureFlags = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
   (options?.client ?? client).get<GetAllFeatureFlagsResponse2, GetAllFeatureFlagsError, ThrowOnError>({
     ...options,
-    url: "/flags"
+    url: '/flags'
   });
 
 /**
@@ -1224,7 +1238,7 @@ export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<GetFeatureFlagForCallerResponse, GetFeatureFlagForCallerError, ThrowOnError>({
     ...options,
-    url: "/flags/{Name}"
+    url: '/flags/{Name}'
   });
 
 /**
@@ -1234,7 +1248,7 @@ export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(
 export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
   (options?.client ?? client).get<HealthCheckResponse2, HealthCheckError, ThrowOnError>({
     ...options,
-    url: "/health"
+    url: '/health'
   });
 
 /**
@@ -1244,7 +1258,7 @@ export const healthCheck = <ThrowOnError extends boolean = false>(options?: Opti
 export const getIdentityForCaller = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
   (options?.client ?? client).get<GetIdentityForCallerResponse, GetIdentityForCallerError, ThrowOnError>({
     ...options,
-    url: "/users/me"
+    url: '/users/me'
   });
 
 /**
@@ -1254,7 +1268,7 @@ export const getIdentityForCaller = <ThrowOnError extends boolean = false>(optio
 export const deleteImage = <ThrowOnError extends boolean = false>(options: Options<DeleteImageData, ThrowOnError>) =>
   (options?.client ?? client).delete<DeleteImageResponse, DeleteImageError, ThrowOnError>({
     ...options,
-    url: "/images/{Id}"
+    url: '/images/{Id}'
   });
 
 /**
@@ -1264,37 +1278,43 @@ export const deleteImage = <ThrowOnError extends boolean = false>(options: Optio
 export const getImage = <ThrowOnError extends boolean = false>(options: Options<GetImageData, ThrowOnError>) =>
   (options?.client ?? client).get<GetImageResponse2, GetImageError, ThrowOnError>({
     ...options,
-    url: "/images/{Id}"
+    url: '/images/{Id}'
   });
 
 /**
  * Changes the image details
  * (request type: UpdateImageRequest)
  */
-export const updateImagePut = <ThrowOnError extends boolean = false>(options: Options<UpdateImagePutData, ThrowOnError>) =>
+export const updateImagePut = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateImagePutData, ThrowOnError>
+) =>
   (options?.client ?? client).put<UpdateImagePutResponse, UpdateImagePutError, ThrowOnError>({
     ...options,
-    url: "/images/{Id}"
+    url: '/images/{Id}'
   });
 
 /**
  * Changes the image details
  * (request type: UpdateImageRequest)
  */
-export const updateImagePatch = <ThrowOnError extends boolean = false>(options: Options<UpdateImagePatchData, ThrowOnError>) =>
+export const updateImagePatch = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateImagePatchData, ThrowOnError>
+) =>
   (options?.client ?? client).patch<UpdateImagePatchResponse, UpdateImagePatchError, ThrowOnError>({
     ...options,
-    url: "/images/{Id}"
+    url: '/images/{Id}'
   });
 
 /**
  * Downloads the raw image
  * (request type: DownloadImageRequest)
  */
-export const downloadImage = <ThrowOnError extends boolean = false>(options: Options<DownloadImageData, ThrowOnError>) =>
+export const downloadImage = <ThrowOnError extends boolean = false>(
+  options: Options<DownloadImageData, ThrowOnError>
+) =>
   (options?.client ?? client).get<DownloadImageResponse, DownloadImageError, ThrowOnError>({
     ...options,
-    url: "/images/{Id}/download"
+    url: '/images/{Id}/download'
   });
 
 /**
@@ -1306,10 +1326,10 @@ export const uploadImage = <ThrowOnError extends boolean = false>(options?: Opti
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/images"
+    url: '/images'
   });
 
 /**
@@ -1319,7 +1339,7 @@ export const uploadImage = <ThrowOnError extends boolean = false>(options?: Opti
 export const inviteGuest = <ThrowOnError extends boolean = false>(options?: Options<InviteGuestData, ThrowOnError>) =>
   (options?.client ?? client).post<InviteGuestResponse2, InviteGuestError, ThrowOnError>({
     ...options,
-    url: "/invitations"
+    url: '/invitations'
   });
 
 /**
@@ -1331,7 +1351,7 @@ export const resendGuestInvitation = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<ResendGuestInvitationResponse, ResendGuestInvitationError, ThrowOnError>({
     ...options,
-    url: "/invitations/{Token}/resend"
+    url: '/invitations/{Token}/resend'
   });
 
 /**
@@ -1343,17 +1363,19 @@ export const verifyGuestInvitation = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<VerifyGuestInvitationResponse2, VerifyGuestInvitationError, ThrowOnError>({
     ...options,
-    url: "/invitations/{Token}/verify"
+    url: '/invitations/{Token}/verify'
   });
 
 /**
  * Register a new machine user on the platform
  * (request type: RegisterMachineRequest)
  */
-export const registerMachine = <ThrowOnError extends boolean = false>(options?: Options<RegisterMachineData, ThrowOnError>) =>
+export const registerMachine = <ThrowOnError extends boolean = false>(
+  options?: Options<RegisterMachineData, ThrowOnError>
+) =>
   (options?.client ?? client).post<RegisterMachineResponse2, RegisterMachineError, ThrowOnError>({
     ...options,
-    url: "/machines/register"
+    url: '/machines/register'
   });
 
 /**
@@ -1365,7 +1387,7 @@ export const mailgunNotifyWebhookEvent = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<MailgunNotifyWebhookEventResponse, MailgunNotifyWebhookEventError, ThrowOnError>({
     ...options,
-    url: "/webhooks/mailgun"
+    url: '/webhooks/mailgun'
   });
 
 /**
@@ -1381,7 +1403,7 @@ export const changeDefaultOrganizationPut = <ThrowOnError extends boolean = fals
     ThrowOnError
   >({
     ...options,
-    url: "/memberships/me/default"
+    url: '/memberships/me/default'
   });
 
 /**
@@ -1397,7 +1419,7 @@ export const changeDefaultOrganizationPatch = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/memberships/me/default"
+    url: '/memberships/me/default'
   });
 
 /**
@@ -1409,7 +1431,7 @@ export const listMembershipsForCaller = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<ListMembershipsForCallerResponse2, ListMembershipsForCallerError, ThrowOnError>({
     ...options,
-    url: "/memberships/me"
+    url: '/memberships/me'
   });
 
 /**
@@ -1425,7 +1447,7 @@ export const associateCredentialMfaAuthenticatorForCaller = <ThrowOnError extend
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators"
+    url: '/credentials/mfa/authenticators'
   });
 
 /**
@@ -1441,7 +1463,7 @@ export const listCredentialMfaAuthenticatorsForCaller = <ThrowOnError extends bo
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators"
+    url: '/credentials/mfa/authenticators'
   });
 
 /**
@@ -1457,7 +1479,7 @@ export const challengeCredentialMfaAuthenticatorForCallerPut = <ThrowOnError ext
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorId}/challenge"
+    url: '/credentials/mfa/authenticators/{AuthenticatorId}/challenge'
   });
 
 /**
@@ -1473,7 +1495,7 @@ export const challengeCredentialMfaAuthenticatorForCallerPatch = <ThrowOnError e
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorId}/challenge"
+    url: '/credentials/mfa/authenticators/{AuthenticatorId}/challenge'
   });
 
 /**
@@ -1489,7 +1511,7 @@ export const changeCredentialMfaForCallerPut = <ThrowOnError extends boolean = f
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa"
+    url: '/credentials/mfa'
   });
 
 /**
@@ -1505,7 +1527,7 @@ export const changeCredentialMfaForCallerPatch = <ThrowOnError extends boolean =
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa"
+    url: '/credentials/mfa'
   });
 
 /**
@@ -1521,7 +1543,7 @@ export const confirmCredentialMfaAuthenticatorForCallerPut = <ThrowOnError exten
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorType}/confirm"
+    url: '/credentials/mfa/authenticators/{AuthenticatorType}/confirm'
   });
 
 /**
@@ -1537,7 +1559,7 @@ export const confirmCredentialMfaAuthenticatorForCallerPatch = <ThrowOnError ext
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorType}/confirm"
+    url: '/credentials/mfa/authenticators/{AuthenticatorType}/confirm'
   });
 
 /**
@@ -1553,7 +1575,7 @@ export const disassociateCredentialMfaAuthenticatorForCaller = <ThrowOnError ext
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{Id}"
+    url: '/credentials/mfa/authenticators/{Id}'
   });
 
 /**
@@ -1565,7 +1587,7 @@ export const resetCredentialMfaPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<ResetCredentialMfaPutResponse, ResetCredentialMfaPutError, ThrowOnError>({
     ...options,
-    url: "/credentials/mfa/reset"
+    url: '/credentials/mfa/reset'
   });
 
 /**
@@ -1577,7 +1599,7 @@ export const resetCredentialMfaPatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<ResetCredentialMfaPatchResponse, ResetCredentialMfaPatchError, ThrowOnError>({
     ...options,
-    url: "/credentials/mfa/reset"
+    url: '/credentials/mfa/reset'
   });
 
 /**
@@ -1593,7 +1615,7 @@ export const verifyCredentialMfaAuthenticatorForCallerPut = <ThrowOnError extend
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorType}/verify"
+    url: '/credentials/mfa/authenticators/{AuthenticatorType}/verify'
   });
 
 /**
@@ -1609,7 +1631,7 @@ export const verifyCredentialMfaAuthenticatorForCallerPatch = <ThrowOnError exte
     ThrowOnError
   >({
     ...options,
-    url: "/credentials/mfa/authenticators/{AuthenticatorType}/verify"
+    url: '/credentials/mfa/authenticators/{AuthenticatorType}/verify'
   });
 
 /**
@@ -1617,76 +1639,76 @@ export const verifyCredentialMfaAuthenticatorForCallerPatch = <ThrowOnError exte
  * (request type: AuthorizeOAuth2GetRequest)
  */
 export const authorizeOauth2Get = <ThrowOnError extends boolean = false>(
-    options: Options<AuthorizeOauth2GetData, ThrowOnError>
+  options: Options<AuthorizeOauth2GetData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<AuthorizeOauth2GetResponse, AuthorizeOauth2GetError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/authorize"
-    });
+  (options?.client ?? client).get<AuthorizeOauth2GetResponse, AuthorizeOauth2GetError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/authorize'
+  });
 
 /**
  * Authorizes the user to access the application in Open ID Connect
  * (request type: AuthorizeOAuth2PostRequest)
  */
 export const authorizeOauth2Post = <ThrowOnError extends boolean = false>(
-    options?: Options<AuthorizeOauth2PostData, ThrowOnError>
+  options?: Options<AuthorizeOauth2PostData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<AuthorizeOauth2PostResponse, AuthorizeOauth2PostError, ThrowOnError>({
-        ...options,
-        ...urlSearchParamsBodySerializer,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            ...options?.headers
-        },
-        url: "/oauth2/authorize"
-    });
+  (options?.client ?? client).post<AuthorizeOauth2PostResponse, AuthorizeOauth2PostError, ThrowOnError>({
+    ...options,
+    ...urlSearchParamsBodySerializer,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      ...options?.headers
+    },
+    url: '/oauth2/authorize'
+  });
 
 /**
  * Exchanges either an authorization code for new tokens, or a refresh_token for new tokens, for the specified grant_type in Open ID Connect
  * (request type: ExchangeOAuth2ForTokensRequest)
  */
 export const exchangeOauth2ForTokens = <ThrowOnError extends boolean = false>(
-    options?: Options<ExchangeOauth2ForTokensData, ThrowOnError>
+  options?: Options<ExchangeOauth2ForTokensData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<ExchangeOauth2ForTokensResponse, ExchangeOauth2ForTokensError, ThrowOnError>({
-        ...options,
-        ...urlSearchParamsBodySerializer,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            ...options?.headers
-        },
-        url: "/oauth2/token"
-    });
+  (options?.client ?? client).post<ExchangeOauth2ForTokensResponse, ExchangeOauth2ForTokensError, ThrowOnError>({
+    ...options,
+    ...urlSearchParamsBodySerializer,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      ...options?.headers
+    },
+    url: '/oauth2/token'
+  });
 
 /**
  * Fetches the user's info for the authenticated user in Open ID Connect format
  * (request type: GetUserInfoForCallerRequest)
  */
 export const getUserInfoForCaller = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUserInfoForCallerResponse2, GetUserInfoForCallerError, ThrowOnError>({
-        ...options,
-        url: "/oauth2/userinfo"
-    });
+  (options?.client ?? client).get<GetUserInfoForCallerResponse2, GetUserInfoForCallerError, ThrowOnError>({
+    ...options,
+    url: '/oauth2/userinfo'
+  });
 
 /**
  * Fetches the discovery document for Open ID Connect
  * (request type: GetDiscoveryDocumentRequest)
  */
 export const getDiscoveryDocument = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
-    (options?.client ?? client).get<GetDiscoveryDocumentResponse2, GetDiscoveryDocumentError, ThrowOnError>({
-        ...options,
-        url: "/.well-known/openid-configuration"
-    });
+  (options?.client ?? client).get<GetDiscoveryDocumentResponse2, GetDiscoveryDocumentError, ThrowOnError>({
+    ...options,
+    url: '/.well-known/openid-configuration'
+  });
 
 /**
  * Fetches the JSON Web Key Set for Open ID Connect JWT verification
  * (request type: GetJsonWebKeySetRequest)
  */
 export const getJsonWebKeySet = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
-    (options?.client ?? client).get<GetJsonWebKeySetResponse2, GetJsonWebKeySetError, ThrowOnError>({
-        ...options,
-        url: "/.well-known/jwks.json"
-    });
+  (options?.client ?? client).get<GetJsonWebKeySetResponse2, GetJsonWebKeySetError, ThrowOnError>({
+    ...options,
+    url: '/.well-known/jwks.json'
+  });
 
 /**
  * Assigns a list of roles to a member of an organization
@@ -1701,7 +1723,7 @@ export const assignRolesToOrganizationPut = <ThrowOnError extends boolean = fals
     ThrowOnError
   >({
     ...options,
-    url: "/organizations/{Id}/roles/assign"
+    url: '/organizations/{Id}/roles/assign'
   });
 
 /**
@@ -1717,7 +1739,7 @@ export const assignRolesToOrganizationPatch = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/organizations/{Id}/roles/assign"
+    url: '/organizations/{Id}/roles/assign'
   });
 
 /**
@@ -1731,10 +1753,10 @@ export const changeOrganizationAvatarPut = <ThrowOnError extends boolean = false
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/organizations/{Id}/avatar"
+    url: '/organizations/{Id}/avatar'
   });
 
 /**
@@ -1752,10 +1774,10 @@ export const changeOrganizationAvatarPatch = <ThrowOnError extends boolean = fal
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/organizations/{Id}/avatar"
+    url: '/organizations/{Id}/avatar'
   });
 
 /**
@@ -1767,7 +1789,7 @@ export const deleteOrganizationAvatar = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<DeleteOrganizationAvatarResponse, DeleteOrganizationAvatarError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}/avatar"
+    url: '/organizations/{Id}/avatar'
   });
 
 /**
@@ -1779,7 +1801,7 @@ export const changeOrganizationPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<ChangeOrganizationPutResponse, ChangeOrganizationPutError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}"
+    url: '/organizations/{Id}'
   });
 
 /**
@@ -1791,7 +1813,7 @@ export const changeOrganizationPatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<ChangeOrganizationPatchResponse, ChangeOrganizationPatchError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}"
+    url: '/organizations/{Id}'
   });
 
 /**
@@ -1803,17 +1825,19 @@ export const deleteOrganization = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<DeleteOrganizationResponse, DeleteOrganizationError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}"
+    url: '/organizations/{Id}'
   });
 
 /**
  * Fetches the profile of the organization
  * (request type: GetOrganizationRequest)
  */
-export const getOrganization = <ThrowOnError extends boolean = false>(options: Options<GetOrganizationData, ThrowOnError>) =>
+export const getOrganization = <ThrowOnError extends boolean = false>(
+  options: Options<GetOrganizationData, ThrowOnError>
+) =>
   (options?.client ?? client).get<GetOrganizationResponse2, GetOrganizationError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}"
+    url: '/organizations/{Id}'
   });
 
 /**
@@ -1825,7 +1849,7 @@ export const createOrganization = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<CreateOrganizationResponse, CreateOrganizationError, ThrowOnError>({
     ...options,
-    url: "/organizations"
+    url: '/organizations'
   });
 
 /**
@@ -1837,7 +1861,7 @@ export const getOrganizationSettings = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<GetOrganizationSettingsResponse2, GetOrganizationSettingsError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}/settings"
+    url: '/organizations/{Id}/settings'
   });
 
 /**
@@ -1849,7 +1873,7 @@ export const inviteMemberToOrganization = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).post<InviteMemberToOrganizationResponse2, InviteMemberToOrganizationError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}/members"
+    url: '/organizations/{Id}/members'
   });
 
 /**
@@ -1861,7 +1885,7 @@ export const listMembersForOrganization = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).get<ListMembersForOrganizationResponse2, ListMembersForOrganizationError, ThrowOnError>({
     ...options,
-    url: "/organizations/{Id}/members"
+    url: '/organizations/{Id}/members'
   });
 
 /**
@@ -1877,7 +1901,7 @@ export const unassignRolesFromOrganizationPut = <ThrowOnError extends boolean = 
     ThrowOnError
   >({
     ...options,
-    url: "/organizations/{Id}/roles/unassign"
+    url: '/organizations/{Id}/roles/unassign'
   });
 
 /**
@@ -1893,7 +1917,7 @@ export const unassignRolesFromOrganizationPatch = <ThrowOnError extends boolean 
     ThrowOnError
   >({
     ...options,
-    url: "/organizations/{Id}/roles/unassign"
+    url: '/organizations/{Id}/roles/unassign'
   });
 
 /**
@@ -1909,7 +1933,7 @@ export const unInviteMemberFromOrganization = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/organizations/{Id}/members/{UserId}"
+    url: '/organizations/{Id}/members/{UserId}'
   });
 
 /**
@@ -1919,7 +1943,7 @@ export const unInviteMemberFromOrganization = <ThrowOnError extends boolean = fa
 export const listPricingPlans = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
   (options?.client ?? client).get<ListPricingPlansResponse2, ListPricingPlansError, ThrowOnError>({
     ...options,
-    url: "/pricing/plans"
+    url: '/pricing/plans'
   });
 
 /**
@@ -1931,7 +1955,7 @@ export const drainAllProvisionings = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<DrainAllProvisioningsResponse, DrainAllProvisioningsError, ThrowOnError>({
     ...options,
-    url: "/provisioning/drain"
+    url: '/provisioning/drain'
   });
 
 /**
@@ -1943,17 +1967,19 @@ export const notifyProvisioning = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<NotifyProvisioningResponse, NotifyProvisioningError, ThrowOnError>({
     ...options,
-    url: "/provisioning/notify"
+    url: '/provisioning/notify'
   });
 
 /**
  * Measures an event in the product
  * (request type: RecordMeasureRequest)
  */
-export const recordMeasure = <ThrowOnError extends boolean = false>(options?: Options<RecordMeasureData, ThrowOnError>) =>
+export const recordMeasure = <ThrowOnError extends boolean = false>(
+  options?: Options<RecordMeasureData, ThrowOnError>
+) =>
   (options?.client ?? client).post<RecordMeasureResponse, RecordMeasureError, ThrowOnError>({
     ...options,
-    url: "/record/measure"
+    url: '/record/measure'
   });
 
 /**
@@ -1963,7 +1989,7 @@ export const recordMeasure = <ThrowOnError extends boolean = false>(options?: Op
 export const recordUse = <ThrowOnError extends boolean = false>(options?: Options<RecordUseData, ThrowOnError>) =>
   (options?.client ?? client).post<RecordUseResponse, RecordUseError, ThrowOnError>({
     ...options,
-    url: "/record/use"
+    url: '/record/use'
   });
 
 /**
@@ -1975,7 +2001,7 @@ export const authenticateSingleSignOn = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<AuthenticateSingleSignOnResponse, AuthenticateSingleSignOnError, ThrowOnError>({
     ...options,
-    url: "/sso/auth"
+    url: '/sso/auth'
   });
 
 /**
@@ -1987,7 +2013,7 @@ export const confirmSmsDelivered = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<ConfirmSmsDeliveredResponse, ConfirmSmsDeliveredError, ThrowOnError>({
     ...options,
-    url: "/smses/delivered"
+    url: '/smses/delivered'
   });
 
 /**
@@ -1999,17 +2025,19 @@ export const confirmSmsDeliveryFailed = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<ConfirmSmsDeliveryFailedResponse, ConfirmSmsDeliveryFailedError, ThrowOnError>({
     ...options,
-    url: "/smses/failed"
+    url: '/smses/failed'
   });
 
 /**
  * Drains all the pending SMS messages
  * (request type: DrainAllSmsesRequest)
  */
-export const drainAllSmses = <ThrowOnError extends boolean = false>(options?: Options<DrainAllSmsesData, ThrowOnError>) =>
+export const drainAllSmses = <ThrowOnError extends boolean = false>(
+  options?: Options<DrainAllSmsesData, ThrowOnError>
+) =>
   (options?.client ?? client).post<DrainAllSmsesResponse, DrainAllSmsesError, ThrowOnError>({
     ...options,
-    url: "/smses/drain"
+    url: '/smses/drain'
   });
 
 /**
@@ -2021,7 +2049,7 @@ export const searchAllSmsDeliveries = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchAllSmsDeliveriesResponse2, SearchAllSmsDeliveriesError, ThrowOnError>({
     ...options,
-    url: "/smses"
+    url: '/smses'
   });
 
 /**
@@ -2031,7 +2059,7 @@ export const searchAllSmsDeliveries = <ThrowOnError extends boolean = false>(
 export const sendSms = <ThrowOnError extends boolean = false>(options?: Options<SendSmsData, ThrowOnError>) =>
   (options?.client ?? client).post<SendSmsResponse, SendSmsError, ThrowOnError>({
     ...options,
-    url: "/smses/send"
+    url: '/smses/send'
   });
 
 /**
@@ -2043,17 +2071,19 @@ export const cancelSubscription = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<CancelSubscriptionResponse, CancelSubscriptionError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}"
+    url: '/subscriptions/{Id}'
   });
 
 /**
  * Fetches the billing subscription for the organization
  * (request type: GetSubscriptionRequest)
  */
-export const getSubscription = <ThrowOnError extends boolean = false>(options: Options<GetSubscriptionData, ThrowOnError>) =>
+export const getSubscription = <ThrowOnError extends boolean = false>(
+  options: Options<GetSubscriptionData, ThrowOnError>
+) =>
   (options?.client ?? client).get<GetSubscriptionResponse2, GetSubscriptionError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}"
+    url: '/subscriptions/{Id}'
   });
 
 /**
@@ -2065,7 +2095,7 @@ export const changeSubscriptionPlanPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<ChangeSubscriptionPlanPutResponse, ChangeSubscriptionPlanPutError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/plan"
+    url: '/subscriptions/{Id}/plan'
   });
 
 /**
@@ -2081,7 +2111,7 @@ export const changeSubscriptionPlanPatch = <ThrowOnError extends boolean = false
     ThrowOnError
   >({
     ...options,
-    url: "/subscriptions/{Id}/plan"
+    url: '/subscriptions/{Id}/plan'
   });
 
 /**
@@ -2093,7 +2123,7 @@ export const forceCancelSubscription = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<ForceCancelSubscriptionResponse, ForceCancelSubscriptionError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/force"
+    url: '/subscriptions/{Id}/force'
   });
 
 /**
@@ -2105,7 +2135,7 @@ export const searchSubscriptionHistory = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchSubscriptionHistoryResponse2, SearchSubscriptionHistoryError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/invoices"
+    url: '/subscriptions/{Id}/invoices'
   });
 
 /**
@@ -2117,7 +2147,7 @@ export const transferSubscriptionPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<TransferSubscriptionPutResponse, TransferSubscriptionPutError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/transfer"
+    url: '/subscriptions/{Id}/transfer'
   });
 
 /**
@@ -2129,21 +2159,23 @@ export const transferSubscriptionPatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<TransferSubscriptionPatchResponse, TransferSubscriptionPatchError, ThrowOnError>({
     ...options,
-    url: "/subscriptions/{Id}/transfer"
+    url: '/subscriptions/{Id}/transfer'
   });
 
 /**
  * Tests access with HMAC signature authentication
  * (request type: GetCallerWithHMACTestingOnlyRequest)
  */
-export const getCallerWithHmacTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const getCallerWithHmacTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<
     GetCallerWithHmacTestingOnlyResponse,
     GetCallerWithHmacTestingOnlyError,
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/authn/hmac/get"
+    url: '/testingonly/authn/hmac/get'
   });
 
 /**
@@ -2159,7 +2191,7 @@ export const getCallerWithTokenOrApiKeyTestingOnly = <ThrowOnError extends boole
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/authn/token/get"
+    url: '/testingonly/authn/token/get'
   });
 
 /**
@@ -2175,7 +2207,7 @@ export const authorizeByNothingTestingOnly = <ThrowOnError extends boolean = fal
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/authz/none/get"
+    url: '/testingonly/authz/none/get'
   });
 
 /**
@@ -2191,17 +2223,19 @@ export const authorizeByFeatureTestingOnly = <ThrowOnError extends boolean = fal
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/authz/feature/get"
+    url: '/testingonly/authz/feature/get'
   });
 
 /**
  * Tests access with role authorization
  * (request type: AuthorizeByRoleTestingOnlyRequest)
  */
-export const authorizeByRoleTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const authorizeByRoleTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<AuthorizeByRoleTestingOnlyResponse, AuthorizeByRoleTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/authz/role/get"
+    url: '/testingonly/authz/role/get'
   });
 
 /**
@@ -2217,7 +2251,7 @@ export const contentNegotiationsTestingOnly = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/negotiations/get"
+    url: '/testingonly/negotiations/get'
   });
 
 /**
@@ -2229,7 +2263,7 @@ export const destroyAllRepositories = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<DestroyAllRepositoriesResponse, DestroyAllRepositoriesError, ThrowOnError>({
     ...options,
-    url: "/testingonly/repositories/destroy"
+    url: '/testingonly/repositories/destroy'
   });
 
 /**
@@ -2241,7 +2275,7 @@ export const downloadStreamTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<DownloadStreamTestingOnlyResponse, DownloadStreamTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/download"
+    url: '/testingonly/download'
   });
 
 /**
@@ -2253,17 +2287,19 @@ export const errorsErrorTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<ErrorsErrorTestingOnlyResponse, ErrorsErrorTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/errors/error"
+    url: '/testingonly/errors/error'
   });
 
 /**
  * Tests errors, by throwing an exception
  * (request type: ErrorsThrowTestingOnlyRequest)
  */
-export const errorsThrowTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const errorsThrowTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<ErrorsThrowTestingOnlyResponse, ErrorsThrowTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/errors/throws"
+    url: '/testingonly/errors/throws'
   });
 
 /**
@@ -2275,7 +2311,7 @@ export const formatsTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<FormatsTestingOnlyResponse2, FormatsTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/formats/roundtrip"
+    url: '/testingonly/formats/roundtrip'
   });
 
 /**
@@ -2291,7 +2327,7 @@ export const getWithSimpleArrayTestingOnly = <ThrowOnError extends boolean = fal
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/general/get/array"
+    url: '/testingonly/general/get/array'
   });
 
 /**
@@ -2307,7 +2343,7 @@ export const postWithEmptyBodyTestingOnly = <ThrowOnError extends boolean = fals
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/general/body/empty"
+    url: '/testingonly/general/body/empty'
   });
 
 /**
@@ -2323,7 +2359,7 @@ export const postWithEmptyBodyAndRequiredPropertiesTestingOnly = <ThrowOnError e
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/general/body/empty/required"
+    url: '/testingonly/general/body/empty/required'
   });
 
 /**
@@ -2339,7 +2375,7 @@ export const postWithRouteParamsAndEmptyBodyTestingOnly = <ThrowOnError extends 
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/general/body/{astringproperty}/{anumberproperty}/route"
+    url: '/testingonly/general/body/{astringproperty}/{anumberproperty}/route'
   });
 
 /**
@@ -2351,7 +2387,7 @@ export const getTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<GetTestingOnlyResponse, GetTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/general/get/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
+    url: '/testingonly/general/get/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}'
   });
 
 /**
@@ -2363,7 +2399,7 @@ export const postTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<PostTestingOnlyResponse, PostTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/general/post/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
+    url: '/testingonly/general/post/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}'
   });
 
 /**
@@ -2375,17 +2411,19 @@ export const searchTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<SearchTestingOnlyResponse2, SearchTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/general/search/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}"
+    url: '/testingonly/general/search/a/{AnEnumRouteProperty}/b/{AnIntRouteProperty}/c/{AStringRouteProperty}'
   });
 
 /**
  * Tests access with anonymous access
  * (request type: GetInsecureTestingOnlyRequest)
  */
-export const getInsecureTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const getInsecureTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<GetInsecureTestingOnlyResponse, GetInsecureTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/security/none"
+    url: '/testingonly/security/none'
   });
 
 /**
@@ -2397,7 +2435,7 @@ export const postInsecureTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<PostInsecureTestingOnlyResponse, PostInsecureTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/security/none"
+    url: '/testingonly/security/none'
   });
 
 /**
@@ -2415,10 +2453,10 @@ export const openApiPostFormUrlEncodedTestingOnly = <ThrowOnError extends boolea
     ...options,
     ...urlSearchParamsBodySerializer,
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
       ...options?.headers
     },
-    url: "/testingonly/openapi/{Id}/urlencoded"
+    url: '/testingonly/openapi/{Id}/urlencoded'
   });
 
 /**
@@ -2430,7 +2468,7 @@ export const openApiGetTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).get<OpenApiGetTestingOnlyResponse, OpenApiGetTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/openapi/{Id}"
+    url: '/testingonly/openapi/{Id}'
   });
 
 /**
@@ -2442,7 +2480,7 @@ export const openApiPostTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<OpenApiPostTestingOnlyResponse, OpenApiPostTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/openapi/{Id}"
+    url: '/testingonly/openapi/{Id}'
   });
 
 /**
@@ -2454,7 +2492,7 @@ export const openApiPutTestingOnlyPut = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).put<OpenApiPutTestingOnlyPutResponse, OpenApiPutTestingOnlyPutError, ThrowOnError>({
     ...options,
-    url: "/testingonly/openapi/{Id}"
+    url: '/testingonly/openapi/{Id}'
   });
 
 /**
@@ -2466,7 +2504,7 @@ export const openApiPutTestingOnlyPatch = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).patch<OpenApiPutTestingOnlyPatchResponse, OpenApiPutTestingOnlyPatchError, ThrowOnError>({
     ...options,
-    url: "/testingonly/openapi/{Id}"
+    url: '/testingonly/openapi/{Id}'
   });
 
 /**
@@ -2484,10 +2522,10 @@ export const openApiPostMultiPartFormDataTestingOnly = <ThrowOnError extends boo
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/testingonly/openapi/{Id}/form-data"
+    url: '/testingonly/openapi/{Id}/form-data'
   });
 
 /**
@@ -2499,7 +2537,7 @@ export const getWithRedirectTestingOnly = <ThrowOnError extends boolean = false>
 ) =>
   (options?.client ?? client).get<GetWithRedirectTestingOnlyResponse, GetWithRedirectTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/redirect/get"
+    url: '/testingonly/redirect/get'
   });
 
 /**
@@ -2512,7 +2550,7 @@ export const postWithRedirectTestingOnly = <ThrowOnError extends boolean = false
   (options?.client ?? client).post<PostWithRedirectTestingOnlyResponse, PostWithRedirectTestingOnlyError, ThrowOnError>(
     {
       ...options,
-      url: "/testingonly/redirect/post"
+      url: '/testingonly/redirect/post'
     }
   );
 
@@ -2529,17 +2567,19 @@ export const requestCorrelationsTestingOnly = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/correlations/get"
+    url: '/testingonly/correlations/get'
   });
 
 /**
  * Tests default status code for DELETE requests, with no response
  * (request type: StatusesDeleteTestingOnlyRequest)
  */
-export const statusesDeleteTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const statusesDeleteTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).delete<StatusesDeleteTestingOnlyResponse, StatusesDeleteTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/statuses/delete1"
+    url: '/testingonly/statuses/delete1'
   });
 
 /**
@@ -2555,17 +2595,19 @@ export const statusesDeleteWithResponseTestingOnly = <ThrowOnError extends boole
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/statuses/delete2"
+    url: '/testingonly/statuses/delete2'
   });
 
 /**
  * Tests default status code for GET requests
  * (request type: StatusesGetTestingOnlyRequest)
  */
-export const statusesGetTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const statusesGetTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<StatusesGetTestingOnlyResponse, StatusesGetTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/statuses/get"
+    url: '/testingonly/statuses/get'
   });
 
 /**
@@ -2577,7 +2619,7 @@ export const statusesPostTestingOnly = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).post<StatusesPostTestingOnlyResponse, StatusesPostTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/statuses/post1"
+    url: '/testingonly/statuses/post1'
   });
 
 /**
@@ -2593,7 +2635,7 @@ export const statusesPostWithLocationTestingOnly = <ThrowOnError extends boolean
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/statuses/post2"
+    url: '/testingonly/statuses/post2'
   });
 
 /**
@@ -2609,7 +2651,7 @@ export const statusesPutPatchTestingOnlyPut = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/statuses/putpatch"
+    url: '/testingonly/statuses/putpatch'
   });
 
 /**
@@ -2625,17 +2667,19 @@ export const statusesPutPatchTestingOnlyPatch = <ThrowOnError extends boolean = 
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/statuses/putpatch"
+    url: '/testingonly/statuses/putpatch'
   });
 
 /**
  * Tests default status code for SEARCH requests
  * (request type: StatusesSearchTestingOnlyRequest)
  */
-export const statusesSearchTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
+export const statusesSearchTestingOnly = <ThrowOnError extends boolean = false>(
+  options?: Options<unknown, ThrowOnError>
+) =>
   (options?.client ?? client).get<StatusesSearchTestingOnlyResponse, StatusesSearchTestingOnlyError, ThrowOnError>({
     ...options,
-    url: "/testingonly/statuses/search"
+    url: '/testingonly/statuses/search'
   });
 
 /**
@@ -2651,7 +2695,7 @@ export const validationsUnvalidatedTestingOnly = <ThrowOnError extends boolean =
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/validations/unvalidated"
+    url: '/testingonly/validations/unvalidated'
   });
 
 /**
@@ -2667,7 +2711,7 @@ export const validationsValidatedGetTestingOnly = <ThrowOnError extends boolean 
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/validations/validated/{Id}"
+    url: '/testingonly/validations/validated/{Id}'
   });
 
 /**
@@ -2683,7 +2727,7 @@ export const validationsValidatedPostTestingOnly = <ThrowOnError extends boolean
     ThrowOnError
   >({
     ...options,
-    url: "/testingonly/validations/validated/{Id}"
+    url: '/testingonly/validations/validated/{Id}'
   });
 
 /**
@@ -2697,10 +2741,10 @@ export const twilioNotifyWebhookEvent = <ThrowOnError extends boolean = false>(
     ...options,
     ...urlSearchParamsBodySerializer,
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
       ...options?.headers
     },
-    url: "/webhooks/twilio"
+    url: '/webhooks/twilio'
   });
 
 /**
@@ -2710,17 +2754,19 @@ export const twilioNotifyWebhookEvent = <ThrowOnError extends boolean = false>(
 export const deliverUsage = <ThrowOnError extends boolean = false>(options?: Options<DeliverUsageData, ThrowOnError>) =>
   (options?.client ?? client).post<DeliverUsageResponse, DeliverUsageError, ThrowOnError>({
     ...options,
-    url: "/usages/deliver"
+    url: '/usages/deliver'
   });
 
 /**
  * Drains all the pending usage messages
  * (request type: DrainAllUsagesRequest)
  */
-export const drainAllUsages = <ThrowOnError extends boolean = false>(options?: Options<DrainAllUsagesData, ThrowOnError>) =>
+export const drainAllUsages = <ThrowOnError extends boolean = false>(
+  options?: Options<DrainAllUsagesData, ThrowOnError>
+) =>
   (options?.client ?? client).post<DrainAllUsagesResponse, DrainAllUsagesError, ThrowOnError>({
     ...options,
-    url: "/usages/drain"
+    url: '/usages/drain'
   });
 
 /**
@@ -2736,7 +2782,7 @@ export const changeProfileContactAddressPut = <ThrowOnError extends boolean = fa
     ThrowOnError
   >({
     ...options,
-    url: "/profiles/{UserId}/contact"
+    url: '/profiles/{UserId}/contact'
   });
 
 /**
@@ -2752,17 +2798,19 @@ export const changeProfileContactAddressPatch = <ThrowOnError extends boolean = 
     ThrowOnError
   >({
     ...options,
-    url: "/profiles/{UserId}/contact"
+    url: '/profiles/{UserId}/contact'
   });
 
 /**
  * Changes the user's profile information
  * (request type: ChangeProfileRequest)
  */
-export const changeProfilePut = <ThrowOnError extends boolean = false>(options: Options<ChangeProfilePutData, ThrowOnError>) =>
+export const changeProfilePut = <ThrowOnError extends boolean = false>(
+  options: Options<ChangeProfilePutData, ThrowOnError>
+) =>
   (options?.client ?? client).put<ChangeProfilePutResponse, ChangeProfilePutError, ThrowOnError>({
     ...options,
-    url: "/profiles/{UserId}"
+    url: '/profiles/{UserId}'
   });
 
 /**
@@ -2774,7 +2822,7 @@ export const changeProfilePatch = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).patch<ChangeProfilePatchResponse, ChangeProfilePatchError, ThrowOnError>({
     ...options,
-    url: "/profiles/{UserId}"
+    url: '/profiles/{UserId}'
   });
 
 /**
@@ -2788,10 +2836,10 @@ export const changeProfileAvatarPut = <ThrowOnError extends boolean = false>(
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/profiles/{UserId}/avatar"
+    url: '/profiles/{UserId}/avatar'
   });
 
 /**
@@ -2805,10 +2853,10 @@ export const changeProfileAvatarPatch = <ThrowOnError extends boolean = false>(
     ...options,
     ...formDataBodySerializer,
     headers: {
-      "Content-Type": null,
+      'Content-Type': null,
       ...options?.headers
     },
-    url: "/profiles/{UserId}/avatar"
+    url: '/profiles/{UserId}/avatar'
   });
 
 /**
@@ -2820,7 +2868,7 @@ export const deleteProfileAvatar = <ThrowOnError extends boolean = false>(
 ) =>
   (options?.client ?? client).delete<DeleteProfileAvatarResponse2, DeleteProfileAvatarError, ThrowOnError>({
     ...options,
-    url: "/profiles/{UserId}/avatar"
+    url: '/profiles/{UserId}/avatar'
   });
 
 /**
@@ -2830,5 +2878,5 @@ export const deleteProfileAvatar = <ThrowOnError extends boolean = false>(
 export const getProfileForCaller = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) =>
   (options?.client ?? client).get<GetProfileForCallerResponse2, GetProfileForCallerError, ThrowOnError>({
     ...options,
-    url: "/profiles/me"
+    url: '/profiles/me'
   });

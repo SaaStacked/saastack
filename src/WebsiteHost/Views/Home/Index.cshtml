@@ -2,32 +2,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta content="SaaStack" name="description"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta content="@Model.CSRFHeaderToken" name="@Model.CSRFFieldName"/>
-    <meta name="msapplication-config" content="/browserconfig.xml"/>
-    <meta name="msapplication-TileColor" content="FFFFFF"/>
-    <meta name="theme-color" content="FFFFFF"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
-    <link rel="alternate icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+    <meta charset="UTF-8" />
+    <meta content="SaaStack" name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="@Model.CSRFHeaderToken" name="@Model.CSRFFieldName" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <meta name="msapplication-TileColor" content="FFFFFF" />
+    <meta name="theme-color" content="FFFFFF" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="alternate icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <title>SaaStack</title>
-
     <script type="text/javascript">
         window.isTestingOnly = @(Model.IsTestingOnly
                                    ? "true"
                                    : "false");
         window.isHostedOn = "@(Model.IsHostedOn)";
     </script>
-    <script defer="defer" src="/@(Model.JsBundleName)"></script>
+    <link rel="stylesheet" href="@(Model.JsAppCssPath)" />
+    @* Only required for serving JS and CSS from Vite Dev Server *@
+    @if (!Model.IsJsAppBundled)
+    {
+        <script type="module" src="http://localhost:5173/@@vite/client"></script>
+        <script type="module">
+            import RefreshRuntime from 'http://localhost:5173/@@react-refresh';
+
+            RefreshRuntime.injectIntoGlobalHook(window);
+            window.$RefreshReg$ = () => {
+            };
+            window.$RefreshSig$ = () => type => type;
+            window.__vite_plugin_react_preamble_installed__ = true;
+        </script>
+    }
+    <script type="module" src="@(Model.JsAppJsPath)"></script>
 </head>
 <body>
 <noscript>You need to enable Javascript to run this app.</noscript>
 <div id="root">
-    <h1>SaaStack Home</h1>
 </div>
 </body>
 </html>

@@ -28,7 +28,7 @@ public class BackEndForFrontEndModule : ISubdomainModule
                     {
                         webApp.UseExceptionHandler("/Home/Error");
                     }
-
+                    
                     webApp.UseRouting();
                     webApp.MapControllerRoute("index", "index.html", new { controller = "Home", action = "Index" });
                     webApp.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
@@ -51,7 +51,7 @@ public class BackEndForFrontEndModule : ISubdomainModule
             return (_, services) =>
             {
                 services.AddControllersWithViews();
-                services.AddSingleton<IWebPackBundler, WebPackBundler>();
+                services.AddSingleton<IJsAppBundler, ViteJsAppBundler>();
                 services.AddSingleton<IFeatureFlagsApplication, FeatureFlagsApplication>();
                 services.AddSingleton<IRecordingApplication, RecordingApplication>();
                 services.AddSingleton<IAuthenticationApplication, AuthenticationApplication>();

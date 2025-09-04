@@ -10,19 +10,17 @@ namespace WebsiteHost.Controllers;
 public abstract class CSRFController : Controller
 {
     private readonly CSRFMiddleware.ICSRFService _csrfService;
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IWebPackBundler _webpackBundler;
+    private readonly IJsAppBundler _jsAppBundler;
 
-    protected internal CSRFController(IHostEnvironment hostEnvironment, CSRFMiddleware.ICSRFService csrfService,
-        IWebPackBundler webpackBundler)
+    protected internal CSRFController(CSRFMiddleware.ICSRFService csrfService, IJsAppBundler jsAppBundler)
     {
-        _hostEnvironment = hostEnvironment;
         _csrfService = csrfService;
-        _webpackBundler = webpackBundler;
+        _jsAppBundler = jsAppBundler;
     }
 
-    protected CSRFController(IHostEnvironment hostEnvironment, CSRFMiddleware.ICSRFService csrfService) : this(
-        hostEnvironment, csrfService, new WebPackBundler())
+    protected CSRFController(IRecorder recorder, IHostEnvironment hostEnvironment, IHttpClientFactory httpClientFactory,
+        CSRFMiddleware.ICSRFService csrfService)
+        : this(csrfService, new ViteJsAppBundler(recorder, hostEnvironment, httpClientFactory))
     {
     }
 
@@ -32,7 +30,8 @@ public abstract class CSRFController : Controller
             .Match(optional => optional.Value, _ => Optional<string>.None);
         var csrfTokenPair = _csrfService.CreateTokens(userId);
         WriteCSRFCookie(csrfTokenPair.Signature, userId);
-        var bundleName = GetWebPackBundleName();
+
+        var bundleOptions = _jsAppBundler.GetBundleOptions();
 
         var model = new IndexSpaPage
         {
@@ -50,15 +49,11 @@ public abstract class CSRFController : Controller
 #endif
             CSRFFieldName = CSRFConstants.Html.CSRFRequestFieldName,
             CSRFHeaderToken = csrfTokenPair.Token,
-            JsBundleName = bundleName
+            JsAppJsPath = bundleOptions.JsPath,
+            JsAppCssPath = bundleOptions.CssPath,
+            IsJsAppBundled = bundleOptions.IsBundled
         };
         return View(model);
-    }
-
-    private string GetWebPackBundleName()
-    {
-        var applicationBasePath = _hostEnvironment.ContentRootPath;
-        return _webpackBundler.GetBundleName(applicationBasePath);
     }
 
     private void WriteCSRFCookie(string signature, Optional<string> userId)

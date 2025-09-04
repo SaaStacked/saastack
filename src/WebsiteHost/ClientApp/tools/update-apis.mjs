@@ -1,15 +1,17 @@
-import * as fs from "fs";
-import * as https from "https";
-import { createClient } from "@hey-api/openapi-ts";
-import "dotenv/config";
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as https from 'https';
+import { createClient } from '@hey-api/openapi-ts';
+
+dotenv.config({ path: '.env.local' });
 
 function updateApis(serverName, swaggerUrl, targetDefinitionFile, targetFolder) {
-  let downloadFilename = targetDefinitionFile + ".tmp";
+  let downloadFilename = targetDefinitionFile + '.tmp';
   let downloadedFile = fs.createWriteStream(downloadFilename);
-  downloadedFile.on("close", () => {
+  downloadedFile.on('close', () => {
     if (downloadedFile.bytesWritten > 0) {
       fs.copyFileSync(downloadFilename, targetDefinitionFile);
-      formatLog("Replacing API definitions in ", targetDefinitionFile);
+      formatLog('Replacing API definitions in ', targetDefinitionFile);
       generateApiServices(targetDefinitionFile, targetFolder);
       fs.unlinkSync(downloadFilename);
     }
@@ -20,24 +22,24 @@ function updateApis(serverName, swaggerUrl, targetDefinitionFile, targetFolder) 
       swaggerUrl,
       {
         headers: {
-          Connection: "keep-alive"
+          Connection: 'keep-alive'
         },
         rejectUnauthorized: false
       },
       (response) => {
         response.pipe(downloadedFile);
-        response.on("end", () => downloadedFile.close());
+        response.on('end', () => downloadedFile.close());
       }
     )
-    .on("error", (e) => {
-      if (e.code === "ECONNREFUSED") {
+    .on('error', (e) => {
+      if (e.code === 'ECONNREFUSED') {
         formatLog(
           `The "${serverName}" server (at ${swaggerUrl}) is not running, and we cannot download the swagger from it. Please start the server.`
         );
       } else {
         formatLog(
           `Failed to download API definitions from the "${serverName}" server (at ${swaggerUrl}), error was:`,
-          "\n",
+          '\n',
           e
         );
       }
@@ -45,32 +47,32 @@ function updateApis(serverName, swaggerUrl, targetDefinitionFile, targetFolder) 
 }
 
 function formatLog() {
-  console.log("");
-  console.log("-------");
+  console.log('');
+  console.log('-------');
   console.log(...arguments);
-  console.log("-------");
+  console.log('-------');
 }
 
 function generateApiServices(definitionsFile, targetFolder) {
   createClient({
-    client: "@hey-api/client-axios",
+    client: '@hey-api/client-axios',
     input: definitionsFile,
     output: {
       path: targetFolder,
-      format: "prettier"
+      format: 'prettier'
     }
   });
 }
 
 updateApis(
-  "ApiHost1",
-  `${process.env.APIHOST1BASEURL}/swagger/v1/swagger.json`,
-  "./src/api/apiHost1.swagger.gen.json",
-  "./src/api/apiHost1"
+  'ApiHost1',
+  `${process.env.VITE_APIHOST1BASEURL}/swagger/v1/swagger.json`,
+  './src/api/apiHost1.swagger.gen.json',
+  './src/api/apiHost1'
 );
 updateApis(
-  "WebsiteHost",
-  `${process.env.WEBSITEHOSTBASEURL}/swagger/v1/swagger.json`,
-  "./src/api/websiteHost.swagger.gen.json",
-  "./src/api/websiteHost"
+  'WebsiteHost',
+  `${process.env.VITE_WEBSITEHOSTBASEURL}/swagger/v1/swagger.json`,
+  './src/api/websiteHost.swagger.gen.json',
+  './src/api/websiteHost'
 );

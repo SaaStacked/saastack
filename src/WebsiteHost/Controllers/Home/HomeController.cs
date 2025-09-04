@@ -1,3 +1,4 @@
+using Common;
 using Infrastructure.Web.Hosting.Common.Pipeline;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,8 +6,9 @@ namespace WebsiteHost.Controllers.Home;
 
 public class HomeController : CSRFController
 {
-    public HomeController(IHostEnvironment hostEnvironment, CSRFMiddleware.ICSRFService csrfService) :
-        base(hostEnvironment, csrfService)
+    public HomeController(IRecorder recorder, IHostEnvironment hostEnvironment, IHttpClientFactory httpClientFactory,
+        CSRFMiddleware.ICSRFService csrfService) :
+        base(recorder, hostEnvironment, httpClientFactory, csrfService)
     {
     }
 

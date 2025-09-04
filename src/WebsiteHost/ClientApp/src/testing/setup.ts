@@ -1,25 +1,27 @@
-jest.mock("axios", () => {
-  const actualImpl = jest.requireActual("axios");
+import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
+
+vi.mock('axios', async (importActual) => {
+  const actualImpl = await importActual<typeof import('@hey-api/client-axios')>();
 
   return {
     ...actualImpl,
-    request: jest.fn((config) => Promise.resolve({ config, data: {}, status: 200 }))
+    request: vi.fn((config) => Promise.resolve({ config, data: {}, status: 200 }))
   };
 });
 
-jest.mock("@hey-api/client-axios", () => {
-  const actualImpl = jest.requireActual("@hey-api/client-axios");
+vi.mock('@hey-api/client-axios', async (importActual) => {
+  const actualImpl = await importActual<typeof import('@hey-api/client-axios')>();
 
   return {
     ...actualImpl,
-    createClient: jest.fn().mockImplementation((config) => {
+    createClient: vi.fn().mockImplementation((config) => {
       const clientImpl = actualImpl.createClient(config);
       return {
         ...clientImpl,
-        get: jest.fn((config) => Promise.resolve({ config, data: {}, status: 200 })),
-        post: jest.fn((config) => Promise.resolve({ config, data: {}, status: 201 })),
-        put: jest.fn((config) => Promise.resolve({ config, data: {}, status: 202 })),
-        delete: jest.fn((config) => Promise.resolve({ config, data: {}, status: 204 }))
+        get: vi.fn((config) => Promise.resolve({ config, data: {}, status: 200 })),
+        post: vi.fn((config) => Promise.resolve({ config, data: {}, status: 201 })),
+        put: vi.fn((config) => Promise.resolve({ config, data: {}, status: 202 })),
+        delete: vi.fn((config) => Promise.resolve({ config, data: {}, status: 204 }))
       };
     })
   };
@@ -29,11 +31,11 @@ jest.mock("@hey-api/client-axios", () => {
 const ogLocation = global.window.location;
 
 beforeAll(() => {
-  process.env.WEBSITEHOSTBASEURL = "abaseurl";
-  jest.spyOn(document, "querySelector").mockImplementation((selector) => {
+  process.env.VITE_WEBSITEHOSTBASEURL = 'abaseurl';
+  vi.spyOn(document, 'querySelector').mockImplementation((selector) => {
     if (selector == "meta[name='csrf-token']") {
       return {
-        getAttribute: jest.fn().mockReturnValue("acsrftoken")
+        getAttribute: vi.fn().mockReturnValue('acsrftoken')
       } as unknown as Element;
     }
 
@@ -45,8 +47,10 @@ beforeAll(() => {
   // noinspection JSConstantReassignment
   global.window = Object.create(window);
   // @ts-ignore
-  global.window.location = { assign: jest.fn() };
+  global.window.location = { assign: vi.fn() };
 });
+
+beforeEach(() => vi.clearAllMocks());
 
 afterAll(() => {
   global.window.location = ogLocation;

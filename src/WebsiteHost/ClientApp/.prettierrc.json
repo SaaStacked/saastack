@@ -1,6 +1,6 @@
 {
   "endOfLine": "auto",
   "printWidth": 120,
-  "singleQuote": false,
+  "singleQuote": true,
   "trailingComma": "none"
 }

@@ -219,9 +219,7 @@ Patterns and conventions are critical for:
 - **Quality** - reducing avoidable bugs through established, proven approaches
 - **Onboarding** - helping new team members understand and contribute quickly
 
-## 💻 **Code Replacements & C# Standards**
-
-### C# Coding Standards
+## C# Coding Standards
 
 We follow Microsoft's C# coding conventions with specific enhancements for readability and consistency.
 
@@ -394,3 +392,24 @@ Before making any change, ask:
 2. **Will this affect persisted data?** - If yes, plan migration strategy
 3. **Will this change event contracts?** - If yes, consider event versioning
 4. **Is this change reversible?** - If no, ensure thorough testing and gradual rollout
+
+## TypeScript Coding Standards
+
+We follow Microsoft's TypeScript coding conventions with specific enhancements for readability and consistency.
+
+> These rules are enforced through Prettier settings and code analysis rules.
+
+### Preferred Expressions
+
+The following table shows code patterns we want to see replaced throughout the codebase for better readability and consistency:
+
+| Instead of this:            | Use this:                                                    | Why?                                                         |
+| --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `console.log('amessage')`   | `recorder.traceInformation('amessage')` OR `recorder.traceDebug('amessage')` | We never want to see diagnostic messages in the browser console in production code. |
+| `console.warn('amessage')`  | `recorder.trace('amessage', SeverityLevel.Warning)`          | we never want to see diagnostic messages in the browser console in production code. |
+| `console.error('amessage')` | `recorder.crash(error, 'amessage')`                          | If it is a fatal error, and the program cannot continue, then use `crash()` method, and this will inform the team of a critical error. |
+|                             |                                                              |                                                              |
+
+### Control Flow Patterns
+
+Use promises.
