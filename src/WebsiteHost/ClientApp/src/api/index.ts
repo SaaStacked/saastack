@@ -1,9 +1,10 @@
 import axios, { AxiosError, HttpStatusCode } from 'axios';
-import { client as apiHost1 } from './apiHost1/services.gen';
-import { client as websiteHost, refreshToken } from './websiteHost/services.gen';
+import { UsageConstants } from '../constants';
 import { recorder } from '../recorder';
+import { client as apiHost1 } from './apiHost1/services.gen';
 import { ProblemDetails } from './websiteHost';
-import { UsageConstants } from '../UsageConstants';
+import { refreshToken, client as websiteHost } from './websiteHost/services.gen';
+
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
 const loginPath = '/login';

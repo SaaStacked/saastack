@@ -1,5 +1,6 @@
-import { Recorder, SeverityLevel } from '../recorder';
 import { recordCrash, recordPageView, recordTrace, recordUse } from '../api/websiteHost';
+import { Recorder, SeverityLevel } from '../recorder';
+
 
 export abstract class BrowserRecorder implements Recorder {
   crash(error: Error, message?: string): void {

@@ -1,8 +1,11 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: ['@storybook/addon-links'],
+  staticDirs: ['../public'],
+  addons: ['@storybook/addon-links', '@storybook/addon-msw', '@storybook/addon-postcss'],
   core: {
     builder: '@storybook/builder-vite'
   },
@@ -18,17 +21,9 @@ const config: StorybookConfig = {
       propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
     }
   },
-  viteFinal: async (config) => {
-    const { mergeConfig } = await import('vite');
-
+  async viteFinal(config) {
     return mergeConfig(config, {
-      ...config,
-      css: {
-        ...config.css,
-        postcss: {
-          plugins: [require('@tailwindcss/postcss'), require('autoprefixer')]
-        }
-      }
+      plugins: [(await import('@tailwindcss/vite')).default()]
     });
   }
 };

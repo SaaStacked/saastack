@@ -51,6 +51,7 @@ jobs:
           cd src/WebsiteHost/ClientApp
           npm ci --cache .npm --prefer-offline
           npm run build:releasefordeploy
+          npm run build-storybook
       - name: Substitute (Backend) GitHub Secrets/Variables
         uses: ./src/Tools.GitHubActions/VariableSubstitution
         with:

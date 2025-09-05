@@ -1,6 +1,7 @@
-import { ApplicationInsights, SeverityLevel as AISeverityLevel } from '@microsoft/applicationinsights-web';
+import { SeverityLevel as AISeverityLevel, ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { SeverityLevel } from '../recorder';
 import { BrowserRecorder } from './browserRecorder';
+
 
 const appInsightsKey = import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTIONSTRING;
 const applicationInsightsEnabled = import.meta.env.MODE === 'production';

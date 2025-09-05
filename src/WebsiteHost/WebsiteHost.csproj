@@ -48,5 +48,10 @@
     <ItemGroup>
         <None Include="ClientApp\.storybook\*.*" />
     </ItemGroup>
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="ClientApp\storybook-static\index.json" />
+        <_ContentIncludedByDefault Remove="ClientApp\storybook-static\manifest.json" />
+        <_ContentIncludedByDefault Remove="ClientApp\storybook-static\project.json" />
+    </ItemGroup>
 
 </Project>

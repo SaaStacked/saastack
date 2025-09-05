@@ -1,7 +1,13 @@
-# Ignore artifacts:
-build
-coverage
+# Ignore generated artifacts:
+/build
+/coverage
+/node_modules
+/storybook-static
+
+# Ignore generated API files
+/src/api/**/*.gen.ts
 
 # Ignore files
 **/*.html
 **/*.json
+**/*.log

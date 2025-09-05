@@ -18,23 +18,30 @@
   "type": "module",
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.53.7",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@storybook/addon-links": "^9.1.4",
+    "@storybook/addon-postcss": "^2.0.0",
     "@storybook/builder-vite": "^9.1.4",
     "@storybook/react": "^9.1.4",
     "@storybook/react-vite": "^9.1.4",
-    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
+    "@tanstack/react-query": "^5.87.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.18.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/tailwindcss": "^3.1.0",
     "@vitejs/plugin-react": "^5.0.2",
+    "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.4.7",
     "jsdom": "^26.1.0",
-    "postcss": "^8.5.6",
-    "prettier": "^3.3.3",
+    "msw": "^2.11.2",
+    "msw-storybook-addon": "^2.0.5",
+    "prettier": "^3.6.2",
     "storybook": "^9.1.4",
     "tailwindcss": "^4.1.13",
     "ts-node": "^10.9.2",
@@ -43,10 +50,22 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/react-fontawesome": "^3.0.2",
     "@hey-api/client-axios": "^0.2.7",
+    "@hookform/resolvers": "^5.2.1",
     "@microsoft/applicationinsights-web": "^3.3.4",
     "axios": "^1.7.7",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
+    "react-router-dom": "^7.8.2",
+    "react-toastify": "^11.0.5",
+    "zod": "^4.1.5"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

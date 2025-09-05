@@ -27,8 +27,23 @@ vi.mock('@hey-api/client-axios', async (importActual) => {
   };
 });
 
-// we need to save the original object for later to not affect tests from other files
+vi.mock('../recorder.ts', async (importActual) => {
+  const actualImpl = await importActual<typeof import('../recorder.ts')>();
+
+  return {
+    ...actualImpl,
+    crash: vi.fn(),
+    trace: vi.fn(),
+    traceDebug: vi.fn(),
+    traceInformation: vi.fn(),
+    trackPageView: vi.fn(),
+    trackUsage: vi.fn()
+  };
+});
+
+// we need to save the original objects for later to not affect tests from other files
 const ogLocation = global.window.location;
+const ogNavigator = global.window.navigator;
 
 beforeAll(() => {
   process.env.VITE_WEBSITEHOSTBASEURL = 'abaseurl';
@@ -45,13 +60,24 @@ beforeAll(() => {
   // @ts-ignore
   delete global.window.location;
   // noinspection JSConstantReassignment
+  delete global.window.navigator;
+  // noinspection JSConstantReassignment
   global.window = Object.create(window);
   // @ts-ignore
   global.window.location = { assign: vi.fn() };
+  // @ts-ignore
+  // noinspection JSConstantReassignment
+  global.window.navigator = {
+    onLine: true
+  };
+  global.window.addEventListener = vi.fn();
+  global.window.removeEventListener = vi.fn();
 });
 
 beforeEach(() => vi.clearAllMocks());
 
 afterAll(() => {
   global.window.location = ogLocation;
+  // noinspection JSConstantReassignment
+  global.window.navigator = ogNavigator;
 });
