@@ -3,7 +3,7 @@ import { client as apiHost1 } from './apiHost1/services.gen';
 import { client as websiteHost, refreshToken } from './websiteHost/services.gen';
 import { recorder } from '../recorder';
 import { ProblemDetails } from './websiteHost';
-import { UsageConstants } from '../UsageConstants';
+import { UsageConstants } from '../constants';
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
 const loginPath = '/login';

@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client';
 import { recorder } from './recorder';
 import { initializeApiClient } from './api';
 import App from './App.tsx';
+import { CurrentUserProvider } from './actions/identity/CurrentUserContext.tsx';
+import { OfflineServiceProvider } from './services/OfflineServiceContext.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 initializeApiClient();
 
@@ -9,8 +12,27 @@ if (window.isTestingOnly) {
   recorder.traceInformation(`TESTINGONLY is enabled, and this app is HOSTED-ON: ${window.isHostedOn}`);
 }
 
-recorder.trackPageView(window.location.pathname);
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 10000 // prevents fetch from refreshing more than once every 10 seconds
+    },
+    mutations: {
+      retry: false
+    }
+  }
+});
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
-root.render(<App />);
+root.render(
+  <QueryClientProvider client={queryClient}>
+    <OfflineServiceProvider>
+      <CurrentUserProvider>
+        <App />
+      </CurrentUserProvider>
+    </OfflineServiceProvider>
+  </QueryClientProvider>
+);

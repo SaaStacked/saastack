@@ -1,27 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export interface ButtonProps {
-  /** Button content */
-  children: React.ReactNode;
-  /** Button variant */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  /** Button size */
-  size?: 'sm' | 'md' | 'lg';
-  /** Disabled state */
-  disabled?: boolean;
-  /** Loading state */
-  loading?: boolean;
-  /** Full width */
-  fullWidth?: boolean;
-  /** Click handler */
-  onClick?: () => void;
-  /** Button type */
-  type?: 'button' | 'submit' | 'reset';
-  /** Additional CSS classes */
   className?: string;
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
+  fullWidth?: boolean;
+  onClick?: () => void;
+  navigateTo?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button: React.FC<ButtonProps> = ({
+  className = '',
   children,
   variant = 'primary',
   size = 'md',
@@ -29,8 +23,8 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   fullWidth = false,
   onClick,
-  type = 'button',
-  className = ''
+  navigateTo,
+  type = 'button'
 }) => {
   const baseClasses =
     'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -55,8 +49,14 @@ const Button: React.FC<ButtonProps> = ({
     .filter(Boolean)
     .join(' ');
 
+  let onClickTarget = onClick;
+  let navigate = useNavigate();
+  if (navigateTo) {
+    onClickTarget = () => navigate(navigateTo);
+  }
+
   return (
-    <button type={type} className={classes} disabled={disabled || loading} onClick={onClick}>
+    <button type={type} className={classes} disabled={disabled || loading} onClick={onClickTarget}>
       {loading && (
         <svg
           className="animate-spin -ml-1 mr-2 h-4 w-4"

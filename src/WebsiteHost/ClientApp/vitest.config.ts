@@ -8,6 +8,12 @@ export default mergeConfig(viteConfig, {
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/testing/setup.ts'],
-    testTimeout: 20000
+    testTimeout: 20000,
+    coverage: {
+      enabled: true,
+      reporter: ['text', 'lcov'],
+      exclude: ['src/testing/**/*', 'src/main.tsx'],
+      provider: 'v8'
+    }
   }
 });

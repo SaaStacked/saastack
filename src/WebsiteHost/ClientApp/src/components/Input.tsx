@@ -1,45 +1,29 @@
 import React from 'react';
 
 export interface InputProps {
-  /** Input label */
-  label?: string;
-  /** Input placeholder */
-  placeholder?: string;
-  /** Input type */
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
-  /** Input value */
-  value?: string;
-  /** Default value */
-  defaultValue?: string;
-  /** Disabled state */
-  disabled?: boolean;
-  /** Required field */
-  required?: boolean;
-  /** Error state */
-  error?: boolean;
-  /** Error message */
-  errorMessage?: string;
-  /** Help text */
-  helpText?: string;
-  /** Input size */
-  size?: 'sm' | 'md' | 'lg';
-  /** Full width */
-  fullWidth?: boolean;
-  /** Change handler */
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  /** Blur handler */
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  /** Focus handler */
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  /** Additional CSS classes */
   className?: string;
-  /** Input name */
+  label?: string;
+  placeholder?: string;
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
+  value?: string;
+  defaultValue?: string;
+  disabled?: boolean;
+  required?: boolean;
+  error?: boolean;
+  errorMessage?: string;
+  helpText?: string;
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   name?: string;
-  /** Input id */
   id?: string;
+  autoComplete?: string;
 }
 
 const Input: React.FC<InputProps> = ({
+  className = '',
   label,
   placeholder,
   type = 'text',
@@ -55,9 +39,9 @@ const Input: React.FC<InputProps> = ({
   onChange,
   onBlur,
   onFocus,
-  className = '',
   name,
-  id
+  id,
+  autoComplete
 }) => {
   const baseClasses =
     'border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -84,8 +68,7 @@ const Input: React.FC<InputProps> = ({
     <div className={fullWidth ? 'w-full' : ''}>
       {labelText && (
         <label htmlFor={inputId} aria-labelledby={inputId} className="block text-sm font-medium text-gray-700 mb-1">
-          {labelText}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {labelText}:{required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
       <input
@@ -100,6 +83,7 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         onBlur={onBlur}
         onFocus={onFocus}
+        autoComplete={autoComplete}
         className={inputClasses}
       />
       {errorMessage && error && <p className="mt-1 text-sm text-red-600">{errorMessage}</p>}
