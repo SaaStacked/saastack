@@ -1,8 +1,9 @@
-import type { Plugin } from 'vite';
-import { defineConfig } from 'vite';
+import fs from 'fs';
 import path, { resolve } from 'path';
 import react from '@vitejs/plugin-react';
-import fs from 'fs';
+import type { Plugin } from 'vite';
+import { defineConfig } from 'vite';
+
 
 function generateBundledFiles(): Plugin {
   return {

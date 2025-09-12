@@ -1,15 +1,16 @@
-import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import './main.css';
+import React, { useEffect } from 'react';
+import { useCurrentUser } from './actions/identity/CurrentUserContext.tsx';
 import { HomeAnonymousPage } from './pages/homeAnonymous.tsx';
 import { HomeAuthenticatedPage } from './pages/homeAuthenticated.tsx';
-import { LoginCredentialsPage } from './pages/identity/loginCredentials.tsx';
-import { RegisterCredentialsPage } from './pages/identity/registerCredentials.tsx';
-import React, { useEffect } from 'react';
 import { AfterRegisterCredentials } from './pages/identity/afterRegisterCredentials.tsx';
-import { LoginSsoMicrosoftPage } from './pages/identity/loginSsoMicrosoft.tsx';
+import { LoginCredentialsPage } from './pages/identity/loginCredentials.tsx';
 import { LoginSsoGooglePage } from './pages/identity/loginSsoGoogle.tsx';
+import { LoginSsoMicrosoftPage } from './pages/identity/loginSsoMicrosoft.tsx';
+import { RegisterCredentialsPage } from './pages/identity/registerCredentials.tsx';
 import { recorder } from './recorder.ts';
-import { useCurrentUser } from './actions/identity/CurrentUserContext.tsx';
+
 
 const App: React.FC = () => {
   const { isAuthenticated, isExecuting } = useCurrentUser();

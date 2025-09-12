@@ -1,6 +1,7 @@
-import { IOfflineService } from './IOfflineService';
-import { DefaultOfflineService } from './DefaultOfflineService';
 import { createContext, useContext } from 'react';
+import { DefaultOfflineService } from './DefaultOfflineService';
+import { IOfflineService } from './IOfflineService';
+
 
 interface OfflineServiceContextContent {
   offlineService: IOfflineService;

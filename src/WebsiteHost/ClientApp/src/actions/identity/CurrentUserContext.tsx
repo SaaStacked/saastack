@@ -1,8 +1,9 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
 import { UserProfileForCaller } from '../../api/apiHost1';
-import { LogoutAction } from './logoutUser.tsx';
 import { anonymousUser } from '../../constants.ts';
 import { GetProfileForCallerAction } from '../userProfiles/getProfileForCaller.tsx';
+import { LogoutAction } from './logoutUser.tsx';
+
 
 interface CurrentUserProviderProps {
   children?: ReactNode;
@@ -29,9 +30,7 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
 
   const { execute: logout, isExecuting: isLoggingOut, isSuccess: isLogoutSuccess } = LogoutAction();
 
-  useEffect(() => {
-    getCallerProfile();
-  }, []);
+  useEffect(() => getCallerProfile(), []);
 
   // If we have an error fetching the profile, and we're not already logging out, log out.
   useEffect(() => {

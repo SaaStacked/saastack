@@ -1,8 +1,9 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
 import { client as apiHost1 } from './apiHost1';
 import { initializeApiClient } from './index';
 import { client as websiteHost } from './websiteHost';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 
 interface FulfilledHandler<T> {
   (value: T): T | Promise<T>;

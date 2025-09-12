@@ -1,10 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useQuery } from '@tanstack/react-query';
-import useApiErrorState from './ApiErrorState.tsx';
-import { useOfflineService } from '../services/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
+import { useOfflineService } from '../services/OfflineServiceContext.tsx';
 import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.tsx';
+import useApiErrorState from './ApiErrorState.tsx';
+
 
 export interface ActionQueryConfiguration<
   TRequestData extends ActionRequestData,
@@ -70,7 +71,7 @@ export default function useActionQuery<
         try {
           const requestData = currentRequestDataRef.current ?? ({} as TRequestData);
           let res = await request(requestData);
-          return await(res?.data ?? ({} as TResponse));
+          return await (res?.data ?? ({} as TResponse));
         } catch (error) {
           throw error;
         }

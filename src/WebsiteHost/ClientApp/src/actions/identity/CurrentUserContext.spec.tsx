@@ -1,19 +1,20 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 import {
   getProfileForCaller,
   GetProfileForCallerResponse,
   UserProfileClassification,
   UserProfileForCaller
 } from '../../api/apiHost1';
+import { logout } from '../../api/websiteHost';
 import { anonymousUser } from '../../constants.ts';
-import { AxiosError, AxiosResponse } from 'axios';
 import { IOfflineService } from '../../services/IOfflineService.tsx';
 import { OfflineServiceProvider } from '../../services/OfflineServiceContext.tsx';
 import { CurrentUserProvider, useCurrentUser } from './CurrentUserContext.tsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { logout } from '../../api/websiteHost';
+
 
 vi.mock('../../api/apiHost1/services.gen', () => ({
   getProfileForCaller: vi.fn()

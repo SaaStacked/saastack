@@ -1,7 +1,8 @@
-import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as https from 'https';
 import { createClient } from '@hey-api/openapi-ts';
+import * as dotenv from 'dotenv';
+
 
 dotenv.config({ path: '.env.local' });
 

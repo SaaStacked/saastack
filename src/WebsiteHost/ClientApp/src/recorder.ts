@@ -1,6 +1,7 @@
-import { AzureRecorder } from './recorders/azureRecorder';
 import { AwsRecorder } from './recorders/awsRecorder';
+import { AzureRecorder } from './recorders/azureRecorder';
 import { NoOpRecorder } from './recorders/noOpRecorder';
+
 
 export interface Recorder {
   crash: (error: Error, message?: string) => void;

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { authenticate } from '../../api/websiteHost';
 import { HttpStatusCode } from 'axios';
-import Form from '../../components/Form.tsx';
-import { Input } from '../../components';
 import { LoginCredentialsAction } from '../../actions/identity/loginCredentials.ts';
+import { authenticate } from '../../api/websiteHost';
+import { Input } from '../../components';
+import Form from '../../components/Form.tsx';
+
 
 export const LoginCredentialsPage: React.FC = () => {
   const [formData, setFormData] = useState({

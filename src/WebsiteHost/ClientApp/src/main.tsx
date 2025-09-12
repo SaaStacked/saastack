@@ -1,10 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
-import { recorder } from './recorder';
+import { CurrentUserProvider } from './actions/identity/CurrentUserContext.tsx';
 import { initializeApiClient } from './api';
 import App from './App.tsx';
-import { CurrentUserProvider } from './actions/identity/CurrentUserContext.tsx';
+import { recorder } from './recorder';
 import { OfflineServiceProvider } from './services/OfflineServiceContext.tsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 initializeApiClient();
 

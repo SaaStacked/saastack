@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
-import useApiErrorState from './ApiErrorState.tsx';
 import { act, renderHook } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { AxiosError } from 'axios';
 import { recorder } from '../recorder';
+import useApiErrorState from './ApiErrorState.tsx';
+
 
 describe('useApiErrorState', () => {
   const expectedErrorStatusCodes = {
