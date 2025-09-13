@@ -115,7 +115,7 @@ export function useActionCommand<
     lastExpectedError: expectedError,
     lastUnexpectedError: unexpectedError,
     isExecuting,
-    isOnline,
+    isReady: isOnline,
     lastRequestValues: isOnline ? variables : undefined
   };
 }

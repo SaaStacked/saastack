@@ -124,7 +124,7 @@ export default function useActionQuery<
     lastExpectedError: expectedError,
     lastUnexpectedError: unexpectedError,
     isExecuting,
-    isOnline,
+    isReady: isOnline,
     lastRequestValues: isOnline ? variables : undefined
   };
 }

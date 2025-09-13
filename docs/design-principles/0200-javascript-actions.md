@@ -2,7 +2,9 @@
 
 ## Overview
 
-JavaScript "Actions" are a mechanism (in web-based clients) that provides completeness, consistency and durability when building user interfaces. When Actions are used the overall usability of a product increases, and the overall effort by the engineer decreases. Using Actions helps engineers create new user interfaces quickly and reliably, and allows them to focus on what is important, while Actions take care of the mundane and uninteresting.
+JavaScript "Actions" are the heart of a UI mechanism (in web-based clients) that provides completeness, consistency and durability when building user interfaces. In a way, they are an architectural style designed to solve many problems we see experienced by developers building UIs rapidly.
+
+When "actions" are used, the overall usability of a product increases, and the overall effort by the engineer decreases. Using actions helps engineers create new user interfaces quickly and reliably, and allows them to focus on what is important, while actions take care of the mundane and uninteresting duties that are expected as table stakes for any reasonable operating UI.
 
 Building an interactive user interface is a complex activity, usually focused on getting something working, as per some visual or imagined design. Even the simplest of interactions with the user, like handling a user login, requires coding for many use cases (e.g., happy path, error paths), and several edge cases that are difficult to remember (e.g., validation, network issues), and handle completely and effectively.
 
@@ -18,9 +20,9 @@ That is exactly why we have designed "Reactive Actions".
 
 ## Implementation
 
-Here is a Reactive Action.
+Here is a JavaScript Action.
 
-![Reactive  Action](../images/FrontEnd-Action.png)
+![JavaScript Action](../images/FrontEnd-Action.png)
 
 The action is used in all interactive UI pages/components that make calls to backend APIs.
 
@@ -28,33 +30,36 @@ The action is a simple 'class' derived from a base implementation, either wired 
 
 The action is bound to:
 
-1. Always, an `IOfflineService`, that monitors the 'online' status of the browser/device
-2. Always, An XHR API call (via an axios generated client) with a defined set of end-user expected errors with an optional set of unexpected errors, both with end-user specific messages, and an optional set of expected success codes.
-3. Optionally, bound to a UI form, that is populated with Action aware components. These components can report validation status to the action.
+1. An `IOfflineService`, that monitors the 'online' status of the browser/device
+2. An XHR API call (e.g., an Axios generated client)
+3. A defined set of end-user expected errors (i.e. HTTP status codes) with end-user specific messages.
+4. Optionally, bound to a UI form, that is pre-populated with a set of Action aware components. These components respond to the state of the action.
 
 ### How It Works
 
-Regardless of the JavaScript architecture or JavaScript framework itself (e.g., VueJs, ReactJs, JQuery, etc.) or whether it is hand-rolled, there are some default behaviors that Actions must perform.
+Regardless of the JavaScript architecture or JavaScript framework itself (e.g., Vue.js, React.js, JQuery, etc.) or whether it is hand-rolled, there are some default behaviors that Actions must perform.
 
 > Implementation details vary, but all these behaviors can be implemented with any of these frameworks or manual approaches.
+
+In this codebase, please refer to both `useActionQuery` and `useActionCommand` classes in the `WebsiteHost/Client/src/actions` folder, and the `Form` component in the `WebsiteHost/ClientApp/src/components/actions` folder.
 
 #### Offline Handling
 
 The `IOfflineService` actively monitors the browser's network connectivity.
 
-* This service actively/passively detects when connectivity is lost using various strategies (i.e., polling),
+* This service both passively and actively detects when network connectivity is lost using various strategies (i.e., `window.navigator.online` and polling an known endpoint, like the `/api/health` endpoint),
 * It maintains a state of 'online' or 'offline'.
 * This service must also be updated whenever any XHR call fails due to loss of connectivity, and when it is, it must then actively detect when connectivity is restored.
 
 The action is always wired into this `IOfflineService`:
 
-If 'offline':
+When 'offline':
 
 * The UI will indicate that the user experience is offline (e.g., a banner on top of the page).
 * No XHR API call can be made. See "XHR Handling" below for more details.
 * If the action is bound to a `<Form/>`, then see "Form Handling" below
 
-If 'online':
+When 'online':
 
 * The UI will indicate that the user experience is online (e.g., hide the offline banner on top of the page).
 * The bound XHR call will be allowed to be made. See "XHR Handling" below for more details.
@@ -62,7 +67,7 @@ If 'online':
 
 #### XHR Handling
 
-All actions are bound to a mandatory XHR definition, which will define an HTTP request, a URL, and optionally collections of 'expected' and 'unexpected' errors, with messages to be shared with end users, should they arise.
+All actions are bound to a mandatory XHR definition, which will define an HTTP request, a URL, and optionally collections of 'expected' and with messages to be shared with end users, should they arise.
 
 * The XHR call can be made programmatically by the action.
 * The bound XHR call will be allowed to be made only when the `IOfflineService.status` is 'online'

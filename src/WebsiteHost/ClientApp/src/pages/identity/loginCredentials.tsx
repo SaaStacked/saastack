@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { HttpStatusCode } from 'axios';
+import z from 'zod';
 import { LoginCredentialsAction } from '../../actions/identity/loginCredentials.ts';
-import { authenticate } from '../../api/websiteHost';
-import { Input } from '../../components';
-import Form from '../../components/Form.tsx';
+import Form from '../../components/actions/Form.tsx';
+import FormSubmitButton from '../../components/actions/formSubmitButton/FormSubmitButton.tsx';
+import Input from '../../components/Input.tsx';
 
 
 export const LoginCredentialsPage: React.FC = () => {
@@ -13,7 +13,7 @@ export const LoginCredentialsPage: React.FC = () => {
     password: ''
   });
 
-  const { state } = LoginCredentialsAction();
+  const login = LoginCredentialsAction();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,39 +23,18 @@ export const LoginCredentialsPage: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await authenticate({
-        body: {
-          password: formData.password,
-          provider: 'credentials',
-          username: formData.username
-        }
-      });
-
-      if (response.status === HttpStatusCode.Ok) {
-        window.location.assign('/');
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1>Sign In</h1>
-        //TODO: specify the action to the form //TODO: form should handle the errors and have the error component
-        //TODO: no need to specify value={formData.username}, should be taken from the action request //TODO: no need to
-        specify onchange, should be done by the form //TODO: form shoudl do the Submit, and isLoading and handle error
-        and validation
-        <Form action={login}>
+        <Form
+          id="login-credentials"
+          action={login}
+          validations={z.object({
+            username: z.string().min(1, 'Username is required'),
+            password: z.string().min(1, 'Password is required')
+          })}
+        >
           <Input
             name="username"
             label="Username"
@@ -73,6 +52,7 @@ export const LoginCredentialsPage: React.FC = () => {
             value={formData.password}
             onChange={handleInputChange}
           />
+          <FormSubmitButton />
         </Form>
         <div className="">
           <p>

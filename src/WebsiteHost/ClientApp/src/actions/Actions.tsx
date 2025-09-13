@@ -2,17 +2,14 @@ import { AxiosError } from 'axios';
 import { ExpectedErrorDetails } from './ApiErrorState.tsx';
 import { useCurrentUser } from './identity/CurrentUserContext.tsx';
 
+
 export interface ActionRequestData extends Record<string, any> {}
 
-export interface ActionResult<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = '',
-  TResponse = any
-> {
+export interface ActionResult<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = '', TResponse = any> {
   // To execute the XHR request
   execute: (
     requestData?: TRequestData,
-    options?: { onSuccess?: (requestData: { requestData?: ActionRequestData; response: TResponse }) => void }
+    options?: { onSuccess?: (params: { requestData?: TRequestData; response: TResponse }) => void }
   ) => void;
   // Whether the action completed a successful XHR request
   isSuccess?: boolean;
@@ -25,7 +22,7 @@ export interface ActionResult<
   // Whether the action is already executing
   isExecuting: boolean;
   // Whether the browser is online and able to execute
-  isOnline: boolean;
+  isReady: boolean;
   // The actual values sent in the last request
   lastRequestValues?: TRequestData | undefined;
 }

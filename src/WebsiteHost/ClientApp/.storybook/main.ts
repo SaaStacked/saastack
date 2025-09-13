@@ -17,19 +17,6 @@ const config: StorybookConfig = {
       shouldExtractLiteralValuesFromEnum: true,
       propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
     }
-  },
-  viteFinal: async (config) => {
-    const { mergeConfig } = await import('vite');
-
-    return mergeConfig(config, {
-      ...config,
-      css: {
-        ...config.css,
-        postcss: {
-          plugins: [require('@tailwindcss/postcss'), require('autoprefixer')]
-        }
-      }
-    });
   }
 };
 

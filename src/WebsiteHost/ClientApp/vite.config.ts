@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path, { resolve } from 'path';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 
@@ -81,12 +82,16 @@ export default defineConfig({
       ...generateBundledFiles(),
       apply: 'build'
     },
-    react()
+    react(),
+    tailwindcss()
   ],
   esbuild: {
     target: 'esnext'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
   }
 });

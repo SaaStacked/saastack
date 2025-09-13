@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from './Button';
 
+
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
@@ -121,7 +122,7 @@ export const AllVariants: Story = {
         <Button size="lg">Large</Button>
       </div>
       <div className="space-x-2">
-        <Button loading>Loading</Button>
+        <Button busy>Loading</Button>
         <Button disabled>Disabled</Button>
       </div>
     </div>

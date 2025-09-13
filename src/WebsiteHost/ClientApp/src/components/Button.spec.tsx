@@ -48,7 +48,7 @@ describe('Button', () => {
   });
 
   it('handles loading state correctly', () => {
-    render(<Button loading>Loading</Button>);
+    render(<Button busy>Loading</Button>);
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
     expect(screen.getByRole('button')).toContainHTML('svg');
@@ -82,7 +82,7 @@ describe('Button', () => {
   it('does not call onClick when loading', () => {
     const handleClick = vi.fn();
     render(
-      <Button loading onClick={handleClick}>
+      <Button busy onClick={handleClick}>
         Loading
       </Button>
     );
@@ -108,7 +108,7 @@ describe('Button', () => {
   });
 
   it('shows loading spinner when loading', () => {
-    render(<Button loading>Loading Button</Button>);
+    render(<Button busy>Loading Button</Button>);
     const spinner = screen.getByRole('button').querySelector('svg');
     expect(spinner).toBeInTheDocument();
     expect(spinner).toHaveClass('animate-spin');
