@@ -1,6 +1,29 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
-import { faAdd, faArrowRightFromBracket, faBars, faBuilding, faCalendar, faCamera, faCarAlt, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleArrowLeft, faExclamationTriangle, faEye, faEyeSlash, faInfoCircle, faMoon, faUser, faUserCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faArrowRightFromBracket,
+  faBars,
+  faBuilding,
+  faCalendar,
+  faCamera,
+  faCarAlt,
+  faCheck,
+  faCheckCircle,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faChevronUp,
+  faCircleArrowLeft,
+  faExclamationTriangle,
+  faEye,
+  faEyeSlash,
+  faInfoCircle,
+  faMoon,
+  faUser,
+  faUserCircle,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
 import { createComponentId } from '../Components.ts';
 
 

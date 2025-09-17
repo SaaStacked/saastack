@@ -1,6 +1,5 @@
 import { IOfflineService } from './IOfflineService';
 
-
 export class DefaultOfflineService implements IOfflineService {
   private _callbacks: Array<(status: 'online' | 'offline') => void> = [];
 

@@ -8,7 +8,6 @@ import { TestingProviders } from '../testing/TestingProviders.tsx';
 import { useActionCommand } from './ActionCommand';
 import { ActionRequestData } from './Actions';
 
-
 interface UntenantedRequestData extends ActionRequestData {
   name?: string;
   value?: string;

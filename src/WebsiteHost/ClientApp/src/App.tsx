@@ -1,6 +1,7 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import './main.css';
 import React, { useEffect } from 'react';
+import { OfflineBanner } from './components/offline/OfflineBanner';
 import { HomeAnonymousPage } from './pages/homeAnonymous.tsx';
 import { HomeAuthenticatedPage } from './pages/homeAuthenticated.tsx';
 import { AfterRegisterCredentials } from './pages/identity/afterRegisterCredentials.tsx';
@@ -20,6 +21,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen font-sans">
+      <OfflineBanner />
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Routes>
           <Route path="/" element={<HomeAnonymousPage />} />

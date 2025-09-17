@@ -69,10 +69,8 @@ export const TextInput: Story = {
         name: z.string().min(1, 'Name is required').optional()
       })}
     >
-      <div className="space-y-4">
-        <FormInput {...args} />
-        <FormSubmitButton />
-      </div>
+      <FormInput {...args} />
+      <FormSubmitButton />
     </Form>
   )
 };
@@ -93,10 +91,8 @@ export const NumberInput: Story = {
         age: z.number().min(18, 'Age must be more than 18').max(100, 'Age must be less than 100').optional()
       })}
     >
-      <div className="space-y-4">
-        <FormInput {...args} />
-        <FormSubmitButton />
-      </div>
+      <FormInput {...args} />
+      <FormSubmitButton />
     </Form>
   )
 };
@@ -118,10 +114,8 @@ export const EmailInput: Story = {
         email: z.email('Invalid email address').optional()
       })}
     >
-      <div className="space-y-4">
-        <FormInput {...args} />
-        <FormSubmitButton />
-      </div>
+      <FormInput {...args} />
+      <FormSubmitButton />
     </Form>
   )
 };

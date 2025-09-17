@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { createComponentId } from '../Components.ts';
 import Icon, { IconSymbol, TailwindColor } from '../icon/Icon';
 
-
 interface AlertProps {
   id?: string;
   children?: ReactNode;

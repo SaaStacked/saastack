@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Icon from './Icon';
 
-
 describe('Icon', () => {
   it('renders FontAwesome icon with default props', () => {
     render(<Icon id="anid" symbol="camera" />);

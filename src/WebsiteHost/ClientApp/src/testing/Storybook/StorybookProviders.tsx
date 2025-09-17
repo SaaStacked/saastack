@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { TestingProviders } from '../TestingProviders';
 
-
 interface StorybookProvidersProps {
   children?: React.ReactNode;
   initialTestingEntries?: string[];

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { createComponentId } from '../Components.ts';
 
-
 interface UnhandledErrorProps {
   id?: string;
   error?: AxiosError;

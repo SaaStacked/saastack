@@ -6,7 +6,6 @@ import { useOfflineService } from '../services/OfflineServiceContext.tsx';
 import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
-
 export interface ActionCommandConfiguration<
   TRequestData extends ActionRequestData,
   ExpectedErrorCode extends string = '',

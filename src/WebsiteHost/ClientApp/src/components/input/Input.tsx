@@ -65,59 +65,66 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const labelText = label || name || componentId;
     return (
       <div
-        className={`grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] sm:grid-rows-[auto_auto] gap-1 sm:gap-2 items-center ${fullWidth ? 'w-full' : ''}`}
+        className={`grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] sm:grid-rows-[auto_auto] gap-1 sm:gap-2 items-start ${fullWidth ? 'w-full' : ''}`}
         data-testid={`${componentId}_wrapper`}
       >
-        <div>
-          <div className="sm:order-1">
-            {labelText && (
-              <label
-                className={`block text-sm font-medium text-gray-700 sm:min-w-0 sm:flex-shrink-0 sm:${size == 'lg' ? 'pt-4' : 'pt-2'}`}
-                data-testid={`${componentId}_label`}
-                htmlFor={componentId}
-                aria-labelledby={componentId}
-              >
-                {`${labelText}:`}
-                {required && (
-                  <span className="text-red-500 ml-1" data-testid={`${componentId}_required`}>
-                    *
-                  </span>
-                )}
-              </label>
-            )}
-          </div>
+        <div className="sm:order-1">
+          {labelText && (
+            <label
+              className={`block text-sm font-medium text-gray-700 sm:min-w-0 sm:flex-shrink-0 ${size === 'lg' ? 'pt-3' : 'pt-2'}`}
+              data-testid={`${componentId}_label`}
+              htmlFor={componentId}
+              aria-labelledby={componentId}
+            >
+              {`${labelText}:`}
+              {required && (
+                <span className="text-red-500 ml-1" data-testid={`${componentId}_required`}>
+                  *
+                </span>
+              )}
+            </label>
+          )}
         </div>
-        <div>
-          <div className="sm:order-2">
-            <input
-              className={classes}
-              data-testid={componentId}
-              id={componentId}
-              name={name}
-              type={type}
-              placeholder={placeholder}
-              value={value}
-              disabled={disabled}
-              required={required}
-              onChange={onChange}
-              onBlur={onBlur}
-              onFocus={onFocus}
-              autoComplete={autoComplete}
-              ref={ref}
-              {...props}
-            />
-          </div>
-          <div className="sm:order-4">
-            {errorMessage && (
-              <p className="mt-1 text-sm text-red-600" data-testid={`${componentId}_error`}>
-                {errorMessage}
-              </p>
-            )}
-            {hintText && !errorMessage && (
-              <p className="mt-1 text-sm text-gray-500" data-testid={`${componentId}_hint`}>
-                {hintText}
-              </p>
-            )}
+
+        <div className="sm:order-2 flex flex-col">
+          <input
+            className={classes}
+            data-testid={componentId}
+            id={componentId}
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            disabled={disabled}
+            required={required}
+            onChange={onChange}
+            onBlur={onBlur}
+            onFocus={onFocus}
+            autoComplete={autoComplete}
+            ref={ref}
+            {...props}
+          />
+
+          {/* Always reserve space for error/hint messages */}
+          <div className="mt-1 min-h-[1.25rem]">
+            <p
+              className={`text-sm transition-opacity duration-200 ${
+                errorMessage ? 'text-red-600 opacity-100' : 'opacity-0'
+              }`}
+              data-testid={`${componentId}_error`}
+              aria-live="polite"
+            >
+              {errorMessage || '\u00A0'}
+            </p>
+            <p
+              className={`text-sm text-gray-500 transition-opacity duration-200 ${
+                hintText && !errorMessage ? 'opacity-100' : 'opacity-0'
+              }`}
+              data-testid={`${componentId}_hint`}
+              aria-live="polite"
+            >
+              {hintText || '\u00A0'}
+            </p>
           </div>
         </div>
       </div>

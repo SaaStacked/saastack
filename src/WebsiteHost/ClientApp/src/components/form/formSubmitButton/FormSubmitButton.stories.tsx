@@ -104,11 +104,9 @@ export const ReadyToSubmit: Story = {
       defaultValues={{ name: 'John', email: 'john@example.com' }}
       validationSchema={validations}
     >
-      <div className="space-y-4">
-        <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
-        <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
-        <FormSubmitButton {...args} />
-      </div>
+      <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
+      <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
+      <FormSubmitButton {...args} />
     </Form>
   )
 };
@@ -124,11 +122,9 @@ export const Executing: Story = {
       defaultValues={{ name: 'John', email: 'john@example.com' }}
       validationSchema={validations}
     >
-      <div className="space-y-4">
-        <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
-        <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
-        <FormSubmitButton {...args} />
-      </div>
+      <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
+      <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
+      <FormSubmitButton {...args} />
     </Form>
   )
 };

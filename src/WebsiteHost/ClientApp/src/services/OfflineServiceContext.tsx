@@ -12,9 +12,12 @@ interface OfflineServiceContextContent {
   offlineService: IOfflineService;
 }
 
-const OfflineServiceContext = createContext<OfflineServiceContextContent | null>(null);
+export const OfflineServiceContext = createContext<OfflineServiceContextContent | null>(null);
 
-export function OfflineServiceProvider({ children, offlineService = new DefaultOfflineService() }: OfflineServiceProps) {
+export function OfflineServiceProvider({
+  children,
+  offlineService = new DefaultOfflineService()
+}: OfflineServiceProps) {
   return <OfflineServiceContext.Provider value={{ offlineService }}>{children}</OfflineServiceContext.Provider>;
 }
 

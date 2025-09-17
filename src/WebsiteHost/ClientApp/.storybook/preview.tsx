@@ -4,7 +4,6 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import { handlers } from '../src/testing/Storybook/msw-handlers';
 import { StorybookProviders } from '../src/testing/Storybook/StorybookProviders';
 
-
 // Initialize MSW addon
 initialize();
 

@@ -9,3 +9,9 @@
     --color-primary: #0C6291;
     --color-secondary: #E1523D;
 }
+
+@layer base {
+    a {
+        @apply text-primary hover:text-primary/80 visited:text-purple-600 underline;
+    }
+}

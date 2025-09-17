@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { createComponentId } from '../Components.ts';
 
-
 interface LabelProps {
   className?: string;
   id?: string;

@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createComponentId } from '../Components.ts';
 
-
 export interface ButtonProps {
   className?: string;
   id?: string;

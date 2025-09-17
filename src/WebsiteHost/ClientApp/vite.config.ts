@@ -5,7 +5,6 @@ import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 
-
 function generateBundledFiles(): Plugin {
   return {
     name: 'bundle-file-generator',

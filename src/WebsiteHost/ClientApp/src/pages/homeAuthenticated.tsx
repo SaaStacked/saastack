@@ -1,7 +1,6 @@
 import { LogoutAction } from '../actions/identity/logoutUser.ts';
 import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 
-
 export function HomeAuthenticatedPage() {
   const { profile } = useCurrentUser();
   const { execute: logout } = LogoutAction();

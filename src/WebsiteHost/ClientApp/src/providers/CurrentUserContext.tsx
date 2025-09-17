@@ -4,7 +4,6 @@ import { GetProfileForCallerAction } from '../actions/userProfiles/getProfileFor
 import { UserProfileForCaller } from '../api/apiHost1';
 import { anonymousUser } from '../constants.ts';
 
-
 interface CurrentUserProviderProps {
   children?: ReactNode;
 }

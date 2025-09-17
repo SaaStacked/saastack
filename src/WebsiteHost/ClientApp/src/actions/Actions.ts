@@ -2,7 +2,6 @@ import { AxiosError } from 'axios';
 import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 import { ExpectedErrorDetails } from './ApiErrorState.ts';
 
-
 export interface ActionRequestData extends Record<string, any> {}
 
 export interface ActionResult<

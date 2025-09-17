@@ -1,7 +1,6 @@
 import { authenticate, AuthenticateData, AuthenticateResponse2 } from '../../api/websiteHost';
 import { useActionCommand } from '../ActionCommand.ts';
 
-
 export enum LoginError {
   ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
   ACCOUNT_UNVERIFIED = 'ACCOUNT_UNVERIFIED',

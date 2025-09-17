@@ -6,7 +6,6 @@ import Form from '../../components/form/Form.tsx';
 import FormSubmitButton from '../../components/form/formSubmitButton/FormSubmitButton.tsx';
 import Input from '../../components/input/Input.tsx';
 
-
 export const LoginCredentialsPage: React.FC = () => {
   const [formData, setFormData] = useState({
     username: '',

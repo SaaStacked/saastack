@@ -6,7 +6,6 @@ import { mergeConfig } from 'vite';
 import viteConfig from './vite.config';
 
 
-;
 
 
 
@@ -14,7 +13,6 @@ import viteConfig from './vite.config';
 
 
 
-;
 
 
 
@@ -22,7 +20,9 @@ import viteConfig from './vite.config';
 
 
 
-;
+
+
+
 
 
 
