@@ -63,41 +63,40 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   const classes = [baseClasses, className].filter(Boolean).join(' ');
   const isDisabled =
     disabled || action.isExecuting || !action.isReady || (action.isSuccess === true && formHooks.formState.isSubmitted);
+  const lastExpectedError = action.lastExpectedError
+    ? (expectedErrorMessages?.[action.lastExpectedError.code] ?? action.lastExpectedError.code)
+    : undefined;
   const componentId = createComponentId('action_form', id);
   return (
     <ActionFormContext.Provider value={action}>
       <ActionFormRequiredFieldsContext.Provider value={requiredFormFields}>
         <ActionFromValidationContext.Provider value={validatesWhen}>
           <FormProvider {...formHooks}>
-            <fieldset disabled={isDisabled}>
-              <form
-                className={classes}
-                data-testid={componentId}
-                name={componentId}
-                onSubmit={formHooks.handleSubmit((requestData) =>
-                  action.execute(requestData, {
-                    onSuccess: (successParams) => {
-                      if (onSuccess) {
-                        onSuccess(successParams);
+            <div className="container flex flex-col items-center">
+              <fieldset disabled={isDisabled}>
+                <form
+                  className={classes}
+                  data-testid={componentId}
+                  name={componentId}
+                  onSubmit={formHooks.handleSubmit((requestData) =>
+                    action.execute(requestData, {
+                      onSuccess: (successParams) => {
+                        if (onSuccess) {
+                          onSuccess(successParams);
+                        }
                       }
-                    }
-                  })
-                )}
-                noValidate={true}
-              >
-                {children}
-                <div className="mt-4">
-                  <Alert
-                    id={`${componentId}_expected_error`}
-                    message={
-                      action.lastExpectedError ? expectedErrorMessages?.[action.lastExpectedError.code] : undefined
-                    }
-                    type="error"
-                  />
-                  <UnhandledError id={`${componentId}_unexpected_error`} error={action.lastUnexpectedError} />
-                </div>
-              </form>
-            </fieldset>
+                    })
+                  )}
+                  noValidate={true}
+                >
+                  {children}
+                  <div className="mt-4">
+                    <Alert id={`${componentId}_expected_error`} message={lastExpectedError} type="error" />
+                    <UnhandledError id={`${componentId}_unexpected_error`} error={action.lastUnexpectedError} />
+                  </div>
+                </form>
+              </fieldset>
+            </div>
           </FormProvider>
         </ActionFromValidationContext.Provider>
       </ActionFormRequiredFieldsContext.Provider>

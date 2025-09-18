@@ -13,6 +13,6 @@
 
 @layer base {
     a {
-        @apply text-primary hover:text-primary/80 visited:text-purple-600 underline;
+        @apply text-primary hover:text-primary/80 visited:text-purple-400 underline;
     }
 }

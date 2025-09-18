@@ -37,8 +37,15 @@ export default function FormSubmitButton({ id, label, busyLabel, completeLabel }
       : (label ?? translate('components.form.form_submit_button.default_label'));
   const componentId = createComponentId('form_submit', id);
   return (
-    <div className="flex justify-end">
-      <Button id={componentId} label={buttonLabel} busy={isExecuting} disabled={disabled} type="submit" />
+    <div className="flex">
+      <Button
+        className="w-full"
+        id={componentId}
+        label={buttonLabel}
+        busy={isExecuting}
+        disabled={disabled}
+        type="submit"
+      />
     </div>
   );
 }

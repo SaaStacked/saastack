@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 export const AfterRegisterCredentials: React.FC = () => {
   const { t: translate } = useTranslation('common');
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="container min-h-screen flex items-center justify-center">
       <article className="prose">
         <div className="grid grid-cols-1 gap-4 items-left">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

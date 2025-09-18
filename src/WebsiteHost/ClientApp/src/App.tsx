@@ -32,7 +32,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="min-h-screen font-sans bg-gray-200">
       <OfflineBanner />
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Routes>

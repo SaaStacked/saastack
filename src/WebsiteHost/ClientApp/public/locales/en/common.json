@@ -73,6 +73,11 @@
             "label": "Sign In"
           }
         },
+        "errors": {
+          "account_locked": "Your account has been locked. Please contact support.",
+          "account_unverified": "Your account is not verified yet. Please check your email for a verification link.",
+          "invalid_credentials": "Invalid username or password"
+        },
         "links": {
           "home": "Go Home",
           "register": {
