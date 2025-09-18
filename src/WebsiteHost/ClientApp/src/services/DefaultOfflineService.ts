@@ -1,7 +1,10 @@
 import { IOfflineService } from './IOfflineService';
 
+
 export class DefaultOfflineService implements IOfflineService {
   private _callbacks: Array<(status: 'online' | 'offline') => void> = [];
+  private _lastFetchTime: number = 0;
+  private _isFetching: boolean = false;
 
   constructor() {
     this.initializeNetworkMonitoring();
@@ -38,10 +41,23 @@ export class DefaultOfflineService implements IOfflineService {
     }
   }
 
+  // Checks the health of the API every minute
+  // Makes sure that the browser is not just connected to the network, but that the API is actually reachable
+  // Runs once every minute, and no more than once a minute, even if requests are made more frequently
   private startPeriodicCheck(): void {
     setInterval(async () => {
+      const now = Date.now();
+      const oneMinuteAgo = now - 60000;
+
+      // Skip if we're already fetching or last fetch was less than a minute ago
+      if (this._isFetching || this._lastFetchTime > oneMinuteAgo) {
+        return;
+      }
+
+      this._isFetching = true;
+      this._lastFetchTime = now;
+
       try {
-        // We deliberately use fetch with no caching
         const response = await fetch('/api/health', {
           method: 'GET',
           cache: 'no-cache',
@@ -50,7 +66,9 @@ export class DefaultOfflineService implements IOfflineService {
         this.updateStatus(response.ok ? 'online' : 'offline');
       } catch {
         this.updateStatus('offline');
+      } finally {
+        this._isFetching = false;
       }
-    }, 30000); //every 30 seconds
+    }, 60000); //every minute
   }
 }
