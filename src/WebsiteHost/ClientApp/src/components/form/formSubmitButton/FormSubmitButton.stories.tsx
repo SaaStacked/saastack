@@ -5,7 +5,10 @@ import { AxiosError } from 'axios';
 import { z } from 'zod';
 import { ActionRequestData, ActionResult } from '../../../actions/Actions.ts';
 import { ExpectedErrorDetails } from '../../../actions/ApiErrorState.ts';
+import { IOfflineService } from '../../../services/IOfflineService.ts';
+import { OfflineServiceContext } from '../../../services/OfflineServiceContext.tsx';
 import Alert from '../../alert/Alert.tsx';
+import { OfflineBanner } from '../../offline/OfflineBanner.tsx';
 import Form from '../Form.tsx';
 import FormInput from '../formInput/FormInput.tsx';
 import FormSubmitButton from './FormSubmitButton';
@@ -30,6 +33,13 @@ const meta: Meta<typeof FormSubmitButton> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const mockOfflineService = {
+  status: 'offline',
+  onStatusChanged(_: (status: 'online' | 'offline') => void): () => void {
+    return () => {};
+  }
+} as IOfflineService;
 
 const createMockAction = <
   TRequestData extends ActionRequestData,
@@ -162,6 +172,15 @@ export const BrowserIsOffline: Story = {
     label: 'Submit',
     busyLabel: 'Processing...'
   },
+  decorators: [
+    (Story, _context) => (
+      <OfflineServiceContext value={{ offlineService: mockOfflineService }}>
+        <OfflineBanner />
+        <div className="mt-32"></div>
+        <Story />
+      </OfflineServiceContext>
+    )
+  ],
   render: (args) => (
     <Form
       action={createMockAction({ isReady: false, isExecuting: false })}

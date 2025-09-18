@@ -117,7 +117,7 @@ describe('FormSubmitButton', () => {
     );
 
     const button = screen.getByTestId('anid_form_submit_button');
-    expect(button.textContent).toBe('Submit');
+    expect(button.textContent).toBe('components.form.form_submit_button.default_label');
   });
 
   it('when no busy Label, and busy, renders with default busy label', async () => {
@@ -130,7 +130,7 @@ describe('FormSubmitButton', () => {
     );
 
     const button = screen.getByTestId('anid_form_submit_button');
-    expect(button.textContent).toBe('Sending...');
+    expect(button.textContent).toBe('components.form.form_submit_button.default_busy_label');
   });
 
   it('when busy, renders with busy label', async () => {
@@ -156,7 +156,7 @@ describe('FormSubmitButton', () => {
     );
 
     const button = screen.getByTestId('anid_form_submit_button');
-    expect(button.textContent).toBe('Success!');
+    expect(button.textContent).toBe('components.form.form_submit_button.default_completed_label');
   });
 
   it('when complete, renders with complete label', async () => {

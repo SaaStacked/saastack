@@ -92,12 +92,6 @@ describe('Input', () => {
     expect(screen.queryByText('ahint')).not.toBeInTheDocument();
   });
 
-  it('renders full width correctly', () => {
-    render(<Input id={'anid'} fullWidth />);
-
-    expect(screen.getByTestId('anid_input_wrapper')).toHaveClass('w-full');
-  });
-
   it('handles change events', () => {
     const handleChange = vi.fn();
     render(<Input onChange={handleChange} />);

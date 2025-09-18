@@ -5,6 +5,7 @@ import type { IOfflineService } from '../../services/IOfflineService';
 import { OfflineServiceContext } from '../../services/OfflineServiceContext';
 import { animationDurationInMs, OfflineBanner } from './OfflineBanner';
 
+
 describe('OfflineBanner', () => {
   const mockOfflineService: IOfflineService = {
     status: 'online',
@@ -30,7 +31,7 @@ describe('OfflineBanner', () => {
   it('when service is online, not render banner', () => {
     renderWithContext(mockOfflineService);
 
-    expect(screen.queryByText(/Network is unavailable/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components.offline.error/)).not.toBeInTheDocument();
   });
 
   it('when service starts offline, renders banner after animation timeout', async () => {
@@ -40,21 +41,21 @@ describe('OfflineBanner', () => {
 
     act(() => vi.advanceTimersByTime(10));
 
-    expect(screen.getByText(/Network is unavailable/)).toBeInTheDocument();
+    expect(screen.getByText(/components.offline.error/)).toBeInTheDocument();
   });
 
   it('when service is online, status changes to offline and shows banner', async () => {
     (mockOfflineService as any).status = 'online';
     renderWithContext(mockOfflineService);
 
-    expect(screen.queryByText(/Network is unavailable/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components.offline.error/)).not.toBeInTheDocument();
 
     act(() => statusChangeCallback('offline'));
 
     // Wait for animation timeout
     act(() => vi.advanceTimersByTime(10));
 
-    expect(screen.getByText(/Network is unavailable/)).toBeInTheDocument();
+    expect(screen.getByText(/components.offline.error/)).toBeInTheDocument();
   });
 
   it('when service is offline, status changes to online and hides banner', async () => {
@@ -64,14 +65,14 @@ describe('OfflineBanner', () => {
     // Wait for initial animation
     act(() => vi.advanceTimersByTime(10));
 
-    expect(screen.getByText(/Network is unavailable/)).toBeInTheDocument();
+    expect(screen.getByText(/components.offline.error/)).toBeInTheDocument();
 
     act(() => statusChangeCallback('online'));
 
     // Wait for exit animation
     act(() => vi.advanceTimersByTime(animationDurationInMs));
 
-    expect(screen.queryByText(/Network is unavailable/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components.offline.error/)).not.toBeInTheDocument();
   });
 
   it('when component unmounts, unsubscribes from service', () => {

@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import Label from '../label/Label.tsx';
 import Icon, { allSymbols, IconSymbol } from './Icon.tsx';
 
+
 const meta: Meta<typeof Icon> = {
   title: 'Components/Icon',
   component: Icon,
   parameters: {
-    layout: 'centered'
+    layout: 'padded'
   },
   tags: ['autodocs'],
   argTypes: {

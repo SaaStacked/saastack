@@ -50,9 +50,6 @@ export const AllVariants: Story = {
       <Button disabled>Disabled</Button>
     </div>
   ),
-  parameters: {
-    layout: 'centered'
-  }
 };
 
 export const Primary: Story = {
@@ -123,7 +120,4 @@ export const FullWidth: Story = {
     label: 'Button',
     fullWidth: true
   },
-  parameters: {
-    layout: 'centered'
-  }
 };

@@ -106,9 +106,6 @@ export const FullWidth: Story = {
     placeholder: 'This input takes full width',
     fullWidth: true
   },
-  parameters: {
-    layout: 'centered'
-  }
 };
 
 export const AllTypes: Story = {
@@ -122,7 +119,4 @@ export const AllTypes: Story = {
       <Input label="URL" type="url" placeholder="Website URL" />
     </div>
   ),
-  parameters: {
-    layout: 'centered'
-  }
 };

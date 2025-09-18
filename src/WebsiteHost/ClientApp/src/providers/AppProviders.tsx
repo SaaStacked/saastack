@@ -1,9 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
+import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
+import i18n from '../i18n';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { OfflineServiceProvider } from '../services/OfflineServiceContext';
 import { CurrentUserProvider } from './CurrentUserContext';
+
 
 interface AppProvidersProps {
   children: React.ReactNode;
@@ -34,11 +37,13 @@ export function AppProviders({
     });
 
   const content = (
-    <QueryClientProvider client={queryClient}>
-      <OfflineServiceProvider offlineService={offlineService}>
-        <CurrentUserProvider>{children}</CurrentUserProvider>
-      </OfflineServiceProvider>
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <OfflineServiceProvider offlineService={offlineService}>
+          <CurrentUserProvider>{children}</CurrentUserProvider>
+        </OfflineServiceProvider>
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 
   if (isTestingOnly) {

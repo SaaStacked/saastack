@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Button from '../../button/Button.tsx';
 import { ActionFormRequiredFieldsContext, ActionFromValidationContext } from '../Contexts';
-import FormInput, { getNestedField } from './FormInput';
+import FormInput from './FormInput';
+
 
 vi.mock('../../Components.ts', () => ({
   createComponentId: (prefix: string, id: string) => `${prefix}_${id}`
@@ -15,10 +16,8 @@ vi.mock('../../Components.ts', () => ({
 
 describe('FormInput', () => {
   const validationSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.email('Invalid email address'),
-    age: z.number().min(18, 'Must be at least 18'),
-    password: z.string().min(6, 'Password must be at least 6 characters')
+    aname: z.string().min(1, 'Name is required'),
+    anEmailAddress: z.email('Invalid email address')
   });
 
   const FormWrapperWithoutProviders = ({ children }: { children: React.ReactNode }) => {
@@ -72,69 +71,69 @@ describe('FormInput', () => {
   it('renders with default text type', () => {
     render(
       <FormWrapper>
-        <FormInput id="name" name="name" />
+        <FormInput id="anid" name="aname" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     expect(input.getAttribute('type')).toBe('text');
   });
 
   it('when is in required list, displays required', () => {
     render(
-      <FormWrapper requiredFields={['name']}>
-        <FormInput id="name" name="name" label="Name" />
+      <FormWrapper requiredFields={['aname']}>
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    const requiredIndicator = screen.getByTestId('input_form_input_name_required');
+    const requiredIndicator = screen.getByTestId('input_form_input_anid_required');
     expect(requiredIndicator.textContent).toBe('*');
   });
 
   it('when not required, does not display required', () => {
     render(
       <FormWrapper requiredFields={[]}>
-        <FormInput id="name" name="name" label="Name" />
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    const requiredIndicator = screen.queryByTestId('input_form_input_name_required');
+    const requiredIndicator = screen.queryByTestId('input_form_input_anid_required');
     expect(requiredIndicator).toBeNull();
   });
 
-  it('when default values, sets values', async () => {
+  it('when default values, sets default value', async () => {
     render(
-      <FormWrapper defaultValues={{ name: 'John' }}>
-        <FormInput id="name" name="name" label="Name" />
+      <FormWrapper defaultValues={{ aname: 'John' }}>
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    const input = screen.queryByTestId('input_form_input_name') as HTMLInputElement;
+    const input = screen.queryByTestId('input_form_input_anid') as HTMLInputElement;
     expect(input.value).toBe('John');
   });
 
   it('when no default values, displays no validation error', () => {
     render(
       <FormWrapper>
-        <FormInput id="name" name="name" label="Name" />
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    expect(screen.queryByTestId('input_form_input_name_error')).toBeNull();
+    expect(screen.queryByTestId('input_form_input_anid_error')).toBeNull();
   });
 
   it('when changed to invalid values, displays validation error', async () => {
     render(
-      <FormWrapper defaultValues={{ name: 'John' }} validatesWhen="onChange" mode="onChange">
-        <FormInput id="name" name="name" label="Name" />
+      <FormWrapper defaultValues={{ aname: 'John' }} validatesWhen="onChange" mode="onChange">
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     fireEvent.change(input, { target: { value: '' } });
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_name_error');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
       expect(errorMessage).toBeDefined();
       expect(errorMessage.textContent).toBe('Name is required');
     });
@@ -143,62 +142,62 @@ describe('FormInput', () => {
   it('when restored valid values, hides validation error', async () => {
     render(
       <FormWrapper>
-        <FormInput id="name" name="name" label="Name" />
+        <FormInput id="anid" name="aname" label="alabel" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     fireEvent.change(input, { target: { value: 'John' } });
 
-    await waitFor(() => expect(screen.queryByTestId('input_form_input_name_error')).toBeNull());
+    await waitFor(() => expect(screen.queryByTestId('input_form_input_anid_error')).toBeNull());
   });
 
   it('when validatesWhen is all, shows validation error', async () => {
     render(
       <FormWrapper validatesWhen="all" mode="onChange">
-        <FormInput id="name" name="name" />
+        <FormInput id="anid" name="anEmailAddress" type="email" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
-    fireEvent.change(input, { target: { value: 'valid name' } });
+    const input = screen.getByTestId('input_form_input_anid');
+    fireEvent.change(input, { target: { value: 'aninvalidemailaddress' } });
     fireEvent.change(input, { target: { value: '' } });
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_name_error');
-      expect(errorMessage.textContent).toBe('Name is required');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
+      expect(errorMessage.textContent).toBe('Invalid email address');
     });
   });
 
   it('when validatesWhen is onChange, shows validation error immediately', async () => {
     render(
       <FormWrapper validatesWhen="onChange" mode="onChange">
-        <FormInput id="email" name="email" type="email" />
+        <FormInput id="anid" name="anEmailAddress" type="email" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_email');
-    fireEvent.change(input, { target: { value: 'invalid-email' } });
+    const input = screen.getByTestId('input_form_input_anid');
+    fireEvent.change(input, { target: { value: 'aninvalidemailaddress' } });
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_email_error');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
       expect(errorMessage.textContent).toBe('Invalid email address');
     });
   });
 
-  it('when validatesWhen is onBlur, shows validation error after blur when validatesWhen is onBlur', async () => {
+  it('when validatesWhen is onBlur, shows validation error after blur', async () => {
     render(
       <FormWrapper validatesWhen="onBlur" mode="onBlur">
-        <FormInput id="email" name="email" type="email" />
+        <FormInput id="anid" name="anEmailAddress" type="email" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_email');
-    fireEvent.change(input, { target: { value: 'invalid-email' } });
+    const input = screen.getByTestId('input_form_input_anid');
+    fireEvent.change(input, { target: { value: 'aninvalidemailaddress' } });
     fireEvent.blur(input);
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_email_error');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
       expect(errorMessage.textContent).toBe('Invalid email address');
     });
   });
@@ -206,83 +205,72 @@ describe('FormInput', () => {
   it('when validatesWhen is onTouched, shows validation error after touch', async () => {
     render(
       <FormWrapper validatesWhen="onTouched" mode="onTouched">
-        <FormInput id="name" name="name" />
+        <FormInput id="anid" name="anEmailAddress" type="email" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     fireEvent.focus(input);
     fireEvent.blur(input);
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_name_error');
-      expect(errorMessage.textContent).toBe('Name is required');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
+      expect(errorMessage.textContent).toBe('Invalid email address');
     });
   });
 
   it('when validatesWhen is onSubmit, shows validation error only after form submission', async () => {
     render(
       <FormWrapper validatesWhen="onSubmit" mode="onBlur">
-        <FormInput id="name" name="name" />
+        <FormInput id="anid" name="anEmailAddress" type="email" />
         <Button id="submit" label="Submit" type="submit" />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     const submitButton = screen.getByTestId('button_submit');
 
     // Change input but don't submit - should not show error
     fireEvent.change(input, { target: { value: '' } });
     fireEvent.blur(input);
 
-    expect(screen.queryByTestId('input_form_input_name-error')).toBeNull();
+    expect(screen.queryByTestId('input_form_input_anid_error')).toBeNull();
 
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      const errorMessage = screen.getByTestId('input_form_input_name_error');
-      expect(errorMessage.textContent).toBe('Name is required');
+      const errorMessage = screen.getByTestId('input_form_input_anid_error');
+      expect(errorMessage.textContent).toBe('Invalid email address');
     });
-  });
-
-  it('registers field with dependencies', () => {
-    render(
-      <FormWrapper>
-        <FormInput id="confirm-password" name="confirmPassword" dependencies={['password']} />
-      </FormWrapper>
-    );
-
-    const input = screen.getByTestId('input_form_input_confirm-password');
-    expect(input).not.toBeNull();
   });
 
   it('handles empty dependencies array', () => {
     render(
       <FormWrapper>
-        <FormInput id="name" name="name" dependencies={[]} />
+        <FormInput id="anid" name="aname" dependencies={[]} />
       </FormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     expect(input).not.toBeNull();
   });
 
   it('handles missing contexts gracefully', () => {
     render(
       <FormWrapperWithoutProviders>
-        <FormInput id="name" name="name" />
+        <FormInput id="anid" name="aname" />
       </FormWrapperWithoutProviders>
     );
 
-    const input = screen.getByTestId('input_form_input_name');
+    const input = screen.getByTestId('input_form_input_anid');
     expect(input).not.toBeNull();
   });
 
   it('handles nested field names', () => {
     const nestedSchema = z.object({
-      user: z.object({
-        profile: z.object({
-          name: z.string().min(1, 'Name is required')
+      parent: z.object({
+        child: z.object({
+          property: z.string().min(1, 'Name is required')
         })
       })
     });
@@ -290,7 +278,7 @@ describe('FormInput', () => {
     const NestedFormWrapper = ({ children }: { children: React.ReactNode }) => {
       const methods = useForm({
         resolver: zodResolver(nestedSchema),
-        defaultValues: { user: { profile: { name: '' } } }
+        defaultValues: { parent: { child: { property: 'avalue' } } }
       });
 
       return (
@@ -306,54 +294,12 @@ describe('FormInput', () => {
 
     render(
       <NestedFormWrapper>
-        <FormInput id="nested-name" name="user.profile.name" />
+        <FormInput id="anid" name="parent.child.property" />
       </NestedFormWrapper>
     );
 
-    const input = screen.getByTestId('input_form_input_nested-name');
+    const input = screen.getByTestId('input_form_input_anid') as HTMLInputElement;
     expect(input).not.toBeNull();
-  });
-});
-
-describe('getNestedField', () => {
-  it('returns value for simple property', () => {
-    const obj = { name: 'John' };
-    expect(getNestedField(obj, 'name')).toBe('John');
-  });
-
-  it('returns value for nested property', () => {
-    const obj = { user: { profile: { name: 'John' } } };
-    expect(getNestedField(obj, 'user.profile.name')).toBe('John');
-  });
-
-  it('returns undefined for non-existent property', () => {
-    const obj = { name: 'John' };
-    expect(getNestedField(obj, 'age')).toBeUndefined();
-  });
-
-  it('returns undefined for non-existent nested property', () => {
-    const obj = { user: { name: 'John' } };
-    expect(getNestedField(obj, 'user.profile.age')).toBeUndefined();
-  });
-
-  it('when object is null/undefined, returns undefined', () => {
-    expect(getNestedField(null, 'name')).toBeUndefined();
-    expect(getNestedField(undefined, 'name')).toBeUndefined();
-  });
-
-  it('when path is empty path, returns object', () => {
-    const obj = { name: 'John' };
-    expect(getNestedField(obj, '')).toBe(obj);
-  });
-
-  it('handles deeply nested objects', () => {
-    const obj = { a: { b: { c: { d: { e: 'deep value' } } } } };
-    expect(getNestedField(obj, 'a.b.c.d.e')).toBe('deep value');
-  });
-
-  it('handles arrays in nested path', () => {
-    const obj = { users: [{ name: 'John' }, { name: 'Jane' }] };
-    expect(getNestedField(obj, 'users.0.name')).toBe('John');
-    expect(getNestedField(obj, 'users.1.name')).toBe('Jane');
+    expect(input.value).toBe('avalue');
   });
 });

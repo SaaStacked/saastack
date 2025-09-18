@@ -23,35 +23,35 @@ describe('UnhandledError', () => {
   };
 
   it('when no error is provided, renders nothing', () => {
-    const { container } = render(<UnhandledError id="test" />);
+    const { container } = render(<UnhandledError id="anid" />);
     expect(container.firstChild).toBeNull();
   });
 
   it('displays error title and description', () => {
-    render(<UnhandledError id="test" error={mockError} />);
+    render(<UnhandledError id="anid" error={mockError} />);
 
-    expect(screen.getByText('Unexpected Error')).toBeDefined();
-    expect(screen.getByText('Oh no! We did not expect an error like this!')).toBeDefined();
+    expect(screen.getByText('components.unhandled_error.title')).toBeDefined();
+    expect(screen.getByText('components.unhandled_error.message')).toBeDefined();
   });
 
   it('displays status code and error code', () => {
-    render(<UnhandledError id="test" error={mockError} />);
+    render(<UnhandledError id="anid" error={mockError} />);
 
-    expect(screen.getByTestId('test_unhandled_error_details_statusCode').textContent).toBe('500');
-    expect(screen.getByTestId('test_unhandled_error_details_errorCode').textContent).toBe('astatustext');
+    expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('500');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');
   });
 
   it('displays error code', () => {
-    render(<UnhandledError id="test" error={mockError} />);
+    render(<UnhandledError id="anid" error={mockError} />);
 
-    expect(screen.getByTestId('test_unhandled_error_details_errorCode').textContent).toBe('astatustext');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');
   });
 
   it('when no code, hides error code', () => {
     const errorWithoutCode = { ...mockError, response: undefined, code: undefined };
-    render(<UnhandledError id="test" error={errorWithoutCode} />);
+    render(<UnhandledError id="anid" error={errorWithoutCode} />);
 
-    expect(screen.queryByTestId('test_unhandled_error_details_errorCode')).toBeNull();
+    expect(screen.queryByTestId('anid_unhandled_error_details_errorCode')).toBeNull();
   });
 
   it('when stack traces, hidden behind collapsable details', () => {
@@ -59,21 +59,21 @@ describe('UnhandledError', () => {
       ...mockError,
       response: { ...mockError.response, data: { exception: 'astacktrace' } } as any
     };
-    render(<UnhandledError id="test" error={errorWithStackTraces} />);
+    render(<UnhandledError id="anid" error={errorWithStackTraces} />);
 
-    expect(screen.queryByTestId('test_unhandled_error_details_clientStackTrace')).toBeNull();
-    expect(screen.queryByTestId('test_unhandled_error_details_serverStackTrace')).toBeNull();
+    expect(screen.queryByTestId('anid_unhandled_error_details_clientStackTrace')).toBeNull();
+    expect(screen.queryByTestId('anid_unhandled_error_details_serverStackTrace')).toBeNull();
   });
 
   it('when client stack trace and click details, displays client stack trace', async () => {
-    render(<UnhandledError id="test" error={mockError} />);
+    render(<UnhandledError id="anid" error={mockError} />);
 
     await act(async () => {
-      const button = screen.getByText('Show Technical Details');
+      const button = screen.getByText('components.unhandled_error.technical_details');
       button.click();
     });
 
-    const stackTraceElement = screen.getByTestId('test_unhandled_error_details_clientStackTrace');
+    const stackTraceElement = screen.getByTestId('anid_unhandled_error_details_clientStackTrace');
     expect(stackTraceElement).toBeDefined();
     expect(stackTraceElement.textContent).toContain('aclientstacktrace');
   });
@@ -84,14 +84,14 @@ describe('UnhandledError', () => {
       stack: undefined,
       response: { ...mockError.response, data: { exception: 'aserverstacktrace' } } as any
     };
-    render(<UnhandledError id="test" error={errorWithStackTraces} />);
+    render(<UnhandledError id="anid" error={errorWithStackTraces} />);
 
     await act(async () => {
-      const button = screen.getByText('Show Technical Details');
+      const button = screen.getByText('components.unhandled_error.technical_details');
       button.click();
     });
 
-    const serverStackTrace = screen.getByTestId('test_unhandled_error_details_serverStackTrace');
+    const serverStackTrace = screen.getByTestId('anid_unhandled_error_details_serverStackTrace');
     expect(serverStackTrace).toBeDefined();
     expect(serverStackTrace.textContent).toContain('aserverstacktrace');
   });
@@ -105,11 +105,11 @@ describe('UnhandledError', () => {
       status: 400
     };
 
-    render(<UnhandledError id="test" error={networkError} />);
+    render(<UnhandledError id="anid" error={networkError} />);
 
-    expect(screen.getByTestId('test_unhandled_error_details_statusCode').textContent).toBe('400');
-    expect(screen.getByTestId('test_unhandled_error_details_errorCode').textContent).toBe('anerrorcode');
-    expect(screen.getByTestId('test_unhandled_error_details_errorMessage').textContent).toBe('amessage');
+    expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('400');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('anerrorcode');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorMessage').textContent).toBe('amessage');
   });
 
   it('handles error with response', () => {
@@ -121,10 +121,10 @@ describe('UnhandledError', () => {
       status: 999
     };
 
-    render(<UnhandledError id="test" error={networkError} />);
+    render(<UnhandledError id="anid" error={networkError} />);
 
-    expect(screen.getByTestId('test_unhandled_error_details_statusCode').textContent).toBe('400');
-    expect(screen.getByTestId('test_unhandled_error_details_errorCode').textContent).toBe('astatustext');
-    expect(screen.getByTestId('test_unhandled_error_details_errorMessage').textContent).toBe('adetail');
+    expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('400');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');
+    expect(screen.getByTestId('anid_unhandled_error_details_errorMessage').textContent).toBe('adetail');
   });
 });

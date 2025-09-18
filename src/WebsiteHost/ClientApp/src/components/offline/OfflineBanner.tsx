@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOfflineService } from '../../services/OfflineServiceContext';
+
 
 export const animationDurationInMs = 2000;
 
 // Displays a banner when the browser is offline
 // Message appears automatically at the top of the page, and disappears automatically
 export function OfflineBanner() {
+  const { t: translate } = useTranslation('common');
   const offlineService = useOfflineService();
   const [isOffline, setIsOffline] = useState(offlineService.status === 'offline');
   const [shouldRender, setShouldRender] = useState(isOffline);
@@ -46,9 +49,9 @@ export function OfflineBanner() {
 
   return (
     <div className={classes}>
-      <div className="container mx-auto max-w-4xl text-sm">
-        <span>Network is unavailable</span>
-        <span className="hidden sm:inline">:&nbsp;Some features may not be available while you're disconnected.</span>
+      <div className="container mx-auto max-w-4xl text-sm text-right">
+        <span>{translate('components.offline.error')}</span>
+        <span className="hidden sm:inline">:&nbsp;{translate('components.offline.reason')}&nbsp;&nbsp;</span>
       </div>
     </div>
   );

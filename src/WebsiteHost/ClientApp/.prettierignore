@@ -9,5 +9,5 @@
 
 # Ignore files
 **/*.html
-**/*.json
+**/package-lock.json
 **/*.log

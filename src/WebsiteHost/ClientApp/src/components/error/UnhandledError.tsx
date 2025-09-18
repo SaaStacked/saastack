@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import { createComponentId } from '../Components.ts';
+
 
 interface UnhandledErrorProps {
   id?: string;
@@ -12,6 +14,7 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
   if (!error) {
     return null;
   }
+  const { t: translate } = useTranslation('common');
   const [isExpanded, setIsExpanded] = useState(false);
   const responseData = error.response?.data as any;
   const statusCode = error.response ? error.response?.status : error.status;
@@ -44,9 +47,9 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
               />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-red-800">Unexpected Error</h1>
+          <h1 className="text-xl font-bold text-red-800">{translate('components.unhandled_error.title')}</h1>
         </div>
-        <p className="text-red-700 font-medium mb-4">Oh no! We did not expect an error like this!</p>
+        <p className="text-red-700 font-medium mb-4">{translate('components.unhandled_error.message')}</p>
       </div>
 
       <div
@@ -54,7 +57,7 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
         id={`${componentId}_details`}
         data-testid={`${componentId}_details`}
       >
-        <h4 className="text-sm font-medium text-gray-900 mb-3">Error Details</h4>
+        <h4 className="text-sm font-medium text-gray-900 mb-3">{translate('components.unhandled_error.details')}</h4>
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-gray-700">Status:</span>
@@ -87,7 +90,9 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
           )}
           {moreDetails.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">More Details:</span>
+              <span className="text-sm font-medium text-gray-700">
+                {translate('components.unhandled_error.more_details')}:
+              </span>
               {moreDetails.length > 0 ? (
                 moreDetails.map((detail) => (
                   <span
@@ -116,13 +121,15 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
                 className="flex items-center text-sm text-gray-600 hover:text-gray-800"
               >
                 <span className="mr-1">+</span>
-                Show Technical Details
+                {translate('components.unhandled_error.technical_details')}
               </button>
             ) : (
               <div className="mt-1">
                 {clientStackTrace && (
                   <div className="mt-4">
-                    <span className="text-sm font-medium text-gray-700 block mb-2">Browser Stack Trace:</span>
+                    <span className="text-sm font-medium text-gray-700 block mb-2">
+                      {translate('components.unhandled_error.client_stack_trace')}:
+                    </span>
                     <pre
                       className="text-xs font-mono text-gray-600 bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
                       data-testid={`${componentId}_details_clientStackTrace`}
@@ -133,7 +140,9 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
                 )}
                 {serverStackTrace && (
                   <div className="mt-4">
-                    <span className="text-sm font-medium text-gray-700 block mb-2">Server Stack Trace:</span>
+                    <span className="text-sm font-medium text-gray-700 block mb-2">
+                      {translate('components.unhandled_error.client_stack_trace')}:
+                    </span>
                     <pre
                       className="text-xs font-mono text-gray-600 bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
                       data-testid={`${componentId}_details_serverStackTrace`}

@@ -1,66 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
 import { LoginCredentialsAction } from '../../actions/identity/loginCredentials.ts';
 import Form from '../../components/form/Form.tsx';
+import FormInput from '../../components/form/formInput/FormInput.tsx';
 import FormSubmitButton from '../../components/form/formSubmitButton/FormSubmitButton.tsx';
-import Input from '../../components/input/Input.tsx';
+
 
 export const LoginCredentialsPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
-
+  const { t: translate } = useTranslation('common');
   const login = LoginCredentialsAction();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <h1>Sign In</h1>
+      <div>
+        <h1 className="text-4xl font-bold mb-4">{translate('pages.identity.login_credentials.title')}</h1>
         <Form
-          id="login-credentials"
+          id="login_credentials"
           action={login}
           validationSchema={z.object({
-            username: z.string().min(1, 'Username is required'),
-            password: z.string().min(1, 'Password is required')
+            username: z.email(translate('pages.identity.login_credentials.form.fields.username.validation')),
+            password: z.string().min(8, translate('pages.identity.login_credentials.form.fields.password.validation'))
           })}
         >
-          <Input
+          <FormInput
+            id="username"
             name="username"
-            label="Username"
+            label={translate('pages.identity.login_credentials.form.fields.username.label')}
+            placeholder={translate('pages.identity.login_credentials.form.fields.username.placeholder')}
             autoComplete="username"
-            required
-            value={formData.username}
-            onChange={handleInputChange}
           />
-          <Input
-            type="password"
+          <FormInput
+            id="password"
             name="password"
-            label="Password"
+            type="password"
+            label={translate('pages.identity.login_credentials.form.fields.password.label')}
+            placeholder={translate('pages.identity.login_credentials.form.fields.password.placeholder')}
             autoComplete="current-password"
-            required
-            value={formData.password}
-            onChange={handleInputChange}
           />
-          <FormSubmitButton />
+          <FormSubmitButton label={translate('pages.identity.login_credentials.form.submit.label')} />
         </Form>
-        <div className="">
+        <div className="text-center">
           <p>
             <Link to="/" className="btn btn-secondary">
-              Go Home
+              {translate('pages.identity.login_credentials.links.home')}
             </Link>
           </p>
           <p>
-            Don't have an account? <Link to="/identity/register-credentials">Register here</Link>
+            {translate('pages.identity.login_credentials.links.register.question')}{' '}
+            <Link to="/identity/register-credentials">
+              {translate('pages.identity.login_credentials.links.register.text')}
+            </Link>
           </p>
         </div>
       </div>

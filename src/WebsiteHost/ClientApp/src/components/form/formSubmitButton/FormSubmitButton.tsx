@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { useFormState } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { ActionResult } from '../../../actions/Actions.ts';
 import Button from '../../button/Button';
 import { createComponentId } from '../../Components.ts';
@@ -20,12 +21,8 @@ interface FormSubmitButtonProps {
 // The button is disabled after the form has been submitted
 // The button is disabled before the form has been submitted, and the form fails validation.
 // When the button is clicked, it submits the ancestor Form.
-export default function FormSubmitButton({
-  id,
-  label = 'Submit',
-  busyLabel = 'Sending...',
-  completeLabel = 'Success!'
-}: FormSubmitButtonProps) {
+export default function FormSubmitButton({ id, label, busyLabel, completeLabel }: FormSubmitButtonProps) {
+  const { t: translate } = useTranslation('common');
   const action = useContext<ActionResult<any, any> | undefined>(ActionFormContext);
   const { isValid: isFormValid, isSubmitted: hasFormBeenSubmitted } = useFormState();
   const isReady = action?.isReady ?? false;
@@ -33,7 +30,15 @@ export default function FormSubmitButton({
   const isSuccess = action?.isSuccess;
   const isCompleted = hasFormBeenSubmitted && isSuccess == true;
   const disabled = !isReady || isCompleted || !isFormValid;
-  const buttonLabel = isExecuting ? busyLabel : isSuccess == true ? completeLabel : label;
+  const buttonLabel = isExecuting
+    ? (busyLabel ?? translate('components.form.form_submit_button.default_busy_label'))
+    : isSuccess == true
+      ? (completeLabel ?? translate('components.form.form_submit_button.default_completed_label'))
+      : (label ?? translate('components.form.form_submit_button.default_label'));
   const componentId = createComponentId('form_submit', id);
-  return <Button id={componentId} label={buttonLabel} busy={isExecuting} disabled={disabled} type="submit" />;
+  return (
+    <div className="flex justify-end">
+      <Button id={componentId} label={buttonLabel} busy={isExecuting} disabled={disabled} type="submit" />
+    </div>
+  );
 }

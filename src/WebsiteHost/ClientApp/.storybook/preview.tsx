@@ -4,6 +4,7 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import { handlers } from '../src/testing/Storybook/msw-handlers';
 import { StorybookProviders } from '../src/testing/Storybook/StorybookProviders';
 
+
 // Initialize MSW addon
 initialize();
 
@@ -16,7 +17,7 @@ const preview: Preview = {
       }
     },
     backgrounds: {
-      default: 'light',
+      default: 'dark',
       values: [
         {
           name: 'light',
@@ -43,19 +44,7 @@ const preview: Preview = {
       </StorybookProviders>
     )
   ],
-  loaders: [mswLoader],
-  globalTypes: {
-    theme: {
-      description: 'Global theme for components',
-      defaultValue: 'light',
-      toolbar: {
-        title: 'Theme',
-        icon: 'circlehollow',
-        items: ['light', 'dark'],
-        dynamicTitle: true
-      }
-    }
-  }
+  loaders: [mswLoader]
 };
 
 export default preview;

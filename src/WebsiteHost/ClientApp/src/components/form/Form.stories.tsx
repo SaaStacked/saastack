@@ -4,7 +4,10 @@ import { AxiosError } from 'axios';
 import { z } from 'zod';
 import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
 import { ExpectedErrorDetails } from '../../actions/ApiErrorState.ts';
+import { IOfflineService } from '../../services/IOfflineService.ts';
+import { OfflineServiceContext } from '../../services/OfflineServiceContext.tsx';
 import Alert from '../alert/Alert.tsx';
+import { OfflineBanner } from '../offline/OfflineBanner.tsx';
 import Form from './Form';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton';
@@ -30,6 +33,13 @@ const meta: Meta<typeof Form> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const mockOfflineService = {
+  status: 'offline',
+  onStatusChanged(_: (status: 'online' | 'offline') => void): () => void {
+    return () => {};
+  }
+} as IOfflineService;
 
 const createMockAction = <
   TRequestData extends ActionRequestData,
@@ -303,6 +313,15 @@ export const BrowserIsOffline: Story = {
     validatesWhen: 'all',
     onSuccess: (_params) => toast.error(`Should never have seen this!`, { autoClose: 1500 })
   },
+  decorators: [
+    (Story, _context) => (
+      <OfflineServiceContext value={{ offlineService: mockOfflineService }}>
+        <OfflineBanner />
+        <div className="mt-32"></div>
+        <Story />
+      </OfflineServiceContext>
+    )
+  ],
   render: (args) => (
     <Form {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />

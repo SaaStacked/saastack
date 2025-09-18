@@ -1,5 +1,6 @@
-import { authenticate, AuthenticateData, AuthenticateResponse2 } from '../../api/websiteHost';
+import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../api/websiteHost';
 import { useActionCommand } from '../ActionCommand.ts';
+
 
 export enum LoginError {
   ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
@@ -8,11 +9,11 @@ export enum LoginError {
 }
 
 export const LoginCredentialsAction = () =>
-  useActionCommand<AuthenticateData, AuthenticateResponse2>({
+  useActionCommand<AuthenticateRequest, AuthenticateResponse>({
     request: (request) =>
       authenticate({
         body: {
-          ...request.body,
+          ...request,
           provider: 'credentials'
         }
       }),
