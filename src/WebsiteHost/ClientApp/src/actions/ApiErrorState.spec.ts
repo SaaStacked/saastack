@@ -63,7 +63,7 @@ describe('useApiErrorState', () => {
     );
 
     expect(result.current.expectedError).toBeUndefined();
-    expect(result.current.unexpectedError).not.toBeUndefined();
+    expect(result.current.unexpectedError).toBeDefined();
     expect(result.current.unexpectedError?.isAxiosError).toBe(true);
     expect(result.current.unexpectedError?.message).toBe('anerror');
     expect(result.current.unexpectedError?.response).toStrictEqual({
@@ -101,7 +101,7 @@ describe('useApiErrorState', () => {
       } as AxiosError as Error)
     );
 
-    expect(result.current.expectedError).not.toBeUndefined();
+    expect(result.current.expectedError).toBeDefined();
     expect(result.current.expectedError?.code).toBe('amessage');
     expect(result.current.expectedError?.response).toStrictEqual({
       title: 'atitle',

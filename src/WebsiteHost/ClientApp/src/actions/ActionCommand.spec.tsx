@@ -8,6 +8,7 @@ import { TestingProviders } from '../testing/TestingProviders.tsx';
 import { useActionCommand } from './ActionCommand';
 import { ActionRequestData } from './Actions';
 
+
 interface UntenantedRequestData extends ActionRequestData {
   name?: string;
   value?: string;
@@ -244,40 +245,41 @@ describe('useActionCommand', () => {
         }
       }
     });
-    const mockExpectedErrorRequest = vi.fn(() =>
-      Promise.reject({
-        isAxiosError: true,
-        message: 'anerror',
-        response: {
-          status: 400,
-          statusText: 'anerror',
-          data: {
-            title: 'atitle',
-            details: 'adetails',
-            errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-          },
-          headers: {},
-          config: {} as any
-        }
-      } as AxiosError)
-    );
-
-    const anyAction = () =>
-      useActionCommand({
-        request: mockExpectedErrorRequest as any,
-        onSuccess: () => vi.fn(),
-        passThroughErrors: {
-          400: 'BadRequest'
-        },
-        invalidateCacheKeys: []
-      });
 
     beforeEach(() => {
       offlineService.status = 'online';
     });
 
-    it('should execute and return expected error', async () => {
-      const { result } = renderHook(() => anyAction(), {
+    it('when throws error, return expected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.reject({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 400,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const action = () =>
+        useActionCommand({
+          request: mockRequest as any,
+          onSuccess: () => vi.fn(),
+          passThroughErrors: {
+            400: 'BadRequest'
+          },
+          invalidateCacheKeys: []
+        });
+
+      const { result } = renderHook(() => action(), {
         wrapper: ({ children }) => createWrapper({ children, offlineService, queryClient })
       });
 
@@ -296,7 +298,57 @@ describe('useActionCommand', () => {
       expect(result.current.lastUnexpectedError).toBeUndefined();
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockExpectedErrorRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+    });
+
+    it('when returns error, return expected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.resolve({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 400,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const action = () =>
+        useActionCommand({
+          request: mockRequest as any,
+          onSuccess: () => vi.fn(),
+          passThroughErrors: {
+            400: 'BadRequest'
+          },
+          invalidateCacheKeys: []
+        });
+      const { result } = renderHook(() => action(), {
+        wrapper: ({ children }) => createWrapper({ children, offlineService, queryClient })
+      });
+
+      await act(async () => result.current.execute({ aname: 'avalue' } as UntenantedRequestData));
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(false));
+
+      expect(result.current.isExecuting).toBe(false);
+      expect(result.current.isReady).toBe(true);
+      expect(result.current.lastExpectedError?.code).toBe('BadRequest');
+      expect(result.current.lastExpectedError?.response).toStrictEqual({
+        title: 'atitle',
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+      });
+      expect(result.current.lastUnexpectedError).toBeUndefined();
+      expect(result.current.lastSuccessResponse).toBeUndefined();
+      expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
   });
 
@@ -308,39 +360,41 @@ describe('useActionCommand', () => {
         }
       }
     });
-    const mockUnexpectedErrorRequest = vi.fn(() =>
-      Promise.reject({
-        isAxiosError: true,
-        message: 'anerror',
-        response: {
-          status: 500,
-          statusText: 'anerror',
-          data: {
-            title: 'atitle',
-            details: 'adetails'
-          },
-          headers: {},
-          config: {} as any
-        }
-      } as AxiosError)
-    );
-
-    const anyAction = () =>
-      useActionCommand({
-        request: mockUnexpectedErrorRequest as any,
-        onSuccess: () => vi.fn(),
-        passThroughErrors: {
-          400: 'BadRequest'
-        },
-        invalidateCacheKeys: []
-      });
 
     beforeEach(() => {
       offlineService.status = 'online';
     });
 
-    it('should execute and return unexpected error', async () => {
-      const { result } = renderHook(() => anyAction(), {
+    it('when throws error, return unexpected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.reject({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 500,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const action = () =>
+        useActionCommand({
+          request: mockRequest as any,
+          onSuccess: () => vi.fn(),
+          passThroughErrors: {
+            400: 'BadRequest'
+          },
+          invalidateCacheKeys: []
+        });
+
+      const { result } = renderHook(() => action(), {
         wrapper: ({ children }) => createWrapper({ children, offlineService, queryClient })
       });
 
@@ -351,15 +405,68 @@ describe('useActionCommand', () => {
       expect(result.current.isExecuting).toBe(false);
       expect(result.current.isReady).toBe(true);
       expect(result.current.lastExpectedError).toBeUndefined();
-      expect(result.current.lastUnexpectedError).not.toBeUndefined();
+      expect(result.current.lastUnexpectedError).toBeDefined();
       expect(result.current.lastUnexpectedError?.message).toBe('anerror');
       expect(result.current.lastUnexpectedError?.response?.data).toStrictEqual({
         title: 'atitle',
-        details: 'adetails'
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       });
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockUnexpectedErrorRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+    });
+
+    it('when returns error, return unexpected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.resolve({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 500,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const action = () =>
+        useActionCommand({
+          request: mockRequest as any,
+          onSuccess: () => vi.fn(),
+          passThroughErrors: {
+            400: 'BadRequest'
+          },
+          invalidateCacheKeys: []
+        });
+
+      const { result } = renderHook(() => action(), {
+        wrapper: ({ children }) => createWrapper({ children, offlineService, queryClient })
+      });
+
+      await act(async () => result.current.execute({ aname: 'avalue' } as UntenantedRequestData));
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(false));
+
+      expect(result.current.isExecuting).toBe(false);
+      expect(result.current.isReady).toBe(true);
+      expect(result.current.lastExpectedError).toBeUndefined();
+      expect(result.current.lastUnexpectedError).toBeDefined();
+      expect(result.current.lastUnexpectedError?.message).toBe('anerror');
+      expect(result.current.lastUnexpectedError?.response?.data).toStrictEqual({
+        title: 'atitle',
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+      });
+      expect(result.current.lastSuccessResponse).toBeUndefined();
+      expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
   });
 });

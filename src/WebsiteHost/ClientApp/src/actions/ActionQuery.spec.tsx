@@ -8,6 +8,7 @@ import { TestingProviders } from '../testing/TestingProviders.tsx';
 import useActionQuery from './ActionQuery';
 import { ActionRequestData } from './Actions';
 
+
 interface UntenantedRequestData extends ActionRequestData {
   name?: string;
   value?: string;
@@ -216,40 +217,40 @@ describe('useActionQuery', () => {
   });
 
   describe('given an expected error', () => {
-    const mockExpectedErrorRequest = vi.fn(() =>
-      Promise.reject({
-        isAxiosError: true,
-        message: 'anerror',
-        response: {
-          status: 400,
-          statusText: 'anerror',
-          data: {
-            title: 'atitle',
-            details: 'adetails',
-            errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-          },
-          headers: {},
-          config: {} as any
-        }
-      } as AxiosError)
-    );
-
-    const anyAction = () =>
-      useActionQuery({
-        request: mockExpectedErrorRequest as any,
-        isTenanted: false,
-        transform: (x) => x,
-        cacheKey: ['acachekey'],
-        passThroughErrors: {
-          400: 'BadRequest'
-        }
-      });
-
     beforeEach(() => {
       offlineService.status = 'online';
     });
 
-    it('should execute and return expected error', async () => {
+    it('when throws error, return expected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.reject({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 400,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const anyAction = () =>
+        useActionQuery({
+          request: mockRequest as any,
+          isTenanted: false,
+          transform: (x) => x,
+          cacheKey: ['acachekey'],
+          passThroughErrors: {
+            400: 'BadRequest'
+          }
+        });
+
       const { result } = renderHook(() => anyAction(), {
         wrapper: ({ children }) => createWrapper({ children, offlineService })
       });
@@ -269,44 +270,39 @@ describe('useActionQuery', () => {
       expect(result.current.lastUnexpectedError).toBeUndefined();
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockExpectedErrorRequest).toHaveBeenCalledWith({ aname: 'avalue' });
-    });
-  });
-
-  describe('given an unexpected error', () => {
-    const mockUnexpectedErrorRequest = vi.fn(() =>
-      Promise.reject({
-        isAxiosError: true,
-        message: 'anerror',
-        response: {
-          status: 500,
-          statusText: 'anerror',
-          data: {
-            title: 'atitle',
-            details: 'adetails'
-          },
-          headers: {},
-          config: {} as any
-        }
-      } as AxiosError)
-    );
-
-    const anyAction = () =>
-      useActionQuery({
-        request: mockUnexpectedErrorRequest as any,
-        isTenanted: false,
-        transform: (x) => x,
-        cacheKey: ['acachekey'],
-        passThroughErrors: {
-          400: 'BadRequest'
-        }
-      });
-
-    beforeEach(() => {
-      offlineService.status = 'online';
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
 
-    it('should execute and return unexpected error', async () => {
+    it('when returns error, return expected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.resolve({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 400,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const anyAction = () =>
+        useActionQuery({
+          request: mockRequest as any,
+          isTenanted: false,
+          transform: (x) => x,
+          cacheKey: ['acachekey'],
+          passThroughErrors: {
+            400: 'BadRequest'
+          }
+        });
+
       const { result } = renderHook(() => anyAction(), {
         wrapper: ({ children }) => createWrapper({ children, offlineService })
       });
@@ -317,15 +313,126 @@ describe('useActionQuery', () => {
 
       expect(result.current.isExecuting).toBe(false);
       expect(result.current.isReady).toBe(true);
-      expect(result.current.lastUnexpectedError).not.toBeUndefined();
+      expect(result.current.lastExpectedError?.code).toBe('BadRequest');
+      expect(result.current.lastExpectedError?.response).toStrictEqual({
+        title: 'atitle',
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+      });
+      expect(result.current.lastUnexpectedError).toBeUndefined();
+      expect(result.current.lastSuccessResponse).toBeUndefined();
+      expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+    });
+  });
+
+  describe('given an unexpected error', () => {
+    beforeEach(() => {
+      offlineService.status = 'online';
+    });
+
+    it('when throws error, return unexpected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.reject({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 500,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const anyAction = () =>
+        useActionQuery({
+          request: mockRequest as any,
+          isTenanted: false,
+          transform: (x) => x,
+          cacheKey: ['acachekey'],
+          passThroughErrors: {
+            400: 'BadRequest'
+          }
+        });
+
+      const { result } = renderHook(() => anyAction(), {
+        wrapper: ({ children }) => createWrapper({ children, offlineService })
+      });
+
+      await act(async () => result.current.execute({ aname: 'avalue' } as UntenantedRequestData));
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(false));
+
+      expect(result.current.isExecuting).toBe(false);
+      expect(result.current.isReady).toBe(true);
+      expect(result.current.lastUnexpectedError).toBeDefined();
       expect(result.current.lastUnexpectedError?.message).toBe('anerror');
       expect(result.current.lastUnexpectedError?.response?.data).toStrictEqual({
         title: 'atitle',
-        details: 'adetails'
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       });
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockUnexpectedErrorRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+    });
+
+    it('when returns error, return unexpected error', async () => {
+      const mockRequest = vi.fn(() =>
+        Promise.resolve({
+          isAxiosError: true,
+          message: 'anerror',
+          response: {
+            status: 500,
+            statusText: 'anerror',
+            data: {
+              title: 'atitle',
+              details: 'adetails',
+              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+            },
+            headers: {},
+            config: {} as any
+          }
+        } as AxiosError)
+      );
+
+      const anyAction = () =>
+        useActionQuery({
+          request: mockRequest as any,
+          isTenanted: false,
+          transform: (x) => x,
+          cacheKey: ['acachekey'],
+          passThroughErrors: {
+            400: 'BadRequest'
+          }
+        });
+
+      const { result } = renderHook(() => anyAction(), {
+        wrapper: ({ children }) => createWrapper({ children, offlineService })
+      });
+
+      await act(async () => result.current.execute({ aname: 'avalue' } as UntenantedRequestData));
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(false));
+
+      expect(result.current.isExecuting).toBe(false);
+      expect(result.current.isReady).toBe(true);
+      expect(result.current.lastUnexpectedError).toBeDefined();
+      expect(result.current.lastUnexpectedError?.message).toBe('anerror');
+      expect(result.current.lastUnexpectedError?.response?.data).toStrictEqual({
+        title: 'atitle',
+        details: 'adetails',
+        errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+      });
+      expect(result.current.lastSuccessResponse).toBeUndefined();
+      expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
+      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
   });
 });

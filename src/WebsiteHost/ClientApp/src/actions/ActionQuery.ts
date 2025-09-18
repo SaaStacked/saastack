@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { recorder, SeverityLevel } from '../recorder.ts';
 import { useOfflineService } from '../services/OfflineServiceContext.tsx';
 import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
+
 
 export interface ActionQueryConfiguration<
   TRequestData extends ActionRequestData,
@@ -70,6 +71,17 @@ export default function useActionQuery<
         try {
           const requestData = currentRequestDataRef.current ?? ({} as TRequestData);
           let res = await request(requestData);
+
+          /* @hey-api/client-axios may return an AxiosError instead of throw the error
+          See: https://github.com/hey-api/openapi-ts/blob/main/examples/openapi-ts-axios/src/client/client/client.gen.ts#L94-L106
+           */
+          if (res.status === undefined || res.status >= 400) {
+            if (axios.isAxiosError(res)) {
+              // noinspection ExceptionCaughtLocallyJS
+              throw res as AxiosError<unknown, any> & { error: undefined };
+            }
+          }
+
           return await (res?.data ?? ({} as TResponse));
         } catch (error) {
           throw error;
