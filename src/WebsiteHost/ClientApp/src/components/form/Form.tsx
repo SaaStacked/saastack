@@ -5,7 +5,7 @@ import z, { ZodType } from 'zod';
 import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import { createComponentId } from '../Components.ts';
-import UnhandledError from '../error/UnhandledError.tsx';
+import UnhandledError from '../unhandledError/UnhandledError.tsx';
 import { ActionFormContext, ActionFormRequiredFieldsContext, ActionFromValidationContext } from './Contexts.tsx';
 
 

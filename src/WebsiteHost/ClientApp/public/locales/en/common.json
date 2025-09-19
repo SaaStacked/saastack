@@ -89,7 +89,8 @@
         "errors": {
           "account_locked": "Your account has been locked. Please contact support.",
           "account_unverified": "Your account has not been verified yet. Please check your email for a verification link first.",
-          "invalid_credentials": "Invalid username or password"
+          "invalid_credentials": "Invalid username or password",
+          "mfa_required": "You must complete multi-factor authentication to sign in."
         },
         "links": {
           "home": "Go Home",
@@ -168,9 +169,38 @@
         }
       },
       "credentials_register_confirm": {
-        "title": "Confirm Registration",
+        "title": "Confirm Your Registration",
+        "states": {
+          "confirming": {
+            "title": "Confirming Registration",
+            "message": "One moment please...",
+            "errors": {
+              "token_missing": "This registration link is invalid. Please check your email."
+            }
+          },
+          "success": {
+            "title": "Registration Confirmed!",
+            "message": "Your account has been successfully registered, please sign in."
+          },
+          "failed": {
+            "title": "Confirmation Failed",
+            "message": "Please contact support.",
+            "errors": {
+              "token_expired": "Your registration link has expired. Please request to send a new one.",
+              "token_used": "You are already registered. Please sign in."
+            }
+          },
+          "resend": {
+            "title": "Resend Confirmation",
+            "success": "We have sent you a new confirmation email. Please check your email.",
+            "errors": {
+              "token_used": "This registration link is invalid, and cannot be used to resend a confirmation email. Please check your email."
+            }
+          }
+        },
         "links": {
-          "home": "Back to Home"
+          "home": "Back to Home",
+          "login": "Sign In"
         }
       },
       "sso_microsoft": {

@@ -5,7 +5,7 @@ import {
 } from '../../api/apiHost1';
 import { useActionCommand } from '../ActionCommand.ts';
 
-export const RegisterCredentialsAction = () =>
+export const CredentialsRegisterAction = () =>
   useActionCommand<RegisterPersonCredentialRequest, RegisterPersonCredentialResponse>({
     request: (request) =>
       registerPersonCredential({

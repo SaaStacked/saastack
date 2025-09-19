@@ -8,18 +8,6 @@ import Form, { getRequiredFields } from './Form';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton.tsx';
 
-vi.mock('../alert/Alert', () => ({
-  default: ({ id, message, type }: any) =>
-    message ? (
-      <div data-testid={id} className={`alert-${type}`}>
-        {message}
-      </div>
-    ) : null
-}));
-
-vi.mock('../error/UnhandledError', () => ({
-  default: ({ id, error }: any) => (error ? <div data-testid={id}>anunhandlederror</div> : null)
-}));
 
 interface TestRequestData extends ActionRequestData {
   atext: string;
@@ -159,7 +147,7 @@ describe('Form', () => {
       </Form>
     );
 
-    const expectedError = screen.getByTestId('anid_action_form_expected_error');
+    const expectedError = screen.getByTestId('anid_action_form_expected_error_alert');
     expect(expectedError).not.toBeNull();
     expect(expectedError.textContent).toBe('amessage');
   });
@@ -173,9 +161,8 @@ describe('Form', () => {
       </Form>
     );
 
-    const unexpectedError = screen.getByTestId('anid_action_form_unexpected_error');
+    const unexpectedError = screen.getByTestId('anid_action_form_unexpected_error_unhandled_error_details');
     expect(unexpectedError).not.toBeNull();
-    expect(unexpectedError.textContent).toBe('anunhandlederror');
   });
 
   it('handles form without validations', () => {

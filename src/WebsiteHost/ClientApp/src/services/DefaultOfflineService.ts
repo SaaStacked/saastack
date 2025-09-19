@@ -1,6 +1,8 @@
 import { IOfflineService } from './IOfflineService';
 
 
+export const PeriodicCheckIntervalInMs = 60000; //every minute
+
 export class DefaultOfflineService implements IOfflineService {
   private _callbacks: Array<(status: 'online' | 'offline') => void> = [];
   private _lastFetchTime: number = 0;
@@ -69,6 +71,6 @@ export class DefaultOfflineService implements IOfflineService {
       } finally {
         this._isFetching = false;
       }
-    }, 60000); //every minute
+    }, PeriodicCheckIntervalInMs);
   }
 }

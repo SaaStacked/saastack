@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import Button from '../button/Button.tsx';
 import Alert from './Alert';
 
+
 export default {
   title: 'Components/Alert',
   component: Alert,
@@ -55,6 +56,13 @@ export const Info: Story = {
     title: 'Information Title',
     type: 'info',
     message: 'This is an informational message, that gives you some information'
+  }
+};
+
+export const MessageOnly: Story = {
+  args: {
+    type: 'error',
+    message: 'Danger! This is a danger alert - check it out! Danger!'
   }
 };
 

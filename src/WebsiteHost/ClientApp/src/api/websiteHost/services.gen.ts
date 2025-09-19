@@ -92,9 +92,7 @@ export const getAllFeatureFlags = <ThrowOnError extends boolean = false>(options
  * Fetches the named feature flag for the current authenticated user
  * (request type: GetFeatureFlagForCallerRequest)
  */
-export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(
-  options: Options<GetFeatureFlagForCallerData, ThrowOnError>
-) =>
+export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(options: Options<GetFeatureFlagForCallerData, ThrowOnError>) =>
   (options?.client ?? client).get<GetFeatureFlagForCallerResponse, GetFeatureFlagForCallerError, ThrowOnError>({
     ...options,
     url: '/api/flags/{Name}'
@@ -130,9 +128,7 @@ export const recordCrash = <ThrowOnError extends boolean = false>(options?: Opti
  * Measures an event in the product
  * (request type: RecordMeasureRequest)
  */
-export const recordMeasure = <ThrowOnError extends boolean = false>(
-  options?: Options<RecordMeasureData, ThrowOnError>
-) =>
+export const recordMeasure = <ThrowOnError extends boolean = false>(options?: Options<RecordMeasureData, ThrowOnError>) =>
   (options?.client ?? client).post<RecordMeasureResponse, RecordMeasureError, ThrowOnError>({
     ...options,
     url: '/api/record/measure'
@@ -142,9 +138,7 @@ export const recordMeasure = <ThrowOnError extends boolean = false>(
  * Records a page view event in the product
  * (request type: RecordPageViewRequest)
  */
-export const recordPageView = <ThrowOnError extends boolean = false>(
-  options?: Options<RecordPageViewData, ThrowOnError>
-) =>
+export const recordPageView = <ThrowOnError extends boolean = false>(options?: Options<RecordPageViewData, ThrowOnError>) =>
   (options?.client ?? client).post<RecordPageViewResponse, RecordPageViewError, ThrowOnError>({
     ...options,
     url: '/api/record/page_view'
@@ -174,14 +168,8 @@ export const recordUse = <ThrowOnError extends boolean = false>(options?: Option
  * An example of a request that uses NO authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).
  * (request type: BeffeAnonymousDirectTestingOnlyRequest)
  */
-export const beffeAnonymousDirectTestingOnly = <ThrowOnError extends boolean = false>(
-  options?: Options<BeffeAnonymousDirectTestingOnlyData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<
-    BeffeAnonymousDirectTestingOnlyResponse,
-    BeffeAnonymousDirectTestingOnlyError,
-    ThrowOnError
-  >({
+export const beffeAnonymousDirectTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<BeffeAnonymousDirectTestingOnlyData, ThrowOnError>) =>
+  (options?.client ?? client).post<BeffeAnonymousDirectTestingOnlyResponse, BeffeAnonymousDirectTestingOnlyError, ThrowOnError>({
     ...options,
     url: '/api/testingonly/direct/anonymous'
   });
@@ -190,9 +178,7 @@ export const beffeAnonymousDirectTestingOnly = <ThrowOnError extends boolean = f
  * An example of a request that uses NO authentication for a BEFFE endpoint
  * (request type: BeffeAnonymousTestingOnlyRequest)
  */
-export const beffeAnonymousTestingOnly = <ThrowOnError extends boolean = false>(
-  options?: Options<BeffeAnonymousTestingOnlyData, ThrowOnError>
-) =>
+export const beffeAnonymousTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<BeffeAnonymousTestingOnlyData, ThrowOnError>) =>
   (options?.client ?? client).post<BeffeAnonymousTestingOnlyResponse, BeffeAnonymousTestingOnlyError, ThrowOnError>({
     ...options,
     url: '/api/testingonly/anonymous'
@@ -202,9 +188,7 @@ export const beffeAnonymousTestingOnly = <ThrowOnError extends boolean = false>(
  * An example of a request that uses HMAC authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).
  * (request type: BeffeHMacDirectTestingOnlyRequest)
  */
-export const beffeHmacDirectTestingOnly = <ThrowOnError extends boolean = false>(
-  options?: Options<BeffeHmacDirectTestingOnlyData, ThrowOnError>
-) =>
+export const beffeHmacDirectTestingOnly = <ThrowOnError extends boolean = false>(options?: Options<BeffeHmacDirectTestingOnlyData, ThrowOnError>) =>
   (options?.client ?? client).post<BeffeHmacDirectTestingOnlyResponse, BeffeHmacDirectTestingOnlyError, ThrowOnError>({
     ...options,
     url: '/api/testingonly/direct/hmac'

@@ -87,7 +87,7 @@ export const GetAllFeatureFlagsResponseSchema = {
     flags: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/FeatureFlag'
+        '$ref': '#/components/schemas/FeatureFlag'
       }
     }
   },
@@ -99,7 +99,7 @@ export const GetFeatureFlagResponseSchema = {
   type: 'object',
   properties: {
     flag: {
-      $ref: '#/components/schemas/FeatureFlag'
+      '$ref': '#/components/schemas/FeatureFlag'
     }
   },
   additionalProperties: false

@@ -5,10 +5,11 @@ import { useActionCommand } from '../ActionCommand.ts';
 export enum LoginErrors {
   account_locked = 'account_locked',
   account_unverified = 'account_unverified',
-  invalid_credentials = 'invalid_credentials'
+  invalid_credentials = 'invalid_credentials',
+  mfa_required = 'mfa_required'
 }
 
-export const LoginCredentialsAction = () =>
+export const CredentialsLoginAction = () =>
   useActionCommand<AuthenticateRequest, AuthenticateResponse>({
     request: (request) =>
       authenticate({
@@ -18,10 +19,11 @@ export const LoginCredentialsAction = () =>
         }
       }),
     passThroughErrors: {
-      400: LoginErrors.account_locked,
+      400: LoginErrors.invalid_credentials,
       401: LoginErrors.invalid_credentials,
+      403: LoginErrors.mfa_required,
       405: LoginErrors.account_unverified,
-      409: LoginErrors.account_locked
+      423: LoginErrors.account_locked
     },
     onSuccess: () => window.location.reload() //so that we pick up the changed auth cookies, and return to dashboard page
   });

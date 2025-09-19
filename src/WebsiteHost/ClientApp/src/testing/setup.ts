@@ -42,6 +42,16 @@ vi.mock('../recorder.ts', async (importActual) => {
   };
 });
 
+vi.mock('react-i18next', async (importActual) => {
+  const actualImpl = await importActual<typeof import('react-i18next')>();
+  return {
+    ...actualImpl,
+    useTranslation: () => ({
+      t: (key: string) => key
+    })
+  };
+});
+
 // we need to save the original objects for later to not affect tests from other files
 const ogLocation = global.window.location;
 const ogNavigator = global.window.navigator;

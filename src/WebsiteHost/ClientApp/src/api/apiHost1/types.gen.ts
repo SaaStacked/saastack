@@ -226,12 +226,8 @@ export type ConfirmEmailDeliveryFailedRequest = {
   receiptId: string;
 };
 
-export type ConfirmRegistrationPersonCredentialRequest = {
+export type ConfirmPersonCredentialRegistrationRequest = {
   token: string;
-};
-
-export type ConfirmRegistrationPersonCredentialResponse = {
-  [key: string]: unknown;
 };
 
 export type ConfirmSmsDeliveredRequest = {
@@ -520,16 +516,16 @@ export type GetOrganizationSettingsResponse = {
   };
 };
 
+export type GetPersonCredentialRegistrationConfirmationResponse = {
+  token: string;
+};
+
 export type GetProfileForCallerResponse = {
   profile: UserProfileForCaller;
 };
 
 export type GetProfileResponse = {
   profile: UserProfile;
-};
-
-export type GetRegistrationPersonConfirmationResponse = {
-  token: string;
 };
 
 export type GetSubscriptionResponse = {
@@ -1073,6 +1069,10 @@ export type ResendPasswordResetRequest = {
   [key: string]: unknown;
 };
 
+export type ResendPersonCredentialRegistrationConfirmationRequest = {
+  token: string;
+};
+
 export type ResetCredentialMfaRequest = {
   userId?: string | null;
 };
@@ -1290,7 +1290,7 @@ export type TransferSubscriptionRequest = {
 };
 
 export type TwilioMessageStatus =
-  | 'Unknown'
+  'Unknown'
   | 'queued'
   | 'sending'
   | 'sent'
@@ -1966,23 +1966,31 @@ export type CompleteCredentialResetResponse = EmptyResponse;
 
 export type CompleteCredentialResetError = ProblemDetails | unknown;
 
-export type ConfirmRegistrationPersonCredentialData = {
-  body?: ConfirmRegistrationPersonCredentialRequest;
+export type ConfirmPersonCredentialRegistrationData = {
+  body?: ConfirmPersonCredentialRegistrationRequest;
 };
 
-export type ConfirmRegistrationPersonCredentialResponse2 = ConfirmRegistrationPersonCredentialResponse;
+export type ConfirmPersonCredentialRegistrationResponse = EmptyResponse;
 
-export type ConfirmRegistrationPersonCredentialError = ProblemDetails | unknown;
+export type ConfirmPersonCredentialRegistrationError = ProblemDetails | unknown;
 
-export type GetRegistrationPersonConfirmationData = {
+export type GetPersonCredentialRegistrationConfirmationData = {
   query: {
     UserId: string;
   };
 };
 
-export type GetRegistrationPersonConfirmationResponse2 = GetRegistrationPersonConfirmationResponse;
+export type GetPersonCredentialRegistrationConfirmationResponse2 = GetPersonCredentialRegistrationConfirmationResponse;
 
-export type GetRegistrationPersonConfirmationError = ProblemDetails | unknown;
+export type GetPersonCredentialRegistrationConfirmationError = ProblemDetails | unknown;
+
+export type ResendPersonCredentialRegistrationConfirmationData = {
+  body?: ResendPersonCredentialRegistrationConfirmationRequest;
+};
+
+export type ResendPersonCredentialRegistrationConfirmationResponse = EmptyResponse;
+
+export type ResendPersonCredentialRegistrationConfirmationError = ProblemDetails | unknown;
 
 export type RegisterPersonCredentialData = {
   body?: RegisterPersonCredentialRequest;
@@ -2356,8 +2364,7 @@ export type AssociateCredentialMfaAuthenticatorForCallerData = {
   body?: AssociateCredentialMfaAuthenticatorForCallerRequest;
 };
 
-export type AssociateCredentialMfaAuthenticatorForCallerResponse2 =
-  AssociateCredentialMfaAuthenticatorForCallerResponse;
+export type AssociateCredentialMfaAuthenticatorForCallerResponse2 = AssociateCredentialMfaAuthenticatorForCallerResponse;
 
 export type AssociateCredentialMfaAuthenticatorForCallerError = ProblemDetails | unknown;
 
@@ -2378,8 +2385,7 @@ export type ChallengeCredentialMfaAuthenticatorForCallerPutData = {
   };
 };
 
-export type ChallengeCredentialMfaAuthenticatorForCallerPutResponse =
-  ChallengeCredentialMfaAuthenticatorForCallerResponse;
+export type ChallengeCredentialMfaAuthenticatorForCallerPutResponse = ChallengeCredentialMfaAuthenticatorForCallerResponse;
 
 export type ChallengeCredentialMfaAuthenticatorForCallerPutError = ProblemDetails | unknown;
 
@@ -2390,8 +2396,7 @@ export type ChallengeCredentialMfaAuthenticatorForCallerPatchData = {
   };
 };
 
-export type ChallengeCredentialMfaAuthenticatorForCallerPatchResponse =
-  ChallengeCredentialMfaAuthenticatorForCallerResponse;
+export type ChallengeCredentialMfaAuthenticatorForCallerPatchResponse = ChallengeCredentialMfaAuthenticatorForCallerResponse;
 
 export type ChallengeCredentialMfaAuthenticatorForCallerPatchError = ProblemDetails | unknown;
 
@@ -2429,8 +2434,7 @@ export type ConfirmCredentialMfaAuthenticatorForCallerPatchData = {
   };
 };
 
-export type ConfirmCredentialMfaAuthenticatorForCallerPatchResponse =
-  ConfirmCredentialMfaAuthenticatorForCallerResponse;
+export type ConfirmCredentialMfaAuthenticatorForCallerPatchResponse = ConfirmCredentialMfaAuthenticatorForCallerResponse;
 
 export type ConfirmCredentialMfaAuthenticatorForCallerPatchError = ProblemDetails | unknown;
 

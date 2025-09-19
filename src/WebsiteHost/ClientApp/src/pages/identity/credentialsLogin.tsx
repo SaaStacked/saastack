@@ -26,7 +26,8 @@ export const CredentialsLoginPage: React.FC = () => {
           expectedErrorMessages={{
             [LoginErrors.account_locked]: translate('pages.identity.credentials_login.errors.account_locked'),
             [LoginErrors.account_unverified]: translate('pages.identity.credentials_login.errors.account_unverified'),
-            [LoginErrors.invalid_credentials]: translate('pages.identity.credentials_login.errors.invalid_credentials')
+            [LoginErrors.invalid_credentials]: translate('pages.identity.credentials_login.errors.invalid_credentials'),
+            [LoginErrors.mfa_required]: translate('pages.identity.credentials_login.errors.mfa_required')
           }}
         >
           <FormInput

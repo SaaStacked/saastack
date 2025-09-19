@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { DefaultOfflineService } from './DefaultOfflineService';
+import { DefaultOfflineService, PeriodicCheckIntervalInMs } from './DefaultOfflineService';
 
 
 global.fetch = vi.fn();
@@ -25,13 +25,13 @@ describe('DefaultOfflineService', () => {
   });
 
   describe('constructor', () => {
-    it('when navigator.onLine is true, initialize with online status', () => {
+    it('when navigator is online, should be online', () => {
       service = new DefaultOfflineService();
 
       expect(service.status).toBe('online');
       expect(window.addEventListener).toHaveBeenCalledWith('online', expect.any(Function));
       expect(window.addEventListener).toHaveBeenCalledWith('offline', expect.any(Function));
-      expect(global.setInterval).toHaveBeenCalledWith(expect.any(Function), 30000);
+      expect(global.setInterval).toHaveBeenCalledWith(expect.any(Function), PeriodicCheckIntervalInMs);
     });
 
     it('when navigator not online, should be offline', () => {
@@ -177,8 +177,8 @@ describe('DefaultOfflineService', () => {
       service = new DefaultOfflineService();
     });
 
-    it('should set up periodic health check with 30 second interval', () =>
-      expect(global.setInterval).toHaveBeenCalledWith(expect.any(Function), 30000));
+    it('should set up periodic health check with interval', () =>
+      expect(global.setInterval).toHaveBeenCalledWith(expect.any(Function), PeriodicCheckIntervalInMs));
 
     it('when health check succeeds, update status to online', async () => {
       // @ts-ignore

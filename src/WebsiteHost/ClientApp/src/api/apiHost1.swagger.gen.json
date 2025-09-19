@@ -4378,14 +4378,14 @@
         "tags": [
           "CredentialsApi"
         ],
-        "summary": "Confirms the invitation to register a new person (verifying their email address)",
-        "description": "(request type: ConfirmRegistrationPersonCredentialRequest)",
-        "operationId": "ConfirmRegistrationPersonCredential",
+        "summary": "Confirms the registration of a new person (verifying their email address)",
+        "description": "(request type: ConfirmPersonCredentialRegistrationRequest)",
+        "operationId": "ConfirmPersonCredentialRegistration",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ConfirmRegistrationPersonCredentialRequest"
+                "$ref": "#/components/schemas/ConfirmPersonCredentialRegistrationRequest"
               }
             }
           }
@@ -4396,12 +4396,108 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConfirmRegistrationPersonCredentialResponse"
+                  "$ref": "#/components/schemas/EmptyResponse"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConfirmRegistrationPersonCredentialResponse"
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "The user has already confirmed their registration"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "CredentialsApi"
+        ],
+        "summary": "Fetches the confirmation token for a registration of a person",
+        "description": "(request type: GetPersonCredentialRegistrationConfirmationRequest)",
+        "operationId": "GetPersonCredentialRegistrationConfirmation",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPersonCredentialRegistrationConfirmationResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPersonCredentialRegistrationConfirmationResponse"
                 }
               }
             }
@@ -4467,37 +4563,37 @@
             }
           }
         }
-      },
-      "get": {
+      }
+    },
+    "/credentials/resend-confirmation": {
+      "post": {
         "tags": [
           "CredentialsApi"
         ],
-        "summary": "Fetches the confirmation token for a registration of a person",
-        "description": "(request type: GetRegistrationPersonConfirmationRequest)",
-        "operationId": "GetRegistrationPersonConfirmation",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
+        "summary": "Renews and resends a confirmation email for confirming the registration of a person",
+        "description": "(request type: ResendPersonCredentialRegistrationConfirmationRequest)",
+        "operationId": "ResendPersonCredentialRegistrationConfirmation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendPersonCredentialRegistrationConfirmationRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetRegistrationPersonConfirmationResponse"
+                  "$ref": "#/components/schemas/EmptyResponse"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetRegistrationPersonConfirmationResponse"
+                  "$ref": "#/components/schemas/EmptyResponse"
                 }
               }
             }
@@ -4534,7 +4630,7 @@
             "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
           },
           "404": {
-            "description": "Not Found: The server cannot find the requested resource"
+            "description": "The user has already confirmed their registration"
           },
           "405": {
             "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
@@ -20296,7 +20392,7 @@
         },
         "additionalProperties": false
       },
-      "ConfirmRegistrationPersonCredentialRequest": {
+      "ConfirmPersonCredentialRegistrationRequest": {
         "required": [
           "token"
         ],
@@ -20307,10 +20403,6 @@
             "type": "string"
           }
         },
-        "additionalProperties": false
-      },
-      "ConfirmRegistrationPersonCredentialResponse": {
-        "type": "object",
         "additionalProperties": false
       },
       "ConfirmSmsDeliveredRequest": {
@@ -21303,6 +21395,18 @@
         },
         "additionalProperties": false
       },
+      "GetPersonCredentialRegistrationConfirmationResponse": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetProfileForCallerResponse": {
         "required": [
           "profile"
@@ -21323,18 +21427,6 @@
         "properties": {
           "profile": {
             "$ref": "#/components/schemas/UserProfile"
-          }
-        },
-        "additionalProperties": false
-      },
-      "GetRegistrationPersonConfirmationResponse": {
-        "required": [
-          "token"
-        ],
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string"
           }
         },
         "additionalProperties": false
@@ -23229,6 +23321,19 @@
           "token"
         ],
         "type": "object",
+        "additionalProperties": false
+      },
+      "ResendPersonCredentialRegistrationConfirmationRequest": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       },
       "ResetCredentialMfaRequest": {
