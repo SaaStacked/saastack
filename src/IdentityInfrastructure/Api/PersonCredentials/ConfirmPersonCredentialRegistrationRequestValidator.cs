@@ -5,13 +5,14 @@ using Infrastructure.Web.Api.Operations.Shared.Identities;
 
 namespace IdentityInfrastructure.Api.PersonCredentials;
 
-public class ConfirmPersonRegistrationRequestValidator : AbstractValidator<ConfirmRegistrationPersonCredentialRequest>
+public class
+    ConfirmPersonCredentialRegistrationRequestValidator : AbstractValidator<ConfirmPersonCredentialRegistrationRequest>
 {
-    public ConfirmPersonRegistrationRequestValidator()
+    public ConfirmPersonCredentialRegistrationRequestValidator()
     {
         RuleFor(req => req.Token)
             .NotEmpty()
             .Matches(Validations.Credentials.Password.VerificationToken)
-            .WithMessage(Resources.ConfirmPersonRegistrationRequestValidator_InvalidToken);
+            .WithMessage(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
     }
 }

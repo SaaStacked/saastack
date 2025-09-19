@@ -319,8 +319,7 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
     }
 
     public async Task<Result<PersonCredential, Error>> GetPersonCredentialForUserAsync(ICallerContext caller,
-        string userId,
-        CancellationToken cancellationToken)
+        string userId, CancellationToken cancellationToken)
     {
         var retrieved = await _repository.FindCredentialByUserIdAsync(userId.ToId(), cancellationToken);
         if (retrieved.IsFailure)
@@ -414,6 +413,53 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
             credential.UserId);
         _recorder.TrackUsage(caller.ToCall(),
             UsageConstants.Events.UsageScenarios.Generic.PersonRegistrationConfirmed,
+            new Dictionary<string, object>
+            {
+                { nameof(credential.Id), credential.UserId }
+            });
+
+        return Result.Ok;
+    }
+
+    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
+        CancellationToken cancellationToken)
+    {
+        var retrieved = await _repository.FindCredentialsByRegistrationVerificationTokenAsync(token, cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        if (!retrieved.Value.HasValue)
+        {
+            return Error.EntityNotFound();
+        }
+
+        var credential = retrieved.Value.Value;
+        var renewed = credential.RenewRegistrationVerification();
+        if (renewed.IsFailure)
+        {
+            return renewed.Error;
+        }
+
+        var saved = await _repository.SaveAsync(credential, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        var confirmed = await _userNotificationsService.NotifyPasswordRegistrationConfirmationAsync(caller,
+            credential.Registration.Value.EmailAddress, credential.Registration.Value.Name,
+            credential.VerificationKeep.Token, UserNotificationConstants.EmailTags.RegisterPerson, cancellationToken);
+        if (confirmed.IsFailure)
+        {
+            return confirmed.Error;
+        }
+
+        _recorder.TraceInformation(caller.ToCall(), "Password credentials confirmation for {UserId} has been renewed",
+            credential.UserId);
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.PersonRegistrationRenewed,
             new Dictionary<string, object>
             {
                 { nameof(credential.Id), credential.UserId }

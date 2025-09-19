@@ -354,7 +354,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
         });
 
         var token = UserNotificationsService.LastRegistrationConfirmationToken;
-        await Api.PostAsync(new ConfirmRegistrationPersonCredentialRequest
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
         {
             Token = token!
         });

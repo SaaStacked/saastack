@@ -110,7 +110,7 @@ public static class WebsiteTestingExtensions
 
 #if TESTINGONLY
         await websiteClient.PropagateDomainEventsAsync(csrfService);
-        var getTokenRequest = new GetRegistrationPersonConfirmationRequest
+        var getTokenRequest = new GetPersonCredentialRegistrationConfirmationRequest
         {
             UserId = userId
         };
@@ -118,9 +118,10 @@ public static class WebsiteTestingExtensions
         var confirmationToken = await websiteClient.GetAsync(getTokenUrl,
             (msg, cookies) => msg.WithCSRF(cookies, csrfService));
         var token =
-            (await confirmationToken.Content.ReadFromJsonAsync<GetRegistrationPersonConfirmationResponse>(jsonOptions))!
+            (await confirmationToken.Content
+                .ReadFromJsonAsync<GetPersonCredentialRegistrationConfirmationResponse>(jsonOptions))!
             .Token;
-        var confirmationRequest = new ConfirmRegistrationPersonCredentialRequest
+        var confirmationRequest = new ConfirmPersonCredentialRegistrationRequest
         {
             Token = token
         };

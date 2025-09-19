@@ -638,7 +638,7 @@ public class NativeIdentityServerCredentialsServiceSpec
             && uc.Registration.Value.EmailAddress == "auser@company.com"
             && uc.Password.PasswordHash == "apasswordhash"
             && uc.Login.Exists()
-            && !uc.VerificationKeep.IsVerified
+            && !uc.IsVerified
         ), It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
             ns.NotifyPasswordRegistrationConfirmationAsync(_caller.Object, "auser@company.com", "afirstname",
@@ -689,6 +689,51 @@ public class NativeIdentityServerCredentialsServiceSpec
         ), It.IsAny<CancellationToken>()));
     }
 
+    [Fact]
+    public async Task WhenResendConfirmationPersonRegistrationAsyncAndTokenUnknown_ThenReturnsError()
+    {
+        _repository.Setup(s =>
+                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<PersonCredentialRoot>
+                .None);
+
+        var result =
+            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityNotFound);
+        _repository.Verify(s => s.SaveAsync(It.IsAny<PersonCredentialRoot>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+        _notificationsService.Verify(ns =>
+            ns.NotifyPasswordRegistrationConfirmationAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task WhenResendConfirmationPersonRegistrationAsync_ThenReturnsSuccess()
+    {
+        var credential = CreateUnVerifiedCredential();
+        _repository.Setup(s =>
+                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(credential.ToOptional());
+
+        var result =
+            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(pc =>
+            !pc.IsVerified
+            && !pc.IsRegistrationVerified
+        ), It.IsAny<CancellationToken>()));
+        _notificationsService.Verify(ns =>
+            ns.NotifyPasswordRegistrationConfirmationAsync(_caller.Object, "auser@company.com", "aname",
+                "averificationtoken", UserNotificationConstants.EmailTags.RegisterPerson,
+                It.IsAny<CancellationToken>()));
+    }
+    
     [Fact]
     public async Task WhenGetPersonCredentialForUserAsyncAndNotFound_ThenReturnsError()
     {

@@ -289,9 +289,9 @@ namespace IdentityInfrastructure {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Token&apos; is either missing or invalid.
         /// </summary>
-        internal static string ConfirmPersonRegistrationRequestValidator_InvalidToken {
+        internal static string ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken {
             get {
-                return ResourceManager.GetString("ConfirmPersonRegistrationRequestValidator_InvalidToken", resourceCulture);
+                return ResourceManager.GetString("ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken", resourceCulture);
             }
         }
         

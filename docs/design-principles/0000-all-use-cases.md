@@ -146,11 +146,12 @@ Is the way a user can authenticate with the platform using a username and passwo
 1. Authenticate the current user (with a password), may include a second factor (i.e. MFA)
 2. Register a new person (with a password and with optional invitation)
 3. Confirm registration of a person (from email)
-4. Initiate a password reset
-5. Resend password reset notification
-6. Verify a password reset token
-7. Reset password
-8. Fetch the registration confirmation token <sup>TSTO</sup>
+4. Renew a registration confirmation for a person
+5. Initiate a password reset
+6. Resend password reset notification
+7. Verify a password reset token
+8. Reset password
+9. Fetch the registration confirmation token <sup>TSTO</sup>
 
 #### MFA
 

@@ -44,7 +44,7 @@ public class CredentialsApi : IWebApiService
         return () => completion.HandleApplicationResult();
     }
 
-    public async Task<ApiEmptyResult> ConfirmRegistration(ConfirmRegistrationPersonCredentialRequest request,
+    public async Task<ApiEmptyResult> ConfirmRegistration(ConfirmPersonCredentialRegistrationRequest request,
         CancellationToken cancellationToken)
     {
         var result =
@@ -55,18 +55,31 @@ public class CredentialsApi : IWebApiService
             error => new Result<EmptyResponse, Error>(error));
     }
 
+    public async Task<ApiEmptyResult> ResendConfirmation(ResendPersonCredentialRegistrationConfirmationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result =
+            await _personCredentialsApplication.ResendConfirmationPersonRegistrationAsync(_callerFactory.Create(),
+                request.Token!, cancellationToken);
+
+        return () => result.Match(() => new Result<EmptyResponse, Error>(),
+            error => new Result<EmptyResponse, Error>(error));
+    }
+
 #if TESTINGONLY
-    public async Task<ApiGetResult<PersonCredentialEmailConfirmation, GetRegistrationPersonConfirmationResponse>>
+    public async Task<ApiGetResult<PersonCredentialEmailConfirmation,
+            GetPersonCredentialRegistrationConfirmationResponse>>
         GetConfirmationToken(
-            GetRegistrationPersonConfirmationRequest request, CancellationToken cancellationToken)
+            GetPersonCredentialRegistrationConfirmationRequest request, CancellationToken cancellationToken)
     {
         var token = await _personCredentialsApplication.GetPersonRegistrationConfirmationAsync(
             _callerFactory.Create(), request.UserId!, cancellationToken);
 
         return () =>
-            token.HandleApplicationResult<PersonCredentialEmailConfirmation, GetRegistrationPersonConfirmationResponse>(
+            token.HandleApplicationResult<PersonCredentialEmailConfirmation,
+                GetPersonCredentialRegistrationConfirmationResponse>(
                 con =>
-                    new GetRegistrationPersonConfirmationResponse { Token = con.Token });
+                    new GetPersonCredentialRegistrationConfirmationResponse { Token = con.Token });
     }
 #endif
 

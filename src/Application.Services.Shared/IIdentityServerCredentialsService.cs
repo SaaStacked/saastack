@@ -28,6 +28,9 @@ public partial interface IIdentityServerCredentialsService
         string firstName, string lastName, string emailAddress, string password, string? timezone, string? locale,
         string? countryCode,
         bool termsAndConditionsAccepted, CancellationToken cancellationToken);
+
+    Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>

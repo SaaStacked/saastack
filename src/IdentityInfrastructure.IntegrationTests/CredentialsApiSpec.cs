@@ -10,7 +10,6 @@ using FluentAssertions;
 using IdentityApplication.ApplicationServices;
 using IdentityDomain;
 using IdentityInfrastructure.ApplicationServices;
-using Infrastructure.Shared.DomainServices;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Infrastructure.Web.Common.Extensions;
@@ -19,6 +18,7 @@ using IntegrationTesting.WebApi.Common.Stubs;
 using Microsoft.Extensions.DependencyInjection;
 using UnitTesting.Common.Validation;
 using Xunit;
+using TokensService = Infrastructure.Shared.DomainServices.TokensService;
 
 namespace IdentityInfrastructure.IntegrationTests;
 
@@ -122,19 +122,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenAuthenticateAndUserNotExists_ThenReturnsUnAuthorized()
-    {
-        var result = await Api.PostAsync(new AuthenticateCredentialRequest
-        {
-            Username = "auser@company.com",
-            Password = "Password1!"
-        });
-
-        result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-    }
-
-    [Fact]
-    public async Task WhenAuthenticateAndUserExists_ThenReturnsTokens()
+    public async Task WhenConfirmRegistrationAndAuthenticates_ThenAuthenticates()
     {
         await Api.PostAsync(new RegisterPersonCredentialRequest
         {
@@ -147,9 +135,9 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         await PropagateDomainEventsAsync();
         var token = UserNotificationsService.LastRegistrationConfirmationToken;
-        await Api.PostAsync(new ConfirmRegistrationPersonCredentialRequest
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
         {
-            Token = token!
+            Token = token
         });
 
         await PropagateDomainEventsAsync();
@@ -165,6 +153,91 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
         result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
+    }
+
+    [Fact]
+    public async Task WhenConfirmRegistrationWithInvalidToken_ThenReturnsError()
+    {
+        await Api.PostAsync(new RegisterPersonCredentialRequest
+        {
+            EmailAddress = "auser@company.com",
+            FirstName = "afirstname",
+            LastName = "alastname",
+            Password = "1Password!",
+            TermsAndConditionsAccepted = true
+        });
+
+        await PropagateDomainEventsAsync();
+        var token = new TokensService().CreateRegistrationVerificationToken();
+        var result = await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
+        {
+            Token = token
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenResendConfirmationBeforeRegistered_ThenResendsConfirmation()
+    {
+        await Api.PostAsync(new RegisterPersonCredentialRequest
+        {
+            EmailAddress = "auser@company.com",
+            FirstName = "afirstname",
+            LastName = "alastname",
+            Password = "1Password!",
+            TermsAndConditionsAccepted = true
+        });
+
+        await PropagateDomainEventsAsync();
+        var token = UserNotificationsService.LastRegistrationConfirmationToken;
+        UserNotificationsService.Reset();
+        var result = await Api.PostAsync(new ResendPersonCredentialRegistrationConfirmationRequest
+        {
+            Token = token
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        UserNotificationsService.LastRegistrationConfirmationEmailRecipient.Should().Be("auser@company.com");
+    }
+
+    [Fact]
+    public async Task WhenResendConfirmationAndAlreadyRegistered_ThenReturnsError()
+    {
+        await Api.PostAsync(new RegisterPersonCredentialRequest
+        {
+            EmailAddress = "auser@company.com",
+            FirstName = "afirstname",
+            LastName = "alastname",
+            Password = "1Password!",
+            TermsAndConditionsAccepted = true
+        });
+
+        await PropagateDomainEventsAsync();
+        var token = UserNotificationsService.LastRegistrationConfirmationToken;
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
+        {
+            Token = token
+        });
+
+        var result = await Api.PostAsync(new ResendPersonCredentialRegistrationConfirmationRequest
+        {
+            Token = token
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenAuthenticateAndUserNotExists_ThenReturnsUnAuthorized()
+    {
+        var result = await Api.PostAsync(new AuthenticateCredentialRequest
+        {
+            Username = "auser@company.com",
+            Password = "Password1!"
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -204,9 +277,9 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         await PropagateDomainEventsAsync();
         var token = UserNotificationsService.LastRegistrationConfirmationToken;
-        await Api.PostAsync(new ConfirmRegistrationPersonCredentialRequest
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
         {
-            Token = token!
+            Token = token
         });
 
         await PropagateDomainEventsAsync();

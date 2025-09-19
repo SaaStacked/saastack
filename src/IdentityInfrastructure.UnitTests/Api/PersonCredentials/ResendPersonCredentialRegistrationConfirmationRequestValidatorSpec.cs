@@ -9,15 +9,15 @@ using Xunit;
 namespace IdentityInfrastructure.UnitTests.Api.PersonCredentials;
 
 [Trait("Category", "Unit")]
-public class ConfirmPersonRegistrationRequestValidatorSpec
+public class ResendPersonCredentialRegistrationConfirmationRequestValidatorSpec
 {
-    private readonly ConfirmRegistrationPersonCredentialRequest _dto;
-    private readonly ConfirmPersonRegistrationRequestValidator _validator;
+    private readonly ResendPersonCredentialRegistrationConfirmationRequest _dto;
+    private readonly ResendPersonCredentialRegistrationConfirmationRequestValidator _validator;
 
-    public ConfirmPersonRegistrationRequestValidatorSpec()
+    public ResendPersonCredentialRegistrationConfirmationRequestValidatorSpec()
     {
-        _validator = new ConfirmPersonRegistrationRequestValidator();
-        _dto = new ConfirmRegistrationPersonCredentialRequest
+        _validator = new ResendPersonCredentialRegistrationConfirmationRequestValidator();
+        _dto = new ResendPersonCredentialRegistrationConfirmationRequest
         {
             Token = new TokensService().CreateRegistrationVerificationToken()
         };
@@ -37,7 +37,7 @@ public class ConfirmPersonRegistrationRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConfirmPersonRegistrationRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
     }
 
     [Fact]
@@ -48,6 +48,6 @@ public class ConfirmPersonRegistrationRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConfirmPersonRegistrationRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
     }
 }

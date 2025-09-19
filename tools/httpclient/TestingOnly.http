@@ -1,4 +1,15 @@
-### GET request to example server
+
+### Drain all pending domain_events
+
+POST {{apihost1}}/event_notifications/drain
+Accept: application/json
+X-HMAC-Signature: {{hmac_signature}}
+Content-Type: application/json
+
+{ }
+
+### POST to a testing only endpoint
+
 POST https://{{apihost1}}/testingonly/general/body/empty/required
 Content-Type: application/json
 

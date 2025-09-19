@@ -284,6 +284,28 @@ public class PersonCredentialRootSpec
     }
 
     [Fact]
+    public void WhenRenewRegistrationVerificationAndAlreadyVerified_ThenReturnsError()
+    {
+        _personCredential.InitiateRegistrationVerification();
+        _personCredential.VerifyRegistration();
+
+        var result = _personCredential.RenewRegistrationVerification();
+
+        result.Should().BeError(ErrorCode.PreconditionViolation,
+            Resources.PersonCredentialRoot_RegistrationVerified);
+    }
+
+    [Fact]
+    public void WhenRenewRegistrationVerificationAndNotVerified_ThenInitiates()
+    {
+        _personCredential.RenewRegistrationVerification();
+
+        _personCredential.VerificationKeep.IsStillVerifying.Should().BeTrue();
+        _personCredential.Events.Last().Should()
+            .BeOfType<RegistrationVerificationCreated>();
+    }
+
+    [Fact]
     public void WhenInitiatePasswordResetAndPasswordNotSet_ThenReturnsError()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())

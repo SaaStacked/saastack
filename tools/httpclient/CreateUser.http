@@ -10,6 +10,9 @@ Content-Type: application/json
   "Password": "{{password}}",
   "FirstName" : "{{firstname}}",
   "LastName" : "{{lastname}}",
+  "Timezone": "Pacific/Auckland",
+  "Locale": "en-NZ",
+  "CountryCode": "NZ",
   "TermsAndConditionsAccepted": true
 }
 
@@ -36,7 +39,7 @@ Content-Type: application/json
   "Token": "{{registration_token}}"
 }
 
-### Drain all events, must be done before any other operation
+### Drain all events, must be done before authentication
 
 POST {{apihost1}}/event_notifications/drain
 Accept: application/json

@@ -113,7 +113,7 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
 
         await PropagateDomainEventsAsync();
         var token = UserNotificationsService.LastRegistrationConfirmationToken;
-        await Api.PostAsync(new ConfirmRegistrationPersonCredentialRequest
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
         {
             Token = token!
         });

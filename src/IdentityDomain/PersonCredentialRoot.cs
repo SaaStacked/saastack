@@ -840,6 +840,18 @@ public sealed class PersonCredentialRoot : AggregateRootBase
             IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token));
     }
 
+    public Result<Error> RenewRegistrationVerification()
+    {
+        if (IsVerified)
+        {
+            return Error.PreconditionViolation(Resources.PersonCredentialRoot_RegistrationVerified);
+        }
+
+        var token = _tokensService.CreateRegistrationVerificationToken();
+        return RaiseChangeEvent(
+            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token));
+    }
+
     public Result<Error> ResetMfa(Roles resetterRoles)
     {
         if (!IsOperations(resetterRoles))

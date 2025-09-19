@@ -28,6 +28,13 @@ public partial class PersonCredentialsApplication : IPersonCredentialsApplicatio
             cancellationToken);
     }
 
+    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
+        CancellationToken cancellationToken)
+    {
+        return await _identityServerProvider.CredentialsService.ResendConfirmationPersonRegistrationAsync(caller, token,
+            cancellationToken);
+    }
+
 #if TESTINGONLY
     public async Task<Result<PersonCredentialEmailConfirmation, Error>> GetPersonRegistrationConfirmationAsync(
         ICallerContext caller, string userId, CancellationToken cancellationToken)

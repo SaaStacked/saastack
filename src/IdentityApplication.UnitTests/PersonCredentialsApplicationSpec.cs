@@ -104,4 +104,21 @@ public class PersonCredentialsApplicationSpec
         _credentialsService.Verify(aks =>
             aks.ConfirmPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None));
     }
+
+    [Fact]
+    public async Task WhenResendConfirmationPersonRegistrationAsync_ThenResends()
+    {
+        _credentialsService.Setup(aks =>
+                aks.ConfirmPersonRegistrationAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Ok);
+
+        var result =
+            await _application.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken",
+                CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _credentialsService.Verify(aks =>
+            aks.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None));
+    }
 }

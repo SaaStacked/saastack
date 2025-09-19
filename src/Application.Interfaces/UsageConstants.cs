@@ -77,6 +77,7 @@ public static class UsageConstants
                 public const string OrganizationChanged = "Organization Updated";
                 public const string OrganizationCreated = "Organization Created";
                 public const string PersonRegistrationConfirmed = "User Registered";
+                public const string PersonRegistrationRenewed = "User Registration Confirmation Renewed";
                 public const string PersonRegistrationCreated = "User Registration Created";
                 public const string PersonReRegistered = "User Registration ReAttempted";
                 public const string UserExtendedLogin = "User Extended Login";
