@@ -13,19 +13,19 @@ export function HomeAnonymousPage() {
         </div>
 
         <div className="container flex flex-col items-center space-y-4">
-          <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/sso-microsoft">
+          <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/sso/microsoft">
             <img src="/microsoft-logo.svg" width={48} height={48} alt="Microsoft" />
             <span>&nbsp;&nbsp;{translate('pages.home.home_anonymous.providers.microsoft')}</span>
           </Button>
 
-          <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/login-credentials">
+          <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/credentials/login">
             <img src="/email-icon.svg" width={48} height={48} alt="Email" />
             <span>&nbsp;&nbsp;{translate('pages.home.home_anonymous.providers.credentials')}</span>
           </Button>
 
           <div className="justify-center">
             <span className="px-3">{translate('pages.home.home_anonymous.links.register.question')}&nbsp;</span>
-            <Link to="/identity/register-credentials">
+            <Link to="/identity/credentials/register">
               {translate('pages.home.home_anonymous.links.register.text')}
             </Link>
           </div>

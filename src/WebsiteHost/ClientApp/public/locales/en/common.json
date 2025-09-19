@@ -3,6 +3,30 @@
     "loading": "Loading..."
   },
   "components": {
+    "form": {
+      "form_submit_button": {
+        "default_label": "Submit",
+        "default_busy_label": "Sending...",
+        "default_completed_label": "Success!"
+      }
+    },
+    "layout": {
+      "main_navigation": {
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "settings": "Settings",
+        "welcome": "Welcome, {{name}}",
+        "logout": "Logout"
+      },
+      "hero_section": {
+        "welcome": "Welcome back, {{name}}",
+        "subtitle": "Manage your account and explore our features"
+      }
+    },
+    "offline": {
+      "error": "Network is unavailable",
+      "reason": "Some features may not be available while you're disconnected"
+    },
     "unhandled_error": {
       "title": "Unexpected Error",
       "message": "Oh no! We did not expect an error like this!",
@@ -11,17 +35,6 @@
       "technical_details": "Show Technical Details",
       "client_stack_trace": "Browser Stack Trace",
       "server_stack_trace": "Server Stack Trace"
-    },
-    "form": {
-      "form_submit_button": {
-        "default_label": "Submit",
-        "default_busy_label": "Sending...",
-        "default_completed_label": "Success!"
-      }
-    },
-    "offline": {
-      "error": "Network is unavailable",
-      "reason": "Some features may not be available while you're disconnected"
     }
   },
   "pages": {
@@ -54,7 +67,7 @@
       }
     },
     "identity": {
-      "login_credentials": {
+      "credentials_login": {
         "title": "Sign In",
         "form": {
           "fields": {
@@ -75,7 +88,7 @@
         },
         "errors": {
           "account_locked": "Your account has been locked. Please contact support.",
-          "account_unverified": "Your account is not verified yet. Please check your email for a verification link.",
+          "account_unverified": "Your account has not been verified yet. Please check your email for a verification link first.",
           "invalid_credentials": "Invalid username or password"
         },
         "links": {
@@ -86,10 +99,7 @@
           }
         }
       },
-      "sso_microsoft": {
-        "title": "Sign In With Microsoft"
-      },
-      "register_credentials": {
+      "credentials_register": {
         "title": "Create Account",
         "form": {
           "fields": {
@@ -135,7 +145,7 @@
           }
         }
       },
-      "after_register_credentials": {
+      "credentials_register_redirect": {
         "title": "Registration Successful!",
         "confirmation_message": {
           "title": "Check Your Email",
@@ -156,6 +166,15 @@
         "links": {
           "home": "Back to Home"
         }
+      },
+      "credentials_register_confirm": {
+        "title": "Confirm Registration",
+        "links": {
+          "home": "Back to Home"
+        }
+      },
+      "sso_microsoft": {
+        "title": "Sign In With Microsoft"
       }
     }
   }

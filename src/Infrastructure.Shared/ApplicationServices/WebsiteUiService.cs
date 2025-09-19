@@ -8,13 +8,13 @@ namespace Infrastructure.Shared.ApplicationServices;
 /// </summary>
 public sealed class WebsiteUiService : IWebsiteUiService
 {
-    //EXTEND: these URLs must reflect those used by the website that handles UI 
-    public const string LoginPageRoute = "/login";
-    public const string OAuth2ConsentPageRoute = "/oauth2/authorize/consent";
-    public const string PasswordMfaOobConfirmationPageRoute = "/confirm-password-mfaoob";
-    public const string PasswordRegistrationConfirmationPageRoute = "/confirm-password-registration";
-    public const string PasswordResetConfirmationPageRoute = "/confirm-password-reset";
-    public const string RegistrationPageRoute = "/register";
+    //EXTEND: these URLs must reflect routes used by the website in App.tsx
+    public const string LoginPageRoute = "/identity/credentials/login";
+    public const string OAuth2ConsentPageRoute = "/identity/oauth2/authorize/consent";
+    public const string PasswordMfaOobConfirmationPageRoute = "/identity/credentials/2fa/mfaoob-confirm";
+    public const string PasswordRegistrationConfirmationPageRoute = "/identity/credentials/register-confirm";
+    public const string PasswordResetConfirmationPageRoute = "/identity/credentials/reset-confirm";
+    public const string RegistrationPageRoute = "/identity/credentials/register";
 
     public string ConstructLoginPageUrl()
     {

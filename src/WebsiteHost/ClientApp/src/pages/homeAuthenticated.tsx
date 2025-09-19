@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { LogoutAction } from '../actions/identity/logoutUser.ts';
+import { LogoutAction } from '../actions/identity/logout.ts';
 import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 
 

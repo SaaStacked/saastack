@@ -1,8 +1,9 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { LogoutAction } from '../actions/identity/logoutUser.ts';
+import { LogoutAction } from '../actions/identity/logout.ts';
 import { GetProfileForCallerAction } from '../actions/userProfiles/getProfileForCaller.ts';
 import { UserProfileForCaller } from '../api/apiHost1';
 import { anonymousUser } from '../constants.ts';
+
 
 interface CurrentUserProviderProps {
   children?: ReactNode;
