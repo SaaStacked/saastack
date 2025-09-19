@@ -61,7 +61,8 @@ public class WebRequestSpec
                     {
                         { nameof(TestJsonRequest.Id), "anid" },
                         { nameof(TestJsonRequest.ANumberProperty), "999" },
-                        { nameof(TestJsonRequest.AStringProperty), "avalue" }
+                        { nameof(TestJsonRequest.AStringProperty), "avalue" },
+                        { nameof(TestJsonRequest.AListProperty), (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 },
                 RequestServices = _serviceProvider.Object
@@ -88,7 +89,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 },
                 RequestServices = _serviceProvider.Object
@@ -115,7 +117,8 @@ public class WebRequestSpec
                     {
                         { nameof(TestJsonRequest.Id), "anid" },
                         { nameof(TestJsonRequest.ANumberProperty), "999" },
-                        { nameof(TestJsonRequest.AStringProperty), "avalue" }
+                        { nameof(TestJsonRequest.AStringProperty), "avalue" },
+                        { nameof(TestJsonRequest.AListProperty), (string[]) ["avalue1", "avalue2", "avalue3"] }
                     }
                 },
                 RequestServices = _serviceProvider.Object
@@ -142,7 +145,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     }
                 },
                 RequestServices = _serviceProvider.Object
@@ -192,7 +196,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestMultipartFormDataRequest.Id), "anid" },
                         { nameof(TestMultipartFormDataRequest.ANumberProperty), "999" },
-                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" }
+                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestMultipartFormDataRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     })
                 }
             };
@@ -218,7 +226,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 }
             };
@@ -244,7 +253,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestMultipartFormDataRequest.Id), "anid" },
                         { nameof(TestMultipartFormDataRequest.ANumberProperty), "999" },
-                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" }
+                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestMultipartFormDataRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     }
                 }
             };
@@ -270,7 +283,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     }
                 }
             };
@@ -295,7 +309,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestMultipartFormDataRequest.Id), "anid" },
                         { nameof(TestMultipartFormDataRequest.ANumberProperty), "999" },
-                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" }
+                        { nameof(TestMultipartFormDataRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestMultipartFormDataRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     })
                 }
             };
@@ -320,7 +338,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 }
             };
@@ -369,7 +388,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestFormUrlEncodedRequest.Id), "anid" },
                         { nameof(TestFormUrlEncodedRequest.ANumberProperty), "999" },
-                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" }
+                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestFormUrlEncodedRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     })
                 }
             };
@@ -395,7 +418,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 }
             };
@@ -421,7 +445,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestFormUrlEncodedRequest.Id), "anid" },
                         { nameof(TestFormUrlEncodedRequest.ANumberProperty), "999" },
-                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" }
+                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestFormUrlEncodedRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     }
                 }
             };
@@ -447,7 +475,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     }
                 }
             };
@@ -472,7 +501,11 @@ public class WebRequestSpec
                     {
                         { nameof(TestFormUrlEncodedRequest.Id), "anid" },
                         { nameof(TestFormUrlEncodedRequest.ANumberProperty), "999" },
-                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" }
+                        { nameof(TestFormUrlEncodedRequest.AStringProperty), "avalue" },
+                        {
+                            nameof(TestFormUrlEncodedRequest.AListProperty),
+                            (string[]) ["avalue1", "avalue2", "avalue3"]
+                        }
                     })
                 }
             };
@@ -497,7 +530,8 @@ public class WebRequestSpec
                     {
                         { "id", "anid" },
                         { "a_number_property", "999" },
-                        { "a_string_property", "avalue" }
+                        { "a_string_property", "avalue" },
+                        { "a_list_property", (string[]) ["avalue1", "avalue2", "avalue3"] }
                     })
                 }
             };
@@ -516,6 +550,8 @@ public class WebRequestSpec
 [UsedImplicitly]
 public class TestJsonRequest : WebRequest<TestJsonRequest, TestResponse>
 {
+    public List<string>? AListProperty { get; set; }
+
     public int ANumberProperty { get; set; }
 
     public string? AStringProperty { get; set; }
@@ -527,6 +563,8 @@ public class TestJsonRequest : WebRequest<TestJsonRequest, TestResponse>
 [UsedImplicitly]
 public class TestAliasedJsonRequest : WebRequest<TestAliasedJsonRequest, TestResponse>
 {
+    [JsonPropertyName("a_list_property")] public List<string>? AListProperty { get; set; }
+
     [JsonPropertyName("a_number_property")]
     public int ANumberProperty { get; set; }
 
@@ -541,6 +579,8 @@ public class TestAliasedJsonRequest : WebRequest<TestAliasedJsonRequest, TestRes
 public class TestMultipartFormDataRequest : WebRequest<TestMultipartFormDataRequest, TestResponse>,
     IHasMultipartFormData
 {
+    public List<string>? AListProperty { get; set; }
+
     public int ANumberProperty { get; set; }
 
     public string? AStringProperty { get; set; }
@@ -553,6 +593,8 @@ public class TestMultipartFormDataRequest : WebRequest<TestMultipartFormDataRequ
 public class TestAliasedMultipartFormDataRequest : WebRequest<TestAliasedMultipartFormDataRequest, TestResponse>,
     IHasMultipartFormData
 {
+    [JsonPropertyName("a_list_property")] public List<string>? AListProperty { get; set; }
+
     [JsonPropertyName("a_number_property")]
     public int ANumberProperty { get; set; }
 
@@ -567,6 +609,8 @@ public class TestAliasedMultipartFormDataRequest : WebRequest<TestAliasedMultipa
 public class TestFormUrlEncodedRequest : WebRequest<TestFormUrlEncodedRequest, TestResponse>,
     IHasFormUrlEncoded
 {
+    public List<string>? AListProperty { get; set; }
+
     public int ANumberProperty { get; set; }
 
     public string? AStringProperty { get; set; }
@@ -579,6 +623,8 @@ public class TestFormUrlEncodedRequest : WebRequest<TestFormUrlEncodedRequest, T
 public class TestAliasedFormUrlEncodedRequest : WebRequest<TestAliasedFormUrlEncodedRequest, TestResponse>,
     IHasFormUrlEncoded
 {
+    [JsonPropertyName("a_list_property")] public List<string>? AListProperty { get; set; }
+
     [JsonPropertyName("a_number_property")]
     public int ANumberProperty { get; set; }
 

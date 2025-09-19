@@ -186,34 +186,61 @@ public abstract partial class WebRequest<TRequest>
 
     private static void SetPropertyValue(PropertyInfo prop, TRequest requestDto, object rawValue)
     {
-        if (prop.PropertyType == typeof(DateTime))
+        try
         {
-            var dateTime = rawValue.ToString()!.FromIso8601();
-            prop.SetValue(requestDto, dateTime);
-            return;
-        }
-
-        if (prop.PropertyType == typeof(DateTime?))
-        {
-            var dateTime = rawValue.ToString()!.FromIso8601();
-            if (dateTime == DateTime.MinValue)
+            if (prop.PropertyType == typeof(DateTime))
             {
+                var dateTime = rawValue.ToString()!.FromIso8601();
+                prop.SetValue(requestDto, dateTime);
                 return;
             }
 
-            prop.SetValue(requestDto, dateTime);
-            return;
-        }
+            if (prop.PropertyType == typeof(DateTime?))
+            {
+                var dateTime = rawValue.ToString()!.FromIso8601();
+                if (dateTime == DateTime.MinValue)
+                {
+                    return;
+                }
 
-        if (prop.PropertyType == rawValue.GetType())
+                prop.SetValue(requestDto, dateTime);
+                return;
+            }
+
+            if (prop.PropertyType == rawValue.GetType())
+            {
+                prop.SetValue(requestDto, rawValue);
+                return;
+            }
+
+            if (rawValue is Array array
+                && IsListOfT(prop.PropertyType))
+            {
+                var typeOfT = prop.PropertyType.GetGenericArguments()[0];
+                var listOfT = typeof(List<>).MakeGenericType(typeOfT);
+                var list = Activator.CreateInstance(listOfT);
+                var addRangeMethod = listOfT.GetMethod(nameof(List<object>.AddRange))!;
+                addRangeMethod.Invoke(list, [array]);
+                prop.SetValue(requestDto, list);
+                return;
+            }
+
+            var typeConverter = TypeDescriptor.GetConverter(prop.PropertyType);
+            var value = typeConverter.ConvertFrom(rawValue);
+            prop.SetValue(requestDto, value);
+        }
+        catch (Exception e)
         {
-            prop.SetValue(requestDto, rawValue);
-            return;
+            Console.WriteLine(e);
+            throw;
         }
 
-        var typeConverter = TypeDescriptor.GetConverter(prop.PropertyType);
-        var value = typeConverter.ConvertFrom(rawValue);
-        prop.SetValue(requestDto, value);
+        return;
+
+        bool IsListOfT(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
+        }
     }
 
     private static bool IsMultiPartFormData()
