@@ -1,9 +1,12 @@
 using System.Net;
 using ApiHost1;
+using Application.Resources.Shared;
 using Common;
 using Domain.Interfaces;
+using Domain.Interfaces.Authorization;
 using FluentAssertions;
 using Infrastructure.Web.Api.Interfaces.Clients;
+using Infrastructure.Web.Api.Operations.Shared.Identities;
 using Infrastructure.Web.Api.Operations.Shared.Images;
 using Infrastructure.Web.Api.Operations.Shared.UserProfiles;
 using Infrastructure.Web.Common.Extensions;
@@ -21,6 +24,64 @@ public class UserProfileApiSpec : WebApiSpec<Program>
     public UserProfileApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
+    }
+
+    [Fact]
+    public async Task WhenRegisterWithCredentials_ThenCreatesProfile()
+    {
+        await Api.PostAsync(new RegisterPersonCredentialRequest
+        {
+            EmailAddress = "auser@company.com",
+            FirstName = "afirstname",
+            LastName = "alastname",
+            Password = "1Password!",
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            CountryCode = "AU",
+            TermsAndConditionsAccepted = true
+        });
+
+        await PropagateDomainEventsAsync();
+        var token = UserNotificationsService.LastRegistrationConfirmationToken;
+        await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
+        {
+            Token = token
+        });
+
+        await PropagateDomainEventsAsync();
+        var tokens = (await Api.PostAsync(new AuthenticateCredentialRequest
+        {
+            Username = "auser@company.com",
+            Password = "1Password!"
+        })).Content.Value.Tokens;
+
+        var result = await Api.GetAsync(new GetProfileForCallerRequest(),
+            req => req.SetJWTBearerToken(tokens.AccessToken.Value));
+
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        result.Content.Value.Profile.IsAuthenticated.Should().BeTrue();
+        result.Content.Value.Profile.Id.Should().NotBeNullOrEmpty();
+        result.Content.Value.Profile.UserId.Should().Be(tokens.UserId);
+        result.Content.Value.Profile.DefaultOrganizationId.Should().NotBeNullOrEmpty();
+        result.Content.Value.Profile.Name.FirstName.Should().Be("afirstname");
+        result.Content.Value.Profile.Name.LastName.Should().Be("alastname");
+        result.Content.Value.Profile.DisplayName.Should().Be("afirstname");
+        result.Content.Value.Profile.Timezone.Should().Be("Australia/Sydney");
+        result.Content.Value.Profile.AvatarUrl.Should().BeNull();
+        result.Content.Value.Profile.Classification.Should().Be(UserProfileClassification.Person);
+        result.Content.Value.Profile.Roles.Should().OnlyContain(role => role == PlatformRoles.Standard.Name);
+        result.Content.Value.Profile.Features.Should()
+            .ContainInOrder(PlatformFeatures.PaidTrial.Name, PlatformFeatures.Basic.Name);
+        result.Content.Value.Profile.EmailAddress.Should().Be("auser@company.com");
+        result.Content.Value.Profile.Locale.Should().Be("en-AU");
+        result.Content.Value.Profile.PhoneNumber.Should().BeNull();
+        result.Content.Value.Profile.Address.Line1.Should().BeEmpty();
+        result.Content.Value.Profile.Address.Line2.Should().BeEmpty();
+        result.Content.Value.Profile.Address.Line3.Should().BeEmpty();
+        result.Content.Value.Profile.Address.City.Should().BeEmpty();
+        result.Content.Value.Profile.Address.State.Should().BeEmpty();
+        result.Content.Value.Profile.Address.CountryCode.Should().Be("AUS");
+        result.Content.Value.Profile.Address.Zip.Should().BeEmpty();
     }
 
     [Fact]
