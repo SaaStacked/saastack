@@ -9,8 +9,10 @@ import { OfflineServiceContext } from '../../services/OfflineServiceContext.tsx'
 import Alert from '../alert/Alert.tsx';
 import { OfflineBanner } from '../offline/OfflineBanner.tsx';
 import Form from './Form';
+import FormCheckbox from './formCheckbox/FormCheckbox.tsx';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton';
+
 
 const meta: Meta<typeof Form> = {
   title: 'Components/Form/Form',
@@ -89,7 +91,8 @@ const createMockAction = <
 const validationSchema = z.object({
   firstName: z.string().min(1, 'FirstName is required'),
   emailAddress: z.email('Please enter a valid email address'),
-  message: z.string().optional()
+  message: z.string().optional(),
+  terms: z.literal(true, 'You must accept the terms and conditions')
 });
 
 export const ReturnsSuccess: Story = {
@@ -127,6 +130,7 @@ export const ReturnsSuccess: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )
@@ -175,6 +179,7 @@ export const ReturnsExpectedError: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )
@@ -249,6 +254,7 @@ export const ReturnsUnexpectedError: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )
@@ -272,6 +278,7 @@ export const ValidateOnChange: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )
@@ -300,6 +307,7 @@ export const ActionExecuting: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )
@@ -332,6 +340,7 @@ export const BrowserIsOffline: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
     </Form>
   )

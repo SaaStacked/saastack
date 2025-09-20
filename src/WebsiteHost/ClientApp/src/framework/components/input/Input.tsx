@@ -1,7 +1,6 @@
 import React, { AllHTMLAttributes } from 'react';
 import { createComponentId } from '../Components';
 
-
 type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
 
 export interface InputProps {
@@ -25,6 +24,11 @@ export interface InputProps {
 }
 
 // Creates an input field with the specified type, and size
+// Layout is critical:
+// - The label occupies the first half of the width of the parent
+// - The input occupies the second half of the width of the parent, for alignment with other form controls
+// - We stack the input and label on top the errorMessage in mobile and desktop
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -65,13 +69,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const labelText = label || name || componentId;
     return (
       <div
-        className={`grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] gap-1 sm:gap-2 items-start`}
+        className={`grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-1 sm:gap-2 items-start`}
         data-testid={`${componentId}_wrapper`}
       >
         <div>
           {labelText && (
             <label
-              className={`block text-sm font-medium text-gray-700 sm:min-w-0 sm:flex-shrink-0 ${size === 'lg' ? 'pt-3' : 'pt-2'}`}
+              className={`block text-sm font-medium text-gray-700 sm:min-w-0 sm:flex-shrink-0 ${size === 'lg' ? 'pt-4' : 'pt-3'}`}
               data-testid={`${componentId}_label`}
               htmlFor={componentId}
               aria-labelledby={componentId}
@@ -86,7 +90,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        <div className="flex flex-col sm:col-span-2">
+        <div className="flex flex-col">
           <input
             className={classes}
             data-testid={componentId}
@@ -104,14 +108,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             {...props}
           />
-          <div className="mt-1 h-3 flex items-start">
+          <div className="mt-1 h-12 flex items-start w-full overflow-hidden">
             {errorMessage && (
-              <p className="mt-1 text-sm text-red-600" data-testid={`${componentId}_error`}>
+              <p className="mt-1 text-sm text-red-600 break-words" data-testid={`${componentId}_error`}>
                 {errorMessage}
               </p>
             )}
             {hintText && !errorMessage && (
-              <p className="mt-1 text-sm text-gray-500" data-testid={`${componentId}_hint`}>
+              <p className="mt-1 text-sm text-gray-500 break-words" data-testid={`${componentId}_hint`}>
                 {hintText}
               </p>
             )}

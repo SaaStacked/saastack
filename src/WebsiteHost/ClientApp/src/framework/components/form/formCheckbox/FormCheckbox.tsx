@@ -10,8 +10,11 @@ interface FormCheckboxProps {
   dependencies?: string[];
 }
 
-// Creates a form checkbox element that supports validation
-// Accepts all the usual properties for an input, like: name, label
+// Creates a checkbox field that supports validation
+// Accepts all the usual properties for a checkbox, like: name, label, dependencies
+// This input communicates with an ancestor Form via useFormContext() and useContext(), to fetch the validation state.
+// This input keeps track of its own validation state, based on the ancestor Form's validation state.
+// This input triggers validation when the user interacts with the input, based on the ancestor Form's validatesWhen.
 // This input sets its default value based on the ancestor Form's defaultValues.
 // This input displays a validation error message, based on its own validation state.
 const FormCheckbox = ({ className, id, name, label, dependencies = [] }: FormCheckboxProps) => {
