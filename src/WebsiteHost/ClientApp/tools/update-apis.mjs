@@ -68,12 +68,12 @@ function generateApiServices(definitionsFile, targetFolder) {
 updateApis(
   'ApiHost1',
   `${process.env.VITE_APIHOST1BASEURL}/swagger/v1/swagger.json`,
-  './src/api/apiHost1.swagger.gen.json',
-  './src/api/apiHost1'
+  './src/framework/api/apiHost1.swagger.gen.json',
+  './src/framework/api/apiHost1'
 );
 updateApis(
   'WebsiteHost',
   `${process.env.VITE_WEBSITEHOSTBASEURL}/swagger/v1/swagger.json`,
-  './src/api/websiteHost.swagger.gen.json',
-  './src/api/websiteHost'
+  './src/framework/api/websiteHost.swagger.gen.json',
+  './src/framework/api/websiteHost'
 );

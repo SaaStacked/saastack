@@ -1,12 +1,12 @@
 import React from 'react';
-import './i18n';
+import './framework/i18n';
 import { createRoot } from 'react-dom/client';
-import { initializeApiClient } from './api';
 import App from './App.tsx';
-import { AppProviders } from './providers/AppProviders';
-import { recorder } from './recorder';
 import './main.css';
 import { BrowserRouter } from 'react-router-dom';
+import { initializeApiClient } from './framework/api';
+import { AppProviders } from './framework/providers/AppProviders.tsx';
+import { recorder } from './framework/recorder.ts';
 
 
 initializeApiClient();

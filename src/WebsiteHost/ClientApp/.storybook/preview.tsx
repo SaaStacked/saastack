@@ -1,8 +1,8 @@
 import type { Preview } from '@storybook/react';
 import '../src/main.css';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { handlers } from '../src/testing/Storybook/msw-handlers';
-import { StorybookProviders } from '../src/testing/Storybook/StorybookProviders';
+import { handlers } from '../src/framework/testing/Storybook/msw-handlers';
+import { StorybookProviders } from '../src/framework/testing/Storybook/StorybookProviders';
 
 
 // Initialize MSW addon

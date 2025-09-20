@@ -107,7 +107,7 @@ To run the storybook, use the `npm run storybook` command.
 
 There are a number of components already present, and you will likely want to keep these for your product. And only change the layout/styling of them.
 
-There are a set of very basic components, that can be used anywhere, and there are a specific set of components for dealing with interactive forms in the `src/components/form` folder. These are specialized to work with the `<Form/>` component, combined with Actions (`src/actions/ActionCommand.ts` and `src/actions/ActionQuery.ts`)
+There are a set of very basic components, that can be used anywhere, and there are a specific set of components for dealing with interactive forms in the `src/framework/components/form` folder. These are specialized to work with the `<Form/>` component, combined with Actions (`src/framework/actions/ActionCommand.ts` and `src/framework/actions/ActionQuery.ts`)
 
 ## Pages
 
