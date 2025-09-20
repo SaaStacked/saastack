@@ -11,7 +11,7 @@ import { getBrowserCountry, getBrowserLocale, getBrowserTimezone } from '../../u
 
 
 export const CredentialsRegisterPage: React.FC = () => {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   const register = CredentialsRegisterAction();
 
   return (

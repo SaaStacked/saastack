@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { ExpectedErrorDetails } from '../../actions/ApiErrorState.ts';
-import {
-  ConfirmRegisterErrors,
-  CredentialsRegisterConfirmAction
-} from '../../actions/identity/credentialsRegisterConfirm.ts';
+import { ConfirmRegisterErrors, CredentialsRegisterConfirmAction } from '../../actions/identity/credentialsRegisterConfirm.ts';
 import { CredentialsRegisterConfirmationResendAction } from '../../actions/identity/credentialsRegisterConfirmationResend.ts';
 import Alert from '../../components/alert/Alert.tsx';
 import Button from '../../components/button/Button.tsx';
@@ -21,7 +18,7 @@ import UnhandledError from '../../components/unhandledError/UnhandledError.tsx';
 // 2. If the token is valid, but the user has already registered, then the user is shown an error message.
 // 3. The token is invalid (perhaps expired, or unknown) then the user is shown an error message, and a link to resend the confirmation email.
 export const CredentialsRegisterConfirm: React.FC = () => {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   const [queryString] = useSearchParams();
   const token = queryString.get('token');
 

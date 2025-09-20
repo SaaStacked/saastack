@@ -2,8 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+
 export const CredentialsRegisterRedirect: React.FC = () => {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   return (
     <div className="container min-h-screen flex">
       <div className="rounded-2xl shadow-2xl p-8 bg-white lg:w-3/5 md:w-3/5 w-11/12">

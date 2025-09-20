@@ -51,34 +51,38 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   const formContext = { isSubmitted: false };
 
   type TValidations = z.infer<typeof validationSchema>;
-  const formHooks = useForm<TValidations>({
+  const validation = useForm<TValidations>({
     mode: validatesWhen,
     resolver: validationSchema ? zodResolver(validationSchema) : undefined,
     defaultValues: defaultValues as DefaultValues<TValidations>,
     context: formContext
   });
-  formContext.isSubmitted = formHooks.formState.isSubmitted;
+  formContext.isSubmitted = validation.formState.isSubmitted;
   const requiredFormFields = validationSchema ? getRequiredFields(validationSchema) : [];
   const baseClasses = 'space-y-4 sm:space-y-6 bg-white rounded-lg transition-all';
   const classes = [baseClasses, className].filter(Boolean).join(' ');
-  const isDisabled =
-    disabled || action.isExecuting || !action.isReady || (action.isSuccess === true && formHooks.formState.isSubmitted);
+  const isFormDisabled =
+    disabled ||
+    action.isExecuting ||
+    !action.isReady ||
+    (action.isSuccess === true && validation.formState.isSubmitted);
   const lastExpectedError = action.lastExpectedError
     ? (expectedErrorMessages?.[action.lastExpectedError.code] ?? action.lastExpectedError.code)
     : undefined;
+  const lastUnexpectedError = action.lastUnexpectedError;
   const componentId = createComponentId('action_form', id);
   return (
     <ActionFormContext.Provider value={action}>
       <ActionFormRequiredFieldsContext.Provider value={requiredFormFields}>
         <ActionFromValidationContext.Provider value={validatesWhen}>
-          <FormProvider {...formHooks}>
+          <FormProvider {...validation}>
             <div className="container flex flex-col items-center">
-              <fieldset disabled={isDisabled}>
+              <fieldset disabled={isFormDisabled}>
                 <form
                   className={classes}
                   data-testid={componentId}
                   name={componentId}
-                  onSubmit={formHooks.handleSubmit((requestData) =>
+                  onSubmit={validation.handleSubmit((requestData) =>
                     action.execute(requestData, {
                       onSuccess: (successParams) => {
                         if (onSuccess) {
@@ -91,8 +95,12 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
                 >
                   {children}
                   <div className="mt-4">
-                    <Alert id={`${componentId}_expected_error`} message={lastExpectedError} type="error" />
-                    <UnhandledError id={`${componentId}_unexpected_error`} error={action.lastUnexpectedError} />
+                    {lastExpectedError && (
+                      <Alert id={`${componentId}_expected_error`} message={lastExpectedError} type="error" />
+                    )}
+                    {lastUnexpectedError && (
+                      <UnhandledError id={`${componentId}_unexpected_error`} error={lastUnexpectedError} />
+                    )}
                   </div>
                 </form>
               </fieldset>

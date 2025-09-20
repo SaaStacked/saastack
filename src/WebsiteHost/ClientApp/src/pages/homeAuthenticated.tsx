@@ -1,44 +1,34 @@
 import { useTranslation } from 'react-i18next';
-import { LogoutAction } from '../actions/identity/logout.ts';
-import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
+import Button from '../components/button/Button.tsx';
 
 
 export function HomeAuthenticatedPage() {
-  const { profile } = useCurrentUser();
-  const { execute: logout } = LogoutAction();
-  const { t: translate } = useTranslation('common');
-
+  const { t: translate } = useTranslation();
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-gray-900">{translate('pages.home.home_authenticated.title')}</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              {profile?.avatarUrl && (
-                <img
-                  className="h-8 w-8 rounded-full"
-                  src={profile.avatarUrl}
-                  alt={profile.displayName || 'User avatar'}
-                />
-              )}
-              <span className="text-sm font-medium text-gray-700">
-                {profile?.displayName || profile?.name.firstName || 'User'}
-              </span>
-              <button
-                onClick={logout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                {translate('pages.home.home_authenticated.links.logout')}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="container min-h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+          <Button className="rounded-full flex-col py-8" variant="outline" navigateTo="/cars/search">
+            <img
+              src="/images/car-icon.svg"
+              width={256}
+              height={256}
+              alt={translate('pages.home.home_authenticated.links.search_cars')}
+            />
+            <span className="mt-2 text-2xl">{translate('pages.home.home_authenticated.links.search_cars')}</span>
+          </Button>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"></main>
+          <Button className="rounded-full flex-col py-8" variant="outline" navigateTo="/bookings/reserve">
+            <img
+              src="/images/booking-icon.svg"
+              width={256}
+              height={256}
+              alt={translate('pages.home.home_authenticated.links.reserve_car')}
+            />
+            <span className="mt-2 text-2xl">{translate('pages.home.home_authenticated.links.reserve_car')}</span>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

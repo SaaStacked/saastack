@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
 /*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 /*noinspection CssInvalidAtRule*/
@@ -6,9 +6,12 @@
 
 /*noinspection CssInvalidAtRule*/
 @theme {
-    --font-sans: 'Inter', 'Inter Fallback', system-ui;
+    --font-sans: 'Noto Sans', system-ui;
     --color-primary: #0C6291;
     --color-secondary: #E1523D;
+    --color-accent: var(--color-emerald-600);
+    --color-accent-light: var(--color-emerald-200);
+    --color-accent-dark: var(--color-emerald-800);
 }
 
 @layer base {

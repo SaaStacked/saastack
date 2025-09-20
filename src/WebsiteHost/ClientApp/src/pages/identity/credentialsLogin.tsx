@@ -9,7 +9,7 @@ import FormSubmitButton from '../../components/form/formSubmitButton/FormSubmitB
 
 
 export const CredentialsLoginPage: React.FC = () => {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   const login = CredentialsLoginAction();
 
   return (

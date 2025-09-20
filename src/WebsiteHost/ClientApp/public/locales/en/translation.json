@@ -1,2 +1,221 @@
 {
+  "app": {
+  },
+  "components": {
+    "form": {
+      "form_submit_button": {
+        "default_label": "Submit",
+        "default_busy_label": "Sending...",
+        "default_completed_label": "Success!"
+      }
+    },
+    "layout": {
+      "main_navigation": {
+        "logo": "SaaStack",
+        "links": {
+          "logout": "Logout",
+          "profile": "Edit Profile",
+          "organizations": "Organizations",
+          "search_cars": "Find a Car",
+          "reserve_car": "Reserve Car"
+        }
+      },
+      "footer": {
+        "copyright": "© {{currentYear}} SaaStack. All rights reserved.",
+        "links": {
+          "home": "Home",
+          "about": "About",
+          "terms": "Terms",
+          "privacy": "Privacy"
+        }
+      }
+    },
+    "offline": {
+      "error": "Network is unavailable",
+      "reason": "Some features may not be available while you're disconnected"
+    },
+    "unhandled_error": {
+      "title": "Unexpected Error",
+      "message": "Oh no! We did not expect an error like this!",
+      "details": "Error Details",
+      "more_details": "More Details",
+      "technical_details": "Show Technical Details",
+      "client_stack_trace": "Browser Stack Trace",
+      "server_stack_trace": "Server Stack Trace"
+    }
+  },
+  "pages": {
+    "home": {
+      "home_anonymous": {
+        "title": "Welcome back to SaaStack",
+        "providers": {
+          "microsoft": "Sign in with Microsoft",
+          "google": "Sign in with Google",
+          "credentials": "Sign in with Email"
+        },
+        "links": {
+          "register": {
+            "question": "No account?",
+            "text": "Create one"
+          }
+        }
+      },
+      "home_authenticated": {
+        "links": {
+          "search_cars": "Find a Car",
+          "reserve_car": "Reserve Car"
+        }
+      }
+    },
+    "about": {
+      "title": "About SaaStack"
+    },
+    "terms": {
+      "title": "SaaStack Terms of Service"
+    },
+    "privacy": {
+      "title": "SaaStack Privacy Policy"
+    },
+    "identity": {
+      "credentials_login": {
+        "title": "Sign In",
+        "form": {
+          "fields": {
+            "username": {
+              "label": "Email Address",
+              "placeholder": "Enter your email address",
+              "validation": "Must be a valid email address"
+            },
+            "password": {
+              "label": "Password",
+              "placeholder": "Enter a strong password",
+              "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
+            }
+          },
+          "submit": {
+            "label": "Sign In"
+          }
+        },
+        "errors": {
+          "account_locked": "Your account has been locked. Please contact support.",
+          "account_unverified": "Your account has not been verified yet. Please check your email for a verification link first.",
+          "invalid_credentials": "Invalid username or password",
+          "mfa_required": "You must complete multi-factor authentication to sign in."
+        },
+        "links": {
+          "home": "Go Home",
+          "register": {
+            "question": "Don't have an account?",
+            "text": "Register here"
+          }
+        }
+      },
+      "credentials_register": {
+        "title": "Create Account",
+        "form": {
+          "fields": {
+            "first_name": {
+              "label": "First Name",
+              "placeholder": "Enter your first name",
+              "validation": "Must be a valid name"
+            },
+            "last_name": {
+              "label": "Last Name",
+              "placeholder": "Enter your last name",
+              "validation": "Must be a valid name"
+            },
+            "email_address": {
+              "label": "Email Address",
+              "placeholder": "Enter your email address",
+              "validation": "Must be a valid email address"
+            },
+            "password": {
+              "label": "Password",
+              "placeholder": "Enter a strong password",
+              "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
+            },
+            "confirm_password": {
+              "label": "Confirm Password",
+              "placeholder": "Enter your password again",
+              "validation": "Must be same as the password above"
+            },
+            "terms": {
+              "label": "I accept the Terms and Conditions of SaaStack",
+              "validation": "You must agree to the terms and conditions"
+            }
+          },
+          "submit": {
+            "label": "Sign Up"
+          }
+        },
+        "links": {
+          "home": "Go Home",
+          "login": {
+            "question": "Already have an account?",
+            "text": "Sign In here"
+          }
+        }
+      },
+      "credentials_register_redirect": {
+        "title": "Registration Successful!",
+        "confirmation_message": {
+          "title": "Check Your Email",
+          "message": "We've sent a confirmation email to your inbox. Please check your email and click the confirmation link to activate your account."
+        },
+        "instructions": {
+          "title": "What to do next",
+          "steps": {
+            "step1": "Check your email inbox (and spam folder)",
+            "step2": "Look for an email from SaaStack",
+            "step3": "Click the confirmation link in the email"
+          }
+        },
+        "troubleshoot": {
+          "question": "Didn't receive the email?",
+          "answer": "It may take a few minutes to arrive. If you still don't see it, check your spam folder or contact support."
+        },
+        "links": {
+          "home": "Back to Home"
+        }
+      },
+      "credentials_register_confirm": {
+        "title": "Confirm Your Registration",
+        "states": {
+          "confirming": {
+            "title": "Confirming Registration",
+            "message": "One moment please...",
+            "errors": {
+              "token_missing": "This registration link is invalid. Please check your email."
+            }
+          },
+          "success": {
+            "title": "Registration Confirmed!",
+            "message": "Your account has been successfully registered, please sign in."
+          },
+          "failed": {
+            "title": "Confirmation Failed",
+            "message": "Please contact support.",
+            "errors": {
+              "token_expired": "Your registration link has expired. Please request to send a new one.",
+              "token_used": "You are already registered. Please sign in."
+            }
+          },
+          "resend": {
+            "title": "Resend Confirmation",
+            "success": "We have sent you a new confirmation email. Please check your email.",
+            "errors": {
+              "token_used": "This registration link is invalid, and cannot be used to resend a confirmation email. Please check your email."
+            }
+          }
+        },
+        "links": {
+          "home": "Back to Home",
+          "login": "Sign In"
+        }
+      },
+      "sso_microsoft": {
+        "title": "Sign In With Microsoft"
+      }
+    }
+  }
 }

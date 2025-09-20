@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 
 export function TermsPage() {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
 
   return (
     <article className="prose">
       <div>
-        <h1>{translate('pages.home.terms.title')}</h1>
+        <h1>{translate('pages.terms.title')}</h1>
         <p>Last updated: January 1, 2024</p>
       </div>
 

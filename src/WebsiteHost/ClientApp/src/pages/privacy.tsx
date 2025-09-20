@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 
 export function PrivacyPage() {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
 
   return (
     <article className="prose">
       <div>
-        <h1>{translate('pages.home.privacy.title')}</h1>
+        <h1>{translate('pages.privacy.title')}</h1>
         <p>Last updated: January 1, 2024</p>
       </div>
 

@@ -22,14 +22,14 @@ interface FormSubmitButtonProps {
 // The button is disabled before the form has been submitted, and the form fails validation.
 // When the button is clicked, it submits the ancestor Form.
 export default function FormSubmitButton({ id, label, busyLabel, completeLabel }: FormSubmitButtonProps) {
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   const action = useContext<ActionResult<any, any> | undefined>(ActionFormContext);
-  const { isValid: isFormValid, isSubmitted: hasFormBeenSubmitted } = useFormState();
+  const { isSubmitted: hasFormBeenSubmitted } = useFormState();
   const isReady = action?.isReady ?? false;
   const isExecuting = action?.isExecuting ?? false;
   const isSuccess = action?.isSuccess;
   const isCompleted = hasFormBeenSubmitted && isSuccess == true;
-  const disabled = !isReady || isCompleted || !isFormValid;
+  const isButtonDisabled = !isReady || isCompleted;
   const buttonLabel = isExecuting
     ? (busyLabel ?? translate('components.form.form_submit_button.default_busy_label'))
     : isSuccess == true
@@ -37,13 +37,13 @@ export default function FormSubmitButton({ id, label, busyLabel, completeLabel }
       : (label ?? translate('components.form.form_submit_button.default_label'));
   const componentId = createComponentId('form_submit', id);
   return (
-    <div className="flex">
+    <div className="flex mt-16">
       <Button
         className="w-full"
         id={componentId}
         label={buttonLabel}
         busy={isExecuting}
-        disabled={disabled}
+        disabled={isButtonDisabled}
         type="submit"
       />
     </div>

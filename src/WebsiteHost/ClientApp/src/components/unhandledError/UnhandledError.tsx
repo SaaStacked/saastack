@@ -14,7 +14,7 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
   if (!error) {
     return null;
   }
-  const { t: translate } = useTranslation('common');
+  const { t: translate } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const responseData = error.response?.data as any;
   const statusCode = error.response ? error.response?.status : error.status;

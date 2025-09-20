@@ -8,7 +8,6 @@ import Form, { getRequiredFields } from './Form';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton.tsx';
 
-
 interface TestRequestData extends ActionRequestData {
   atext: string;
   anemailaddress: string;
