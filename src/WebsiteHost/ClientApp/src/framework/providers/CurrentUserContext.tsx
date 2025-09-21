@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { UserProfileForCaller } from '../../api/apiHost1';
 import { LogoutAction } from '../../subDomains/identity/actions/logout.ts';
 import { GetProfileForCallerAction } from '../../subDomains/userProfiles/actions/getProfileForCaller.ts';
+import { UserProfileForCaller } from '../api/apiHost1';
 import { anonymousUser } from '../constants.ts';
 
 

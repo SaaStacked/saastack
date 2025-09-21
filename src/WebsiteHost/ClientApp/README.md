@@ -94,6 +94,12 @@ We recommend the following practices, using the `IRecorder`:
 3. Use `recorder.trackUsage()` to capture all product metrics. All API calls are already tracked in by the backend API, but the backend API cannot track what the user does in the UI (mouse movements, clicks, navigation etc.), nor anything else that the user does in the UI that does not result in an API call. Add appropriate `trackUsage()` calls to capture those UI events. The BEFFE will take care of capturing the user agent properties and other browser metadata.
 4. For page views, use the `recorder.trackPageView()` method. This method is already wired into the React router, so as long as all routes are defined in React router, you should have nothing to do here.  
 
+# Feature Flags
+
+Feature flags are used to control the availability of features in the UI.
+
+Feature flags are defined in the BEFFE, and are available to the UI via the `FeatureFlagAction` to the `getFeatureFlagForCaller()` API.
+
 # StoryBook
 
 Every component has one or more storybook stories, to maintain a gallery of components, and their various states/flavors. Those files are located next to the component files, and have the suffix `.stories.tsx`.
