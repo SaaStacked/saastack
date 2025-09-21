@@ -49,14 +49,14 @@ export const CredentialsLoginPage: React.FC = () => {
         </Form>
         <div className="text-center">
           <p>
-            <Link to="/" className="btn btn-secondary">
-              {translate('pages.identity.credentials_login.links.home')}
-            </Link>
-          </p>
-          <p>
             {translate('pages.identity.credentials_login.links.register.question')}{' '}
             <Link to="/identity/credentials/register">
               {translate('pages.identity.credentials_login.links.register.text')}
+            </Link>
+          </p>
+          <p>
+            <Link to="/" className="btn btn-secondary">
+              {translate('pages.identity.credentials_login.links.home')}
             </Link>
           </p>
         </div>

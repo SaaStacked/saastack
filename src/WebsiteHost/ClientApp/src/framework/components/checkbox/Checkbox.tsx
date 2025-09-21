@@ -7,9 +7,10 @@ type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
 export interface CheckboxProps {
   className?: string;
   id?: string;
+  children: React.ReactNode;
   name?: HTMLInputProps['name'];
   size?: 'sm' | 'md' | 'lg';
-  label: string;
+  label?: string;
   value?: HTMLInputProps['checked'];
   disabled?: boolean;
   errorMessage?: string;
@@ -30,6 +31,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     {
       className,
       id,
+      children,
       name,
       size = 'md',
       label,
@@ -47,9 +49,9 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const baseClasses =
       'border rounded-sm transition-colors focus:outline-none focus:ring-1 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed';
     const sizeClasses = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-3 py-2 text-sm',
-      lg: 'px-4 py-3 text-base'
+      sm: 'w-4 h-4 text-sm',
+      md: 'w-5 h-5 text-sm',
+      lg: 'w-6 h-6 text-base'
     };
     const stateClasses = errorMessage
       ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
@@ -57,15 +59,13 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const widthClass = fullWidth ? 'w-full' : '';
     const classes = [baseClasses, sizeClasses[size], stateClasses, widthClass, className].filter(Boolean).join(' ');
     const componentId = createComponentId('checkbox', id);
-    const labelText = label || name || componentId;
+    const labelText = children || label || name || componentId;
     return (
       <div
-        className={`grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-1 sm:gap-2 items-start mt-2`}
+        className={`grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 items-start mt-2`}
         data-testid={`${componentId}_wrapper`}
       >
-        <div className="hidden sm:block">&nbsp;</div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col sm:col-span-2">
           <div className="flex items-center">
             <input
               className={classes}
@@ -82,7 +82,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               {...props}
             />
             <label
-              className={`ml-2 text-sm font-medium text-gray-700`}
+              className="ml-2 text-sm font-medium text-gray-700 flex-1 w-full"
               data-testid={`${componentId}_label`}
               htmlFor={componentId}
               aria-labelledby={componentId}

@@ -37,7 +37,7 @@ export default function FormSubmitButton({ id, label, busyLabel, completeLabel }
       : (label ?? translate('components.form.form_submit_button.default_label'));
   const componentId = createComponentId('form_submit', id);
   return (
-    <div className="flex mt-16">
+    <div className="flex mt-4">
       <Button
         className="w-full"
         id={componentId}

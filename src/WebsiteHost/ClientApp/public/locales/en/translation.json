@@ -106,7 +106,7 @@
           "home": "Go Home",
           "register": {
             "question": "Don't have an account?",
-            "text": "Register here"
+            "text": "Create one"
           }
         }
       },
@@ -140,19 +140,21 @@
               "validation": "Must be same as the password above"
             },
             "terms": {
-              "label": "I accept the Terms and Conditions of SaaStack",
-              "validation": "You must agree to the terms and conditions"
+              "label": "By creating this account, you are agreeing to the <1>{{terms}}</1>, and <2>{{privacy}}</2> of SaaStack",
+              "validation": "You must agree to the terms of service"
             }
           },
           "submit": {
-            "label": "Sign Up"
+            "label": "Create Account"
           }
         },
         "links": {
           "home": "Go Home",
+          "terms": "terms of use",
+          "privacy": "privacy policy",
           "login": {
             "question": "Already have an account?",
-            "text": "Sign In here"
+            "text": "Sign In"
           }
         }
       },

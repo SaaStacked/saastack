@@ -1,6 +1,7 @@
 import React, { AllHTMLAttributes } from 'react';
 import { createComponentId } from '../Components';
 
+
 type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
 
 export interface InputProps {
@@ -54,10 +55,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      'border rounded-sm transition-colors focus:outline-none focus:ring-1 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed';
+      'w-full border-0 rounded-sm bg-transparent outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed';
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-sm',
-      md: 'px-3 py-2 text-sm',
+      md: 'p-0 text-sm',
       lg: 'px-4 py-3 text-base'
     };
     const stateClasses = errorMessage
@@ -68,57 +69,55 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const componentId = createComponentId('input', id);
     const labelText = label || name || componentId;
     return (
-      <div
-        className={`grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-1 sm:gap-2 items-start`}
-        data-testid={`${componentId}_wrapper`}
-      >
-        <div>
-          {labelText && (
-            <label
-              className={`block text-sm font-medium text-gray-700 sm:min-w-0 sm:flex-shrink-0 ${size === 'lg' ? 'pt-4' : 'pt-3'}`}
-              data-testid={`${componentId}_label`}
-              htmlFor={componentId}
-              aria-labelledby={componentId}
-            >
-              {`${labelText}:`}
-              {required && (
-                <span className="text-red-500 ml-1" data-testid={`${componentId}_required`}>
-                  *
-                </span>
-              )}
-            </label>
-          )}
-        </div>
-
+      <div className={`flex flex-col gap-1`} data-testid={`${componentId}_wrapper`}>
         <div className="flex flex-col">
-          <input
-            className={classes}
-            data-testid={componentId}
-            id={componentId}
-            name={name}
-            type={type}
-            placeholder={placeholder}
-            value={value}
-            disabled={disabled}
-            required={required}
-            onChange={onChange}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            autoComplete={autoComplete}
-            ref={ref}
-            {...props}
-          />
-          <div className="mt-1 h-12 flex items-start w-full overflow-hidden">
-            {errorMessage && (
-              <p className="mt-1 text-sm text-red-600 break-words" data-testid={`${componentId}_error`}>
-                {errorMessage}
-              </p>
+          <div
+            className={`border rounded-sm p-3 transition-colors ${errorMessage ? 'border-red-300 focus-within:border-red-500' : 'border-gray-300 focus-within:border-primary'}`}
+          >
+            {labelText && (
+              <label
+                className={`block text-xs font-medium text-gray-700 mb-1`}
+                data-testid={`${componentId}_label`}
+                htmlFor={componentId}
+                aria-labelledby={componentId}
+              >
+                {`${labelText}:`}
+                {required && (
+                  <span className="text-red-500 ml-1" data-testid={`${componentId}_required`}>
+                    *
+                  </span>
+                )}
+              </label>
             )}
-            {hintText && !errorMessage && (
-              <p className="mt-1 text-sm text-gray-500 break-words" data-testid={`${componentId}_hint`}>
-                {hintText}
-              </p>
-            )}
+            <input
+              className={classes}
+              data-testid={componentId}
+              id={componentId}
+              name={name}
+              type={type}
+              placeholder={placeholder}
+              value={value}
+              disabled={disabled}
+              required={required}
+              onChange={onChange}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              autoComplete={autoComplete}
+              ref={ref}
+              {...props}
+            />
+            <div className="mt-1 h-6 flex items-start">
+              {errorMessage && (
+                <p className="text-xs text-red-600 break-words" data-testid={`${componentId}_error`}>
+                  {errorMessage}
+                </p>
+              )}
+              {hintText && !errorMessage && (
+                <p className="text-xs text-gray-500 break-words" data-testid={`${componentId}_hint`}>
+                  {hintText}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
