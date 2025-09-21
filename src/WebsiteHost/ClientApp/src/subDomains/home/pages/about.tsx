@@ -8,7 +8,7 @@ export function AboutPage() {
   return (
     <article className="prose max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <img src="/images/logo.png" alt="SaaStack Logo" className="w-24 h-24 mx-auto mb-6" />
+        <img src="/images/mascot/mascot.png" alt="SaaStack Mascot" className="w-24 h-24 mx-auto mb-6" />
         <h1 className="text-4xl font-bold text-accent-dark mb-4">{translate('pages.about.title')}</h1>
         <p className="text-xl text-gray-600">The complete SaaS platform codebase template for modern product teams</p>
       </div>

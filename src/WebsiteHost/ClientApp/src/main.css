@@ -9,7 +9,7 @@
     --font-sans: 'Noto Sans', system-ui;
     --color-primary: #0C6291;
     --color-secondary: #E1523D;
-    --color-accent: var(--color-emerald-600);
+    --color-accent: var(--color-emerald-500);
     --color-accent-light: var(--color-emerald-200);
     --color-accent-dark: var(--color-emerald-800);
 }
