@@ -1,6 +1,6 @@
-using Application.Interfaces;
 using Application.Interfaces.Services;
 using Common.Extensions;
+using Infrastructure.Web.Hosting.Common.Extensions;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -121,9 +121,10 @@ public sealed class ReverseProxyMiddleware
 
     private static void AddAuthorization(HttpRequest request, HttpRequestMessage message)
     {
-        if (request.Cookies.TryGetValue(AuthenticationConstants.Cookies.Token, out var token))
+        var authToken = request.GetTokenFromAuthNCookies();
+        if (authToken.HasValue)
         {
-            message.Headers.TryAddWithoutValidation(HttpConstants.Headers.Authorization, $"Bearer {token}");
+            message.Headers.TryAddWithoutValidation(HttpConstants.Headers.Authorization, $"Bearer {authToken.Value}");
         }
         else
         {

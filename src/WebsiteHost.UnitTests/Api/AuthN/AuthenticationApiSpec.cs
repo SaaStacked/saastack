@@ -1,8 +1,10 @@
 using Application.Interfaces;
 using Application.Resources.Shared;
 using Common;
+using Common.Extensions;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
+using Infrastructure.Web.Hosting.Common;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using WebsiteHost.Api.AuthN;
@@ -91,11 +93,15 @@ public class AuthenticationApiSpec
         _application.Verify(app => app.AuthenticateAsync(_caller.Object, "aprovider", null, "ausername", "apassword",
             It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
-            c.Append(AuthenticationConstants.Cookies.Token, "anaccesstoken", It.Is<CookieOptions>(opt =>
-                opt.Expires!.Value.DateTime == accessTokenExpiresOn
+            c.Append(AuthenticationConstants.Cookies.Token, It.Is<string>(s =>
+                s.FromJson<AuthNTokenCookieValue>()!.Token == "anaccesstoken"
+            ), It.Is<CookieOptions>(opt =>
+                opt.Expires!.Value.DateTime == refreshTokenExpiresOn
             )));
         _httpResponseCookies.Verify(c =>
-            c.Append(AuthenticationConstants.Cookies.RefreshToken, "arefreshtoken", It.Is<CookieOptions>(opt =>
+            c.Append(AuthenticationConstants.Cookies.RefreshToken, It.Is<string>(s =>
+                s.FromJson<AuthNTokenCookieValue>()!.Token == "arefreshtoken"
+            ), It.Is<CookieOptions>(opt =>
                 opt.Expires!.Value.DateTime == refreshTokenExpiresOn
             )));
     }
@@ -119,7 +125,7 @@ public class AuthenticationApiSpec
     }
 
     [Fact]
-    public async Task WhenRefreshAndCookieExists_ThenSetsCookies()
+    public async Task WhenRefreshAndCookieExists_ThenSetsCookiesToExpireOnRefreshTokenExpiry()
     {
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
@@ -127,7 +133,10 @@ public class AuthenticationApiSpec
                 c.TryGetValue(AuthenticationConstants.Cookies.RefreshToken, out It.Ref<string?>.IsAny))
             .Returns((string _, ref string? value) =>
             {
-                value = "arefreshtoken";
+                value = new AuthNTokenCookieValue
+                {
+                    Token = "arefreshtoken"
+                }.ToJson()!;
                 return true;
             });
         _application.Setup(app => app.RefreshTokenAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -154,11 +163,15 @@ public class AuthenticationApiSpec
         _application.Verify(
             app => app.RefreshTokenAsync(_caller.Object, "arefreshtoken", It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
-            c.Append(AuthenticationConstants.Cookies.Token, "anaccesstoken", It.Is<CookieOptions>(opt =>
-                opt.Expires!.Value.DateTime == accessTokenExpiresOn
+            c.Append(AuthenticationConstants.Cookies.Token, It.Is<string>(s =>
+                s.FromJson<AuthNTokenCookieValue>()!.Token == "anaccesstoken"
+            ), It.Is<CookieOptions>(opt =>
+                opt.Expires!.Value.DateTime == refreshTokenExpiresOn
             )));
         _httpResponseCookies.Verify(c =>
-            c.Append(AuthenticationConstants.Cookies.RefreshToken, "arefreshtoken", It.Is<CookieOptions>(opt =>
+            c.Append(AuthenticationConstants.Cookies.RefreshToken, It.Is<string>(s =>
+                s.FromJson<AuthNTokenCookieValue>()!.Token == "arefreshtoken"
+            ), It.Is<CookieOptions>(opt =>
                 opt.Expires!.Value.DateTime == refreshTokenExpiresOn
             )));
     }

@@ -4,8 +4,8 @@
 
 A web BEFFE is a web server designed specifically to serve a web application (i.e. a JavaScript application like those created with a framework like ReactJs/AngularJs/VueJs application).
 
-* The BEFFE is typically (but not always) the same web server that serves up the JS app that runs in the browser. i.e. Same Origin
-* It is always the web server that the JS app sends requests to for HTML and JSON.
+* The BEFFE is typically (but not always) the same web server that serves up the JS App that runs in the browser. i.e. Same Origin
+* It is always the web server that the JS App sends requests to for HTML and JSON.
 * Sometimes, a BEFFE exposes its own customized JSON APIs; other times, it forwards those JSON requests to other Backend APIs.
 
 **Decoupling**:
@@ -26,19 +26,19 @@ Lastly, in many contexts of evolving SaaS products, a BEFFE can act as an [Anti-
 * A BEFFE can offer caching of responses to make the UI more responsive and typically aggregates data from various backend sources (e.g., different APIs).
 * A BEFFE is a necessary strategy when the same development team designs both the Frontend and the Backend of a system simultaneously. Without this, it is easy for the team to forget that both HTTP interfaces (HTML for Frontend and JSON for Backend) are designed for two quite different [human] audiences. A Frontend is a visual [human] interface designed for the end-users of the product, focused on performing familiar tasks easily. The Backend is a machine interface designed around business processes for [human] developers who then integrate other systems with the API of the product (regardless of what subsequent interface they are building and for whom). Thus, these two interfaces are necessarily designed quite differently. Without a BEFFE, a team is likely to fall back to creating RPC/CRUD-like APIs, which does not achieve much more than making an API directly to their database. Then that simplification leads them to distribute core logic between various layers of the overall system (if they have any bounded layers at all), and that lack of structure and lack of encapsulation creates a big-ball-of-mud which slows them down in later stages, as the product onboards more [incidental complexity](https://en.wikipedia.org/wiki/No_Silver_Bullet).
 * A BEFFE typically provides a secure way to maintain stateful (but not sticky) user sessions. Typically, using [HTTPOnly, Secure] cookies to avoid the need for clients to store any secrets or tokens in the browser (which is always to be avoided since XSS vulnerabilities are ever-present). The BEFFE can then store and forward tokens created by Backends when calls are forwarded from BEFFE to Backend APIs. This avoids the tendency that many developers have to project cookies or sessions (or other legacy web application authentication mechanisms) onto their Backend API, which makes them far harder for machine integration.
-* A BEFFE may provide its own API tailored to the JS app, or it may provide a reverse proxy to forward requests on to other Backend APIs.
+* A BEFFE may provide its own API tailored to the JS App, or it may provide a reverse proxy to forward requests on to other Backend APIs.
 
 ## Implementation
 
 The `WebsiteHost` project is a BEFFE. It performs these tasks:
 
-1. It serves up the JS app (as static files).
+1. It serves up the JS App (as static files).
 2. It serves up other HTML, CSS, JS assets (as dynamic assets), using MVC (via Controllers)
 3. It implements a Reverse Proxy in order to forward JSON API requests to Backend APIs
-4. It implements its own Authentication API endpoints so that [HTTPOnly, secure] cookies can be used between the BEFFE and JS app, for security purposes, to avoid storing any tokens/secrets in the browser (anywhere).
+4. It implements its own Authentication API endpoints so that [HTTPOnly, secure] cookies can be used between the BEFFE and JS App, for security purposes, to avoid storing any tokens/secrets in the browser (anywhere).
 5. It necessarily protects against CSRF attacks (since it uses cookies to store authorization tokens).
 6. It provides other API endpoints for common services, like: Health monitoring, Recording (diagnostics, usages, crash reports, etc.), Feature Flags, etc. These APIs are available at `/api`.
-7. It provides a platform to add further custom dedicated API endpoints, that you might provide yourself to the JS app. These might be necessary to avoid performing N+1 operations in the browser, versus doing them in the BEFFE (in the cloud), which is far more efficient in latency.
+7. It provides a platform to add further custom dedicated API endpoints, that you might provide yourself to the JS App. These might be necessary to avoid performing N+1 operations in the browser, versus doing them in the BEFFE (in the cloud), which is far more efficient in latency.
 8. It provides the opportunity to deploy (and scale) the web application separately from backend APIs.
 
 ### Reverse Proxy
@@ -49,11 +49,11 @@ BEFFEs are intended to be built specifically for a specific Web Application.
 
 > BEFFEs can also be built for Mobile applications
 
-They are responsible for returning data to client applications (i.e., the JS app) in the most efficient form. Thus, they are tightly coupled to the JS app. To do this well, they often filter and aggregate data fetched from other Backend sources (via HTTP service clients).
+They are responsible for returning data to client applications (i.e., the JS App) in the most efficient form. Thus, they are tightly coupled to the JS App. To do this well, they often filter and aggregate data fetched from other Backend sources (via HTTP service clients).
 
 > In general, a BEFFE does not directly access databases for application data. They use Backend APIs to obtain that data. However, they may implement their own caches to enhance performance.
 
-Strictly speaking, the APIs that they serve are dedicated APIs (to the JS app), and strictly speaking, that would require implementing APIs in the BEFFE as well as implementing APIs in a respective Backend. In many cases, this can be extra work with little economic value in the long run. Therefore, the BEFFE offers a simple Reverse Proxy so that API calls can simply be forwarded to the Backend, and no additional BEFFE API needs to be implemented.
+Strictly speaking, the APIs that they serve are dedicated APIs (to the JS App), and strictly speaking, that would require implementing APIs in the BEFFE as well as implementing APIs in a respective Backend. In many cases, this can be extra work with little economic value in the long run. Therefore, the BEFFE offers a simple Reverse Proxy so that API calls can simply be forwarded to the Backend, and no additional BEFFE API needs to be implemented.
 
 In other cases, specifically around some queries and some user workflows, dedicated APIs in the BEFFE are a more economical option (as they can aggregate, filter, and cache many sources of data).
 
@@ -61,9 +61,9 @@ Another performance consideration is that the network latency between the BEFFE 
 
 #### How the Reverse Proxy Works
 
-The BEFFE handles ALL inbound requests from the JS app.
+The BEFFE handles ALL inbound requests from the JS App.
 
-> All requests from the JS app should go to the BEFFE directly, no calls from the JS app should go to any Backend API - ever.
+> All requests from the JS App should go to the BEFFE directly, no calls from the JS App should go to any Backend API - ever.
 
 Depending on the route (and the request type), the inbound call is either routed to:
 
@@ -73,24 +73,21 @@ Depending on the route (and the request type), the inbound call is either routed
 
 ### Authentication
 
-Since there is a Reverse Proxy handling inbound calls, and since we do not want to allow the JS app to handle any session secrets (i.e., JWT access/refresh tokens), we must also provide a way to manage the user's session using [HTTPOnly, secure] cookies, as the only secure means to keep these secrets from the browser.
+Since there is a Reverse Proxy handling inbound calls, and since we do not want to allow the JS App to handle any session secrets (i.e., JWT access/refresh tokens), we must also provide a way to manage the user's session using [HTTPOnly, secure] cookies, as the only secure means to keep these secrets from the browser.
 
-> There are so many security challenges when JavaScript clients handle *access_tokens* and
-*refresh_tokens*, particularly if those tokens are not protected sufficiently from disclosure in the browser to JavaScript vulnerabilities.
->
-> Even when protected diligently, there are always future chances of XSS exploits in the JS app (e.g., security exploits discovered later in 3rd party libraries), and when a future XSS exploit is successful, there is no longer any effective way to protect disclosure to any of those tokens in the JS app.
->
-> Assuming that any JS app is fully protected against XSS, and the secrets that it holds cannot be disclosed, is a very bold assumption to make these days. Because XSS is so difficult to fully protect against, and once it is compromised, all secrets are revealed, the only really secure means to protect
-*access_tokens* and
-*refresh_tokens* from disclosure in the JS app is NOT to have them present (or accessible) to the JS app at all.
+> There are so many security challenges when JavaScript clients get to handle *access_tokens* and *refresh_tokens*, particularly if those tokens are not protected sufficiently from disclosure in the browser to JavaScript XSS vulnerabilities.
 
-The BEFFE offers a dedicated API for authentication ( `POST /api/auth`) that intermediates the authentication process. Regardless of what data is used to authenticate the user (i.e., password credentials or SSO tokens, etc.), the call is made directly with the BEFFE and then relayed to the various authentication endpoints in the backend.
+>Even when protected diligently, there are always future chances of XSS exploits in the JS App (e.g., security exploits constantly discovered later in 3rd party JS libraries), and when a future XSS exploit is successful, there is no longer any effective way to protect disclosure to any of those tokens in the JS App.
+> 
+>Assuming that any JS App is fully protected against XSS, and the secrets that it holds cannot be disclosed, is a very bold assumption to make these days. Because XSS is so difficult to fully protect against, and once it is compromised, all secrets are revealed, the only really secure means to protect *access_tokens* and *refresh_tokens* from disclosure in the JS App is NOT to have them present (or accessible) to the JS App at all.
 
-If the attempt to authenticate is successful, the authentication response from the Backend API (e.g., from `POST /credentials/auth` or `POST /sso/auth`) will always include an `access_token` and a `refresh_token`.
+The BEFFE offers a specialized API for authentication ( `POST /api/auth`) that intermediates the authentication process for web clients. Regardless of what data is used to authenticate the user (i.e., password credentials or SSO tokens, etc.), a call is made directly with the BEFFE and then relayed to the various authentication endpoints in the backend API.
+
+If the attempt to authenticate is successful, the authentication response from the Backend API (e.g., from `POST /credentials/auth` or `POST /sso/auth`) will always include an `access_token` and a `refresh_token` relayed from the backend API.
 
 These "auth tokens" are then added to [HTTPOnly, secure] cookies that are then returned to the browser to be used between the browser and BEFFE for subsequent requests/responses.
 
-At some point in time, either of those auth tokens will expire, at which point either the `access_token` can be refreshed (using the `refresh_token`), or the `refresh_tokens` expires, and the end user will need to re-authenticate again.
+At some point in time, either of those auth tokens will expire, at which point either the `access_token` can be refreshed (using the `refresh_token`), or the `refresh_tokens` expires, and the end user will need to re-authenticate again by the client.
 
 #### Login
 
@@ -102,7 +99,7 @@ For example,
 {
     "Username": "auser@company.com",
     "Password": "1Password!",
-    "Provider": "credentials"
+    "Provider": "credentials",
 }
 ```
 
@@ -119,11 +116,11 @@ For example,
 }
 ```
 
-> Note: The Backend API call to authenticate this "OAuth2 identity" will receive some tokens (from the 3rd party provider) that should include an email address \[claim\] that identifies the actual person to the system. However, some OAuth2 providers today do not include that email address claim in the returned tokens, and in those cases the parson cannot be identified. Instead, their email address can be included in the above request (as `Username`) which can be available in the first steps of the "OAuth Authorization Flow".
+> Note: The Backend API call to authenticate this "OAuth2 identity" will receive some tokens (from the 3rd party provider) that should include an email address [claim] that identifies the actual person to the system. However, some OAuth2 providers today do not include that email address claim in the returned tokens, and in those cases the parson cannot be identified. Instead, their email address can be included in the above request (as `Username`) which can be available in the first steps of the "OAuth Authorization Flow".
 
 ![SSO Authentication](../images/Authentication-SSO.png)
 
-> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS app.
+> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS App.
 
 A successful response from either of these requests will yield the following body,
 
@@ -141,25 +138,37 @@ But, the response will also include these cookies (for the current domain):
 
 * `auth-reftok=arefreshtoken`
 
+> Note: the expiry of both these cookies will be the expiry date of the refresh token. This means that these two cookies will be present as long as the auth token can be refreshed by the refresh token.
+>
+> It is likely that the JWT within the auth token will expire before the cookie expires, and this JWT will be sent to the backend API< where it will be validated to be expired at some point. Then the client will receive a `HTTP - 401`, and it will be forced to refresh the token and cookies.
+
+##### Refreshing Session
+
+When the auth cookie (`auth-tok`) expires (by default, after 15 minutes), it will be necessary to refresh the token, using the refresh token.
+
+It is likely that the client will receive an `HTTP - 401` at any time, while the user is using the JS Application, and this will force the client to either refresh the expired token by using the refresh token, or force the user to login to the application again.
+
+The tokens plus the cookies form an "authentication session" for the user.
+
+> Note: unless desired, forcing the user to login, using any method, i.e., provide passwords or SSO loops, can be painful for them, since it will occur once every 15 mins of use, but worse, likely every time they use the application throughout the day (assuming 15 mins at least between uses). 
+
+To automatically refresh the users' authentication session on their behalf, call `POST /api/auth/refresh` on the BEFFE.
+
+> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS App.
+
+A successful token "refresh" should renew and rewrite both the `auth-tok` and `auth-reftok` cookies (from the current domain).
+
+However, If the current `refresh_token` has expired, or there is no refresh token cookie ( `auth-reftok`) to begin with, then a `HTTP 401 - Unauthorized` will be returned, the client will have other choice but to ask the user to login again (using any supported method).
+
+See [handling 401 responses](#Handling-HTTP-401-Responses) below for details on that. 
+
 #### Logout
 
 To logout explicitly, call `POST /api/auth/logout` with an empty JSON body:
 
-> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS app.
+> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS App.
 
 A successful logout request will remove both the `auth-tok` and `auth-reftok` cookies (from the current domain).
-
-#### Refreshing Session
-
-When the `access_token` cookie (`auth-tok`) expires (by default, after 15 minutes), it will be necessary to refresh the `access_token`.
-
-To refresh the session, call `POST /api/auth/refresh`
-
-> Note: you will also need to include CSRF protection in these requests, like all others coming from a JS app.
-
-A successful token "refresh" should renew both the `auth-tok` and `auth-reftok` cookies (from the current domain).
-
-However, If the current `refresh_token` has expired, or there is no refresh token cookie ( `auth-reftok`) to begin with, then a `HTTP 401 - Unauthorized` will be returned. Signaling that the user is no longer authenticated.
 
 ### CSRF Protection
 
@@ -171,21 +180,21 @@ Since there are several cookies exchanged between the browser and BEFFE, there m
 
 
 
-Implementing CSRF protection correctly requires that the JS app adheres to the strict CSRF implementation policy:
+Implementing CSRF protection correctly requires that the JS App adheres to the strict CSRF implementation policy:
 
-1. All XHR calls (using any method) MUST go directly to the BEFFE, which must also be the origin server of the JS app that is making the request. No requests (of any sort) from the JS app should <u>ever</u> bypass BEFFE and go directly to any Backend API.
+1. All XHR calls (using any method) MUST go directly to the BEFFE, which must also be the origin server of the JS App that is making the request. No requests (of any sort) from the JS App should <u>ever</u> bypass BEFFE and go directly to any Backend API.
 2. This policy MUST apply to all "unsafe" API methods: `POST`, `PUT`, `PATCH`, and `DELETE`, and it excludes `GET`, `HEAD`, and `OPTIONS`.
-3. Any "unsafe" XHR call (from JS app to the BEFFE) that changes any state (in the backend) MUST be implemented with the methods: `POST`, `PUT`, `PATCH`, `DELETE`, and not `GET`, `HEAD`, or `OPTIONS`.
+3. Any "unsafe" XHR call (from JS App to the BEFFE) that changes any state (in the backend) MUST be implemented with the methods: `POST`, `PUT`, `PATCH`, `DELETE`, and not `GET`, `HEAD`, or `OPTIONS`.
 4. MUST Include in all "unsafe" XHR calls (e.g., `POST`, `PUT`, `PATCH`, `DELETE`), an HTTP header called `anti-csrf-tok`. The value of this header MUST be read from the `meta` header called `csrf-token` found in the header of the HTML of `index.html`. For example,
 
     ```
     var csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute("content");
     ```
-5. The JS app MUST NEVER store the value of the `csrf-token` anywhere in the browser. Neither in-memory, nor in local storage, nor any other cache or store in the JS app. It MUST read the value from the HTML of `index.html` on-demand, each and every time it makes an XHR call since the value of this token WILL change every time `index.html` is requested from the BEFFE.
+5. The JS App MUST NEVER store the value of the `csrf-token` anywhere in the browser. Neither in-memory, nor in local storage, nor any other cache or store in the JS App. It MUST read the value from the HTML of `index.html` on-demand, each and every time it makes an XHR call since the value of this token WILL change every time `index.html` is requested from the BEFFE.
 
 6. MUST ensure that this `csrf-token` value is never included in any "safe" XHR call (e.g., `GET`, `HEAD`, or `OPTIONS`), and MUST never be exposed in any browser history.
 
-7. After the user has been successfully authenticated, or after the authenticated user logs out, a new value of both the `anti-csrf-tok` cookie and metadata header `csrf-token` WILL be generated by the BEFFE. The JS app MUST implement a mechanism that re-fetches the  `index.html` page containing these new values for subsequent XHR calls, when the user becomes authenticated (i.e., logs in), or the user becomes unauthenticated (i.e., logs out). Failing to do so, will result in the BEFFE blocking all subsequent XHR calls to the BEFFE.
+7. After the user has been successfully authenticated, or after the authenticated user logs out, a new value of both the `anti-csrf-tok` cookie and metadata header `csrf-token` WILL be generated by the BEFFE. The JS App MUST implement a mechanism that re-fetches the  `index.html` page containing these new values for subsequent XHR calls, when the user becomes authenticated (i.e., logs in), or the user becomes unauthenticated (i.e., logs out). Failing to do so, will result in the BEFFE blocking all subsequent XHR calls to the BEFFE.
 
 #### How it works
 
@@ -232,7 +241,7 @@ It works like this:
 
 1. Each request to `index.html` generates a new and unique CSRF token and writes it into the `csrf-token` metadata tag of the `index.html` page. The value is unique for each fetch of `index.html` regardless of whether the user is authenticated or not.
 2. A corresponding `anti-csrf-tok` cookie is also updated with the HMAC signature of the CSRF token.
-3. The JS app is then required to send back (in any "unsafe"  XHR call to the BEFFE) the value of the `csrf-token` metadata value in a request header called `anti-csrf-tok`.
+3. The JS App is then required to send back (in any "unsafe"  XHR call to the BEFFE) the value of the `csrf-token` metadata value in a request header called `anti-csrf-tok`.
 4. The two values sent to the BEFFE are paired, but not the same, and they are compared (via HMAC signatures) in the BEFFE to prove that they are paired.
 5. The CSRF token corresponds to the currently authenticated user, but it is encrypted.
 6. In addition, the `origin` header of the request (or the `referer` header of the request) is compared to ensure the request originated from JavaScript served from this BEFFE. Otherwise, `HTTP 403 - Forbidden` is returned.
@@ -247,7 +256,7 @@ To defeat the CSRF protection, an attack would have to send an "unsafe" state-ch
 1. Included in the request is a signed `anti-csrf-tok` cookie, signed with the same HMAC key stored on the BEFFE.
 2. Included in the request is an `anti-csrf-tok` header containing a CSRF token (paired to the cookie above), encrypted with the same AES encryption key stored on the BEFFE.
 3. That CSRF token (above) would have had to include the ID of the currently authenticated user (a.k.a. session ID). Or include no user ID for an anonymous call.
-4. Included an `origin` header (or included a `referer` header) that matched the origin of the JS app.
+4. Included an `origin` header (or included a `referer` header) that matched the origin of the JS App.
 5. By-passed the browsers CORS pre-flight check.
 
 For an attacker to do this from JavaScript running in the same browser, they need to defeat these challenges:
@@ -260,7 +269,7 @@ For an attacker to do this from JavaScript running in the same browser, they nee
 
 All of these things above would have to happen in JS on www.hacker.com to bypass the CSRF protection on any state-changing XHR request.
 
-> For these reasons, only compliant browsers should be used to access the JS app and BEFFE
+> For these reasons, only compliant browsers should be used to access the JS App and BEFFE
 
 ##### Testing CSRF
 
@@ -272,7 +281,7 @@ At present, the BEFFE is not keeping track of past generated values against requ
 
 ### API calls from JavaScript
 
-All API calls from the JS app should append the path `/api/` to the base URL for the BEFFE server, for example:
+All API calls from the JS App should append the path `/api/` to the base URL for the BEFFE server, for example:
 `GET https://localhost:5101/api/profiles/me`, regardless of whether those API calls are to the BEFFE itself or to a Backend API.
 
 > All API calls to that prefix (except for any APIs defined on the BEFFE) will be automatically proxied through the Reverse Proxy to the Backend API. Any API calls to any other paths (other than `/api/` will terminate at the BEFFE itself).
@@ -345,9 +354,9 @@ This will return the following data for an un-authenticated user:
 
 Once a user is authenticated, all forwarded calls to the backend will include the JWT `access_token` in an `Authorization` header, extracted from the `auth-tok` cookie (by the reverse proxy).
 
-It is possible that subsequent calls to the Backend API will eventually respond with `HTTP 401 - Unauthorized` response, once the token has expired (or been revoked). This response will get proxied back to the JS app.
+It is possible that subsequent calls to the Backend API will eventually respond with `HTTP 401 - Unauthorized` response, once the token has expired (or been revoked). This response will get proxied back to the JS App.
 
-The JS app now has a choice to make on how to handle the `HTTP 401 - Unauthorized` response:
+The JS App now has a choice to make on how to handle the `HTTP 401 - Unauthorized` response:
 
 1. It can handle that response and direct the user to the login page for them to authenticate again, and redirect them back to where they started.
 2. It can attempt to refresh the `access_token`, obtain refresh `access_token`, and then retry the call to the Backend.
@@ -356,7 +365,7 @@ The JS app now has a choice to make on how to handle the `HTTP 401 - Unauthorize
 
 #### Handling HTTP 403 Responses
 
-The following process should be implemented in the JS app, to maintain a reasonable usable experience for most users:
+The following process is implemented in the JS App in `initializeApiClient()` in the `WebsiteHost` JS App, to maintain a reasonable usable CSRF handling experience for most users:
 
 In a global handler, for each XHR call, handle the case when an `HTTP 403 - Forbidden` is received, and the `title` of the error is `csrf_violation`.
 
@@ -375,7 +384,7 @@ For example:
 
 #### Handling HTTP 401 Responses
 
-The following process should be implemented in the JS app, to maintain a reasonable usable experience for most users:
+The following process is implemented in the JS App in `initializeApiClient()` in the `WebsiteHost` JS App, to maintain a reasonable usable "authentication session" for most users:
 
 1. In a global handler, for each XHR call, handle the case when an `HTTP 401 - Unauthorized` is received.
     - Otherwise, process the request as a normal response.
@@ -388,16 +397,16 @@ The following process should be implemented in the JS app, to maintain a reasona
 
 ### Ancillary Services
 
-The BEFFE also implements a number of general-purpose ancillary API endpoints for use by the JS app. These include:
+The BEFFE also implements a number of general-purpose ancillary API endpoints for use by the JS App. These include:
 
-* Recording - recording crashes in the JS app, recording usage data, etc
-* Feature Flags - for controlling the behavior of features in the JS app
+* Recording - recording crashes in the JS App, recording usage data, etc
+* Feature Flags - for controlling the behavior of features in the JS App
 * Health check - for checking the responsiveness of the BEFFE and its deployed version
 * Other ancillary APIs.
 
 ### Custom APIs
 
-The BEFFE has been designed to be extended to include additional (domain-specific) endpoints to support the JS app when those calls special handling, such as caching, aggregation, and filtering of data from Backend APIs.
+The BEFFE has been designed to be extended to include additional (domain-specific) endpoints to support the JS App when those calls special handling, such as caching, aggregation, and filtering of data from Backend APIs.
 
 These endpoints can simply be added in the same way API endpoints are added to any host. The Reverse Proxy will detect requests to these endpoints and route them directly to the BEFFE API to process first.
 
@@ -409,4 +418,4 @@ Next, like all other APIs in this codebase, create a class that derives from: `I
 
 One last necessary detail. All BEFFE API classes should apply the `[BaseApiFrom("/api")]` attribute to the class.
 
-> Note: the `BaseApiFromAttribute` is necessary, so that your custom API is available to the JS app correctly somewhere under the `/api` prefix. Otherwise, it will be available under the root of the BEFFE `/`. This API then may clash with the routes of the page views that the JS App handles client-side, which should be avoided.
+> Note: the `BaseApiFromAttribute` is necessary, so that your custom API is available to the JS App correctly somewhere under the `/api` prefix. Otherwise, it will be available under the root of the BEFFE `/`. This API then may clash with the routes of the page views that the JS App handles client-side, which should be avoided.

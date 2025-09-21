@@ -188,7 +188,7 @@ public sealed class AspNetClaimsBasedCallerContext : ICallerContext
 
         if (schemes.ContainsIgnoreCase(BeffeCookieAuthenticationHandler.AuthenticationScheme))
         {
-            var token = context.Request.TokenFromAuthNCookie();
+            var token = context.Request.GetTokenFromAuthNCookies();
             if (!token.HasValue)
             {
                 return new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.AuthNCookie,

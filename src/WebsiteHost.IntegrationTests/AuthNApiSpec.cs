@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using Application.Interfaces;
 using FluentAssertions;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
@@ -33,8 +32,8 @@ public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
     {
         var (userId, response) = await HttpApi.LoginUserFromBrowserAsync(JsonOptions, CSRFService);
 
-        var accessToken1 = response.GetCookie(AuthenticationConstants.Cookies.Token);
-        var refreshToken1 = response.GetCookie(AuthenticationConstants.Cookies.RefreshToken);
+        var accessToken1 = response.GetCookie(CookieType.AuthNToken);
+        var refreshToken1 = response.GetCookie(CookieType.AuthNRefreshToken);
 
         await Task.Delay(TimeSpan
             .FromSeconds(1)); //HACK: to ensure that the new token is not the same (in time) as the old token
@@ -44,8 +43,8 @@ public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
             (msg, cookies) => msg.WithCSRF(cookies, CSRFService, userId));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        var accessToken2 = result.GetCookie(AuthenticationConstants.Cookies.Token);
-        var refreshToken2 = result.GetCookie(AuthenticationConstants.Cookies.RefreshToken);
+        var accessToken2 = result.GetCookie(CookieType.AuthNToken);
+        var refreshToken2 = result.GetCookie(CookieType.AuthNRefreshToken);
 
         accessToken1.Should().NotBe(accessToken2);
         refreshToken1.Should().NotBe(refreshToken2);
@@ -70,8 +69,8 @@ public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
     {
         var (_, response) = await HttpApi.LoginUserFromBrowserAsync(JsonOptions, CSRFService);
 
-        var accessToken = response.GetCookie(AuthenticationConstants.Cookies.Token);
-        var refreshToken = response.GetCookie(AuthenticationConstants.Cookies.RefreshToken);
+        var accessToken = response.GetCookie(CookieType.AuthNToken);
+        var refreshToken = response.GetCookie(CookieType.AuthNRefreshToken);
 
         accessToken.Should().NotBeNull();
         refreshToken.Should().NotBeNull();
@@ -85,8 +84,8 @@ public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
         var result = await HttpApi.PostEmptyJsonAsync(new LogoutRequest().MakeApiRoute(),
             (msg, cookies) => msg.WithCSRF(cookies, CSRFService));
 
-        var accessToken = result.GetCookie(AuthenticationConstants.Cookies.Token);
-        var refreshToken = result.GetCookie(AuthenticationConstants.Cookies.RefreshToken);
+        var accessToken = result.GetCookie(CookieType.AuthNToken);
+        var refreshToken = result.GetCookie(CookieType.AuthNRefreshToken);
 
         accessToken.Should().BeNone();
         refreshToken.Should().BeNone();

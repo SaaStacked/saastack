@@ -18,6 +18,24 @@
 
 ---
 
+## [1.0.0] - 2025-09-21
+
+### Non-breaking Changes
+- Changed authentication cookies `auth-tok` and `authref-tok` to store not only the token, but also the expiry of the token, in a JSON structure.
+- We have also changed the expiry of the `auth-tok` cookie to be the same as the `authref-tok` cookie, so that both cookies are available the duration of the refreshable session. Which should have the effect of forcing the client to refresh the auth token long before it expires, by handling a `HTTP - 401` response.
+- We have added an initial React JS Application to the `WebsiteHost` project, complete with localization, offline support, and implemented the JavaScript Action.
+- We have added a basic set of UI pages for many of the most common UI scenarios. We have also added a StoryBook of basic components.
+- We have added a missing API for sending a registration confirmation email, should the link in the email expire.
+
+
+### Breaking Changes
+- none
+
+### Fixed
+- Locale and Timezone were persisted in the `EndUserProfile` value object, but this data was incorrectly mapped to the `Registered` event in the `EndUsersRoot`,and therefore the value read by the `UserProfile` application defaulted to `en-US` and `UTC`.
+
+---
+
 ## [1.0.0] - 2025-08-22
 
 ### Non-breaking Changes
@@ -28,7 +46,7 @@
   - Please update all the ValueObject `GetAtomicValues()` methods to use the new collection syntax, and no longer destruct the `Optional<T>` values, nor `DateTime` values anymore
   
 ### Breaking Changes
-
+- none
 
 ### Fixed
 - Roslyn rules now support C#12 syntax for new collections syntax in `ValueObjectBase<T>.GetAtomicValues()`

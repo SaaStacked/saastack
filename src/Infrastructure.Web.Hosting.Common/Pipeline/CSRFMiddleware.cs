@@ -33,11 +33,12 @@ public sealed class CSRFMiddleware
     ];
     private static readonly string[] IgnoredPaths =
     [
+        //EXTEND: add ignored API routes
 #if TESTINGONLY
         new BeffeHMacDirectTestingOnlyRequest().GetRequestInfo().Route,
         new BeffeAnonymousDirectTestingOnlyRequest().GetRequestInfo().Route,
 #endif
-    ]; //EXTEND: add ignored API routes
+    ];
     private readonly ICSRFService _csrfService;
     private readonly IHostSettings _hostSettings;
     private readonly RequestDelegate _next;

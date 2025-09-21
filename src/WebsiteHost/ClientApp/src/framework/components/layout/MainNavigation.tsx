@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
-import { UserProfileForCaller } from '../../../api/apiHost1';
 import { LogoutAction } from '../../../subDomains/identity/actions/logout.ts';
+import { UserProfileForCaller } from '../../api/apiHost1';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 
 
@@ -25,10 +25,7 @@ export const MainNavigation: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav
-      className="bg-white shadow-sm border-b border-b-accent
-  "
-    >
+    <nav className="bg-white shadow-sm border-b border-b-accent">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex justify-between items-center h-16">
           <MobileHamburgerMenu

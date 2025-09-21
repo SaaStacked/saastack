@@ -1,10 +1,10 @@
-using Application.Interfaces;
 using Application.Resources.Shared;
 using Common;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Interfaces;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
+using Infrastructure.Web.Hosting.Common.Extensions;
 using WebsiteHost.Application;
 
 namespace WebsiteHost.Api.AuthN;
@@ -32,7 +32,7 @@ public sealed class AuthenticationApi : IWebApiService
         if (tokens.IsSuccessful)
         {
             var response = _httpContextAccessor.HttpContext!.Response;
-            PopulateCookies(response, tokens.Value);
+            response.SetTokensToAuthNCookies(tokens.Value);
         }
 
         return () => tokens.HandleApplicationResult<AuthenticateTokens, AuthenticateResponse>(tok =>
@@ -45,7 +45,7 @@ public sealed class AuthenticationApi : IWebApiService
         if (result.IsSuccessful)
         {
             var response = _httpContextAccessor.HttpContext!.Response;
-            DeleteAuthenticationCookies(response);
+            response.DeleteAuthNCookies();
         }
 
         return () => result.Match(() => new Result<EmptyResponse, Error>(),
@@ -54,7 +54,7 @@ public sealed class AuthenticationApi : IWebApiService
 
     public async Task<ApiEmptyResult> RefreshToken(RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var refreshToken = GetRefreshTokenCookie(_httpContextAccessor.HttpContext!.Request);
+        var refreshToken = _httpContextAccessor.HttpContext!.Request.GetRefreshTokenFromAuthNCookies();
 
         var tokens =
             await _authenticationApplication.RefreshTokenAsync(_callerFactory.Create(), refreshToken,
@@ -62,53 +62,10 @@ public sealed class AuthenticationApi : IWebApiService
         if (tokens.IsSuccessful)
         {
             var response = _httpContextAccessor.HttpContext!.Response;
-            PopulateCookies(response, tokens.Value);
+            response.SetTokensToAuthNCookies(tokens.Value);
         }
 
         return () => tokens.Match(_ => new Result<EmptyResponse, Error>(),
             error => new Result<EmptyResponse, Error>(error));
-    }
-
-    private static void PopulateCookies(HttpResponse response, AuthenticateTokens tokens)
-    {
-        response.Cookies.Append(AuthenticationConstants.Cookies.Token, tokens.AccessToken.Value,
-            GetCookieOptions(tokens.AccessToken.ExpiresOn));
-        response.Cookies.Append(AuthenticationConstants.Cookies.RefreshToken, tokens.RefreshToken.Value,
-            GetCookieOptions(tokens.RefreshToken.ExpiresOn));
-    }
-
-    private static void DeleteAuthenticationCookies(HttpResponse response)
-    {
-        response.Cookies.Delete(AuthenticationConstants.Cookies.Token);
-        response.Cookies.Delete(AuthenticationConstants.Cookies.RefreshToken);
-    }
-
-    private static Optional<string> GetRefreshTokenCookie(HttpRequest request)
-    {
-        if (request.Cookies.TryGetValue(AuthenticationConstants.Cookies.RefreshToken, out var cookie))
-        {
-            return cookie;
-        }
-
-        return Optional<string>.None;
-    }
-
-    private static CookieOptions GetCookieOptions(DateTime? expires)
-    {
-        var options = new CookieOptions
-        {
-            Path = "/",
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Lax,
-            Expires = expires.HasValue
-                ? new DateTimeOffset(expires.Value)
-                : null,
-            MaxAge = expires.HasValue
-                ? expires.Value.Subtract(DateTime.UtcNow)
-                : null
-        };
-
-        return options;
     }
 }

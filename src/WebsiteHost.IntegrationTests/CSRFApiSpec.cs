@@ -31,7 +31,7 @@ public class CSRFApiSpec
 
             var content = await result.Content.ReadAsStringAsync();
             content.Should().Contain("<html");
-            result.GetCookie(CSRFConstants.Cookies.AntiCSRF).Value.Should().NotBeEmpty();
+            result.GetCookie(CookieType.AntiCSRF).Value.Should().NotBeEmpty();
             result.Headers.TryGetValues(CSRFConstants.Headers.AntiCSRF, out _).Should().BeFalse();
 
             var doc = new HtmlDocument();

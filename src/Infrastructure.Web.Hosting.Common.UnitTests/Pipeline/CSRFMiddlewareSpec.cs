@@ -52,7 +52,12 @@ public class CSRFMiddlewareSpec
 
         if (authToken.HasValue())
         {
-            dictionary.Add(AuthenticationConstants.Cookies.Token, authToken);
+            dictionary.Add(AuthenticationConstants.Cookies.Token,
+                new AuthNTokenCookieValue
+                {
+                    Token = authToken,
+                    ExpiresOn = DateTime.UtcNow.AddMinutes(1)
+                }.ToJson()!);
         }
 
         return SetupCookies(dictionary);

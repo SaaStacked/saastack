@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Application.Interfaces;
 using Common;
+using Common.Extensions;
 using FluentAssertions;
+using Infrastructure.Web.Hosting.Common;
 using Infrastructure.Web.Hosting.Common.Pipeline;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -93,7 +95,12 @@ public class CSRFControllerSpec
         var userId = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
             claims: [new Claim(AuthenticationConstants.Claims.ForId, "auserid")]
         ));
-        _cookies.Setup(coo => coo.TryGetValue(It.IsAny<string>(), out userId))
+        var cookie = new AuthNTokenCookieValue
+        {
+            Token = userId,
+            ExpiresOn = DateTime.UtcNow.AddMinutes(1)
+        }.ToJson()!;
+        _cookies.Setup(coo => coo.TryGetValue(It.IsAny<string>(), out cookie))
             .Returns(true);
 
         var result = _controller.AnAction();

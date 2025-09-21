@@ -13,8 +13,16 @@ using Infrastructure.Web.Hosting.Common.Pipeline;
 using Infrastructure.Web.Interfaces;
 using IntegrationTesting.WebApi.Common;
 using AuthenticateResponse = Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd.AuthenticateResponse;
+using RequestExtensions = Infrastructure.Web.Hosting.Common.Extensions.RequestExtensions;
 
 namespace IntegrationTesting.Website.Common;
+
+public enum CookieType
+{
+    AntiCSRF,
+    AuthNToken,
+    AuthNRefreshToken
+}
 
 public static class WebsiteTestingExtensions
 {
@@ -44,12 +52,20 @@ public static class WebsiteTestingExtensions
         return (authTokens.UserId, authenticated);
     }
 
-    public static Optional<string> GetCookie(this HttpResponseMessage responseMessage, string name)
+    public static Optional<string> GetCookie(this HttpResponseMessage responseMessage, CookieType type)
     {
         if (!responseMessage.Headers.TryGetValues(HttpConstants.Headers.SetCookie, out var cookies))
         {
             return Optional<string>.None;
         }
+
+        var name = type switch
+        {
+            CookieType.AntiCSRF => CSRFConstants.Cookies.AntiCSRF,
+            CookieType.AuthNToken => AuthenticationConstants.Cookies.Token,
+            CookieType.AuthNRefreshToken => AuthenticationConstants.Cookies.RefreshToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
 
         var cookie = cookies
             .FirstOrDefault(s => s.StartsWith($"{name}="));
@@ -65,9 +81,21 @@ public static class WebsiteTestingExtensions
             : indexOfDelimiter;
 
         var value = cookie.Substring(startOfValue, endOfValue - startOfValue);
-        return value.HasValue()
-            ? value
+        var cookieValue = value.HasValue()
+            ? new Optional<string>(value)
             : Optional<string>.None;
+
+        if (type == CookieType.AntiCSRF)
+        {
+            return cookieValue;
+        }
+
+        if (type is CookieType.AuthNToken or CookieType.AuthNRefreshToken)
+        {
+            return RequestExtensions.GetAuthCookieValue(cookieValue.Value).Value.Token;
+        }
+
+        return cookieValue;
     }
 
     public static async Task<(string UserId, HttpResponseMessage Response)> LoginUserFromBrowserAsync(
