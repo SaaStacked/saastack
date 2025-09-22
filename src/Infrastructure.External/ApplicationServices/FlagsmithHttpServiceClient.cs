@@ -88,7 +88,8 @@ public sealed partial class FlagsmithHttpServiceClient : IFeatureFlags
         CancellationToken cancellationToken = default)
     {
         var environmentFlags = await _client.GetEnvironmentFlags();
-        var allFlags = environmentFlags!.AllFlags().Select(flag => new FeatureFlag
+        var flags = environmentFlags?.AllFlags() ?? [];
+        var allFlags = flags.Select(flag => new FeatureFlag
             {
                 Name = flag.GetFeatureName(),
                 IsEnabled = flag.Enabled
@@ -119,7 +120,14 @@ public sealed partial class FlagsmithHttpServiceClient : IFeatureFlags
             featureFlags = await _client.GetEnvironmentFlags();
         }
 
-        var featureFlag = await featureFlags.GetFlag(flag.Name);
+        var featureFlag = featureFlags.Exists()
+            ? await featureFlags.GetFlag(flag.Name)
+            : null;
+        if (featureFlag.NotExists())
+        {
+            return Error.EntityNotFound(Resources.FlagsmithHttpServiceClient_UnknownFeature.Format(flag.Name));
+        }
+
         if (IsDefaultFeatureFlag(featureFlag))
         {
             return Error.EntityNotFound(Resources.FlagsmithHttpServiceClient_UnknownFeature.Format(flag.Name));
@@ -174,8 +182,7 @@ public sealed partial class FlagsmithHttpServiceClient : IFeatureFlags
 
     private static bool IsDefaultFeatureFlag(IFlag featureFlag)
     {
-        return featureFlag.NotExists()
-               || featureFlag.getFeatureId() == -1
+        return featureFlag.getFeatureId() == -1
                || featureFlag.GetFeatureName() == UnknownFeatureName;
     }
 

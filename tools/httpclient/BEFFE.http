@@ -36,8 +36,8 @@ anti-csrf-tok: {{csrf_token}}
 
 GET {{websitehost}}/api/flags
 Accept: application/json
-X-HMAC-Signature: {{hmac_signature}}
 Content-Type: application/json
+anti-csrf-tok: {{csrf_token}}
 
 { }
 
