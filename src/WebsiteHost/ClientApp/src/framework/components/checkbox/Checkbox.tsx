@@ -7,7 +7,7 @@ type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
 export interface CheckboxProps {
   className?: string;
   id?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   name?: HTMLInputProps['name'];
   size?: 'sm' | 'md' | 'lg';
   label?: string;

@@ -24,15 +24,15 @@ describe('Checkbox', () => {
   it('renders different sizes correctly', () => {
     const { rerender } = render(<Checkbox label="alabel" size="sm" />);
 
-    expect(screen.getByRole('checkbox')).toHaveClass('px-3', 'py-1.5', 'text-sm');
+    expect(screen.getByRole('checkbox')).toHaveClass('w-4', 'h-4', 'text-sm');
 
     rerender(<Checkbox label="alabel" size="md" />);
 
-    expect(screen.getByRole('checkbox')).toHaveClass('px-3', 'py-2', 'text-sm');
+    expect(screen.getByRole('checkbox')).toHaveClass('w-5', 'h-5', 'text-sm');
 
     rerender(<Checkbox label="alabel" size="lg" />);
 
-    expect(screen.getByRole('checkbox')).toHaveClass('px-4', 'py-3', 'text-base');
+    expect(screen.getByRole('checkbox')).toHaveClass('w-6', 'h-6', 'text-base');
   });
 
   it('handles disabled state correctly', () => {

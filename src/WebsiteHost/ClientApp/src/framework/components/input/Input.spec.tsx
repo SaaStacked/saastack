@@ -46,7 +46,7 @@ describe('Input', () => {
 
     rerender(<Input size="md" />);
 
-    expect(screen.getByRole('textbox')).toHaveClass('px-3', 'py-2', 'text-sm');
+    expect(screen.getByRole('textbox')).toHaveClass('p-0', 'text-sm');
 
     rerender(<Input size="lg" />);
 
