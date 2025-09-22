@@ -26,13 +26,16 @@
 - We have added an initial React JS Application to the `WebsiteHost` project, complete with localization, offline support, and implemented the JavaScript Action.
 - We have added a basic set of UI pages for many of the most common UI scenarios. We have also added a StoryBook of basic components.
 - We have added a missing API for sending a registration confirmation email, should the link in the email expire.
-
+- The authorization policy for roles and features has been renamed from `POLICY` to `RolesAndFeatures`. 
 
 ### Breaking Changes
-- none
+- (Potentially breaking) by default, ASPNET does not validate JWT tokens, or any other forms of proof (i.e. HMAC, APiKeys, Auth Cookies, etc.) unless the minimal API endpoint is marked with `RequireAuthorization()`. This change adds a `RequireAuthorization("Anonymous")` to all anonymous endpoints, so that we can validate any proof passed to anonymous endpoints to ensure it is valid proof. Invalid proofs (e.g. expired JWT tokens), will now be validated and rejected. This will only affect clients that send invalid proofs (like a JWT token) to anonymous endpoints.
 
 ### Fixed
 - Locale and Timezone were persisted in the `EndUserProfile` value object, but this data was incorrectly mapped to the `Registered` event in the `EndUsersRoot`,and therefore the value read by the `UserProfile` application defaulted to `en-US` and `UTC`.
+- When handling BasicAuth, or ApiKeyAuth, the extraction of username and password from the `Authorization` header was not correctly handling the case where the colon delimiter was not provided.
+- When handling ApiKeyAuth, the extraction of the API Key from the `Authorization` header was not correctly handling the case where the the apikey was not in a valid format of an APIKey.
+- ApiKeys are now generated without the colon character.
 
 ---
 

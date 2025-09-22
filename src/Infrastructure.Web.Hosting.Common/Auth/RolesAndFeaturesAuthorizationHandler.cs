@@ -1,75 +1,14 @@
-using System.Collections.Concurrent;
 using Application.Interfaces;
-using Common.Extensions;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.Extensions.Options;
-using AuthorizeAttribute = Infrastructure.Web.Api.Interfaces.AuthorizeAttribute;
 
 namespace Infrastructure.Web.Hosting.Common.Auth;
 
 /// <summary>
-///     Provides an authorization policy provider for configuring policies related to roles and feature levels
-/// </summary>
-public sealed class RolesAndFeaturesAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
-{
-    private readonly ConcurrentDictionary<string, AuthorizationPolicy> _policyCache = new();
-
-    public RolesAndFeaturesAuthorizationPolicyProvider(
-        IOptions<Microsoft.AspNetCore.Authorization.AuthorizationOptions> options) : base(options)
-    {
-    }
-
-    public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
-    {
-        if (_policyCache.TryGetValue(policyName, out var cachedPolicy))
-        {
-            return cachedPolicy;
-        }
-
-        var policy = await base.GetPolicyAsync(policyName);
-        if (policy.Exists())
-        {
-            return policy;
-        }
-
-        var rolesAndFeatures = AuthorizeAttribute.ParsePolicyName(policyName);
-        var requirements = rolesAndFeatures
-            .Select(rf => new RolesAndFeaturesRequirement(rf.Roles, rf.Features))
-            .Cast<IAuthorizationRequirement>().ToArray();
-
-        var builder = new AuthorizationPolicyBuilder();
-        if (requirements.HasAny())
-        {
-            builder.AddRequirements(new DenyAnonymousAuthorizationRequirement());
-            builder.AddRequirements(requirements);
-        }
-
-        var policies = builder.Build();
-
-        _policyCache.TryAdd(policyName, policies);
-
-        return policies;
-    }
-
-#if TESTINGONLY
-    internal bool IsCached(string policyName)
-    {
-        return _policyCache.TryGetValue(policyName, out _);
-    }
-
-    internal void CachePolicy(string policyName, AuthorizationPolicy builder)
-    {
-        _policyCache.TryAdd(policyName, builder);
-    }
-#endif
-}
-
-/// <summary>
 ///     Provides an authorization handler that processes an authorization requirement
 /// </summary>
-public sealed class RolesAndFeaturesAuthorizationHandler : AuthorizationHandler<RolesAndFeaturesRequirement>
+public sealed class
+    RolesAndFeaturesAuthorizationHandler : AuthorizationHandler<RolesAndFeaturesAuthorizationRequirement>
 {
     private readonly ICallerContextFactory _callerFactory;
 
@@ -79,7 +18,7 @@ public sealed class RolesAndFeaturesAuthorizationHandler : AuthorizationHandler<
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-        RolesAndFeaturesRequirement requirement)
+        RolesAndFeaturesAuthorizationRequirement requirement)
     {
         var caller = _callerFactory.Create();
 
@@ -135,9 +74,9 @@ public sealed class RolesAndFeaturesAuthorizationHandler : AuthorizationHandler<
 /// <summary>
 ///     Provides an authorization requirement that will be asserted to authorize a request
 /// </summary>
-public sealed class RolesAndFeaturesRequirement : IAuthorizationRequirement
+public sealed class RolesAndFeaturesAuthorizationRequirement : IAuthorizationRequirement
 {
-    public RolesAndFeaturesRequirement(ICallerContext.CallerRoles roles,
+    public RolesAndFeaturesAuthorizationRequirement(ICallerContext.CallerRoles roles,
         ICallerContext.CallerFeatures features)
     {
         Roles = roles;

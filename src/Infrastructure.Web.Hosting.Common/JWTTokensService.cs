@@ -49,16 +49,6 @@ public sealed class JWTTokensService : IJWTTokensService
         return Task.FromResult(tokens);
     }
 
-#if TESTINGONLY
-    public static (string privateKey, string publicKey) GenerateSigningKey()
-    {
-        using var rsa = RSA.Create(2048);
-        var privateKey = rsa.ExportRSAPrivateKeyPem();
-        var publicKey = rsa.ExportRSAPublicKeyPem();
-        return (privateKey, publicKey);
-    }
-#endif
-
     /// <summary>
     ///     Returns the token validation parameters used to validate inbound tokens.
     /// </summary>
@@ -131,4 +121,23 @@ public sealed class JWTTokensService : IJWTTokensService
             refreshToken, refreshTokenExpiresOn,
             idToken, idTokenExpiresOn);
     }
+
+#if TESTINGONLY
+    public static (string privateKey, string publicKey) GenerateSigningKey()
+    {
+        using var rsa = RSA.Create(2048);
+        var privateKey = rsa.ExportRSAPrivateKeyPem();
+        var publicKey = rsa.ExportRSAPublicKeyPem();
+        return (privateKey, publicKey);
+    }
+
+    public static SigningCredentials GetSigningCredentials(IConfigurationSettings settings)
+    {
+        var signingPrivateKey = RSA.Create();
+        signingPrivateKey.ImportFromPem(settings.Platform.GetString(SigningPrivateKeySettingName));
+        var key = new RsaSecurityKey(signingPrivateKey);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
+        return credentials;
+    }
+#endif
 }

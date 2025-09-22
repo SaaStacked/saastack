@@ -142,12 +142,17 @@ namespace {assemblyNamespace}
                             $@"                .RequireAuthorization(""{policyName}"")");
                     }
                 }
+                else
+                {
+                    endpointRegistrations.AppendLine(
+                        $@"                .RequireAuthorization(""{AuthenticationConstants.Authorization.AnonymousPolicyName}"")");
+                }
 
                 if (registration.OperationAuthorization is not null)
                 {
                     var policyName = registration.OperationAuthorization.PolicyName;
                     endpointRegistrations.AppendLine(
-                        $@"                .RequireCallerAuthorization(""{policyName}"")");
+                        $@"                .RequireAuthorization(""{policyName}"")");
                 }
 
                 endpointRegistrations.AppendLine(

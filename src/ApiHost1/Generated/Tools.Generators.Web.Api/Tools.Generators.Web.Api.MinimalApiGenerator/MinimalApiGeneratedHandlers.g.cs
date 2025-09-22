@@ -41,6 +41,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.Health.HealthCheckRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -73,7 +74,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("HMAC")
-                .RequireCallerAuthorization("POLICY:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_internal_service|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_internal_service|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithHMACTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -120,7 +121,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireCallerAuthorization("POLICY:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithTokenOrAPIKeyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -131,12 +132,12 @@ namespace ApiHost1
                     });
 #endif
 #if TESTINGONLY
-            testingwebapiGroup.MapGet("/testingonly/authz/none/get",
-                async (global::System.IServiceProvider serviceProvider, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByNothingTestingOnlyRequest request) =>
+            testingwebapiGroup.MapGet("/testingonly/authz/anonymous/get",
+                async (global::System.IServiceProvider serviceProvider, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest request) =>
                 {
                     return await Handle(serviceProvider, request, global::System.Threading.CancellationToken.None);
 
-                    static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByNothingTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
+                    static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
                         var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
                         var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
@@ -146,11 +147,12 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByNothingTestingOnlyRequest>>()
+                .RequireAuthorization("Anonymous")
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
-                        op.OperationId = "AuthorizeByNothingTestingOnly";
-                        op.Description = "(request type: AuthorizeByNothingTestingOnlyRequest)";
+                        op.OperationId = "AuthorizeByAnonymousTestingOnly";
+                        op.Description = "(request type: AuthorizeByAnonymousTestingOnlyRequest)";
                         op.Responses.Clear();
                         return op;
                     });
@@ -172,7 +174,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireCallerAuthorization("POLICY:{|Features|:{|Platform|:[|platform_paidtrial_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_paidtrial_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByFeatureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -184,11 +186,11 @@ namespace ApiHost1
 #endif
 #if TESTINGONLY
             testingwebapiGroup.MapGet("/testingonly/authz/role/get",
-                async (global::System.IServiceProvider serviceProvider, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByRoleTestingOnlyRequest request) =>
+                async (global::System.IServiceProvider serviceProvider, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest request) =>
                 {
                     return await Handle(serviceProvider, request, global::System.Threading.CancellationToken.None);
 
-                    static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByRoleTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
+                    static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
                         var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
                         var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
@@ -199,12 +201,12 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireCallerAuthorization("POLICY:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByRoleTestingOnlyRequest>>()
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
-                        op.OperationId = "AuthorizeByRoleTestingOnly";
-                        op.Description = "(request type: AuthorizeByRoleTestingOnlyRequest)";
+                        op.OperationId = "AuthorizeByTokenWithRoleTestingOnly";
+                        op.Description = "(request type: AuthorizeByTokenWithRoleTestingOnlyRequest)";
                         op.Responses.Clear();
                         return op;
                     });
@@ -225,6 +227,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ContentNegotiationsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -250,6 +253,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.DestroyAllRepositoriesRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -275,6 +279,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.DownloadStreamTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -300,6 +305,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsErrorTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -325,6 +331,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsThrowTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -350,6 +357,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.FormatsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -375,6 +383,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithSimpleArrayTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -400,6 +409,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -425,6 +435,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -450,6 +461,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRouteParamsAndEmptyBodyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -475,6 +487,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -500,6 +513,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -525,6 +539,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Search);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.SearchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -550,6 +565,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetInsecureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -575,6 +591,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostFormUrlEncodedTestingOnlyRequest>>()
                 .DisableAntiforgery()
                 .WithOpenApi(op =>
@@ -601,6 +618,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -626,6 +644,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostMultiPartFormDataTestingOnlyRequest>>()
                 .DisableAntiforgery()
                 .WithOpenApi(op =>
@@ -652,6 +671,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -677,6 +697,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.PutPatch);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -700,6 +721,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.PutPatch);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -725,6 +747,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostInsecureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -750,6 +773,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithRedirectTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -775,6 +799,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRedirectTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -800,6 +825,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.RequestCorrelationsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -825,6 +851,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Delete);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -850,6 +877,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Delete);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteWithResponseTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -875,6 +903,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -900,6 +929,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -925,6 +955,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostWithLocationTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -950,6 +981,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.PutPatch);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -973,6 +1005,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.PutPatch);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -998,6 +1031,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Search);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesSearchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -1023,6 +1057,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsUnvalidatedTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -1048,6 +1083,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -1073,6 +1109,7 @@ namespace ApiHost1
                         return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Post);
                     }
                 })
+                .RequireAuthorization("Anonymous")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {

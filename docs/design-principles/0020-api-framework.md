@@ -135,7 +135,7 @@ AND have to register the minimal API's generated for us like this:
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireCallerAuthorization("POLICY:{|Features|:{|Tenant|:[|tenant_paidtrial_features|]},|Roles|:{|Tenant|:[|tenant_member|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Tenant|:[|tenant_paidtrial_features|]},|Roles|:{|Tenant|:[|tenant_member|]}}")
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ScheduleMaintenanceCar (Put)";

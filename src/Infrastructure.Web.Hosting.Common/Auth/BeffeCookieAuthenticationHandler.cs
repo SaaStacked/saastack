@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using Common.Extensions;
 using Infrastructure.Web.Hosting.Common.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -29,8 +28,8 @@ public class BeffeCookieAuthenticationHandler : AuthenticationHandler<BeffeCooki
             return AuthenticateResult.Fail(Resources.AuthenticationHandler_NotHttps);
         }
 
-        var claims = Request.GetClaimsFromAuthNCookie();
-        if (!claims.HasAny())
+        var claims = Request.GetAuthNCookie();
+        if (!claims.HasValue)
         {
             return AuthenticateResult.NoResult();
         }
@@ -39,7 +38,7 @@ public class BeffeCookieAuthenticationHandler : AuthenticationHandler<BeffeCooki
 
         AuthenticationTicket IssueTicket()
         {
-            var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, Scheme.Name));
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(claims.Value, Scheme.Name));
             return new AuthenticationTicket(principal, Scheme.Name)
             {
                 Properties =

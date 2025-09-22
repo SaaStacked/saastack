@@ -52,7 +52,7 @@ public sealed class TestingWebApi : IWebApiService
     }
 
     public async Task<ApiResult<string, GetCallerTestingOnlyResponse>> AuthZAnonymous(
-        AuthorizeByNothingTestingOnlyRequest request, CancellationToken cancellationToken)
+        AuthorizeByAnonymousTestingOnlyRequest request, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
         return () => new Result<GetCallerTestingOnlyResponse, Error>(new GetCallerTestingOnlyResponse
@@ -68,7 +68,7 @@ public sealed class TestingWebApi : IWebApiService
     }
 
     public async Task<ApiResult<string, GetCallerTestingOnlyResponse>> AuthZByRole(
-        AuthorizeByRoleTestingOnlyRequest request, CancellationToken cancellationToken)
+        AuthorizeByTokenWithRoleTestingOnlyRequest request, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
         return () => new Result<GetCallerTestingOnlyResponse, Error>(new GetCallerTestingOnlyResponse

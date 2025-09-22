@@ -40,6 +40,8 @@ public static class AuthenticationConstants
         public const string RolesAndFeaturesPolicyNameForNone = $"{RolesAndFeaturesPolicyNamePrefix}None";
         public const string RolesAndFeaturesPolicyNamePrefix = "RolesAndFeatures_";
         public const string TokenPolicyName = "Token";
+        public const string AnonymousPolicyName = "Anonymous";
+        public const string RolesAndFeaturesPolicyName = "RolesAndFeatures";
     }
 
     public static class Cookies

@@ -224,11 +224,6 @@ public static class HostExtensions
 
         void RegisterAuthenticationAuthorization(AuthorizationOptions authentication, bool isMultiTenanted)
         {
-            if (authentication.HasNone)
-            {
-                return;
-            }
-
             // We are either using tokens or cookies, or neither, but never both
             var defaultScheme = string.Empty;
             if (authentication is { UsesTokens: true, UsesAuthNCookie: false })
@@ -312,16 +307,20 @@ public static class HostExtensions
             if (isMultiTenanted)
             {
                 services.AddPerHttpRequest<IAuthorizationHandler, RolesAndFeaturesAuthorizationHandler>();
+                services.AddPerHttpRequest<IAuthorizationHandler, AnonymousAuthenticationHandler>();
             }
             else
             {
                 services.AddSingleton<IAuthorizationHandler, RolesAndFeaturesAuthorizationHandler>();
+                services.AddSingleton<IAuthorizationHandler, AnonymousAuthenticationHandler>();
             }
 
+            // We cannot declaratively configure the RolesAndFeaturesAuthorizationRequirement here,
+            // we have to build the policy dynamically with a custom IAuthorizationPolicyProvider
             services
-                .AddSingleton<IAuthorizationPolicyProvider, RolesAndFeaturesAuthorizationPolicyProvider>();
+                .AddSingleton<IAuthorizationPolicyProvider, AllAuthorizationPoliciesProvider>();
 
-            if (authentication.UsesApiKeys || authentication.UsesTokens)
+            if (authentication.UsesTokens || authentication.UsesApiKeys)
             {
                 services.AddAuthorization(configure =>
                 {
@@ -330,6 +329,43 @@ public static class HostExtensions
                         builder.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme,
                             APIKeyAuthenticationHandler.AuthenticationScheme);
                         builder.RequireAuthenticatedUser();
+                    });
+                });
+            }
+
+            // We need a custom used on endpoints that are marked as anonymous, to verify bad auth proofs,
+            // if they exist on the request
+            if (authentication.UsesTokens || authentication.UsesApiKeys || authentication.UsesHMAC ||
+                authentication.UsesAuthNCookie)
+            {
+                services.AddAuthorization(configure =>
+                {
+                    configure.AddPolicy(AuthenticationConstants.Authorization.AnonymousPolicyName, builder =>
+                    {
+                        var supportedSchemes = new List<string>();
+                        if (authentication.UsesTokens)
+                        {
+                            supportedSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                        }
+
+                        if (authentication.UsesApiKeys)
+                        {
+                            supportedSchemes.Add(APIKeyAuthenticationHandler.AuthenticationScheme);
+                        }
+
+                        if (authentication.UsesHMAC)
+                        {
+                            supportedSchemes.Add(HMACAuthenticationHandler.AuthenticationScheme);
+                        }
+
+                        if (authentication.UsesAuthNCookie)
+                        {
+                            supportedSchemes.Add(BeffeCookieAuthenticationHandler.AuthenticationScheme);
+                        }
+
+                        builder.AddAuthenticationSchemes(supportedSchemes.ToArray());
+
+                        builder.AddRequirements(new AnonymousAuthorizationRequirement());
                     });
                 });
             }

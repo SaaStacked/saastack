@@ -38,7 +38,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
             Id = "aneventid",
             EventType = "aununknowneventtype",
             Content = new ChargebeeEventContent()
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -63,7 +63,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     }
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed.Should().BeNull();
@@ -97,7 +97,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     }
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed!.EventType.Should().Be(ChargebeeEventType.CustomerChanged.ToString());
@@ -125,7 +125,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     Id = customerId
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed!.EventType.Should().Be(ChargebeeEventType.CustomerDeleted.ToString());
@@ -155,7 +155,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     Status = "active"
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed!.EventType.Should().Be(ChargebeeEventType.SubscriptionChanged.ToString());
@@ -185,7 +185,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     Status = "active"
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed!.EventType.Should().Be(ChargebeeEventType.SubscriptionCancelled.ToString());
@@ -215,7 +215,7 @@ public class ChargebeeApiSpec : WebApiSpec<Program>
                     Status = "active"
                 }
             }
-        }, req => req.SetBasicAuth("ausername"));
+        }, req => req.SetBasicAuth("ausername", "apassword"));
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _stubAuditService.LastProcessed!.EventType.Should().Be(ChargebeeEventType.SubscriptionDeleted.ToString());

@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
+using Domain.Interfaces.Validations;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Http;
 
@@ -36,7 +37,13 @@ public static class HttRequestExtensions
         var fromQuery = request.Query[HttpConstants.QueryParams.APIKey].FirstOrDefault();
         if (fromQuery.HasValue())
         {
-            return fromQuery;
+            var parameter = fromQuery;
+            if (CommonValidations.APIKeys.ApiKey.Matches(parameter))
+            {
+                return parameter;
+            }
+
+            return Optional<string>.None;
         }
 
         var fromBasicAuth = GetBasicAuth(request);
@@ -48,7 +55,13 @@ public static class HttRequestExtensions
         if (fromBasicAuth.Username.HasValue
             && !fromBasicAuth.Password.HasValue)
         {
-            return fromBasicAuth.Username;
+            var username = fromBasicAuth.Username;
+            if (CommonValidations.APIKeys.ApiKey.Matches(username))
+            {
+                return username;
+            }
+
+            return Optional<string>.None;
         }
 
         return Optional<string>.None;
@@ -77,6 +90,11 @@ public static class HttRequestExtensions
         {
             var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(token));
             var delimiterIndex = decoded.IndexOf(':', StringComparison.Ordinal);
+            if (delimiterIndex == -1)
+            {
+                return (decoded, Optional<string>.None);
+            }
+
             var username = decoded.Substring(0, delimiterIndex);
             var password = decoded.Substring(delimiterIndex + 1);
             return (username.HasValue()

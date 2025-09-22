@@ -2,6 +2,7 @@ extern alias Generators;
 using System.Collections.Immutable;
 using System.Reflection;
 using FluentAssertions;
+using Generators::Application.Interfaces;
 using Generators::Domain.Interfaces.Authorization;
 using Generators::Infrastructure.Web.Api.Interfaces;
 using Generators::JetBrains.Annotations;
@@ -465,7 +466,7 @@ public class WebApiAssemblyVisitorSpec
                 registration.MethodName.Should().Be("AMethod");
                 registration.OperationMethod.Should().Be(OperationMethod.Get);
                 registration.OperationAuthorization!.PolicyName.Should().Be(
-                    $"POLICY:{{|Features|:{{|Platform|:[|{PlatformFeatures.Basic.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Standard.Name}|]}}}}");
+                    $"{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}:{{|Features|:{{|Platform|:[|{PlatformFeatures.Basic.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Standard.Name}|]}}}}");
                 registration.RoutePath.Should().Be("aroute");
                 registration.IsTestingOnly.Should().BeFalse();
                 registration.RequestDto.Name.Should().Be("ARequest");
@@ -522,8 +523,8 @@ public class WebApiAssemblyVisitorSpec
                 registration.MethodName.Should().Be("AMethod");
                 registration.OperationMethod.Should().Be(OperationMethod.Get);
                 registration.OperationAuthorization!.PolicyName.Should().Be(
-                    $"POLICY:{{|Features|:{{|Platform|:[|{PlatformFeatures.Paid2.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Operations.Name}|]}}}}"
-                    + $"POLICY:{{|Features|:{{|Platform|:[|{PlatformFeatures.Basic.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Standard.Name}|]}}}}");
+                    $"{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}:{{|Features|:{{|Platform|:[|{PlatformFeatures.Paid2.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Operations.Name}|]}}}}"
+                    + $"{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}:{{|Features|:{{|Platform|:[|{PlatformFeatures.Basic.Name}|]}},|Roles|:{{|Platform|:[|{PlatformRoles.Standard.Name}|]}}}}");
                 registration.RoutePath.Should().Be("aroute");
                 registration.IsTestingOnly.Should().BeFalse();
                 registration.RequestDto.Name.Should().Be("ARequest");

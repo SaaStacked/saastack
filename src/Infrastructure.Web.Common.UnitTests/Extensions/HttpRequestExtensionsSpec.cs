@@ -1,6 +1,7 @@
 using System.Text;
 using Common;
 using FluentAssertions;
+using Infrastructure.Shared.DomainServices;
 using Infrastructure.Web.Common.Extensions;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -218,6 +219,22 @@ public class HttpRequestExtensionsSpec
     }
 
     [Fact]
+    public void WhenGetBasicAuthAndAuthorizationHeaderBasicButOnlyUsernameNoDelimiter_ThenReturnsOnlyUsername()
+    {
+        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes("ausername"));
+        var httpRequest = new Mock<HttpRequest>();
+        httpRequest.Setup(req => req.Headers).Returns(new HeaderDictionary
+        {
+            { HttpConstants.Headers.Authorization, $"Basic {credentials}" }
+        });
+
+        var result = httpRequest.Object.GetBasicAuth();
+
+        result.Username.Should().BeSome("ausername");
+        result.Password.Should().BeNone();
+    }
+
+    [Fact]
     public void WhenGetBasicAuthAndAuthorizationHeaderBasicButOnlyPassword_ThenReturnsOnlyPassword()
     {
         var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(":apassword"));
@@ -294,7 +311,7 @@ public class HttpRequestExtensionsSpec
     }
 
     [Fact]
-    public void WhenGetAPIKeyAuthAndAuthorizationHeaderWithBasicUsernameOnly_ThenReturnsAPIKey()
+    public void WhenGetAPIKeyAuthAndAuthorizationHeaderWithRandomUsernameOnly_ThenReturnsNone()
     {
         var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes("anapikey:"));
         var httpRequest = new Mock<HttpRequest>();
@@ -306,11 +323,28 @@ public class HttpRequestExtensionsSpec
 
         var result = httpRequest.Object.GetAPIKeyAuth();
 
-        result.Should().BeSome("anapikey");
+        result.Should().BeNone();
     }
 
     [Fact]
-    public void WhenGetAPIKeyAuthAndParameterEmpty_ThenReturnsNone()
+    public void WhenGetAPIKeyAuthAndAuthorizationHeaderWithApiKeyAsUsernameOnly_ThenReturnsAPIKey()
+    {
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
+        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(apiKey));
+        var httpRequest = new Mock<HttpRequest>();
+        httpRequest.Setup(req => req.Headers).Returns(new HeaderDictionary
+        {
+            { HttpConstants.Headers.Authorization, $"Basic {credentials}" }
+        });
+        httpRequest.Setup(req => req.Query).Returns(new QueryCollection());
+
+        var result = httpRequest.Object.GetAPIKeyAuth();
+
+        result.Should().BeSome(apiKey);
+    }
+
+    [Fact]
+    public void WhenGetAPIKeyAuthAndQueryParameterEmpty_ThenReturnsNone()
     {
         var httpRequest = new Mock<HttpRequest>();
         httpRequest.Setup(req => req.Headers).Returns(new HeaderDictionary());
@@ -326,19 +360,20 @@ public class HttpRequestExtensionsSpec
     }
 
     [Fact]
-    public void WhenGetAPIKeyAuthAndParameter_ThenReturnsAPIKey()
+    public void WhenGetAPIKeyAuthAndQueryParameter_ThenReturnsAPIKey()
     {
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         var httpRequest = new Mock<HttpRequest>();
         httpRequest.Setup(req => req.Headers).Returns(new HeaderDictionary());
         httpRequest.Setup(req => req.Query).Returns(new QueryCollection
         (new Dictionary<string, StringValues>
         {
-            { HttpConstants.QueryParams.APIKey, "anapikey" }
+            { HttpConstants.QueryParams.APIKey, apiKey }
         }));
 
         var result = httpRequest.Object.GetAPIKeyAuth();
 
-        result.Should().BeSome("anapikey");
+        result.Should().BeSome(apiKey);
     }
 
     [Fact]

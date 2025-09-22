@@ -30,24 +30,24 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    ///     Returns the claims from the JWT token that is stored in the cookie,
+    ///     Returns the claims from the JWT token that is stored in the AuthN cookie,
     /// </summary>
-    public static Claim[] GetClaimsFromAuthNCookie(this HttpRequest request)
+    public static Optional<Claim[]> GetAuthNCookie(this HttpRequest request)
     {
         var token = GetTokenFromAuthNCookies(request);
         if (!token.HasValue)
         {
-            return [];
+            return Optional<Claim[]>.None;
         }
 
         try
         {
             var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token.Value);
-            return jwtToken.Claims.ToArray();
+            return jwtToken.Claims.ToArray().ToOptional();
         }
         catch (Exception)
         {
-            return [];
+            return Optional<Claim[]>.None;
         }
     }
 

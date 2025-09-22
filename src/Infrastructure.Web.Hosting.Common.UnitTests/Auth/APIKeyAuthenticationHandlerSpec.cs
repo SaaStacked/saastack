@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Encodings.Web;
 using Application.Interfaces;
 using Application.Resources.Shared;
@@ -5,6 +6,7 @@ using Application.Services.Shared;
 using Common;
 using FluentAssertions;
 using Infrastructure.Interfaces;
+using Infrastructure.Shared.DomainServices;
 using Infrastructure.Web.Hosting.Common.Auth;
 using Infrastructure.Web.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -82,11 +84,12 @@ public class APIKeyAuthenticationHandlerSpec
     [Fact]
     public async Task WhenHandleAuthenticateAsyncAndNotAuthenticates_ThenReturnsFailure()
     {
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         _identityService.Setup(ids =>
                 ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.NotAuthenticated());
-        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, "anapikey");
+        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, apiKey);
         await _handler.InitializeAsync(new AuthenticationScheme(APIKeyAuthenticationHandler.AuthenticationScheme, null,
             typeof(APIKeyAuthenticationHandler)), _httpContext);
 
@@ -99,17 +102,18 @@ public class APIKeyAuthenticationHandlerSpec
             .Which.Message.Should()
             .Be(Resources.AuthenticationHandler_Failed);
         _identityService.Verify(ids =>
-            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), "anapikey", It.IsAny<CancellationToken>()));
+            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), apiKey, It.IsAny<CancellationToken>()));
     }
 
     [Fact]
     public async Task WhenHandleAuthenticateAsyncAndAccountSuspended_ThenReturnsFailure()
     {
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         _identityService.Setup(ids =>
                 ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.EntityExists("amessage"));
-        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, "anapikey");
+        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, apiKey);
         await _handler.InitializeAsync(new AuthenticationScheme(APIKeyAuthenticationHandler.AuthenticationScheme, null,
             typeof(APIKeyAuthenticationHandler)), _httpContext);
 
@@ -122,7 +126,7 @@ public class APIKeyAuthenticationHandlerSpec
             .Which.Message.Should()
             .Be("amessage");
         _identityService.Verify(ids =>
-            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), "anapikey", It.IsAny<CancellationToken>()));
+            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), apiKey, It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -132,11 +136,12 @@ public class APIKeyAuthenticationHandlerSpec
         {
             Id = "anid"
         };
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         _identityService.Setup(ids =>
                 ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
-        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, "anapikey");
+        _httpContext.Request.QueryString = QueryString.Create(HttpConstants.QueryParams.APIKey, apiKey);
         await _handler.InitializeAsync(new AuthenticationScheme(APIKeyAuthenticationHandler.AuthenticationScheme, null,
             typeof(APIKeyAuthenticationHandler)), _httpContext);
 
@@ -149,7 +154,7 @@ public class APIKeyAuthenticationHandlerSpec
         _recorder.Verify(rec => rec.Audit(It.IsAny<ICallContext>(), It.IsAny<string>(), It.IsAny<string>()),
             Times.Never);
         _identityService.Verify(ids =>
-            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), "anapikey", It.IsAny<CancellationToken>()));
+            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), apiKey, It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -159,12 +164,13 @@ public class APIKeyAuthenticationHandlerSpec
         {
             Id = "anid"
         };
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         _identityService.Setup(ids =>
                 ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         _httpContext.Request.Headers[HttpConstants.Headers.Authorization] =
-            $"Basic {Convert.ToBase64String("anapikey:"u8.ToArray())}";
+            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes(apiKey))}";
         await _handler.InitializeAsync(new AuthenticationScheme(APIKeyAuthenticationHandler.AuthenticationScheme, null,
             typeof(APIKeyAuthenticationHandler)), _httpContext);
 
@@ -177,6 +183,6 @@ public class APIKeyAuthenticationHandlerSpec
         _recorder.Verify(rec => rec.Audit(It.IsAny<ICallContext>(), It.IsAny<string>(), It.IsAny<string>()),
             Times.Never);
         _identityService.Verify(ids =>
-            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), "anapikey", It.IsAny<CancellationToken>()));
+            ids.AuthenticateApiKeyAsync(It.IsAny<ICallerContext>(), apiKey, It.IsAny<CancellationToken>()));
     }
 }

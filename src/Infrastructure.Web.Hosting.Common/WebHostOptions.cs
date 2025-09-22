@@ -111,8 +111,6 @@ public enum CORSOption
 /// </summary>
 public class AuthorizationOptions
 {
-    public bool HasNone => !UsesApiKeys && !UsesTokens && !UsesHMAC;
-
     public bool UsesApiKeys { get; set; }
 
     public bool UsesAuthNCookie { get; set; }

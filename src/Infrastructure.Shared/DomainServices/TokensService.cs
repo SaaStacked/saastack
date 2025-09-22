@@ -13,9 +13,9 @@ public sealed class TokensService : ITokensService
 
     public APIKeyToken CreateAPIKey()
     {
-        var token = GenerateRandomStringSafeForUrl(CommonValidations.APIKeys.ApiKeyTokenSize,
+        var token = GenerateRandomStringSafeForBasicAuth(CommonValidations.APIKeys.ApiKeyTokenSize,
             CommonValidations.APIKeys.ApiKeyPaddingReplacement);
-        var key = GenerateRandomStringSafeForUrl(CommonValidations.APIKeys.ApiKeySize,
+        var key = GenerateRandomStringSafeForBasicAuth(CommonValidations.APIKeys.ApiKeySize,
             CommonValidations.APIKeys.ApiKeyPaddingReplacement);
 
         return new APIKeyToken
@@ -67,6 +67,16 @@ public sealed class TokensService : ITokensService
         return GenerateRandomStringSafeForUrl();
     }
 
+    /// <summary>
+    ///     Creates a deterministic digest of the specified token
+    /// </summary>
+    public string CreateTokenDigest(string token)
+    {
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
+        var code = Convert.ToBase64String(hash);
+        return MakeSafeForUrls(code);
+    }
+
     public string GenerateRandomToken()
     {
         return GenerateRandomStringSafeForUrl();
@@ -97,20 +107,16 @@ public sealed class TokensService : ITokensService
         };
     }
 
-    /// <summary>
-    ///     Creates a deterministic digest of the specified token
-    /// </summary>
-    public string CreateTokenDigest(string token)
-    {
-        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
-        var code = Convert.ToBase64String(hash);
-        return MakeSafeForUrls(code);
-    }
-
     private static string GenerateRandomStringSafeForUrl(int keySize = DefaultTokenSizeInBytes,
         string paddingReplacement = "")
     {
         return MakeSafeForUrls(GenerateRandomString(keySize), paddingReplacement);
+    }
+
+    private static string GenerateRandomStringSafeForBasicAuth(int keySize = DefaultTokenSizeInBytes,
+        string paddingReplacement = "")
+    {
+        return MakeSafeForBasicAuth(GenerateRandomString(keySize), paddingReplacement);
     }
 
     private static string GenerateRandomString(int keySize = DefaultTokenSizeInBytes)
@@ -127,5 +133,11 @@ public sealed class TokensService : ITokensService
             .Replace('+', '-')
             .Replace('/', '_')
             .Replace("=", paddingReplacement);
+    }
+
+    private static string MakeSafeForBasicAuth(string value, string paddingReplacement = "")
+    {
+        return MakeSafeForUrls(value, paddingReplacement)
+            .Replace(':', '_');
     }
 }

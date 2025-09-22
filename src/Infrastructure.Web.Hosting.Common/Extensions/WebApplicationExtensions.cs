@@ -283,17 +283,12 @@ public static class WebApplicationExtensions
     public static void EnableSecureAccess(this WebApplication builder,
         List<MiddlewareRegistration> middlewares, AuthorizationOptions authorization)
     {
-        if (authorization.HasNone)
-        {
-            return;
-        }
-
         middlewares.Add(new MiddlewareRegistration(50, app => { app.UseAuthentication(); },
             "Pipeline: Authentication is enabled: HMAC -> {HMAC}, APIKeys -> {APIKeys}, Tokens -> {Tokens}, Cookie -> {Cookie}",
             authorization.UsesHMAC, authorization.UsesApiKeys, authorization.UsesTokens,
             authorization.UsesAuthNCookie));
         middlewares.Add(
             new MiddlewareRegistration(54, app => { app.UseAuthorization(); },
-                "Pipeline: Authorization is enabled: Roles -> Enabled, Features -> Enabled"));
+                "Pipeline: Authorization is enabled: Anonymous -> Enabled, Roles -> Enabled, Features -> Enabled"));
     }
 }

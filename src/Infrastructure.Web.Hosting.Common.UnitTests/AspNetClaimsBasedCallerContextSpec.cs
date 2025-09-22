@@ -7,6 +7,7 @@ using Domain.Interfaces.Authorization;
 using FluentAssertions;
 using Infrastructure.Common.Extensions;
 using Infrastructure.Interfaces;
+using Infrastructure.Shared.DomainServices;
 using Infrastructure.Web.Api.Common.Endpoints;
 using Infrastructure.Web.Hosting.Common.Auth;
 using Infrastructure.Web.Interfaces;
@@ -475,16 +476,17 @@ public class AspNetClaimsBasedCallerContextSpec
         {
             { HttpConstants.Headers.Authorization, "Bearer atoken" }
         });
+        var apiKey = new TokensService().CreateAPIKey().ApiKey;
         httpContextAccessor.Setup(hc => hc.HttpContext!.Request.Query)
             .Returns(new QueryCollection(new Dictionary<string, StringValues>
             {
-                { HttpConstants.QueryParams.APIKey, "anapikey" }
+                { HttpConstants.QueryParams.APIKey, apiKey }
             }));
         httpContextAccessor.Setup(hc => hc.HttpContext!.Features).Returns(features);
 
         var result = AspNetClaimsBasedCallerContext.GetAuthorization(httpContextAccessor.Object);
 
         result.Should().BeSome(auth =>
-            auth.Method == ICallerContext.AuthorizationMethod.APIKey && auth.Value == "anapikey".ToOptional());
+            auth.Method == ICallerContext.AuthorizationMethod.APIKey && auth.Value == apiKey.ToOptional());
     }
 }

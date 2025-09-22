@@ -621,7 +621,7 @@ public class SubscriptionsApiSpec
                         }
                     }
                 }
-            }, req => req.SetBasicAuth("ausername"));
+            }, req => req.SetBasicAuth("ausername", "apassword"));
         }
 
         private static void OverrideDependencies(IServiceCollection services)

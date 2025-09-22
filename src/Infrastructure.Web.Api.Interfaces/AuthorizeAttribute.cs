@@ -15,7 +15,6 @@ namespace Infrastructure.Web.Api.Interfaces;
 public class AuthorizeAttribute : Attribute
 {
     private const char DoubleQuoteReplacementChar = '|';
-    private const string PolicyHeader = "POLICY:";
 
     public AuthorizeAttribute(Roles beOneOf)
     {
@@ -94,7 +93,7 @@ public class AuthorizeAttribute : Attribute
     ///     <see cref="ICallerContext.CallerRoles" /> and the normalized
     ///     <see cref="ICallerContext.CallerFeatures" /> for each policy
     ///     Note: a policy may look like this:
-    ///     "POLICY:{|Features|:{|Platform|:[|basic_features|]},|Roles|:{|Platform|:[|{platform_standard}|]}}"
+    ///     "RolesAndFeatures:{|Features|:{|Platform|:[|basic_features|]},|Roles|:{|Platform|:[|{platform_standard}|]}}"
     /// </summary>
     public static IReadOnlyList<(ICallerContext.CallerRoles Roles, ICallerContext.CallerFeatures Features)>
         ParsePolicyName(string policyName)
@@ -109,8 +108,14 @@ public class AuthorizeAttribute : Attribute
             return new List<(ICallerContext.CallerRoles Roles, ICallerContext.CallerFeatures Features)>();
         }
 
+        if (!policyName.StartsWith(AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName))
+        {
+            return new List<(ICallerContext.CallerRoles Roles, ICallerContext.CallerFeatures Features)>();
+        }
+
+        var policyHeader = $"{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}:";
         var policies = policyName
-            .Split([PolicyHeader], StringSplitOptions.RemoveEmptyEntries)
+            .Split([policyHeader], StringSplitOptions.RemoveEmptyEntries)
             .Select(item => item.Trim().Replace(DoubleQuoteReplacementChar, '"'))
             .Select(item => item.FromJson<PolicyName>())
             .Where(policy => policy is not null)
@@ -266,7 +271,7 @@ public class AuthorizeAttribute : Attribute
                 continue;
             }
 
-            result.Append($"{PolicyHeader}{policy}");
+            result.Append($"{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}:{policy}");
         }
 
         return result.ToString();
