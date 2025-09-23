@@ -116,9 +116,9 @@ public sealed class InterHostServiceClient : ApiServiceClient
         {
             modifiedRequestFilter = msg =>
             {
-                inboundRequestFilter(msg);
                 AddCorrelationId(msg, context);
                 AddCallerAuthorization(msg, context, _privateInterHostSecret, _hmacSecret);
+                inboundRequestFilter(msg);
             };
         }
         else

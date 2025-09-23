@@ -21,21 +21,31 @@
 ## [1.0.0] - 2025-09-21
 
 ### Non-breaking Changes
-- Changed authentication cookies `auth-tok` and `authref-tok` to store not only the token, but also the expiry of the token, in a JSON structure.
-- We have also changed the expiry of the `auth-tok` cookie to be the same as the `authref-tok` cookie, so that both cookies are available the duration of the refreshable session. Which should have the effect of forcing the client to refresh the auth token long before it expires, by handling a `HTTP - 401` response.
-- We have added an initial React JS Application to the `WebsiteHost` project, complete with localization, offline support, and implemented the JavaScript Action.
-- We have added a basic set of UI pages for many of the most common UI scenarios. We have also added a StoryBook of basic components.
-- We have added a missing API for sending a registration confirmation email, should the link in the email expire.
-- The authorization policy for roles and features has been renamed from `POLICY` to `RolesAndFeatures`. 
+- We have changed the expiry of the `auth-tok` cookie (produced by the BEFFE) to be the same time period as the `authref-tok` cookie. This is to help create a "refreshable session", for the browser application, that has it submit an expired token to the backend API to reject as unauthorized. This is needed otherwise the cookie just expires and disappears, forcing the user to login again, every 15 minutes. With this scheme, the browser can now respond to a `HTTP - 401` by refreshing the token, and retrying the request.
+- Changed authentication cookies `auth-tok` and `authref-tok` to store the expiry date as well as the JWT token in a JSON structure.
+- Chose React as our JS App framework served from the `WebsiteHost`BEFFE project.
+- Added support for: Vite (build and test), Tailwind CSS, i18next localization, offline support, and implemented the JavaScript Action with `@tanstack/react-query`.
+- Added a basic set of UI pages and re-usable components for many of the most common UI scenarios.
+- Added a StoryBook for all components, and some pages.
+- We have added a missing API for sending a registration confirmation emails. In cases where the first email expired, or went missing.
+- The authorization policy for roles and features has been renamed from `POLICY:` to `RolesAndFeatures:`, and other policies have been slightly modified.
+- Updated some of the BEFFE APIs that call through to the backend APIs, so that they exclude any `Authorization` header (if appended to the request by the BEFFE). This is to prevent getting an accidental `HTTP - 401` for an expired token, when calling certain APIs like `RefreshToken` or `Authenticate` or `GetAllFeatureFlags` which we cannot risk being called with an expired token (inside the AuthN cookies). These API calls cannot risk being rejected by the backend API, for an expired token. All other calls through the reverse Proxy will automatically include the `Authorization` header that includes the JWT token, if the request is authenticated at that time. This is very intentional to trigger the JS App to refresh the expired token, as designed.
+- Changed the SaaStack branding.
 
 ### Breaking Changes
-- (Potentially breaking) by default, ASPNET does not validate JWT tokens, or any other forms of proof (i.e. HMAC, APiKeys, Auth Cookies, etc.) unless the minimal API endpoint is marked with `RequireAuthorization()`. This change adds a `RequireAuthorization("Anonymous")` to all anonymous endpoints, so that we can validate any proof passed to anonymous endpoints to ensure it is valid proof. Invalid proofs (e.g. expired JWT tokens), will now be validated and rejected. This will only affect clients that send invalid proofs (like a JWT token) to anonymous endpoints.
+- (Potentially breaking) By default in ASPNET, when an endpoint is not marked with a `RequireAuthorization("apolicy")` ASPNET does not validate any authorization proof in the request (i.e. HMAC, APiKeys, Auth Cookies, etc.) This is an unexpected problem, that we haven't encountered before getting the JS App working properly.
+  - Added a `RequireAuthorization("Anonymous")` policy to all anonymous endpoints, and implemented to policy to authenticate any proof passed in the request, if present.
+  - Invalid proofs (e.g. expired JWT tokens) will now be validated and rejected on all Anonymous endpoints.
+  - This will only affect clients that send invalid proofs (like an expired JWT token) to an anonymous endpoints.
+  - This is exactly the scenario we want to occur for the JS App to implement the intended auto-refresh mechanism.
 
 ### Fixed
 - Locale and Timezone were persisted in the `EndUserProfile` value object, but this data was incorrectly mapped to the `Registered` event in the `EndUsersRoot`,and therefore the value read by the `UserProfile` application defaulted to `en-US` and `UTC`.
 - When handling BasicAuth, or ApiKeyAuth, the extraction of username and password from the `Authorization` header was not correctly handling the case where the colon delimiter was not provided.
 - When handling ApiKeyAuth, the extraction of the API Key from the `Authorization` header was not correctly handling the case where the the apikey was not in a valid format of an APIKey.
 - ApiKeys are now generated without the colon character.
+- BEFFE recorder APIs now handle empty property array correctly
+- FlagsmithHttpServiceClient now handles failed requests for flags (remotely) properly now.
 
 ---
 

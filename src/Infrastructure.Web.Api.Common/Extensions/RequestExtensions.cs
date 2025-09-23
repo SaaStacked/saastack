@@ -99,6 +99,16 @@ public static class RequestExtensions
     }
 
     /// <summary>
+    ///     Removes all authorization proofs from the specified <see cref="message" />
+    /// </summary>
+    public static void RemoveAuthorization(this HttpRequestMessage message)
+    {
+        message.Headers.Remove(HttpConstants.Headers.Authorization);
+        message.Headers.Remove(HttpConstants.Headers.HMACSignature);
+        message.Headers.Remove(HttpConstants.Headers.PrivateInterHostSignature);
+    }
+
+    /// <summary>
     ///     Sets the HMAC signature header on the specified <see cref="message" /> by signing the body of the specified
     ///     <see cref="request" />
     /// </summary>

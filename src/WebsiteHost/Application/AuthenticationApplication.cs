@@ -31,7 +31,7 @@ public class AuthenticationApplication : IAuthenticationApplication
                 {
                     Username = username!,
                     Password = password!
-                }, null, cancellationToken);
+                }, req => req.RemoveAuthorization(), cancellationToken);
                 break;
 
             default:
@@ -39,7 +39,7 @@ public class AuthenticationApplication : IAuthenticationApplication
                 {
                     AuthCode = authCode!,
                     Provider = provider
-                }, null, cancellationToken);
+                }, req => req.RemoveAuthorization(), cancellationToken);
                 break;
         }
 
@@ -70,7 +70,7 @@ public class AuthenticationApplication : IAuthenticationApplication
         var refreshed = await _serviceClient.PostAsync(caller, new RefreshTokenRequest
         {
             RefreshToken = refreshToken
-        }, null, cancellationToken);
+        }, req => req.RemoveAuthorization(), cancellationToken);
         if (refreshed.IsFailure)
         {
             return refreshed.Error.ToError();
