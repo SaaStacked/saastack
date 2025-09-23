@@ -7,8 +7,12 @@
 /*noinspection CssInvalidAtRule*/
 @theme {
     --font-sans: 'Noto Sans', system-ui;
-    --color-primary: #0C6291;
-    --color-secondary: #08c1be;
+    --color-primary: var(--color-blue-600);
+    --color-primary-light: var(--color-blue-500);
+    --color-primary-dark: var(--color-blue-700);
+    --color-secondary: var(--color-slate-600);
+    --color-secondary-light: var(--color-slate-500);
+    --color-secondary-dark: var(--color-slate-700);
     --color-accent: var(--color-emerald-500);
     --color-accent-light: var(--color-emerald-200);
     --color-accent-dark: var(--color-emerald-800);
@@ -18,24 +22,20 @@
 @variant dark (&:is(.dark *));
 
 @layer base {
-    /* Default dark theme */
+    /* Default light theme */
     :root {
-        color-scheme: dark;
-        background-color: var(--color-gray-900);
-        color: var(--color-gray-50);
-    }
-
-    .light {
         color-scheme: light;
         background-color: var(--color-gray-200);
         color: var(--color-gray-900);
     }
 
-    a {
-        @apply text-primary hover:text-primary/80 visited:text-purple-400 underline;
+    .dark {
+        color-scheme: dark;
+        background-color: var(--color-gray-900);
+        color: var(--color-gray-50);
     }
 
-    .card {
-        @apply bg-white dark:bg-gray-800 rounded-lg transition-all;
+    a {
+        @apply text-primary hover:text-primary/80 visited:text-purple-400 dark:visited:text-purple-300 underline;
     }
 }

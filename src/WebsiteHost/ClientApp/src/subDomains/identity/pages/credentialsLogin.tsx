@@ -2,9 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
-import Card from '../../../framework/components/form/Card.tsx';
 import Form from '../../../framework/components/form/Form.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
+import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import { CredentialsLoginAction, LoginErrors } from '../actions/credentialsLogin.ts';
 
@@ -14,8 +14,7 @@ export const CredentialsLoginPage: React.FC = () => {
   const login = CredentialsLoginAction();
 
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16">{translate('pages.identity.credentials_login.title')}</h1>
+    <FormPage title={translate('pages.identity.credentials_login.title')}>
       <Form
         id="credentials_login"
         action={login}
@@ -60,6 +59,6 @@ export const CredentialsLoginPage: React.FC = () => {
           </Link>
         </p>
       </div>
-    </Card>
+    </FormPage>
   );
 };

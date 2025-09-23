@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { ExpectedErrorDetails } from '../../../framework/actions/ApiErrorState.ts';
 import Alert from '../../../framework/components/alert/Alert.tsx';
 import Button from '../../../framework/components/button/Button.tsx';
-import Card from '../../../framework/components/form/Card.tsx';
+import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Loader from '../../../framework/components/loader/Loader.tsx';
 import UnhandledError from '../../../framework/components/unhandledError/UnhandledError.tsx';
 import { ConfirmRegisterErrors, CredentialsRegisterConfirmAction } from '../actions/credentialsRegisterConfirm.ts';
@@ -82,11 +82,7 @@ interface HandlerProps {
 
 function HandleConfirming({ translate, isExecuting, token }: HandlerProps) {
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16">
-        {translate('pages.identity.credentials_register_confirm.states.confirming.title')}
-      </h1>
-
+    <FormPage title={translate('pages.identity.credentials_register_confirm.states.confirming.title')}>
       {!token ? (
         <>
           <Alert
@@ -104,16 +100,13 @@ function HandleConfirming({ translate, isExecuting, token }: HandlerProps) {
           message={translate('pages.identity.credentials_register_confirm.states.confirming.message')}
         />
       ) : null}
-    </Card>
+    </FormPage>
   );
 }
 
 function HandleSuccess({ translate }: HandlerProps) {
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16">
-        {translate('pages.identity.credentials_register_confirm.states.success.title')}
-      </h1>
+    <FormPage title={translate('pages.identity.credentials_register_confirm.states.success.title')}>
       <div className="text-center mb-8">
         <p className="text-lg mb-4">
           {translate('pages.identity.credentials_register_confirm.states.success.message')}
@@ -125,7 +118,7 @@ function HandleSuccess({ translate }: HandlerProps) {
           {translate('pages.identity.credentials_register_confirm.links.home')}
         </Link>
       </div>
-    </Card>
+    </FormPage>
   );
 }
 
@@ -134,10 +127,7 @@ function HandleErrors({ translate, lastExpectedError, lastUnexpectedError, isExe
   const isTokenUsed = lastExpectedError!.code === ConfirmRegisterErrors.token_used;
 
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16 text-red-600">
-        {translate('pages.identity.credentials_register_confirm.states.failed.title')}
-      </h1>
+    <FormPage title={translate('pages.identity.credentials_register_confirm.states.failed.title')}>
       <div className="text-center mb-8">
         {isTokenExpired && (
           <>
@@ -168,7 +158,7 @@ function HandleErrors({ translate, lastExpectedError, lastUnexpectedError, isExe
           {translate('pages.identity.credentials_register_confirm.links.home')}
         </Link>
       </div>
-    </Card>
+    </FormPage>
   );
 }
 

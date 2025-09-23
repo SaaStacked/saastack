@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+
 type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
@@ -13,7 +14,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem('theme') as Theme;
-    return stored || 'dark'; // Default to dark
+    return stored || 'light'; // Default to 'light'
   });
 
   useEffect(() => {

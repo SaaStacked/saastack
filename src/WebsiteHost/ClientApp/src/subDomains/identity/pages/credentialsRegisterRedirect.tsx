@@ -1,16 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Card from '../../../framework/components/form/Card.tsx';
+import FormPage from '../../../framework/components/form/FormPage.tsx';
 
 
 export const CredentialsRegisterRedirect: React.FC = () => {
   const { t: translate } = useTranslation();
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16">
-        {translate('pages.identity.credentials_register_redirect.title')}
-      </h1>
+    <FormPage title={translate('pages.identity.credentials_register_redirect.title')}>
       <h2 className="text-2xl font-bold text-center mb-8">
         {translate('pages.identity.credentials_register_redirect.confirmation_message.title')}
       </h2>
@@ -39,6 +36,6 @@ export const CredentialsRegisterRedirect: React.FC = () => {
           {translate('pages.identity.credentials_register_redirect.links.home')}
         </Link>
       </div>
-    </Card>
+    </FormPage>
   );
 };

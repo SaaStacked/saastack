@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
-
+// Creates a footer at the bottom of the layout
+// Defines a set of links and tools
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const { t: translate } = useTranslation();

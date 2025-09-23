@@ -6,7 +6,7 @@ import { UserProfileForCaller } from '../../api/apiHost1';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 
 
-// Creates a main navigation bar for the website
+// Creates a main navigation bar for the website, for authenticated users
 // Displays a logo, navigation links
 // Displays a user menu with a logout button
 export const MainNavigation: React.FC = () => {
@@ -25,7 +25,7 @@ export const MainNavigation: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-white shadow-sm border-b border-b-accent">
+    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-b-accent">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex justify-between items-center h-16">
           <MobileHamburgerMenu
@@ -118,14 +118,16 @@ function MobileDropdownMenu({ isMobileMenuOpen, setIsMobileMenuOpen, navItems, i
   return (
     <>
       {isMobileMenuOpen && (
-        <div className="md:hidden pb-4 border-t">
+        <div className="md:hidden pb-4 border-t border-gray-200 dark:border-gray-600">
           <div className="flex flex-col space-y-2 pt-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive(item.path) ? 'text-primary bg-blue-50' : 'text-gray-600 hover:text-gray-900'
+                  isActive(item.path)
+                    ? 'text-primary dark:text-primary-light bg-blue-50 dark:bg-blue-900/20'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -144,11 +146,15 @@ function BrandText({ translate }: NavigationProps) {
     <>
       <Link to="/" className="hidden md:flex items-center space-x-2 no-underline hover:no-underline">
         <img src="/images/logo.png" alt={translate('components.layout.main_navigation.logo')} className="w-8 h-8" />
-        <span className="font-bold text-xl text-gray-900">{translate('components.layout.main_navigation.logo')}</span>
+        <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
+          {translate('components.layout.main_navigation.logo')}
+        </span>
       </Link>
 
       <Link to="/" className="md:hidden no-underline hover:no-underline">
-        <span className="font-bold text-xl text-gray-900">{translate('components.layout.main_navigation.logo')}</span>
+        <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
+          {translate('components.layout.main_navigation.logo')}
+        </span>
       </Link>
     </>
   );
@@ -163,7 +169,9 @@ function DesktopNavLinks({ navItems, isActive }: NavigationProps) {
             key={item.path}
             to={item.path}
             className={`px-3 py-2 text-sm font-medium transition-colors ${
-              isActive(item.path) ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-gray-900'
+              isActive(item.path)
+                ? 'text-primary dark:text-primary-light border-b-2 border-primary dark:border-primary-light'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             {item.label}
@@ -189,7 +197,7 @@ function UserMenu({
       <div className="relative">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         >
           <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
             <span className="text-md font-medium text-white">{profile?.name.firstName?.charAt(0) || '?'}</span>
@@ -197,18 +205,18 @@ function UserMenu({
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-50">
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-600 z-50">
             <div className="py-1">
               <Link
                 to="/profile"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
                 {translate('components.layout.main_navigation.links.profile')}
               </Link>
               <Link
                 to="/organizations"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
                 {translate('components.layout.main_navigation.links.organizations')}
@@ -218,7 +226,7 @@ function UserMenu({
                   setIsDropdownOpen(false);
                   logout();
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {translate('components.layout.main_navigation.links.logout')}
               </button>

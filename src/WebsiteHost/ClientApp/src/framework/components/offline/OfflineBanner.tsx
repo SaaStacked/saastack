@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOfflineService } from '../../providers/OfflineServiceContext.tsx';
 
-
 export const animationDurationInMs = 2000;
 
-// Displays a banner when the browser is offline
+// Creates a full screen banner when the browser is offline
 // Message appears automatically at the top of the page, and disappears automatically
 export function OfflineBanner() {
   const { t: translate } = useTranslation();

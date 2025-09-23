@@ -2,10 +2,10 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
-import Card from '../../../framework/components/form/Card.tsx';
 import Form from '../../../framework/components/form/Form.tsx';
 import FormCheckbox from '../../../framework/components/form/formCheckbox/FormCheckbox.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
+import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import { getBrowserCountry, getBrowserLocale, getBrowserTimezone } from '../../../framework/utils/browser.ts';
 import { CredentialsRegisterAction } from '../actions/credentialsRegister.ts';
@@ -15,8 +15,7 @@ export const CredentialsRegisterPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const register = CredentialsRegisterAction();
   return (
-    <Card>
-      <h1 className="text-4xl font-bold text-center mb-16">{translate('pages.identity.credentials_register.title')}</h1>
+    <FormPage title={translate('pages.identity.credentials_register.title')}>
       <Form
         id="credentials_register"
         action={register}
@@ -119,6 +118,6 @@ export const CredentialsRegisterPage: React.FC = () => {
           </Link>
         </p>
       </div>
-    </Card>
+    </FormPage>
   );
 };

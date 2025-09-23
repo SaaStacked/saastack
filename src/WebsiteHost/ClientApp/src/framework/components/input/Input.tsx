@@ -55,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      'w-full border-0 rounded-sm bg-transparent outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400';
+      'w-full border-0 rounded-sm bg-gray-200 dark:bg-gray-700 outline-none text-sm text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-500 dark:placeholder-gray-400';
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'p-0 text-sm',
@@ -76,7 +76,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           >
             {labelText && (
               <label
-                className={`block text-xs font-medium text-gray-700 mb-1`}
+                className={`block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1`}
                 data-testid={`${componentId}_label`}
                 htmlFor={componentId}
                 aria-labelledby={componentId}

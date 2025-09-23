@@ -20,7 +20,7 @@ import { CredentialsRegisterConfirm } from './subDomains/identity/pages/credenti
 import { CredentialsRegisterRedirect } from './subDomains/identity/pages/credentialsRegisterRedirect.tsx';
 import { SsoMicrosoftPage } from './subDomains/identity/pages/ssoMicrosoft.tsx';
 import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManage.tsx';
-import { ProfileManagePage } from './subDomains/userProfiles/pages/ProfileManage.tsx';
+import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
 
 
 const AuthenticatedOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) =>
@@ -51,7 +51,7 @@ const App: React.FC = () => {
           <Route element={<AuthenticatedOnlyRoutes isAuthenticated={isAuthenticated} />}>
             <Route path="/cars/search" element={<CarsSearchPage />} />
             <Route path="/bookings/reserve" element={<BookingsReservePage />} />
-            <Route path="/profile" element={<ProfileManagePage />} />
+            <Route path="/profile" element={<ProfilesManagePage />} />
             <Route path="/organizations" element={<OrganizationsManagePage />} />
           </Route>
 

@@ -3,13 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import { createComponentId } from '../Components.ts';
 
-
 interface UnhandledErrorProps {
   id?: string;
   error?: AxiosError;
 }
 
-// Creates an inline error message to display an unexpected error, and its details
+// Creates an inline error message to display an unexpected error, and its technical details
 export default function UnhandledError({ id, error }: UnhandledErrorProps) {
   if (!error) {
     return null;

@@ -14,9 +14,9 @@
         "logo": "SaaStack",
         "links": {
           "logout": "Logout",
-          "profile": "Edit Profile",
-          "organizations": "Organizations",
-          "search_cars": "Find a Car",
+          "profile": "Change Profile",
+          "organizations": "My Organizations",
+          "search_cars": "Search Cars",
           "reserve_car": "Reserve Car"
         }
       },
@@ -217,6 +217,26 @@
       },
       "sso_microsoft": {
         "title": "Sign In With Microsoft"
+      }
+    },
+    "bookings": {
+      "reserve": {
+        "title": "Reserve a Car"
+      }
+    },
+    "cars": {
+      "search": {
+        "title": "Search Cars"
+      }
+    },
+    "organizations": {
+      "manage": {
+        "title": "Your Organizations"
+      }
+    },
+    "profiles": {
+      "manage": {
+        "title": "Your Profile"
       }
     }
   }
