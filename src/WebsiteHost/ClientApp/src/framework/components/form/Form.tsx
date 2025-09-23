@@ -6,7 +6,7 @@ import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import { createComponentId } from '../Components.ts';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
-import { ActionFormContext, ActionFormRequiredFieldsContext, ActionFromValidationContext } from './Contexts.tsx';
+import { ActionFormContext, ActionFormRequiredFieldsContext, ActionFormValidationContext } from './FormContexts.tsx';
 
 
 interface FormProps<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any> {
@@ -59,7 +59,7 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   });
   formContext.isSubmitted = validation.formState.isSubmitted;
   const requiredFormFields = validationSchema ? getRequiredFields(validationSchema) : [];
-  const baseClasses = 'bg-white rounded-lg transition-all';
+  const baseClasses = 'bg-white dark:bg-gray-800 p-2 rounded-lg transition-all';
   const classes = [baseClasses, className].filter(Boolean).join(' ');
   const isFormDisabled =
     disabled ||
@@ -74,7 +74,7 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   return (
     <ActionFormContext.Provider value={action}>
       <ActionFormRequiredFieldsContext.Provider value={requiredFormFields}>
-        <ActionFromValidationContext.Provider value={validatesWhen}>
+        <ActionFormValidationContext.Provider value={validatesWhen}>
           <FormProvider {...validation}>
             <div className="container w-4/5 m:w-11/12 mx-auto">
               <div className="flex items-center">
@@ -108,7 +108,7 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
               </div>
             </div>
           </FormProvider>
-        </ActionFromValidationContext.Provider>
+        </ActionFormValidationContext.Provider>
       </ActionFormRequiredFieldsContext.Provider>
     </ActionFormContext.Provider>
   );

@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-import { DefaultOfflineService } from './DefaultOfflineService';
-import { IOfflineService } from './IOfflineService';
+import { DefaultOfflineService } from '../services/DefaultOfflineService.ts';
+import { IOfflineService } from '../services/IOfflineService.ts';
 
 
 interface OfflineServiceProps {

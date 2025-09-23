@@ -3,9 +3,10 @@ import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 import i18n from '../i18n';
+import { OfflineServiceProvider } from '../providers/OfflineServiceContext.tsx';
 import { IOfflineService } from '../services/IOfflineService.ts';
-import { OfflineServiceProvider } from '../services/OfflineServiceContext.tsx';
 import { CurrentUserProvider } from './CurrentUserContext';
+import { ThemeProvider } from './ThemeContext.tsx';
 
 
 interface AppProvidersProps {
@@ -37,13 +38,15 @@ export function AppProviders({
     });
 
   const content = (
-    <I18nextProvider i18n={i18n}>
-      <QueryClientProvider client={queryClient}>
-        <OfflineServiceProvider offlineService={offlineService}>
-          <CurrentUserProvider>{children}</CurrentUserProvider>
-        </OfflineServiceProvider>
-      </QueryClientProvider>
-    </I18nextProvider>
+    <ThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <QueryClientProvider client={queryClient}>
+          <OfflineServiceProvider offlineService={offlineService}>
+            <CurrentUserProvider>{children}</CurrentUserProvider>
+          </OfflineServiceProvider>
+        </QueryClientProvider>
+      </I18nextProvider>
+    </ThemeProvider>
   );
 
   if (isTestingOnly) {

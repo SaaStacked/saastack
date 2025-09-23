@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react';
 import '../src/main.css';
+import * as React from 'react';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { handlers } from '../src/framework/testing/Storybook/msw-handlers';
 import { StorybookProviders } from '../src/framework/testing/Storybook/StorybookProviders';
@@ -21,15 +22,11 @@ const preview: Preview = {
       values: [
         {
           name: 'light',
-          value: '#ffffff'
+          value: '#E5E7EB' /* gray-200 */
         },
         {
           name: 'dark',
-          value: '#333333'
-        },
-        {
-          name: 'gray',
-          value: '#f8fafc'
+          value: '#101828' /* gray-900 */
         }
       ]
     },
@@ -37,12 +34,40 @@ const preview: Preview = {
       handlers
     }
   },
+  globalTypes: {
+    theme: {
+      description: 'Global theme for components',
+      defaultValue: 'dark',
+      toolbar: {
+        title: 'Theme',
+        icon: 'paintbrush',
+        items: [
+          { value: 'light', title: 'Light', icon: 'sun' },
+          { value: 'dark', title: 'Dark', icon: 'moon' }
+        ],
+        dynamicTitle: true
+      }
+    }
+  },
   decorators: [
-    (Story) => (
-      <StorybookProviders>
-        <Story />
-      </StorybookProviders>
-    )
+    (Story, context) => {
+      const theme = context.globals.theme || 'dark';
+
+      // Apply theme to document root for proper CSS cascade
+      React.useEffect(() => {
+        const root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(theme);
+      }, [theme]);
+
+      return (
+        <div className={theme}>
+          <StorybookProviders>
+            <Story />
+          </StorybookProviders>
+        </div>
+      );
+    }
   ],
   loaders: [mswLoader]
 };

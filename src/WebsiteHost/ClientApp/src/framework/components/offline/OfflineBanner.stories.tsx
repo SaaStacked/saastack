@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useCallback, useMemo, useState } from 'react';
+import { OfflineServiceContext } from '../../providers/OfflineServiceContext.tsx';
 import { IOfflineService } from '../../services/IOfflineService.ts';
-import { OfflineServiceContext } from '../../services/OfflineServiceContext.tsx';
 import { OfflineBanner } from './OfflineBanner';
 
 
@@ -43,7 +43,7 @@ export const GoOfflineOnline: Story = {
 
     return (
       <OfflineServiceContext.Provider value={{ offlineService: mockService }}>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
           <OfflineBanner />
           <div className="p-8">
             <button

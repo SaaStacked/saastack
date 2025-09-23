@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { createComponentId } from '../Components.ts';
 import Icon, { IconSymbol, TailwindColor } from '../icon/Icon';
 
+
 interface AlertProps {
   id?: string;
   children?: ReactNode;
@@ -13,10 +14,10 @@ interface AlertProps {
 type AlertType = 'info' | 'error' | 'warning' | 'success';
 
 const BorderColors = {
-  error: 'border-red-600',
-  success: 'border-green-600',
-  warning: 'border-yellow-600',
-  info: 'border-blue-600'
+  error: 'border-red-600 dark:border-red-400',
+  success: 'border-green-600 dark:border-green-400',
+  warning: 'border-yellow-600 dark:border-yellow-400',
+  info: 'border-blue-600 dark:border-blue-400'
 } as const;
 
 const Icons = {
@@ -34,17 +35,17 @@ const IconColors = {
 } as const;
 
 const BackgroundColors = {
-  error: 'bg-red-100',
-  success: 'bg-green-100',
-  warning: 'bg-yellow-100',
-  info: 'bg-blue-100'
+  error: 'bg-red-100 dark:bg-red-900/20',
+  success: 'bg-green-100 dark:bg-green-900/20',
+  warning: 'bg-yellow-100 dark:bg-yellow-900/20',
+  info: 'bg-blue-100 dark:bg-blue-900/20'
 } as const;
 
 const TextColors = {
-  error: 'red-800',
-  success: 'base',
-  warning: 'base',
-  info: 'base'
+  error: 'text-red-800 dark:text-red-200',
+  success: 'text-green-800 dark:text-green-200',
+  warning: 'text-yellow-800 dark:text-yellow-200',
+  info: 'text-blue-800 dark:text-blue-200'
 } as const;
 
 const TitleColors = {

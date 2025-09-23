@@ -7,7 +7,7 @@ import { useFormValidation } from '../FormValidation.ts';
 interface FormCheckboxProps {
   className?: string;
   id: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   name: string;
   label?: string;
   dependencies?: string[];

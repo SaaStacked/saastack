@@ -1,8 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
+import { OfflineServiceContext } from '../../providers/OfflineServiceContext.tsx';
 import { IOfflineService } from '../../services/IOfflineService.ts';
-import { OfflineServiceContext } from '../../services/OfflineServiceContext.tsx';
 import { animationDurationInMs, OfflineBanner } from './OfflineBanner';
 
 

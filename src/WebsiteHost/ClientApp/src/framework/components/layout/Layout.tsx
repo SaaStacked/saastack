@@ -4,6 +4,7 @@ import { useCurrentUser } from '../../providers/CurrentUserContext';
 import { Footer } from './Footer.tsx';
 import { MainNavigation } from './MainNavigation';
 
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -29,7 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const shouldShowNavigation = isAuthenticated && !EXCLUDED_ROUTES.includes(location.pathname);
 
   return (
-    <div className="min-h-screen font-sans bg-gray-200 flex flex-col">
+    <div className="min-h-screen font-sans bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col">
       {shouldShowNavigation && <MainNavigation />}
       <main className={`container mx-auto px-4 py-8 max-w-4xl ${shouldShowNavigation ? 'pt-4' : ''}`}>{children}</main>
       <Footer />

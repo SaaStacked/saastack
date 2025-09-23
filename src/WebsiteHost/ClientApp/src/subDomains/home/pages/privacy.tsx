@@ -6,7 +6,7 @@ export function PrivacyPage() {
   const { t: translate } = useTranslation();
 
   return (
-    <article className="prose">
+    <article className="prose dark:prose-invert max-w-4xl mx-auto">
       <div>
         <h1>{translate('pages.privacy.title')}</h1>
         <p>Last updated: January 1, 2024</p>

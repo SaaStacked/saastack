@@ -16,10 +16,23 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <title>SaaStack</title>
     <script type="text/javascript">
+        // Theme initialization - prevent FOUC
+        (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.classList.remove('light', 'dark');
+            document.documentElement.classList.add(theme);
+            if (theme === 'dark') {
+                document.documentElement.style.colorScheme = 'dark';
+            } else {
+                document.documentElement.style.colorScheme = 'light';
+            }
+        })();
+
         window.isTestingOnly = @(Model.IsTestingOnly
                                    ? "true"
                                    : "false");
         window.isHostedOn = "@(Model.IsHostedOn)";
+
     </script>
     <link rel="stylesheet" href="@(Model.JsAppCssPath)" />
     @* Only required for serving JS and CSS from Vite Dev Server *@

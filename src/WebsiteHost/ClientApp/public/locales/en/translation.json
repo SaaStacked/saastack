@@ -83,12 +83,12 @@
           "fields": {
             "username": {
               "label": "Email Address",
-              "placeholder": "Enter your email address",
+              "placeholder": "Your email address",
               "validation": "Must be a valid email address"
             },
             "password": {
               "label": "Password",
-              "placeholder": "Enter a strong password",
+              "placeholder": "Your password",
               "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
             }
           },
@@ -116,28 +116,28 @@
           "fields": {
             "first_name": {
               "label": "First Name",
-              "placeholder": "Enter your first name",
+              "placeholder": "Your first name",
               "validation": "Must be a valid name"
             },
             "last_name": {
               "label": "Last Name",
-              "placeholder": "Enter your last name",
+              "placeholder": "Your last name",
               "validation": "Must be a valid name"
             },
             "email_address": {
               "label": "Email Address",
-              "placeholder": "Enter your email address",
+              "placeholder": "Your email address",
               "validation": "Must be a valid email address"
             },
             "password": {
               "label": "Password",
-              "placeholder": "Enter a strong password",
+              "placeholder": "A strong password",
               "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
             },
             "confirm_password": {
               "label": "Confirm Password",
-              "placeholder": "Enter your password again",
-              "validation": "Must be same as the password above"
+              "placeholder": "Your password again",
+              "validation": "Must be exactly the same as the password above"
             },
             "terms": {
               "label": "By creating this account, you are agreeing to the <1>{{terms}}</1>, and <2>{{privacy}}</2> of SaaStack",

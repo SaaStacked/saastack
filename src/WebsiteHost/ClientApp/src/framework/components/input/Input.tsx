@@ -55,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      'w-full border-0 rounded-sm bg-transparent outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed';
+      'w-full border-0 rounded-sm bg-transparent outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400';
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'p-0 text-sm',

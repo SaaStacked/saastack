@@ -8,14 +8,34 @@
 @theme {
     --font-sans: 'Noto Sans', system-ui;
     --color-primary: #0C6291;
-    --color-secondary: #E1523D;
+    --color-secondary: #08c1be;
     --color-accent: var(--color-emerald-500);
     --color-accent-light: var(--color-emerald-200);
     --color-accent-dark: var(--color-emerald-800);
 }
 
+/*noinspection CssInvalidAtRule*/
+@variant dark (&:is(.dark *));
+
 @layer base {
+    /* Default dark theme */
+    :root {
+        color-scheme: dark;
+        background-color: var(--color-gray-900);
+        color: var(--color-gray-50);
+    }
+
+    .light {
+        color-scheme: light;
+        background-color: var(--color-gray-200);
+        color: var(--color-gray-900);
+    }
+
     a {
         @apply text-primary hover:text-primary/80 visited:text-purple-400 underline;
+    }
+
+    .card {
+        @apply bg-white dark:bg-gray-800 rounded-lg transition-all;
     }
 }

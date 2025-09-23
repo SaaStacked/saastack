@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOfflineService } from '../../services/OfflineServiceContext.tsx';
+import { useOfflineService } from '../../providers/OfflineServiceContext.tsx';
 
 
 export const animationDurationInMs = 2000;
@@ -43,15 +43,17 @@ export function OfflineBanner() {
   }
 
   const baseClasses =
-    'relative top-0 left-0 right-0 z-50 bg-red-500 text-white p-1 rounded-b-xl transform transition-transform duration-1000 ease-in-out';
+    'relative top-0 left-0 right-0 z-50 bg-red-500 dark:bg-red-800 p-1 rounded-b-xl transform transition-transform duration-1000 ease-in-out';
   const translateClasses = isVisible ? 'translate-y-0' : '-translate-y-full';
   const classes = [baseClasses, translateClasses].filter(Boolean).join(' ');
 
   return (
     <div className={classes}>
       <div className="container mx-auto max-w-4xl text-sm text-right">
-        <span>{translate('components.offline.error')}</span>
-        <span className="hidden sm:inline">:&nbsp;{translate('components.offline.reason')}&nbsp;&nbsp;</span>
+        <span className="text-gray-200 dark:text-gray-300">{translate('components.offline.error')}</span>
+        <span className="hidden sm:inline text-gray-200 dark:text-gray-300">
+          :&nbsp;{translate('components.offline.reason')}&nbsp;&nbsp;
+        </span>
       </div>
     </div>
   );

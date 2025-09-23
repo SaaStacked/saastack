@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Button from '../../button/Button.tsx';
-import { ActionFormRequiredFieldsContext, ActionFromValidationContext } from '../Contexts';
+import { ActionFormRequiredFieldsContext, ActionFormValidationContext } from '../FormContexts.tsx';
 import FormInput from './FormInput';
 
 
@@ -55,11 +55,11 @@ describe('FormInput', () => {
       return (
         <MemoryRouter>
           <ActionFormRequiredFieldsContext.Provider value={requiredFields}>
-            <ActionFromValidationContext.Provider value={validatesWhen}>
+            <ActionFormValidationContext.Provider value={validatesWhen}>
               <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(() => {})}>{children}</form>
               </FormProvider>
-            </ActionFromValidationContext.Provider>
+            </ActionFormValidationContext.Provider>
           </ActionFormRequiredFieldsContext.Provider>
         </MemoryRouter>
       );
@@ -283,11 +283,11 @@ describe('FormInput', () => {
 
       return (
         <ActionFormRequiredFieldsContext.Provider value={[]}>
-          <ActionFromValidationContext.Provider value="onChange">
+          <ActionFormValidationContext.Provider value="onChange">
             <FormProvider {...methods}>
               <form>{children}</form>
             </FormProvider>
-          </ActionFromValidationContext.Provider>
+          </ActionFormValidationContext.Provider>
         </ActionFormRequiredFieldsContext.Provider>
       );
     };

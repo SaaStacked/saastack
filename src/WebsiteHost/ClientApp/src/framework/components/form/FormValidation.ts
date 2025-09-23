@@ -1,8 +1,37 @@
+;
+
 // A hook that begins validation based on the ancestor Form's validatesWhen.
 // It keeps track of whether the field has been validated, and whether it has an error.
 import { useContext, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ActionFromValidationContext } from './Contexts.tsx';
+import { ActionFormValidationContext } from './FormContexts.tsx';
+
+
+;
+
+
+
+
+
+
+
+
+;
+
+
+
+
+
+
+
+
+;
+
+
+
+
+
+
 
 // Allows components to communicate with an ancestor Form via useFormContext() and useContext(), to fetch the validation state.
 // Enables controls to keep track of its own validation state, based on the ancestor Form's validation state.
@@ -16,7 +45,7 @@ export function useFormValidation(fieldName: string, errorMessage?: string) {
   const [hasValidationBegun, setHasValidationBegun] = useState(false);
   const hasValidationError = getNestedField(errors, fieldName) !== undefined;
   const isFieldTouched = getNestedField(touchedFields, fieldName);
-  const validatesWhen = useContext(ActionFromValidationContext);
+  const validatesWhen = useContext(ActionFormValidationContext);
 
   useEffect(() => {
     if (!hasValidationBegun) {

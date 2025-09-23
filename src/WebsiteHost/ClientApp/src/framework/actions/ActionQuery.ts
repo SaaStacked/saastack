@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
-import { useOfflineService } from '../services/OfflineServiceContext.tsx';
 import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
+
 
 export interface ActionQueryConfiguration<
   TRequestData extends ActionRequestData,

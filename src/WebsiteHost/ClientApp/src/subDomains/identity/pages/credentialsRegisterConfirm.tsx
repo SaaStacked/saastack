@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import { ExpectedErrorDetails } from '../../../framework/actions/ApiErrorState.ts';
 import Alert from '../../../framework/components/alert/Alert.tsx';
 import Button from '../../../framework/components/button/Button.tsx';
+import Card from '../../../framework/components/form/Card.tsx';
 import Loader from '../../../framework/components/loader/Loader.tsx';
 import UnhandledError from '../../../framework/components/unhandledError/UnhandledError.tsx';
 import { ConfirmRegisterErrors, CredentialsRegisterConfirmAction } from '../actions/credentialsRegisterConfirm.ts';
@@ -81,54 +82,50 @@ interface HandlerProps {
 
 function HandleConfirming({ translate, isExecuting, token }: HandlerProps) {
   return (
-    <div className="container min-h-screen flex items-center justify-center">
-      <div className="rounded-2xl shadow-2xl p-8 bg-white lg:w-3/5 md:w-3/5 w-11/12">
-        <h1 className="text-4xl font-bold text-center mb-16">
-          {translate('pages.identity.credentials_register_confirm.states.confirming.title')}
-        </h1>
+    <Card>
+      <h1 className="text-4xl font-bold text-center mb-16">
+        {translate('pages.identity.credentials_register_confirm.states.confirming.title')}
+      </h1>
 
-        {!token ? (
-          <>
-            <Alert
-              id="error_token_missing"
-              type="error"
-              message={translate('pages.identity.credentials_register_confirm.states.confirming.errors.token_missing')}
-            ></Alert>
-            <Link to="/" className="btn btn-secondary">
-              {translate('pages.identity.credentials_register_confirm.links.home')}
-            </Link>
-          </>
-        ) : isExecuting ? (
-          <Loader
-            id="confirming"
-            message={translate('pages.identity.credentials_register_confirm.states.confirming.message')}
-          />
-        ) : null}
-      </div>
-    </div>
+      {!token ? (
+        <>
+          <Alert
+            id="error_token_missing"
+            type="error"
+            message={translate('pages.identity.credentials_register_confirm.states.confirming.errors.token_missing')}
+          ></Alert>
+          <Link to="/" className="btn btn-secondary">
+            {translate('pages.identity.credentials_register_confirm.links.home')}
+          </Link>
+        </>
+      ) : isExecuting ? (
+        <Loader
+          id="confirming"
+          message={translate('pages.identity.credentials_register_confirm.states.confirming.message')}
+        />
+      ) : null}
+    </Card>
   );
 }
 
 function HandleSuccess({ translate }: HandlerProps) {
   return (
-    <div className="container min-h-screen flex items-center justify-center">
-      <div className="rounded-2xl shadow-2xl p-8 bg-white lg:w-3/5 md:w-3/5 w-11/12">
-        <h1 className="text-4xl font-bold text-center mb-16">
-          {translate('pages.identity.credentials_register_confirm.states.success.title')}
-        </h1>
-        <div className="text-center mb-8">
-          <p className="text-lg mb-4">
-            {translate('pages.identity.credentials_register_confirm.states.success.message')}
-          </p>
-          <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
-            {translate('pages.identity.credentials_register_confirm.links.login')}
-          </Link>
-          <Link to="/" className="btn btn-secondary">
-            {translate('pages.identity.credentials_register_confirm.links.home')}
-          </Link>
-        </div>
+    <Card>
+      <h1 className="text-4xl font-bold text-center mb-16">
+        {translate('pages.identity.credentials_register_confirm.states.success.title')}
+      </h1>
+      <div className="text-center mb-8">
+        <p className="text-lg mb-4">
+          {translate('pages.identity.credentials_register_confirm.states.success.message')}
+        </p>
+        <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
+          {translate('pages.identity.credentials_register_confirm.links.login')}
+        </Link>
+        <Link to="/" className="btn btn-secondary">
+          {translate('pages.identity.credentials_register_confirm.links.home')}
+        </Link>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -137,43 +134,41 @@ function HandleErrors({ translate, lastExpectedError, lastUnexpectedError, isExe
   const isTokenUsed = lastExpectedError!.code === ConfirmRegisterErrors.token_used;
 
   return (
-    <div className="container min-h-screen flex items-center justify-center">
-      <div className="rounded-2xl shadow-2xl p-8 bg-white lg:w-3/5 md:w-3/5 w-11/12">
-        <h1 className="text-4xl font-bold text-center mb-16 text-red-600">
-          {translate('pages.identity.credentials_register_confirm.states.failed.title')}
-        </h1>
-        <div className="text-center mb-8">
-          {isTokenExpired && (
-            <>
-              <Alert id="error_token_expired" type="error">
-                {translate('pages.identity.credentials_register_confirm.states.failed.errors.token_expired')}
-                <HandleResend
-                  translate={translate}
-                  lastExpectedError={lastExpectedError}
-                  lastUnexpectedError={lastUnexpectedError}
-                  isExecuting={isExecuting}
-                  token={token}
-                />{' '}
-              </Alert>
-            </>
-          )}
-          {isTokenUsed && (
-            <Alert id="error_token_used" type="error">
-              {translate('pages.identity.credentials_register_confirm.states.failed.errors.token_used')}
+    <Card>
+      <h1 className="text-4xl font-bold text-center mb-16 text-red-600">
+        {translate('pages.identity.credentials_register_confirm.states.failed.title')}
+      </h1>
+      <div className="text-center mb-8">
+        {isTokenExpired && (
+          <>
+            <Alert id="error_token_expired" type="error">
+              {translate('pages.identity.credentials_register_confirm.states.failed.errors.token_expired')}
+              <HandleResend
+                translate={translate}
+                lastExpectedError={lastExpectedError}
+                lastUnexpectedError={lastUnexpectedError}
+                isExecuting={isExecuting}
+                token={token}
+              />{' '}
             </Alert>
-          )}
+          </>
+        )}
+        {isTokenUsed && (
+          <Alert id="error_token_used" type="error">
+            {translate('pages.identity.credentials_register_confirm.states.failed.errors.token_used')}
+          </Alert>
+        )}
 
-          {lastUnexpectedError && <UnhandledError id="error_unexpected" error={lastUnexpectedError} />}
+        {lastUnexpectedError && <UnhandledError id="error_unexpected" error={lastUnexpectedError} />}
 
-          <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
-            {translate('pages.identity.credentials_register_confirm.links.login')}
-          </Link>
-          <Link to="/" className="btn btn-secondary">
-            {translate('pages.identity.credentials_register_confirm.links.home')}
-          </Link>
-        </div>
+        <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
+          {translate('pages.identity.credentials_register_confirm.links.login')}
+        </Link>
+        <Link to="/" className="btn btn-secondary">
+          {translate('pages.identity.credentials_register_confirm.links.home')}
+        </Link>
       </div>
-    </div>
+    </Card>
   );
 }
 
