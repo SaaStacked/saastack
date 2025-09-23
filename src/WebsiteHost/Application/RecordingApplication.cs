@@ -31,11 +31,11 @@ public class RecordingApplication : IRecordingApplication
         Dictionary<string, object?>? additional, ClientDetails clientDetails,
         CancellationToken cancellationToken)
     {
-        var more = AddClientContext(caller, clientDetails, (additional.Exists()
-            ? additional
-                .Where(pair => pair.Value.Exists())
-                .ToDictionary(pair => pair.Key, pair => pair.Value)
-            : null)!);
+        var dictionary = (additional ?? new Dictionary<string, object?>())
+            .Where(pair => pair.Value.Exists())
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+        var more = AddClientContext(caller, clientDetails, dictionary!);
         _recorder.Measure(caller.ToCall(), eventName, more);
 
         return Task.FromResult(Result.Ok);
@@ -63,46 +63,43 @@ public class RecordingApplication : IRecordingApplication
     }
 
     public Task<Result<Error>> RecordTraceAsync(ICallerContext caller, RecorderTraceLevel level,
-        string messageTemplate, List<string>? arguments,
-        CancellationToken cancellationToken)
+        string messageTemplate, List<string>? arguments, CancellationToken cancellationToken)
     {
         var args = arguments.Exists()
             ? arguments.Select(object (arg) => arg).ToArray()
             : [];
 
+        var call = caller.ToCall();
         switch (level)
         {
             case RecorderTraceLevel.Debug:
-                _recorder.TraceDebug(caller.ToCall(), messageTemplate, args);
-                return Task.FromResult(Result.Ok);
-
+                _recorder.TraceDebug(call, messageTemplate, args);
+                break;
             case RecorderTraceLevel.Information:
-                _recorder.TraceInformation(caller.ToCall(), messageTemplate, args);
-                return Task.FromResult(Result.Ok);
-
+                _recorder.TraceInformation(call, messageTemplate, args);
+                break;
             case RecorderTraceLevel.Warning:
-                _recorder.TraceWarning(caller.ToCall(), messageTemplate, args);
-                return Task.FromResult(Result.Ok);
-
+                _recorder.TraceWarning(call, messageTemplate, args);
+                break;
             case RecorderTraceLevel.Error:
-                _recorder.TraceError(caller.ToCall(), messageTemplate, args);
-                return Task.FromResult(Result.Ok);
-
+                _recorder.TraceError(call, messageTemplate, args);
+                break;
             default:
-                _recorder.TraceInformation(caller.ToCall(), messageTemplate, args);
-                return Task.FromResult(Result.Ok);
+                _recorder.TraceInformation(call, messageTemplate, args);
+                break;
         }
+
+        return Task.FromResult(Result.Ok);
     }
 
     public Task<Result<Error>> RecordUsageAsync(ICallerContext caller, string eventName,
         Dictionary<string, object?>? additional, ClientDetails clientDetails,
         CancellationToken cancellationToken)
     {
-        var more = AddClientContext(caller, clientDetails, (additional.Exists()
-            ? additional
+        var dictionary = (additional ?? new Dictionary<string, object?>())
                 .Where(pair => pair.Value.Exists())
-                .ToDictionary(pair => pair.Key, pair => pair.Value)
-            : null)!);
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+        var more = AddClientContext(caller, clientDetails, dictionary!);
         if (more.Remove(UsageConstants.Properties.ForId, out var forId))
         {
             _recorder.TrackUsageFor(caller.ToCall(), forId.ToString()!, eventName, more);
