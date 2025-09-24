@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="64" viewBox="0 0 256 64">
+    <rect width="256" height="64" fill="#009966FF" />
+    <text x="128" y="45" font-family="Noto Sans, sans-serif" font-size="42" font-weight="bold" text-anchor="middle"
+          fill="white">{SaaStack}
+    </text>
+</svg>
