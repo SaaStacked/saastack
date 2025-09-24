@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
-import Form from '../../../framework/components/form/Form.tsx';
+import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
@@ -15,7 +15,7 @@ export const CredentialsLoginPage: React.FC = () => {
 
   return (
     <FormPage title={translate('pages.identity.credentials_login.title')}>
-      <Form
+      <FormAction
         id="credentials_login"
         action={login}
         validationSchema={z.object({
@@ -45,7 +45,7 @@ export const CredentialsLoginPage: React.FC = () => {
           autoComplete="current-password"
         />
         <FormSubmitButton label={translate('pages.identity.credentials_login.form.submit.label')} />
-      </Form>
+      </FormAction>
       <div className="text-center">
         <p>
           {translate('pages.identity.credentials_login.links.register.question')}{' '}

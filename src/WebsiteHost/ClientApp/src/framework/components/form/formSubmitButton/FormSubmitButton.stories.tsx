@@ -9,7 +9,7 @@ import { OfflineServiceContext } from '../../../providers/OfflineServiceContext.
 import { IOfflineService } from '../../../services/IOfflineService.ts';
 import Alert from '../../alert/Alert.tsx';
 import { OfflineBanner } from '../../offline/OfflineBanner.tsx';
-import Form from '../Form.tsx';
+import FormAction from '../FormAction.tsx';
 import FormInput from '../formInput/FormInput.tsx';
 import FormSubmitButton from './FormSubmitButton';
 
@@ -109,7 +109,7 @@ export const ReadyToSubmit: Story = {
     )
   ],
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ name: 'John', email: 'john@example.com' }}
       validationSchema={validations}
@@ -117,7 +117,7 @@ export const ReadyToSubmit: Story = {
       <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
       <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
       <FormSubmitButton {...args} />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -127,7 +127,7 @@ export const Executing: Story = {
     busyLabel: 'Processing...'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction({ isReady: true, isExecuting: true })}
       defaultValues={{ name: 'John', email: 'john@example.com' }}
       validationSchema={validations}
@@ -135,7 +135,7 @@ export const Executing: Story = {
       <FormInput id="name" name="name" label="Name" placeholder="Enter your name" />
       <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
       <FormSubmitButton {...args} />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -145,7 +145,7 @@ export const FormInvalid: Story = {
     busyLabel: 'Processing...'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ name: 'John', email: 'notanemailaddress' }}
       validationSchema={validations}
@@ -155,7 +155,7 @@ export const FormInvalid: Story = {
         <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
         <FormSubmitButton {...args} />
       </div>
-    </Form>
+    </FormAction>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -182,7 +182,7 @@ export const BrowserIsOffline: Story = {
     )
   ],
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction({ isReady: false, isExecuting: false })}
       defaultValues={{ name: 'John', email: 'john@example.com' }}
       validationSchema={validations}
@@ -192,6 +192,6 @@ export const BrowserIsOffline: Story = {
         <FormInput id="email" name="email" label="Email" type="email" placeholder="Enter your email" />
         <FormSubmitButton {...args} />
       </div>
-    </Form>
+    </FormAction>
   )
 };

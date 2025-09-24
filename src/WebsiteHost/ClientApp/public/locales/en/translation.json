@@ -1,7 +1,18 @@
 {
   "app": {
+    "languages": {
+      "en": "English",
+      "fr": "French"
+    }
   },
   "components": {
+    "button": {
+      "button_action": {
+        "default_label": "Submit",
+        "default_busy_label": "Sending...",
+        "default_completed_label": "Success!"
+      }
+    },
     "form": {
       "form_submit_button": {
         "default_label": "Submit",
@@ -14,8 +25,8 @@
         "logo": "SaaStack",
         "links": {
           "logout": "Logout",
-          "profile": "Change Profile",
-          "organizations": "My Organizations",
+          "profile": "Settings...",
+          "organizations": "Organizations...",
           "search_cars": "Search Cars",
           "reserve_car": "Reserve Car"
         }
@@ -35,13 +46,17 @@
       "reason": "Some features may not be available while you're disconnected"
     },
     "unhandled_error": {
-      "title": "Unexpected Error",
-      "message": "Oh no! We did not expect an error like this!",
-      "details": "Error Details",
+      "title": "Oooops!",
+      "subtitle": "We did not expect to see an error like this!",
+      "status": "Status",
+      "message": "Message",
       "more_details": "More Details",
-      "technical_details": "Show Technical Details",
       "client_stack_trace": "Browser Stack Trace",
-      "server_stack_trace": "Server Stack Trace"
+      "server_stack_trace": "Server Stack Trace",
+      "links": {
+        "details": "Error Details",
+        "more_details": "More Technical Details"
+      }
     }
   },
   "pages": {
@@ -236,7 +251,61 @@
     },
     "profiles": {
       "manage": {
-        "title": "Your Profile"
+        "title": "Settings",
+        "loader": {
+          "title": "Loading Your Profile"
+        },
+        "tabs": {
+          "profile": {
+            "title": "Profile",
+            "form": {
+              "fields": {
+                "display_name": {
+                  "label": "Preferred Name",
+                  "placeholder": "Your preferred name",
+                  "validation": "Must be a valid name"
+                },
+                "locale": {
+                  "label": "Language",
+                  "placeholder": "Your preferred language",
+                  "validation": "You must select a language, e.g. en-US"
+                },
+                "timezone": {
+                  "label": "Time zone",
+                  "placeholder": "Your time zone",
+                  "validation": "you must select a time zone, e.g. America/New_York"
+                }
+              },
+              "submit": {
+                "label": "Save Changes"
+              }
+            },
+            "errors": {
+              "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
+            }
+          },
+          "account": {
+            "title": "Account",
+            "form": {
+              "fields": {
+                "name": {
+                  "label": "Name"
+                },
+                "email_address": {
+                  "label": "Email Address"
+                },
+                "roles": {
+                  "label": "Security Roles",
+                  "empty": "None"
+                },
+                "features": {
+                  "label": "Licenses",
+                  "empty": "None"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

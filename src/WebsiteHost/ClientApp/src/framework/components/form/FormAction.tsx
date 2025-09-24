@@ -1,21 +1,28 @@
 import React from 'react';
-import { DefaultValues, FieldValues, FormProvider, useForm, ValidationMode } from 'react-hook-form';
+import { DefaultValues, FieldValues, FormProvider, useForm, UseFormReturn, ValidationMode } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z, { ZodType } from 'zod';
 import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
-import { createComponentId } from '../Components.ts';
+import { createComponentId, toClasses } from '../Components.ts';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
-import { ActionFormContext, ActionFormRequiredFieldsContext, ActionFormValidationContext } from './FormContexts.tsx';
+import {
+  FormActionContext,
+  FormActionRequiredFieldsContext,
+  FormActionValidationContext
+} from './FormActionContexts.tsx';
 
-
-interface FormProps<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any> {
+interface FormActionProps<
+  TRequestData extends ActionRequestData,
+  ExpectedErrorCode extends string = any,
+  TResponse = any
+> {
   className?: string;
   id?: string;
   children: React.ReactNode;
   action: ActionResult<TRequestData, ExpectedErrorCode, TResponse>;
   expectedErrorMessages?: Record<ExpectedErrorCode, string>;
-  onSuccess?: (params: { requestData?: TRequestData; response: TResponse }) => void;
+  onSuccess?: (params: { requestData?: TRequestData; response: TResponse; formMethods: UseFormReturn<any> }) => void;
   validatesWhen?: keyof ValidationMode;
   validationSchema?: ZodType<any, FieldValues>;
   defaultValues?: DefaultValues<TRequestData>;
@@ -31,12 +38,12 @@ interface FormProps<TRequestData extends ActionRequestData, ExpectedErrorCode ex
 // Note: this form does not define the layout of form components, nor a <FormSubmitButton/>, since the layout should be controlled by the consumer.
 // It recommends the consumer provide at least one <FormSubmitButton/> within their layout.
 // That <FormSubmitButton/> will be disabled if the form is not valid, or if the action is executing.
-// When that button is clicked, the form will:
+// When the <FormSubmitButton/> button is clicked, the form will:
 // 1. Validate all data according to validation rules
-// 2. Execute the action with the supplied data
+// 2. Execute the action with the supplied form data
 // 3. Call the onSuccess callback if the action succeeds.
 // 4. Display any errors on the form, if the action fails.
-function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any>({
+function FormAction<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any>({
   className = '',
   id,
   children,
@@ -47,9 +54,8 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   validationSchema,
   defaultValues,
   disabled
-}: FormProps<TRequestData, ExpectedErrorCode, TResponse>) {
+                                                                                                                     }: FormActionProps<TRequestData, ExpectedErrorCode, TResponse>) {
   const formContext = { isSubmitted: false };
-
   type TValidations = z.infer<typeof validationSchema>;
   const validation = useForm<TValidations>({
     mode: validatesWhen,
@@ -60,7 +66,7 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
   formContext.isSubmitted = validation.formState.isSubmitted;
   const requiredFormFields = validationSchema ? getRequiredFields(validationSchema) : [];
   const baseClasses = 'bg-white dark:bg-gray-800 p-2 rounded-lg transition-all';
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, className]);
   const isFormDisabled =
     disabled ||
     action.isExecuting ||
@@ -70,11 +76,11 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
     ? (expectedErrorMessages?.[action.lastExpectedError.code] ?? action.lastExpectedError.code)
     : undefined;
   const lastUnexpectedError = action.lastUnexpectedError;
-  const componentId = createComponentId('action_form', id);
+  const componentId = createComponentId('form_action', id);
   return (
-    <ActionFormContext.Provider value={action}>
-      <ActionFormRequiredFieldsContext.Provider value={requiredFormFields}>
-        <ActionFormValidationContext.Provider value={validatesWhen}>
+    <FormActionContext.Provider value={action}>
+      <FormActionRequiredFieldsContext.Provider value={requiredFormFields}>
+        <FormActionValidationContext.Provider value={validatesWhen}>
           <FormProvider {...validation}>
             <div className="container w-4/5 m:w-11/12 mx-auto">
               <div className="flex items-center">
@@ -87,7 +93,7 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
                       action.execute(requestData, {
                         onSuccess: (successParams) => {
                           if (onSuccess) {
-                            onSuccess(successParams);
+                            onSuccess({ ...successParams, formMethods: validation });
                           }
                         }
                       })
@@ -108,13 +114,13 @@ function Form<TRequestData extends ActionRequestData, ExpectedErrorCode extends 
               </div>
             </div>
           </FormProvider>
-        </ActionFormValidationContext.Provider>
-      </ActionFormRequiredFieldsContext.Provider>
-    </ActionFormContext.Provider>
+        </FormActionValidationContext.Provider>
+      </FormActionRequiredFieldsContext.Provider>
+    </FormActionContext.Provider>
   );
 }
 
-export default Form;
+export default FormAction;
 
 export function getRequiredFields(validationSchema?: ZodType<any, FieldValues>) {
   if (!validationSchema) {

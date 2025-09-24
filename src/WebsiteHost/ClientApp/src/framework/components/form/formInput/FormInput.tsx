@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import { createComponentId } from '../../Components.ts';
+import { createComponentId, toClasses } from '../../Components.ts';
 import Input from '../../input/Input';
-import { ActionFormRequiredFieldsContext } from '../FormContexts.tsx';
+import { FormActionRequiredFieldsContext } from '../FormActionContexts.tsx';
 import { useFormValidation } from '../FormValidation.ts';
 
 
@@ -34,10 +34,10 @@ const FormInput = ({
   dependencies = []
 }: FormInputProps) => {
   const { validationError, register } = useFormValidation(name);
-  const requiredFormFields = useContext(ActionFormRequiredFieldsContext);
+  const requiredFormFields = useContext(FormActionRequiredFieldsContext);
   const isRequired = requiredFormFields.includes(name);
   const baseClasses = '';
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, className]);
   const componentId = createComponentId('form_input', id);
   return (
     <Input

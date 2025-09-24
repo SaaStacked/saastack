@@ -1,5 +1,5 @@
 import React from 'react';
-import { createComponentId } from '../Components';
+import { createComponentId, toClasses } from '../Components';
 
 
 export interface CardProps {
@@ -7,12 +7,14 @@ export interface CardProps {
   id?: string;
   children: React.ReactNode;
   title?: string;
+  align?: 'middle' | 'top';
 }
 
 // Creates a page to display a form in the middle of the screen
-function FormPage({ className, id, children, title }: CardProps) {
-  const baseClasses = 'container min-h-screen flex items-center justify-center';
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+function FormPage({ className, id, children, title, align = 'middle' }: CardProps) {
+  const baseClasses = 'container flex items-center justify-center';
+  const sizeClasses = align === 'top' ? 'h-screen items-start pt-16' : 'min-h-screen items-center';
+  const classes = toClasses([baseClasses, sizeClasses, className]);
   const componentId = createComponentId('card', id);
   return (
     <>

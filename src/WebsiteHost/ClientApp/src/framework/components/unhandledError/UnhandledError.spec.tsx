@@ -27,22 +27,33 @@ describe('UnhandledError', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('displays error title and description', () => {
+  it('displays error title, subtitle and details link', () => {
     render(<UnhandledError id="anid" error={mockError} />);
 
     expect(screen.getByText('components.unhandled_error.title')).toBeDefined();
-    expect(screen.getByText('components.unhandled_error.message')).toBeDefined();
+    expect(screen.getByText('components.unhandled_error.subtitle')).toBeDefined();
+    expect(screen.getByText('components.unhandled_error.links.details')).toBeDefined();
   });
 
-  it('displays status code and error code', () => {
+  it('when clicked details, displays status code and error code', async () => {
     render(<UnhandledError id="anid" error={mockError} />);
+
+    await act(async () => {
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
 
     expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('500');
     expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');
   });
 
-  it('displays error code', () => {
+  it('when clicked details, displays error code', async () => {
     render(<UnhandledError id="anid" error={mockError} />);
+
+    await act(async () => {
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
 
     expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');
   });
@@ -69,8 +80,12 @@ describe('UnhandledError', () => {
     render(<UnhandledError id="anid" error={mockError} />);
 
     await act(async () => {
-      const button = screen.getByText('components.unhandled_error.technical_details');
-      button.click();
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
+    await act(async () => {
+      const moreDetails = screen.getByText('components.unhandled_error.links.more_details');
+      moreDetails.click();
     });
 
     const stackTraceElement = screen.getByTestId('anid_unhandled_error_details_clientStackTrace');
@@ -87,8 +102,12 @@ describe('UnhandledError', () => {
     render(<UnhandledError id="anid" error={errorWithStackTraces} />);
 
     await act(async () => {
-      const button = screen.getByText('components.unhandled_error.technical_details');
-      button.click();
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
+    await act(async () => {
+      const moreDetails = screen.getByText('components.unhandled_error.links.more_details');
+      moreDetails.click();
     });
 
     const serverStackTrace = screen.getByTestId('anid_unhandled_error_details_serverStackTrace');
@@ -96,7 +115,7 @@ describe('UnhandledError', () => {
     expect(serverStackTrace.textContent).toContain('aserverstacktrace');
   });
 
-  it('handles error without response', () => {
+  it('handles error without response', async () => {
     const networkError: AxiosError = {
       ...mockError,
       response: undefined,
@@ -107,12 +126,17 @@ describe('UnhandledError', () => {
 
     render(<UnhandledError id="anid" error={networkError} />);
 
+    await act(async () => {
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
+
     expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('400');
     expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('anerrorcode');
     expect(screen.getByTestId('anid_unhandled_error_details_errorMessage').textContent).toBe('amessage');
   });
 
-  it('handles error with response', () => {
+  it('handles error with response', async () => {
     const networkError: AxiosError = {
       ...mockError,
       response: { status: 400, statusText: 'astatustext', data: { detail: 'adetail' } } as any,
@@ -122,6 +146,11 @@ describe('UnhandledError', () => {
     };
 
     render(<UnhandledError id="anid" error={networkError} />);
+
+    await act(async () => {
+      const details = screen.getByText('components.unhandled_error.links.details');
+      details.click();
+    });
 
     expect(screen.getByTestId('anid_unhandled_error_details_statusCode').textContent).toBe('400');
     expect(screen.getByTestId('anid_unhandled_error_details_errorCode').textContent).toBe('astatustext');

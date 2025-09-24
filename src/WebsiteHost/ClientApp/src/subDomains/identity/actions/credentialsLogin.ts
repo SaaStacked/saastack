@@ -1,6 +1,7 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../../framework/api/websiteHost';
 
+
 export enum LoginErrors {
   account_locked = 'account_locked',
   account_unverified = 'account_unverified',
@@ -9,7 +10,7 @@ export enum LoginErrors {
 }
 
 export const CredentialsLoginAction = () =>
-  useActionCommand<AuthenticateRequest, AuthenticateResponse>({
+  useActionCommand<AuthenticateRequest, AuthenticateResponse, LoginErrors>({
     request: (request) =>
       authenticate({
         body: {

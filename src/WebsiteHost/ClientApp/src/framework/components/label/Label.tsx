@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { createComponentId } from '../Components.ts';
+import { createComponentId, toClasses } from '../Components.ts';
+
 
 interface LabelProps {
   className?: string;
@@ -48,7 +49,7 @@ export default function Label({
   align = 'left'
 }: LabelProps) {
   const baseClasses = `block w-full text-${size} font-${weight} text-${align} m-0`;
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, className]);
   const componentId = createComponentId('label', id);
   return (
     <label className={classes} data-testid={componentId}>

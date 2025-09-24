@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { createComponentId } from '../Components.ts';
+import { createComponentId, toClasses } from '../Components.ts';
 import Icon, { IconSymbol, TailwindColor } from '../icon/Icon';
 
 
@@ -67,8 +67,8 @@ export default function Alert({ id, children, type = 'info', title, message }: A
   const titleColor = TitleColors[type] as TailwindColor;
   const backgroundColor = BackgroundColors[type] as TailwindColor;
   const borderColor = BorderColors[type] as TailwindColor;
-  const baseClasses = 'px-4 py-[18px] rounded border';
-  const classes = [baseClasses, backgroundColor, borderColor].filter(Boolean).join(' ');
+  const baseClasses = 'px-2 py-[8px] rounded border';
+  const classes = toClasses([baseClasses, backgroundColor, borderColor]);
   const componentId = createComponentId('alert', id);
   return (
     <div className={classes} data-testid={componentId}>
@@ -79,19 +79,21 @@ export default function Alert({ id, children, type = 'info', title, message }: A
           </div>
         </div>
         <div className="flex-1">
-          {title && (
-            <h3 className={`text-lg font-semibold mb-2 text-${titleColor}`} data-testid={`${componentId}_title`}>
+          {title ? (
+            <h3 className={`text-base font-semibold mb-2 text-${titleColor}`} data-testid={`${componentId}_title`}>
               {title}
             </h3>
+          ) : (
+            <div className="h-3"></div>
           )}
-          <div className="text-sm">
+          <div className="text-xs">
             {message && (
               <span data-testid={`${componentId}_message`} className={`text-${textColor}`}>
                 {message}
               </span>
             )}
           </div>
-          <div className="text-sm">{children && <span data-testid={`${componentId}_children`}>{children}</span>}</div>
+          <div className="text-xs">{children && <span data-testid={`${componentId}_children`}>{children}</span>}</div>
         </div>
       </div>
     </div>

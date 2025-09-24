@@ -3,7 +3,7 @@ import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { z } from 'zod';
 import { ActionResult } from '../../../actions/Actions.ts';
-import Form from '../Form.tsx';
+import FormAction from '../FormAction.tsx';
 import FormSubmitButton from '../formSubmitButton/FormSubmitButton.tsx';
 import FormInput from './FormInput';
 
@@ -62,7 +62,7 @@ export const TextInput: Story = {
     placeholder: 'Enter your full name'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ name: 'John' }}
       validationSchema={z.object({
@@ -71,7 +71,7 @@ export const TextInput: Story = {
     >
       <FormInput {...args} />
       <FormSubmitButton />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -84,7 +84,7 @@ export const NumberInput: Story = {
     placeholder: 'Enter your age'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ age: '23' }}
       validationSchema={z.object({
@@ -93,7 +93,7 @@ export const NumberInput: Story = {
     >
       <FormInput {...args} />
       <FormSubmitButton />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -107,7 +107,7 @@ export const EmailInput: Story = {
     autoComplete: 'username'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ email: 'john@example.com' }}
       validationSchema={z.object({
@@ -116,7 +116,7 @@ export const EmailInput: Story = {
     >
       <FormInput {...args} />
       <FormSubmitButton />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -130,7 +130,7 @@ export const PasswordInput: Story = {
     autoComplete: 'current-password'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ password: 'apassword' }}
       validationSchema={z.object({
@@ -141,7 +141,7 @@ export const PasswordInput: Story = {
         <FormInput {...args} />
         <FormSubmitButton />
       </div>
-    </Form>
+    </FormAction>
   )
 };
 
@@ -153,7 +153,7 @@ export const RequiredField: Story = {
     placeholder: 'Enter your full name'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       defaultValues={{ name: 'John' }}
       validationSchema={z.object({
@@ -164,7 +164,7 @@ export const RequiredField: Story = {
         <FormInput {...args} />
         <FormSubmitButton />
       </div>
-    </Form>
+    </FormAction>
   )
 };
 
@@ -176,7 +176,7 @@ export const WithValidationError: Story = {
     placeholder: 'Enter your full name'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       validationSchema={z.object({
         name: z.string().min(1, 'Name is required')
@@ -186,7 +186,7 @@ export const WithValidationError: Story = {
         <FormInput data-testid="input" {...args} />
         <FormSubmitButton />
       </div>
-    </Form>
+    </FormAction>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

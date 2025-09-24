@@ -1,30 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
-import {
-  faAdd,
-  faArrowRightFromBracket,
-  faBars,
-  faBuilding,
-  faCalendar,
-  faCamera,
-  faCarAlt,
-  faCheck,
-  faCheckCircle,
-  faChevronDown,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faCircleArrowLeft,
-  faExclamationTriangle,
-  faEye,
-  faEyeSlash,
-  faInfoCircle,
-  faMoon,
-  faUser,
-  faUserCircle,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons';
-import { createComponentId } from '../Components.ts';
+import { faAdd, faArrowRightFromBracket, faBars, faBuilding, faCalendar, faCamera, faCarAlt, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleArrowLeft, faExclamationTriangle, faEye, faEyeSlash, faInfoCircle, faMoon, faPencil, faTrash, faUser, faUserCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { createComponentId, toClasses } from '../Components.ts';
 
 
 interface IconProps {
@@ -304,9 +281,11 @@ const fontAwesomeSymbols = {
   'show-password': faEyeSlash,
   'hide-password': faEye,
   moon: faMoon,
+  pencil: faPencil,
   user: faUser,
   building: faBuilding,
-  plus: faAdd
+  plus: faAdd,
+  trash: faTrash
 } as const;
 
 const nonFontAwesomeSymbols = { placeholder: 'placeholder', bigCross: 'bigCross' } as const;
@@ -377,7 +356,7 @@ export default function Icon({ className, id, symbol, size = 20, color = 'primar
 
 function IconBox({ className, size, children }: { className?: string; size: number; children: ReactNode }) {
   const baseClasses = 'inline-flex items-center justify-center';
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, className]);
   return (
     <div className={classes} style={{ width: `${size}px`, height: `${size}px`, boxSizing: 'content-box' }}>
       {children}
