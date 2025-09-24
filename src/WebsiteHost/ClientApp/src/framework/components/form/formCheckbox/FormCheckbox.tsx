@@ -1,6 +1,6 @@
 import React from 'react';
 import Checkbox from '../../checkbox/Checkbox.tsx';
-import { createComponentId } from '../../Components.ts';
+import { createComponentId, toClasses } from '../../Components.ts';
 import { useFormValidation } from '../FormValidation.ts';
 
 
@@ -23,7 +23,7 @@ interface FormCheckboxProps {
 const FormCheckbox = ({ className, id, children, name, label, dependencies = [] }: FormCheckboxProps) => {
   const { validationError, register } = useFormValidation(name);
   const baseClasses = '';
-  const classes = [baseClasses, className].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, className]);
   const componentId = createComponentId('form_checkbox', id);
   return (
     <Checkbox

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOfflineService } from '../../providers/OfflineServiceContext.tsx';
+import { toClasses } from '../Components.ts';
+
 
 export const animationDurationInMs = 2000;
 
@@ -44,7 +46,7 @@ export function OfflineBanner() {
   const baseClasses =
     'relative top-0 left-0 right-0 z-50 bg-red-500 dark:bg-red-800 p-1 rounded-b-xl transform transition-transform duration-1000 ease-in-out';
   const translateClasses = isVisible ? 'translate-y-0' : '-translate-y-full';
-  const classes = [baseClasses, translateClasses].filter(Boolean).join(' ');
+  const classes = toClasses([baseClasses, translateClasses]);
 
   return (
     <div className={classes}>

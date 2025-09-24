@@ -35,11 +35,12 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
 
   useEffect(() => getCallerProfile(), []);
 
-  // If we have an error fetching the profile, and we're not already logging out, log out.
+  // If we have an error fetching the current user profile,
+  // and we're not already logging out, then log out now to remove any authenticated state (i.e. cookies).
   useEffect(() => {
     if (isProfileSuccess == false) {
       if (isLogoutSuccess === undefined && !isLoggingOut) {
-        logout({});
+        logout();
       }
     }
   }, [logout, isLoggingOut, isLogoutSuccess, isProfileSuccess]);
@@ -60,7 +61,7 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
   );
 };
 
-export function useCurrentUser(): CurrentUserContextContent {
+export const useCurrentUser = () => {
   const context = useContext(CurrentUserContext);
 
   if (!context) {
@@ -73,4 +74,4 @@ export function useCurrentUser(): CurrentUserContextContent {
     isExecuting: context.isExecuting,
     isAuthenticated: context.isAuthenticated
   };
-}
+};

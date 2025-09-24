@@ -6,13 +6,18 @@ import { describe, expect, it, vi } from 'vitest';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Button from '../../button/Button.tsx';
-import { ActionFormRequiredFieldsContext, ActionFormValidationContext } from '../FormContexts.tsx';
+import { FormActionRequiredFieldsContext, FormActionValidationContext } from '../FormActionContexts.tsx';
 import FormCheckbox from './FormCheckbox';
 
 
-vi.mock('../../Components.ts', () => ({
-  createComponentId: (prefix: string, id: string) => `${prefix}_${id}`
-}));
+vi.mock('../../Components.ts', async (importActual) => {
+  const actualImpl = await importActual<typeof import('../../Components.ts')>();
+
+  return {
+    ...actualImpl,
+    createComponentId: (prefix: string, id: string) => `${prefix}_${id}`
+  };
+});
 
 describe('FormCheckbox', () => {
   const validationSchema = z.object({
@@ -42,13 +47,13 @@ describe('FormCheckbox', () => {
 
       return (
         <MemoryRouter>
-          <ActionFormRequiredFieldsContext.Provider value={requiredFields}>
-            <ActionFormValidationContext.Provider value={validatesWhen}>
+          <FormActionRequiredFieldsContext.Provider value={requiredFields}>
+            <FormActionValidationContext.Provider value={validatesWhen}>
               <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(() => {})}>{children}</form>
               </FormProvider>
-            </ActionFormValidationContext.Provider>
-          </ActionFormRequiredFieldsContext.Provider>
+            </FormActionValidationContext.Provider>
+          </FormActionRequiredFieldsContext.Provider>
         </MemoryRouter>
       );
     };
@@ -255,13 +260,13 @@ describe('FormCheckbox', () => {
       });
 
       return (
-        <ActionFormRequiredFieldsContext.Provider value={[]}>
-          <ActionFormValidationContext.Provider value="onChange">
+        <FormActionRequiredFieldsContext.Provider value={[]}>
+          <FormActionValidationContext.Provider value="onChange">
             <FormProvider {...methods}>
               <form>{children}</form>
             </FormProvider>
-          </ActionFormValidationContext.Provider>
-        </ActionFormRequiredFieldsContext.Provider>
+          </FormActionValidationContext.Provider>
+        </FormActionRequiredFieldsContext.Provider>
       );
     };
 

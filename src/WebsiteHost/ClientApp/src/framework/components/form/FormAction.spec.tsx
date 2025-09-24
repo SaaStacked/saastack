@@ -4,16 +4,17 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
-import Form, { getRequiredFields } from './Form';
+import FormAction, { getRequiredFields } from './FormAction.tsx';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton.tsx';
+
 
 interface TestRequestData extends ActionRequestData {
   atext: string;
   anemailaddress: string;
 }
 
-describe('Form', () => {
+describe('FormAction', () => {
   let mockAction: ActionResult<TestRequestData, 'A_VALIDATION_ERROR', any>;
   const validationSchema = z.object({
     atext: z.string().min(1, 'amessage1'),
@@ -37,33 +38,33 @@ describe('Form', () => {
 
   it('applies custom className', () => {
     render(
-      <Form id="anid" className="aclassname" action={mockAction} validationSchema={validationSchema}>
+      <FormAction id="anid" className="aclassname" action={mockAction} validationSchema={validationSchema}>
         <FormInput id="anid1" name="atext" label="Name" />
-      </Form>
+      </FormAction>
     );
 
-    const form = screen.getByTestId('anid_action_form');
+    const form = screen.getByTestId('anid_form_action');
     expect(form.className).toContain('aclassname');
   });
 
   it('sets JavaScript noValidate attribute', () => {
     render(
-      <Form id="anid" action={mockAction} validationSchema={validationSchema}>
+      <FormAction id="anid" action={mockAction} validationSchema={validationSchema}>
         <FormInput id="anid1" name="atext" label="Name" />
-      </Form>
+      </FormAction>
     );
 
-    const form = screen.getByTestId('anid_action_form');
+    const form = screen.getByTestId('anid_form_action');
     expect(form.hasAttribute('noValidate')).toBe(true);
   });
 
   it('applies default values correctly', () => {
     const defaultValues = { atext: 'aname', anemailaddress: 'auser@company.com' };
     render(
-      <Form id="anid" action={mockAction} validationSchema={validationSchema} defaultValues={defaultValues}>
+      <FormAction id="anid" action={mockAction} validationSchema={validationSchema} defaultValues={defaultValues}>
         <FormInput id="anid1" name="atext" label="Name" />
         <FormInput id="anid2" name="anemailaddress" label="Email" />
-      </Form>
+      </FormAction>
     );
 
     expect((screen.getByTestId('anid1_form_input_input') as HTMLInputElement).value).toBe('aname');
@@ -75,14 +76,14 @@ describe('Form', () => {
     const defaultValues = { atext: 'aname', anemailaddress: 'auser@company.com' };
 
     renderWithRouter(
-      <Form id="anid" action={mockAction} validationSchema={validationSchema} defaultValues={defaultValues}>
+      <FormAction id="anid" action={mockAction} validationSchema={validationSchema} defaultValues={defaultValues}>
         <FormInput id="anid1" name="atext" label="Name" />
         <FormInput id="anid2" name="anemailaddress" label="Email" />
         <FormSubmitButton id="submit" />
-      </Form>
+      </FormAction>
     );
 
-    const form = screen.getByTestId('anid_action_form');
+    const form = screen.getByTestId('anid_form_action');
     fireEvent.submit(form);
 
     await waitFor(() => expect(mockAction.execute).toHaveBeenCalled());
@@ -90,9 +91,9 @@ describe('Form', () => {
       { atext: 'aname', anemailaddress: 'auser@company.com' },
       expect.anything()
     );
-    const expectedError = screen.queryByTestId('anid_action_form_expected_error');
+    const expectedError = screen.queryByTestId('anid_form_action_expected_error');
     expect(expectedError).toBeNull();
-    const unexpectedError = screen.queryByTestId('anid_action_form_unexpected_error');
+    const unexpectedError = screen.queryByTestId('anid_form_action_unexpected_error');
     expect(unexpectedError).toBeNull();
   });
 
@@ -107,7 +108,7 @@ describe('Form', () => {
     const defaultValues = { atext: 'aname', anemailaddress: 'auser@company.com' };
 
     renderWithRouter(
-      <Form
+      <FormAction
         id="anid"
         action={mockAction}
         validationSchema={validationSchema}
@@ -117,16 +118,17 @@ describe('Form', () => {
         <FormInput id="anid1" name="atext" label="Name" />
         <FormInput id="anid2" name="anemailaddress" label="Email" />
         <FormSubmitButton id="submit" />
-      </Form>
+      </FormAction>
     );
 
-    const form = screen.getByTestId('anid_action_form');
+    const form = screen.getByTestId('anid_form_action');
     fireEvent.submit(form);
 
     await waitFor(() =>
       expect(onSuccess).toHaveBeenCalledWith({
         requestData: { atext: 'aname', anemailaddress: 'auser@company.com' },
-        response: { success: true }
+        response: { success: true },
+        formMethods: expect.anything()
       })
     );
   });
@@ -136,17 +138,17 @@ describe('Form', () => {
     const expectedErrorMessages = { A_VALIDATION_ERROR: 'amessage' };
 
     render(
-      <Form
+      <FormAction
         id="anid"
         action={mockAction}
         validationSchema={validationSchema}
         expectedErrorMessages={expectedErrorMessages}
       >
         <FormInput id="anid1" name="atext" label="Name" />
-      </Form>
+      </FormAction>
     );
 
-    const expectedError = screen.getByTestId('anid_action_form_expected_error_alert');
+    const expectedError = screen.getByTestId('anid_form_action_expected_error_alert');
     expect(expectedError).not.toBeNull();
     expect(expectedError.textContent).toBe('amessage');
   });
@@ -155,23 +157,23 @@ describe('Form', () => {
     mockAction.lastUnexpectedError = new Error('anerror') as any;
 
     render(
-      <Form id="anid" action={mockAction} validationSchema={validationSchema}>
+      <FormAction id="anid" action={mockAction} validationSchema={validationSchema}>
         <FormInput id="anid1" name="atext" label="Name" />
-      </Form>
+      </FormAction>
     );
 
-    const unexpectedError = screen.getByTestId('anid_action_form_unexpected_error_unhandled_error_details');
+    const unexpectedError = screen.getByTestId('anid_form_action_unexpected_error_unhandled_error');
     expect(unexpectedError).not.toBeNull();
   });
 
   it('handles form without validations', () => {
     render(
-      <Form id="anid" action={mockAction} validationSchema={undefined as any}>
+      <FormAction id="anid" action={mockAction} validationSchema={undefined as any}>
         <FormInput id="anid1" name="atext" label="Name" />
-      </Form>
+      </FormAction>
     );
 
-    const form = screen.getByTestId('anid_action_form');
+    const form = screen.getByTestId('anid_form_action');
     expect(form).not.toBeNull();
   });
 });

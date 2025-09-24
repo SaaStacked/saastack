@@ -2,7 +2,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
-import Form from '../../../framework/components/form/Form.tsx';
+import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormCheckbox from '../../../framework/components/form/formCheckbox/FormCheckbox.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
@@ -16,7 +16,7 @@ export const CredentialsRegisterPage: React.FC = () => {
   const register = CredentialsRegisterAction();
   return (
     <FormPage title={translate('pages.identity.credentials_register.title')}>
-      <Form
+      <FormAction
         id="credentials_register"
         action={register}
         validationSchema={z
@@ -104,7 +104,7 @@ export const CredentialsRegisterPage: React.FC = () => {
           />
         </FormCheckbox>
         <FormSubmitButton label={translate('pages.identity.credentials_register.form.submit.label')} />
-      </Form>
+      </FormAction>
       <div className="text-center">
         <p>
           {translate('pages.identity.credentials_register.links.login.question')}{' '}

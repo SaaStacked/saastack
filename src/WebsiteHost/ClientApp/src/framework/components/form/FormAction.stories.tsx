@@ -8,15 +8,16 @@ import { OfflineServiceContext } from '../../providers/OfflineServiceContext.tsx
 import { IOfflineService } from '../../services/IOfflineService.ts';
 import Alert from '../alert/Alert.tsx';
 import { OfflineBanner } from '../offline/OfflineBanner.tsx';
-import Form from './Form';
+import FormAction from './FormAction.tsx';
 import FormCheckbox from './formCheckbox/FormCheckbox.tsx';
 import FormInput from './formInput/FormInput.tsx';
+import FormSelect from './formSelect/FormSelect.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton';
 
 
-const meta: Meta<typeof Form> = {
-  title: 'Components/Form/Form',
-  component: Form,
+const meta: Meta<typeof FormAction> = {
+  title: 'Components/Form/FormAction',
+  component: FormAction,
   parameters: {
     layout: 'centered'
   },
@@ -92,6 +93,7 @@ const validationSchema = z.object({
   firstName: z.string().min(1, 'FirstName is required'),
   emailAddress: z.email('Please enter a valid email address'),
   message: z.string().optional(),
+  country: z.string().min(1, 'Country is required'),
   terms: z.literal(true, 'You must accept the terms and conditions')
 });
 
@@ -120,7 +122,7 @@ export const ReturnsSuccess: Story = {
     )
   ],
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -130,9 +132,20 @@ export const ReturnsSuccess: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -169,7 +182,7 @@ export const ReturnsExpectedError: Story = {
     )
   ],
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -179,9 +192,20 @@ export const ReturnsExpectedError: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -229,7 +253,7 @@ export const ReturnsUnexpectedError: Story = {
       firstName: 'John Doe',
       emailAddress: 'john.doe@example.com'
     },
-    onSuccess: (_params) => toast.error(`API call failed: HTTP - BadRequest`, { autoClose: 1500 })
+    onSuccess: (_params) => toast.error(`API call failed: HTTP - InternalServerError`, { autoClose: 1500 })
   },
   decorators: [
     (Story, _context) => (
@@ -244,7 +268,7 @@ export const ReturnsUnexpectedError: Story = {
     )
   ],
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -254,9 +278,20 @@ export const ReturnsUnexpectedError: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -268,7 +303,7 @@ export const ValidateOnChange: Story = {
     onSuccess: (_params) => toast.success(`API call succeeded: HTTP - OK`, { autoClose: 1500 })
   },
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -278,9 +313,20 @@ export const ValidateOnChange: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -297,7 +343,7 @@ export const ActionExecuting: Story = {
     onSuccess: (_params) => toast.error(`Should never have seen this!`, { autoClose: 1500 })
   },
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -307,9 +353,20 @@ export const ActionExecuting: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };
 
@@ -330,7 +387,7 @@ export const BrowserIsOffline: Story = {
     )
   ],
   render: (args) => (
-    <Form {...args}>
+    <FormAction {...args}>
       <FormInput id="firstName" name="firstName" label="First Name" placeholder="Enter your first name" />
       <FormInput
         id="emailAddress"
@@ -340,8 +397,19 @@ export const BrowserIsOffline: Story = {
         placeholder="Enter your email"
         autoComplete="username"
       />
+      <FormSelect
+        id="country"
+        name="country"
+        label="Country"
+        placeholder="Select your country"
+        options={[
+          { value: 'us', label: 'United States' },
+          { value: 'ca', label: 'Canada' },
+          { value: 'uk', label: 'United Kingdom' }
+        ]}
+      />
       <FormCheckbox id="terms" name="terms" label="I agree to the terms and conditions" />
       <FormSubmitButton label="Submit" />
-    </Form>
+    </FormAction>
   )
 };

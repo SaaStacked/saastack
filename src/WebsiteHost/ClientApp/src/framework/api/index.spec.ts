@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
 import { client as apiHost1 } from './apiHost1';
-import { initializeApiClient } from './index';
+import { homePath, initializeApiClient } from './index';
 import { client as websiteHost } from './websiteHost';
 
 
@@ -61,7 +61,7 @@ describe('Handle 403 Forbidden', () => {
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it('when a forbidden request that is CSRF, redirect to login', async () => {
+  it('when a forbidden request that is CSRF, redirect to home', async () => {
     await expect(
       handler.rejected({
         config: { url: 'aurl' },
@@ -75,7 +75,7 @@ describe('Handle 403 Forbidden', () => {
     ).rejects.toMatchObject({
       response: {}
     });
-    expect(window.location.assign).toHaveBeenCalledWith('/login');
+    expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 });
 
@@ -132,7 +132,7 @@ describe('Handle 401 Unauthorized', () => {
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it('when refreshToken() fails with 423 error, redirect to login', async () => {
+  it('when refreshToken() fails with 423 error, redirect to home', async () => {
     vi.mocked(websiteHost.post).mockImplementationOnce((config) =>
       Promise.resolve({ config, status: 423, isAxiosError: true } as any)
     );
@@ -148,7 +148,7 @@ describe('Handle 401 Unauthorized', () => {
       status: 423,
       isAxiosError: true
     });
-    expect(window.location.assign).toHaveBeenCalledWith('/login');
+    expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 
   it('when refreshToken() fails with other error, reject with other error', async () => {
@@ -170,7 +170,7 @@ describe('Handle 401 Unauthorized', () => {
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
-  it('when retried original API fails with unauthorized, redirect to login', async () => {
+  it('when retried original API fails with unauthorized, logout and redirect to home', async () => {
     vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 401, isAxiosError: true });
 
     await expect(
@@ -183,10 +183,10 @@ describe('Handle 401 Unauthorized', () => {
       response: {}
     });
     expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
-    expect(window.location.assign).toHaveBeenCalledWith('/login');
+    expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 
-  it('when retried original API fails with other error, redirect to login', async () => {
+  it('when retried original API fails with other error, return error', async () => {
     vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 400, isAxiosError: true });
 
     await expect(

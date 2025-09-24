@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createComponentId } from '../Components.ts';
+import { createComponentId, toClasses } from '../Components.ts';
 
 
 export interface ButtonProps {
@@ -48,9 +48,7 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'px-6 py-3 text-base'
   };
   const widthClass = fullWidth ? 'w-full' : '';
-  const classes = [baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className]
-    .filter(Boolean)
-    .join(' ');
+  const classes = toClasses([baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className]);
   let onClickTarget = onClick;
   let navigate = useNavigate();
   if (navigateTo) {
@@ -59,9 +57,9 @@ const Button: React.FC<ButtonProps> = ({
   const componentId = createComponentId('button', id);
   return (
     <button
+      className={classes}
       data-testid={componentId}
       type={type}
-      className={classes}
       disabled={disabled || busy}
       onClick={onClickTarget}
     >

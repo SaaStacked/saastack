@@ -2,12 +2,12 @@ import { act, render, screen } from '@testing-library/react';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MemoryRouter } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ActionRequestData, ActionResult } from '../../../actions/Actions.ts';
-import { ActionFormContext } from '../FormContexts.tsx';
-import FormSubmitButton from './FormSubmitButton';
+import { FormActionContext } from '../FormActionContexts.tsx';
+import FormSubmitButton, { BusyLabelRevertAfterMs } from './FormSubmitButton';
 
 
 vi.mock('../../Button', () => ({
@@ -31,6 +31,7 @@ describe('FormSubmitButton', () => {
   });
 
   beforeEach(() => {
+    vi.useFakeTimers();
     mockAction = {
       execute: vi.fn(),
       isSuccess: undefined,
@@ -42,6 +43,8 @@ describe('FormSubmitButton', () => {
       lastRequestValues: undefined
     };
   });
+
+  afterEach(() => vi.useRealTimers());
 
   const FormWrapper = ({
     children,
@@ -80,11 +83,11 @@ describe('FormSubmitButton', () => {
 
       return (
         <MemoryRouter>
-          <ActionFormContext.Provider value={action}>
+          <FormActionContext.Provider value={action}>
             <FormProvider {...methods}>
               <form>{children}</form>
             </FormProvider>
-          </ActionFormContext.Provider>
+          </FormActionContext.Provider>
         </MemoryRouter>
       );
     };
@@ -149,7 +152,7 @@ describe('FormSubmitButton', () => {
   it('when no complete Label, and completed, renders with default complete label', async () => {
     await act(async () =>
       render(
-        <FormWrapper action={{ ...mockAction, isSuccess: true }}>
+        <FormWrapper action={{ ...mockAction, isSuccess: true }} submitForm={true}>
           <FormSubmitButton id="anid" />
         </FormWrapper>
       )
@@ -157,12 +160,16 @@ describe('FormSubmitButton', () => {
 
     const button = screen.getByTestId('anid_form_submit_button');
     expect(button.textContent).toBe('components.form.form_submit_button.default_completed_label');
+
+    await act(() => vi.advanceTimersByTime(BusyLabelRevertAfterMs));
+
+    expect(button.textContent).toBe('components.form.form_submit_button.default_label');
   });
 
   it('when complete, renders with complete label', async () => {
     await act(async () =>
       render(
-        <FormWrapper action={{ ...mockAction, isSuccess: true }}>
+        <FormWrapper action={{ ...mockAction, isSuccess: true }} submitForm={true}>
           <FormSubmitButton id="anid" completeLabel="acompletelabel" />
         </FormWrapper>
       )
@@ -170,6 +177,10 @@ describe('FormSubmitButton', () => {
 
     const button = screen.getByTestId('anid_form_submit_button');
     expect(button.textContent).toBe('acompletelabel');
+
+    await act(() => vi.advanceTimersByTime(BusyLabelRevertAfterMs));
+
+    expect(button.textContent).toBe('components.form.form_submit_button.default_label');
   });
 
   it('when action is ready, then enabled', async () => {

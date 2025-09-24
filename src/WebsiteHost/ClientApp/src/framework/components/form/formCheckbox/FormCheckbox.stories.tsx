@@ -3,9 +3,10 @@ import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { z } from 'zod';
 import { ActionResult } from '../../../actions/Actions.ts';
-import Form from '../Form.tsx';
+import FormAction from '../FormAction.tsx';
 import FormSubmitButton from '../formSubmitButton/FormSubmitButton.tsx';
 import FormCheckbox from './FormCheckbox';
+
 
 const meta: Meta<typeof FormCheckbox> = {
   title: 'Components/Form/FormCheckbox',
@@ -52,7 +53,7 @@ export const Checkbox: Story = {
     label: 'I agree to the terms and conditions'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       validationSchema={z.object({
         terms: z.boolean().optional()
@@ -62,7 +63,7 @@ export const Checkbox: Story = {
         <FormCheckbox {...args} />
         <FormSubmitButton />
       </div>
-    </Form>
+    </FormAction>
   )
 };
 
@@ -73,7 +74,7 @@ export const WithValidationError: Story = {
     label: 'I agree to the terms and conditions'
   },
   render: (args) => (
-    <Form
+    <FormAction
       action={createMockAction()}
       validationSchema={z.object({
         terms: z.literal(true, 'You must agree to the terms')
@@ -83,7 +84,7 @@ export const WithValidationError: Story = {
         <FormCheckbox data-testid="checkbox" {...args} />
         <FormSubmitButton />
       </div>
-    </Form>
+    </FormAction>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

@@ -2,12 +2,12 @@ import axios, { AxiosError, HttpStatusCode } from 'axios';
 import { UsageConstants } from '../constants';
 import { recorder } from '../recorder';
 import { client as apiHost1 } from './apiHost1/services.gen';
-import { ProblemDetails } from './websiteHost';
+import { logout, ProblemDetails } from './websiteHost';
 import { refreshToken, client as websiteHost } from './websiteHost/services.gen';
 
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
-const loginPath = '/login';
+export const homePath = '/';
 
 // This function sets up the appropriate request headers and handlers,
 // as detailed in docs/design-principles/0110-back-end-for-front-end.md
@@ -52,7 +52,7 @@ async function handleUnauthorizedResponse(error: AxiosError) {
     problem != undefined &&
     problem.response?.data.title === 'csrf_violation'
   ) {
-    forceLogin();
+    forceReloadHome();
     return Promise.reject(error);
   }
 
@@ -78,8 +78,9 @@ async function handleUnauthorizedResponse(error: AxiosError) {
         const error = res as AxiosError;
         if (error.status === HttpStatusCode.Unauthorized || error.status === HttpStatusCode.Locked) {
           // Access token does not exist, or Refresh token is expired, or User is locked and cannot be refreshed,
-          // or they cannot be authenticated anymore, the best we can do here is force the user to login again
-          forceLogin();
+          // or they cannot be authenticated anymore, the best we can do here is force the user to logout,
+          // remove all cookies, and force them to login again.
+          logout().then(() => forceReloadHome());
         }
         return Promise.reject(error);
       } else {
@@ -90,7 +91,7 @@ async function handleUnauthorizedResponse(error: AxiosError) {
             const error = res as AxiosError;
             if (error.status === HttpStatusCode.Unauthorized) {
               // User is not authenticated anymore, the best we can do here is force the user to login again
-              forceLogin();
+              forceReloadHome();
             }
             return Promise.reject(error);
           } else {
@@ -104,9 +105,9 @@ async function handleUnauthorizedResponse(error: AxiosError) {
   }
 }
 
-// Send the user to login, by re-fetching index.html, and refreshing CSRF token and cookie
-function forceLogin() {
-  window.location.assign(loginPath);
+// Send the user home, by re-fetching index.html, and refreshing CSRF token and cookie
+function forceReloadHome() {
+  window.location.assign(homePath);
 }
 
 export { initializeApiClient };

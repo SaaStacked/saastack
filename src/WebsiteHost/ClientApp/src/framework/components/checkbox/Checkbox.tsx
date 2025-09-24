@@ -1,5 +1,5 @@
 import React, { AllHTMLAttributes } from 'react';
-import { createComponentId } from '../Components';
+import { createComponentId, toClasses } from '../Components';
 
 
 type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
@@ -57,7 +57,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
       : 'border-gray-300 focus:border-primary focus:ring-primary';
     const widthClass = fullWidth ? 'w-full' : '';
-    const classes = [baseClasses, sizeClasses[size], stateClasses, widthClass, className].filter(Boolean).join(' ');
+    const classes = toClasses([baseClasses, sizeClasses[size], stateClasses, widthClass, className]);
     const componentId = createComponentId('checkbox', id);
     const labelText = children || label || name || componentId;
     return (
@@ -82,7 +82,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               {...props}
             />
             <label
-              className="ml-2 text-sm font-medium text-gray-700 flex-1 w-full"
+              className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-400 flex-1 w-full"
               data-testid={`${componentId}_label`}
               htmlFor={componentId}
               aria-labelledby={componentId}

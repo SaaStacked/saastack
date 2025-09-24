@@ -5,3 +5,7 @@ export function randomComponentId() {
 export function createComponentId(suffix: string, id?: string) {
   return id ? `${id}_${suffix}` : `${suffix}(${randomComponentId()})`;
 }
+
+export function toClasses(styles: (string | undefined)[]) {
+  return styles.filter(Boolean).join(' ');
+}

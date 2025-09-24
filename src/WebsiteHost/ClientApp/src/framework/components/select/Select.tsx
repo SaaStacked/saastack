@@ -2,41 +2,45 @@ import React, { AllHTMLAttributes } from 'react';
 import { createComponentId, toClasses } from '../Components';
 
 
-type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
+type HTMLSelectProps = AllHTMLAttributes<HTMLSelectElement>;
 
-export interface InputProps {
+export type SelectOption = {
+  value: string;
+  label: string;
+};
+
+export interface SelectProps {
   className?: string;
   id?: string;
-  name?: HTMLInputProps['name'];
-  type?: HTMLInputProps['type'];
+  name?: HTMLSelectProps['name'];
+  options: SelectOption[];
   size?: 'sm' | 'md' | 'lg';
   label?: string;
-  placeholder?: HTMLInputProps['placeholder'];
-  value?: HTMLInputProps['value'];
+  placeholder?: HTMLSelectProps['placeholder'];
+  value?: HTMLSelectProps['value'];
   disabled?: boolean;
   required?: boolean;
   errorMessage?: string;
   hintText?: string;
   fullWidth?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: HTMLInputProps['onBlur'];
-  onFocus?: HTMLInputProps['onFocus'];
-  autoComplete?: HTMLInputProps['autoComplete'];
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: HTMLSelectProps['onBlur'];
+  onFocus?: HTMLSelectProps['onFocus'];
 }
 
-// Creates an input field with the specified type, and size
+// Creates a dropbox box with selectable options with the specified size and options
 // Layout is critical:
 // - The label occupies the first half of the width of the parent
-// - The input occupies the second half of the width of the parent, for alignment with other form controls
-// - We stack the input and label on top the errorMessage in mobile and desktop
-// - We reserve space for the errorMessage and hintText below the input
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+// - The select occupies the second half of the width of the parent, for alignment with other form controls
+// - We stack the select and label on top the errorMessage in mobile and desktop
+// - We reserve space for the errorMessage and hintText below the select
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
     {
       className,
       id,
       name,
-      type = 'text',
+      options,
       size = 'md',
       label,
       placeholder,
@@ -49,7 +53,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onChange,
       onBlur,
       onFocus,
-      autoComplete,
       ...props
     },
     ref
@@ -66,7 +69,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       : 'border-gray-300 focus:border-primary focus:ring-primary';
     const widthClass = fullWidth ? 'w-full' : '';
     const classes = toClasses([baseClasses, sizeClasses[size], stateClasses, widthClass, className]);
-    const componentId = createComponentId('input', id);
+    const componentId = createComponentId('select', id);
+    const showPlaceholder = (value === undefined || value === null || value === '') && placeholder !== undefined;
     const labelText = label || name || componentId;
     return (
       <div className={`flex flex-col gap-1`} data-testid={`${componentId}_wrapper`}>
@@ -89,23 +93,31 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
               </label>
             )}
-            <input
+            <select
               className={classes}
               data-testid={componentId}
               id={componentId}
               name={name}
-              type={type}
-              placeholder={placeholder}
               value={value}
               disabled={disabled}
               required={required}
               onChange={onChange}
               onBlur={onBlur}
               onFocus={onFocus}
-              autoComplete={autoComplete}
               ref={ref}
               {...props}
-            />
+            >
+              {showPlaceholder && (
+                <option value="" disabled>
+                  {placeholder}
+                </option>
+              )}
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mt-1 h-6 flex items-start">
             {errorMessage && (
@@ -125,4 +137,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-export default Input;
+export default Select;

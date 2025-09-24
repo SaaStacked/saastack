@@ -62,71 +62,72 @@ export function getBrowserCountry(): string {
  * @returns The country code or null if not found
  */
 function getCountryFromTimezone(timezone: string): string | null {
-  const timezoneToCountry: Record<string, string> = {
-    // North America
-    'America/New_York': 'US',
-    'America/Chicago': 'US',
-    'America/Denver': 'US',
-    'America/Los_Angeles': 'US',
-    'America/Phoenix': 'US',
-    'America/Anchorage': 'US',
-    'America/Toronto': 'CA',
-    'America/Vancouver': 'CA',
-    'America/Montreal': 'CA',
-    'America/Mexico_City': 'MX',
-
-    // Europe
-    'Europe/London': 'GB',
-    'Europe/Dublin': 'IE',
-    'Europe/Paris': 'FR',
-    'Europe/Berlin': 'DE',
-    'Europe/Rome': 'IT',
-    'Europe/Madrid': 'ES',
-    'Europe/Amsterdam': 'NL',
-    'Europe/Brussels': 'BE',
-    'Europe/Vienna': 'AT',
-    'Europe/Zurich': 'CH',
-    'Europe/Stockholm': 'SE',
-    'Europe/Oslo': 'NO',
-    'Europe/Copenhagen': 'DK',
-    'Europe/Helsinki': 'FI',
-    'Europe/Warsaw': 'PL',
-    'Europe/Prague': 'CZ',
-    'Europe/Budapest': 'HU',
-    'Europe/Bucharest': 'RO',
-    'Europe/Athens': 'GR',
-    'Europe/Moscow': 'RU',
-
-    // Asia Pacific
-    'Asia/Tokyo': 'JP',
-    'Asia/Seoul': 'KR',
-    'Asia/Shanghai': 'CN',
-    'Asia/Hong_Kong': 'HK',
-    'Asia/Singapore': 'SG',
-    'Asia/Bangkok': 'TH',
-    'Asia/Jakarta': 'ID',
-    'Asia/Manila': 'PH',
-    'Asia/Kuala_Lumpur': 'MY',
-    'Asia/Kolkata': 'IN',
-    'Asia/Dubai': 'AE',
-    'Australia/Sydney': 'AU',
-    'Australia/Melbourne': 'AU',
-    'Australia/Perth': 'AU',
-    'Pacific/Auckland': 'NZ',
-
-    // South America
-    'America/Sao_Paulo': 'BR',
-    'America/Argentina/Buenos_Aires': 'AR',
-    'America/Santiago': 'CL',
-    'America/Lima': 'PE',
-    'America/Bogota': 'CO',
-
-    // Africa
-    'Africa/Cairo': 'EG',
-    'Africa/Johannesburg': 'ZA',
-    'Africa/Lagos': 'NG',
-    'Africa/Casablanca': 'MA'
-  };
-
-  return timezoneToCountry[timezone] || null;
+  return countryTimezones[timezone] || null;
 }
+
+export const countryTimezones: Record<string, string> = {
+  // North America
+  'America/New_York': 'US',
+  'America/Chicago': 'US',
+  'America/Denver': 'US',
+  'America/Los_Angeles': 'US',
+  'America/Phoenix': 'US',
+  'America/Anchorage': 'US',
+  'America/Toronto': 'CA',
+  'America/Vancouver': 'CA',
+  'America/Montreal': 'CA',
+  'America/Mexico_City': 'MX',
+
+  // Europe
+  'Europe/London': 'GB',
+  'Europe/Dublin': 'IE',
+  'Europe/Paris': 'FR',
+  'Europe/Berlin': 'DE',
+  'Europe/Rome': 'IT',
+  'Europe/Madrid': 'ES',
+  'Europe/Amsterdam': 'NL',
+  'Europe/Brussels': 'BE',
+  'Europe/Vienna': 'AT',
+  'Europe/Zurich': 'CH',
+  'Europe/Stockholm': 'SE',
+  'Europe/Oslo': 'NO',
+  'Europe/Copenhagen': 'DK',
+  'Europe/Helsinki': 'FI',
+  'Europe/Warsaw': 'PL',
+  'Europe/Prague': 'CZ',
+  'Europe/Budapest': 'HU',
+  'Europe/Bucharest': 'RO',
+  'Europe/Athens': 'GR',
+  'Europe/Moscow': 'RU',
+
+  // Asia Pacific
+  'Asia/Tokyo': 'JP',
+  'Asia/Seoul': 'KR',
+  'Asia/Shanghai': 'CN',
+  'Asia/Hong_Kong': 'HK',
+  'Asia/Singapore': 'SG',
+  'Asia/Bangkok': 'TH',
+  'Asia/Jakarta': 'ID',
+  'Asia/Manila': 'PH',
+  'Asia/Kuala_Lumpur': 'MY',
+  'Asia/Kolkata': 'IN',
+  'Asia/Dubai': 'AE',
+  'Australia/Sydney': 'AU',
+  'Australia/Melbourne': 'AU',
+  'Australia/Perth': 'AU',
+  'Pacific/Auckland': 'NZ',
+
+  // South America
+  'America/Sao_Paulo': 'BR',
+  'America/Argentina/Buenos_Aires': 'AR',
+  'America/Santiago': 'CL',
+  'America/Lima': 'PE',
+  'America/Bogota': 'CO',
+
+  // Africa
+  'Africa/Cairo': 'EG',
+  'Africa/Johannesburg': 'ZA',
+  'Africa/Lagos': 'NG',
+  'Africa/Casablanca': 'MA'
+};
+

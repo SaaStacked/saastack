@@ -1,6 +1,6 @@
 {
   "main": {
-    "js": "B1vqYWuZ.bundle.js",
-    "css": "CVd11waG.bundle.css"
+    "js": "vite-inject-mocker-entry.js",
+    "css": "assets/iframe-40QwsskP.css"
   }
 }

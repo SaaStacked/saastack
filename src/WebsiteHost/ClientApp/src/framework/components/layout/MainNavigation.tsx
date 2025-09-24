@@ -192,6 +192,8 @@ function UserMenu({
   profile: any;
   logout: any;
 }) {
+  const displayName = profile?.displayName ? profile?.displayName : profile?.name.firstName || '?';
+  const avatarLetter = displayName.charAt(0);
   return (
     <>
       <div className="relative">
@@ -199,9 +201,17 @@ function UserMenu({
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         >
-          <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-            <span className="text-md font-medium text-white">{profile?.name.firstName?.charAt(0) || '?'}</span>
-          </div>
+          {profile.avatarUrl ? (
+            <img
+              className="w-10 h-10 rounded-full border-accent border-1 object-cover"
+              src={profile.avatarUrl}
+              alt={displayName}
+            />
+          ) : (
+            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+              <span className="text-md font-medium text-white">{avatarLetter}</span>
+            </div>
+          )}
         </button>
 
         {isDropdownOpen && (
