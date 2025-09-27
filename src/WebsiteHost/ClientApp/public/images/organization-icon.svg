@@ -1,0 +1,24 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="32" fill="#f3f4f6" />
+    <circle cx="32" cy="32" r="28" fill="#e5e7eb" />
+
+    <!-- Building icon -->
+    <rect x="20" y="18" width="24" height="28" fill="#6b7280" rx="2" />
+
+    <!-- Windows -->
+    <rect x="24" y="22" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="29" y="22" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="37" y="22" width="3" height="3" fill="#f9fafb" rx="0.5" />
+
+    <rect x="24" y="28" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="29" y="28" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="37" y="28" width="3" height="3" fill="#f9fafb" rx="0.5" />
+
+    <rect x="24" y="34" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="29" y="34" width="3" height="3" fill="#f9fafb" rx="0.5" />
+    <rect x="37" y="34" width="3" height="3" fill="#f9fafb" rx="0.5" />
+
+    <!-- Door -->
+    <rect x="33" y="38" width="6" height="8" fill="#374151" rx="1" />
+    <circle cx="37" cy="42" r="0.5" fill="#f9fafb" />
+</svg>

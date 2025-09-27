@@ -62,7 +62,7 @@ export const ProfilesManagePage: React.FC = () => {
                 profile.roles.map((role, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                   >
                     {formatRoleName(role)}
                   </span>
@@ -83,7 +83,7 @@ export const ProfilesManagePage: React.FC = () => {
                 profile.features.map((feature, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                   >
                     {formatFeatureName(feature)}
                   </span>

@@ -246,14 +246,43 @@
     },
     "organizations": {
       "manage": {
-        "title": "Your Organizations"
+        "title": "Organizations",
+        "loader": {
+          "title": "Loading all organizations"
+        },
+        "form": {
+          "fields": {
+            "display_name": {
+              "label": "Name",
+              "placeholder": "Your organization name",
+              "validation": "Must be a valid name"
+            },
+            "roles": {
+              "label": "Security Roles",
+              "empty": "None"
+            },
+            "features": {
+              "label": "Licenses",
+              "empty": "None"
+            }
+          },
+          "submit": {
+            "label": "Save Changes"
+          }
+        },
+        "errors": {
+          "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
+        },
+        "hints": {
+          "ownership": "This is your (one and only) personal organization. You cannot delete it, you cannot leave it, and you cannot invite others into it"
+        }
       }
     },
     "profiles": {
       "manage": {
         "title": "Settings",
         "loader": {
-          "title": "Loading Your Profile"
+          "title": "Loading your profile"
         },
         "tabs": {
           "profile": {
