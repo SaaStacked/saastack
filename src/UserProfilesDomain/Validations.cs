@@ -9,6 +9,7 @@ public static class Validations
     public static readonly Validation LastName = CommonValidations.DescriptiveName();
     public static readonly Validation PhoneNumber = CommonValidations.PhoneNumber;
     public static readonly Validation Timezone = CommonValidations.Timezone;
+    public static readonly Validation Locale = CommonValidations.Locale;
 
     public static class Address
     {

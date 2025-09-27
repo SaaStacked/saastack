@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
-import { faAdd, faArrowRightFromBracket, faBars, faBuilding, faCalendar, faCamera, faCarAlt, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleArrowLeft, faExclamationTriangle, faEye, faEyeSlash, faInfoCircle, faMoon, faPencil, faTrash, faUser, faUserCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faArrowRightFromBracket, faBars, faBuilding, faCalendar, faCamera, faCarAlt, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleArrowLeft, faEdit, faExclamationTriangle, faEye, faEyeSlash, faInfoCircle, faMoon, faPencil, faPeopleRoof, faRepeat, faShuffle, faTrash, faUser, faUserCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { createComponentId, toClasses } from '../Components.ts';
 
 
@@ -15,6 +15,7 @@ interface IconProps {
 export type TailwindColor =
   | 'primary'
   | 'secondary'
+  | 'accent'
   | 'red-50'
   | 'red-100'
   | 'red-200'
@@ -262,29 +263,33 @@ export type TailwindColor =
 export type IconSymbol = keyof typeof fontAwesomeSymbols | keyof typeof nonFontAwesomeSymbols;
 
 const fontAwesomeSymbols = {
-  camera: faCamera,
-  car: faCarAlt,
-  calendar: faCalendar,
-  'check-circle-fill': faCheckCircle,
-  'info-circle-fill': faInfoCircle,
-  'exclamation-triangle-fill': faExclamationTriangle,
-  logout: faArrowRightFromBracket,
+  'arrow-left-circle': faCircleArrowLeft,
   avatar: faUserCircle,
   bars: faBars,
+  building: faBuilding,
+  calendar: faCalendar,
+  camera: faCamera,
+  car: faCarAlt,
+  check: faCheck,
+  'check-circle-fill': faCheckCircle,
   'chevron-left': faChevronLeft,
   'chevron-right': faChevronRight,
   'chevron-up': faChevronUp,
   'chevron-down': faChevronDown,
-  check: faCheck,
+  company: faPeopleRoof,
   cross: faXmark,
-  'arrow-left-circle': faCircleArrowLeft,
-  'show-password': faEyeSlash,
+  edit: faEdit,
+  'exclamation-triangle-fill': faExclamationTriangle,
   'hide-password': faEye,
+  'info-circle-fill': faInfoCircle,
+  logout: faArrowRightFromBracket,
   moon: faMoon,
   pencil: faPencil,
   user: faUser,
-  building: faBuilding,
   plus: faAdd,
+  repeat: faRepeat,
+  'show-password': faEyeSlash,
+  shuffle: faShuffle,
   trash: faTrash
 } as const;
 

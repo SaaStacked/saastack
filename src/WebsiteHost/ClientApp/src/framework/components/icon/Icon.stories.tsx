@@ -19,6 +19,7 @@ const meta: Meta<typeof Icon> = {
       options: [
         'primary',
         'secondary',
+        'accent',
         'red-50',
         'red-100',
         'red-200',

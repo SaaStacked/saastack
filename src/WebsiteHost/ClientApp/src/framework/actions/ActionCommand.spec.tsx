@@ -149,7 +149,7 @@ describe('useActionCommand', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['acachekey'] });
+      expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['acachekey'], exact: false });
     });
   });
 

@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import z from 'zod';
 import { ChangeProfileAvatarResponse, UserProfileForCaller } from '../../../framework/api/apiHost1';
+import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import ButtonUpload from '../../../framework/components/button/ButtonUpload.tsx';
 import FormAction from '../../../framework/components/form/FormAction.tsx';
@@ -10,31 +11,27 @@ import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSelect from '../../../framework/components/form/formSelect/FormSelect.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import { FormTabs } from '../../../framework/components/form/FormTabs.tsx';
-import HiddenAction, { HiddenActionRef } from '../../../framework/components/hidden/HiddenAction.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
-import Loader from '../../../framework/components/loader/Loader.tsx';
-import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
+import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import { countryTimezones } from '../../../framework/utils/browser.ts';
 import { ChangeProfileAction } from '../actions/changeProfile.ts';
 import { ChangeProfileAvatarAction, ChangeProfileAvatarRequest, UploadAvatarErrors } from '../actions/changeProfileAvatar.ts';
 import { DeleteProfileAvatarAction } from '../actions/deleteProfileAvatar.ts';
+import { GetProfileForCallerAction } from '../actions/getProfileForCaller.ts';
 
 
 export const ProfilesManagePage: React.FC = () => {
   const { t: translate } = useTranslation();
-  const { isExecuting, isSuccess, profile } = useCurrentUser();
-  const [currentProfile, setCurrentProfile] = useState(profile);
+  const getProfile = GetProfileForCallerAction();
+  const profile = getProfile.lastSuccessResponse!;
   const changeProfile = ChangeProfileAction(profile.userId);
   const changeAvatar = ChangeProfileAvatarAction(profile.userId);
   const deleteAvatar = DeleteProfileAvatarAction(profile.userId);
+  const [currentProfile, setCurrentProfile] = useState(profile);
+  const getProfileRef = useRef<PageActionRef<EmptyRequest>>(null);
 
-  if (!isSuccess || isExecuting) {
-    return (
-      <FormPage title={translate('pages.profiles.manage.title')}>
-        <Loader message={translate('pages.profiles.manage.loader.title')} />
-      </FormPage>
-    );
-  }
+  useEffect(() => getProfileRef.current?.execute(), []);
+
   const AccountTab = () => (
     <div className="space-y-6">
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -62,7 +59,7 @@ export const ProfilesManagePage: React.FC = () => {
                 profile.roles.map((role, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                   >
                     {formatRoleName(role)}
                   </span>
@@ -83,7 +80,7 @@ export const ProfilesManagePage: React.FC = () => {
                 profile.features.map((feature, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                   >
                     {formatFeatureName(feature)}
                   </span>
@@ -113,7 +110,7 @@ export const ProfilesManagePage: React.FC = () => {
       ? currentProfile?.displayName
       : currentProfile?.name?.firstName || '?';
     const avatarLetter = displayName.charAt(0);
-    const changeAvatarRef = useRef<HiddenActionRef<ChangeProfileAvatarRequest>>(null);
+    const changeAvatarRef = useRef<PageActionRef<ChangeProfileAvatarRequest>>(null);
 
     return (
       <>
@@ -138,7 +135,7 @@ export const ProfilesManagePage: React.FC = () => {
                 }}
                 disabled={changeAvatar.isExecuting}
               />
-              <HiddenAction
+              <PageAction
                 id="change_avatar"
                 action={changeAvatar as any}
                 onSuccess={(params) => {
@@ -176,7 +173,8 @@ export const ProfilesManagePage: React.FC = () => {
           validationSchema={z.object({
             displayName: z
               .string()
-              .min(2, translate('pages.profiles.manage.tabs.profile.form.fields.display_name.validation')),
+              .min(1, translate('pages.profiles.manage.tabs.profile.form.fields.display_name.validation'))
+              .max(100, translate('pages.profiles.manage.tabs.profile.form.fields.display_name.validation')),
             locale: z.string().min(2, translate('pages.profiles.manage.tabs.profile.form.fields.locale.validation')),
             timezone: z.string().min(2, translate('pages.profiles.manage.tabs.profile.form.fields.timezone.validation'))
           })}
@@ -236,9 +234,17 @@ export const ProfilesManagePage: React.FC = () => {
   ];
 
   return (
-    <FormPage title={translate('pages.profiles.manage.title')} align="top">
-      <FormTabs tabs={tabs} defaultTab="account" />
-    </FormPage>
+    <PageAction
+      id="get_profile"
+      action={getProfile}
+      onSuccess={() => setCurrentProfile(getProfile.lastSuccessResponse!)}
+      ref={getProfileRef}
+      loadingMessage="bananas"
+    >
+      <FormPage title={translate('pages.profiles.manage.title')} align="top">
+        <FormTabs tabs={tabs} defaultTab="account" />
+      </FormPage>
+    </PageAction>
   );
 };
 

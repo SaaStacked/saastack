@@ -37,6 +37,59 @@ You can update those definitions at any time by running `npm run update:apis` to
 
 > For this to script to work properly, you must run both the BEFFE and the BACKEND APIs locally on your local machine, so that the OpenAPI swagger endpoint is reachable. You do this in Rider, by running the `AllHosts` compound configuration (runs the `ApiHost1` server, the `WebsiteHost` server and the `TestingStubApiHost`) exposing all the API endpoints and BEEFE.
 
+### Actions
+
+Generally speaking, we do not call the generated AXIOS services directly, but instead we wrap them in a `useQuery` or `useMutation` hook, that provides additional functionality, such as error handling, loading states, caching etc.
+
+These actions can be use directly in code anywhere. But they can also be attached to forms using 'Action-enabled' components, such as (using the `<FormAction/>` component), behind buttons (using the `<ButtonAction/>`), and anywhere on pages (using the `<PageAction/>` component).
+
+This is the recommended approach to build your pages because these 'Action-enabled' components all take care of things like:
+1. Disabling when the browser is offline.
+2. Disabling when the action is already executing.
+3. Displaying errors, when the action fails.
+4. Displaying loading states, when the action is executing.
+5. Caching responses, when the action is successful.
+6. Invalidating caches, when the action is successful.
+
+> See the [JavaScript Action](../../../docs/design-principles/0200-javascript-actions.md) for more details.
+
+### Caching
+
+We use [TanStack Query](https://tanstack.com/query/v4) and `useQuery` and `useMutation` hooks for caching and managing data fetching from backend APIs.
+
+The way it works is that you define a 'query key' for each query to the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `useQuery` to cache the successful response against that key in its cache.
+
+While that key has a cached response, repeated requests to `useQuery` for the same data do not need to go to the backend - and are served locally from the cache.
+
+These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 10 seconds.
+
+> Short cache times (TTLs) are necessary since this client cannot guarantee that it will be the only consumer of the backend data collections. Other clients may have changed the backend data at the same time, and the cached responses in this client will be now be stale (relative to the backend), thus they need to be forced to be refreshed. Long TTLs (like minutes) are not appropriate for this kind of system. Short TTLs can still offer many benefits for clients.
+
+These cached responses can be forced to be invalidated, and are best invalidated when the data that could be cached is updated by the JS App explicitly.
+
+When this client forces a change in that data, it can invalidate the cache for that query key, and the next request for that data will go to the backend.
+
+When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keys to invalidate in the `invalidateCacheKeys` property, and TanStack Query will invalidate all queries that match that collection of keys.
+
+To do this, we define some very simple cache key definitions in files like `src/subDomains/endUsers/actions/responseCache.ts`. Where we define a cumulative set of keys that can be used to invalidate the various caches that that specific subdomain manages.
+
+Assuming the following definition:
+
+```ts
+const resourceCacheKeys = {
+  all: ['resources'] as const,
+  resource: {
+    query: (resourceId: string) => [`resources.${resourceId}`] as const, //uses a single cache key for this specific resource (unique id) 
+    mutate: (resourceId: string) => [...resourceCacheKeys.all, `resources.${resourceId}`] as const // invalidates the specific resource, and the whole collection of all resources
+  }
+}; 
+```
+
+Guidelines:
+* When you call your ActionQuery class to fetch a specific resource: `cacheKey: resourceCacheKeys.resource.query(resourceId)`
+* When you call your ActionCommand class, to update a specific resource: `invalidateCacheKeys: resourceCacheKeys.resource.mutate(resourceId)`
+
+
 ## Testing
 
 Most of this code is covered in unit tests, where possible.

@@ -3,13 +3,14 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { ActionRequestData, ActionResult } from '../../actions/Actions';
-import HiddenAction, { HiddenActionRef } from './HiddenAction';
+import PageAction, { PageActionRef } from './PageAction.tsx';
+
 
 interface TestRequestData extends ActionRequestData {
   atext: string;
 }
 
-describe('HiddenAction', () => {
+describe('PageAction', () => {
   let mockAction: ActionResult<TestRequestData, 'A_VALIDATION_ERROR', any>;
 
   beforeEach(() => {
@@ -25,31 +26,49 @@ describe('HiddenAction', () => {
     };
   });
 
-  it('renders with default props', () => {
-    render(<HiddenAction id="anid" action={mockAction as any} />);
-
-    const hiddenDiv = screen.getByTestId('anid_hidden_action');
-    expect(hiddenDiv).toBeInTheDocument();
-    expect(hiddenDiv).toHaveClass('hidden');
-  });
-
   it('renders with custom id', () => {
-    render(<HiddenAction id="anid" action={mockAction as any} />);
+    render(<PageAction id="anid" action={mockAction as any} />);
 
-    const hiddenDiv = screen.getByTestId('anid_hidden_action');
+    const hiddenDiv = screen.getByTestId('anid_page_action');
     expect(hiddenDiv).toBeInTheDocument();
   });
 
-  it('renders children inside hidden div', () => {
+  it('when not executed, does not render children', () => {
     render(
-      <HiddenAction id="anid" action={mockAction as any}>
-        <div data-testid="child-content">Child content</div>
-      </HiddenAction>
+      <PageAction id="anid" action={mockAction as any}>
+        <div data-testid="achildid">Child content</div>
+      </PageAction>
     );
 
-    const childContent = screen.getByTestId('child-content');
+    const childContent = screen.queryByTestId('achildid');
+    expect(childContent).not.toBeInTheDocument();
+  });
+
+  it('when executing, does not render children', async () => {
+    mockAction.isExecuting = true;
+
+    render(
+      <PageAction id="anid" action={mockAction as any}>
+        <div data-testid="achildid">Child content</div>
+      </PageAction>
+    );
+
+    const childContent = screen.queryByTestId('achildid');
+    expect(childContent).not.toBeInTheDocument();
+  });
+
+  it('when execute succeeds, renders children', async () => {
+    mockAction.isSuccess = true;
+    mockAction.isExecuting = false;
+
+    render(
+      <PageAction id="anid" action={mockAction as any}>
+        <div data-testid="achildid">Child content</div>
+      </PageAction>
+    );
+
+    const childContent = screen.queryByTestId('achildid');
     expect(childContent).toBeInTheDocument();
-    expect(childContent.textContent).toBe('Child content');
   });
 
   it('when execute succeeds, calls onSuccess callback', async () => {
@@ -60,9 +79,9 @@ describe('HiddenAction', () => {
         response: { success: true }
       })
     );
-    const ref = React.createRef<HiddenActionRef<any>>();
+    const ref = React.createRef<PageActionRef<any>>();
 
-    render(<HiddenAction id="anid" action={mockAction as any} onSuccess={onSuccess} ref={ref} />);
+    render(<PageAction id="anid" action={mockAction as any} onSuccess={onSuccess} ref={ref} />);
 
     ref.current?.execute({ atext: 'aname' });
 
@@ -78,9 +97,9 @@ describe('HiddenAction', () => {
     mockAction.lastExpectedError = { code: 'A_VALIDATION_ERROR' as any };
     const expectedErrorMessages = { A_VALIDATION_ERROR: 'amessage' };
 
-    render(<HiddenAction id="anid" action={mockAction as any} expectedErrorMessages={expectedErrorMessages} />);
+    render(<PageAction id="anid" action={mockAction as any} expectedErrorMessages={expectedErrorMessages} />);
 
-    const expectedError = screen.getByTestId('anid_hidden_action_expected_error_alert');
+    const expectedError = screen.getByTestId('anid_page_action_expected_error_alert');
     expect(expectedError).not.toBeNull();
     expect(expectedError.textContent).toBe('amessage');
   });
@@ -88,9 +107,9 @@ describe('HiddenAction', () => {
   it('when execute fails with unexpected error, displays unexpected error', () => {
     mockAction.lastUnexpectedError = new Error('anerror') as any;
 
-    render(<HiddenAction id="anid" action={mockAction as any} />);
+    render(<PageAction id="anid" action={mockAction as any} />);
 
-    const unexpectedError = screen.getByTestId('anid_hidden_action_unexpected_error_unhandled_error');
+    const unexpectedError = screen.getByTestId('anid_page_action_unexpected_error_unhandled_error');
     expect(unexpectedError).not.toBeNull();
   });
 });

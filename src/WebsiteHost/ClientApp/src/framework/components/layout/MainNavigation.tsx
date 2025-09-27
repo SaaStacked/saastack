@@ -2,16 +2,30 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { LogoutAction } from '../../../subDomains/identity/actions/logout.ts';
-import { UserProfileForCaller } from '../../api/apiHost1';
+import { Organization, UserProfileForCaller } from '../../api/apiHost1';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
+import Icon from '../icon/Icon.tsx';
 
+
+interface NavigationProps {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (value: boolean) => void;
+  translate: (key: string) => string;
+  isActive: (path: string) => boolean;
+  navItems: { path: string; label: string }[];
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: (value: boolean) => void;
+  profile: UserProfileForCaller;
+  logout: () => void;
+}
 
 // Creates a main navigation bar for the website, for authenticated users
 // Displays a logo, navigation links
 // Displays a user menu with a logout button
+// Displays a mobile menu for small screens
 export const MainNavigation: React.FC = () => {
   const { t: translate } = useTranslation();
-  const { profile } = useCurrentUser();
+  const { profile, organization } = useCurrentUser();
   const { execute: logout } = LogoutAction();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,17 +42,20 @@ export const MainNavigation: React.FC = () => {
     <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-b-accent">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex justify-between items-center h-16">
-          <MobileHamburgerMenu
-            translate={translate}
-            isMobileMenuOpen={isMobileMenuOpen}
-            setIsMobileMenuOpen={setIsMobileMenuOpen}
-            navItems={navItems}
-            isActive={isActive}
-            isDropdownOpen={isDropdownOpen}
-            setIsDropdownOpen={setIsDropdownOpen}
-            profile={profile}
-            logout={logout}
-          />
+          <div className="flex items-center space-x-2">
+            <OrganizationAvatar organization={organization} />
+            <MobileHamburgerMenu
+              translate={translate}
+              isMobileMenuOpen={isMobileMenuOpen}
+              setIsMobileMenuOpen={setIsMobileMenuOpen}
+              navItems={navItems}
+              isActive={isActive}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+              profile={profile}
+              logout={logout}
+            />
+          </div>
           <BrandText
             translate={translate}
             isMobileMenuOpen={isMobileMenuOpen}
@@ -61,7 +78,7 @@ export const MainNavigation: React.FC = () => {
             profile={profile}
             logout={logout}
           />
-          <UserMenu
+          <UserAvatar
             translate={translate}
             isMobileMenuOpen={isMobileMenuOpen}
             setIsMobileMenuOpen={setIsMobileMenuOpen}
@@ -89,18 +106,6 @@ export const MainNavigation: React.FC = () => {
     </nav>
   );
 };
-
-interface NavigationProps {
-  isMobileMenuOpen: boolean;
-  setIsMobileMenuOpen: (value: boolean) => void;
-  translate: (key: string) => string;
-  isActive: (path: string) => boolean;
-  navItems: { path: string; label: string }[];
-  isDropdownOpen: boolean;
-  setIsDropdownOpen: (value: boolean) => void;
-  profile: UserProfileForCaller;
-  logout: () => void;
-}
 
 function MobileHamburgerMenu({ isMobileMenuOpen, setIsMobileMenuOpen }: NavigationProps) {
   return (
@@ -182,7 +187,7 @@ function DesktopNavLinks({ navItems, isActive }: NavigationProps) {
   );
 }
 
-function UserMenu({
+function UserAvatar({
   translate,
   isDropdownOpen,
   setIsDropdownOpen,
@@ -203,7 +208,7 @@ function UserMenu({
         >
           {profile.avatarUrl ? (
             <img
-              className="w-10 h-10 rounded-full border-accent border-1 object-cover"
+              className="w-10 h-10 rounded-full border-1 object-cover border-gray-200 dark:border-gray-600"
               src={profile.avatarUrl}
               alt={displayName}
             />
@@ -245,5 +250,24 @@ function UserMenu({
         )}
       </div>
     </>
+  );
+}
+
+function OrganizationAvatar({ organization }: { organization?: Organization }) {
+  const orgName = organization?.name || 'Org';
+  const avatarUrl = organization?.avatarUrl;
+
+  return (
+    <Link to="/organizations" className="flex items-center">
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt={orgName}
+          className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600"
+        />
+      ) : (
+        <Icon className="w-10 h-10 rounded-full object-cover bg-gray-200" symbol="company" size={36} color="gray-400" />
+      )}
+    </Link>
   );
 }

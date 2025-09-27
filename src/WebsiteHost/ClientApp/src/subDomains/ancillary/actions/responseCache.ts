@@ -1,6 +1,9 @@
-const featureFlagCacheKeys = {
-  all: ['ancillary.features.all'] as const,
-  flag: (flagName: string) => [...featureFlagCacheKeys.all, `ancillary.features.feature.${flagName}`] as const
+const ancillaryCacheKeys = {
+  all: ['ancillary'] as const,
+  features: {
+    all: ['ancillary.features'] as const,
+    query: (name: string) => [`ancillary.features.${name}`] as const
+  }
 };
 
-export default featureFlagCacheKeys;
+export default ancillaryCacheKeys;

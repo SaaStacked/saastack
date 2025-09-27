@@ -20,6 +20,13 @@
         "default_completed_label": "Success!"
       }
     },
+    "page": {
+      "page_action": {
+        "loader": {
+          "title": "Loading"
+        }
+      }
+    },
     "layout": {
       "main_navigation": {
         "logo": "SaaStack",
@@ -104,7 +111,7 @@
             "password": {
               "label": "Password",
               "placeholder": "Your password",
-              "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
+              "validation": "Must be a between 8 and 200 chars, with 3: number, lowercase, uppercase or special characters"
             }
           },
           "submit": {
@@ -132,12 +139,12 @@
             "first_name": {
               "label": "First Name",
               "placeholder": "Your first name",
-              "validation": "Must be a valid name"
+              "validation": "Must be between 1 and 100 characters"
             },
             "last_name": {
               "label": "Last Name",
               "placeholder": "Your last name",
-              "validation": "Must be a valid name"
+              "validation": "Must be between 1 and 100 characters"
             },
             "email_address": {
               "label": "Email Address",
@@ -147,7 +154,7 @@
             "password": {
               "label": "Password",
               "placeholder": "A strong password",
-              "validation": "Must be a minimum of 8 chars, with 3: number, lowercase, uppercase or special characters"
+              "validation": "Must be a between 8 and 200 chars, with 3: number, lowercase, uppercase or special characters"
             },
             "confirm_password": {
               "label": "Confirm Password",
@@ -246,14 +253,70 @@
     },
     "organizations": {
       "manage": {
-        "title": "Your Organizations"
+        "title": "Organizations",
+        "loader": {
+          "title": "Loading all memberships"
+        },
+        "labels": {
+          "current": "current"
+        },
+        "form": {
+          "fields": {
+            "display_name": {
+              "label": "Name",
+              "placeholder": "Your organization name",
+              "validation": "Must be between 1 and 100 characters"
+            },
+            "roles": {
+              "label": "Security Roles",
+              "empty": "None"
+            },
+            "features": {
+              "label": "Licenses",
+              "empty": "None"
+            }
+          },
+          "submit": {
+            "label": "Save Changes"
+          }
+        },
+        "errors": {
+          "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
+        },
+        "hints": {
+          "ownership": "This is your (one and only) personal organization. You cannot delete it, you cannot leave it, and you cannot invite others into it",
+          "current": "This as your current organization",
+          "switch_default": "Switch to this as your current organization",
+          "edit": "Switch to this as your current organization"
+        }
+      },
+      "edit": {
+        "title": "Edit Organization",
+        "loader": {
+          "title": "Loading organization"
+        },
+        "form": {
+          "fields": {
+            "name": {
+              "label": "Name",
+              "placeholder": "Your organization name",
+              "validation": "Must be between 1 and 100 characters"
+            }
+          },
+          "submit": {
+            "label": "Save Changes"
+          }
+        },
+        "errors": {
+          "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
+        }
       }
     },
     "profiles": {
       "manage": {
         "title": "Settings",
         "loader": {
-          "title": "Loading Your Profile"
+          "title": "Loading your profile"
         },
         "tabs": {
           "profile": {
@@ -263,17 +326,17 @@
                 "display_name": {
                   "label": "Preferred Name",
                   "placeholder": "Your preferred name",
-                  "validation": "Must be a valid name"
+                  "validation": "Must be between 1 and 100 characters"
                 },
                 "locale": {
                   "label": "Language",
                   "placeholder": "Your preferred language",
-                  "validation": "You must select a language, e.g. en-US"
+                  "validation": "You must select a language, e.g. en, or en-US"
                 },
                 "timezone": {
                   "label": "Time zone",
                   "placeholder": "Your time zone",
-                  "validation": "you must select a time zone, e.g. America/New_York"
+                  "validation": "you must select a valid IANA time zone, e.g. America/New_York"
                 }
               },
               "submit": {

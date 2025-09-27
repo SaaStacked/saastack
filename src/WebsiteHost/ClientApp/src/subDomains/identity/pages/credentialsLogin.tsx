@@ -20,7 +20,10 @@ export const CredentialsLoginPage: React.FC = () => {
         action={login}
         validationSchema={z.object({
           username: z.email(translate('pages.identity.credentials_login.form.fields.username.validation')),
-          password: z.string().min(8, translate('pages.identity.credentials_login.form.fields.password.validation'))
+          password: z
+            .string()
+            .min(8, translate('pages.identity.credentials_login.form.fields.password.validation'))
+            .max(200, translate('pages.identity.credentials_login.form.fields.password.validation'))
         })}
         expectedErrorMessages={{
           [LoginErrors.account_locked]: translate('pages.identity.credentials_login.errors.account_locked'),

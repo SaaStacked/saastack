@@ -19,6 +19,7 @@ import { CredentialsRegisterPage } from './subDomains/identity/pages/credentials
 import { CredentialsRegisterConfirm } from './subDomains/identity/pages/credentialsRegisterConfirm.tsx';
 import { CredentialsRegisterRedirect } from './subDomains/identity/pages/credentialsRegisterRedirect.tsx';
 import { SsoMicrosoftPage } from './subDomains/identity/pages/ssoMicrosoft.tsx';
+import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEditPage.tsx';
 import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManage.tsx';
 import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
 
@@ -40,7 +41,7 @@ const App: React.FC = () => {
   }, [location, ready]);
 
   if (isExecuting || ready === false) {
-    return <Loader message="Loading..." />;
+    return <Loader message="Loading" />;
   }
 
   return (
@@ -53,6 +54,7 @@ const App: React.FC = () => {
             <Route path="/bookings/reserve" element={<BookingsReservePage />} />
             <Route path="/profile" element={<ProfilesManagePage />} />
             <Route path="/organizations" element={<OrganizationsManagePage />} />
+            <Route path="/organizations/:id/edit" element={<OrganizationEditPage />} />
           </Route>
 
           <Route element={<AnonymousOnlyRoutes isAuthenticated={isAuthenticated} />}>

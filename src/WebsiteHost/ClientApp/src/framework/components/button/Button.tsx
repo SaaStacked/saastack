@@ -16,6 +16,7 @@ export interface ButtonProps {
   label?: string;
   onClick?: () => void;
   navigateTo?: string;
+  title?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,7 +31,8 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   label,
   onClick,
-  navigateTo
+  navigateTo,
+  title
 }) => {
   const baseClasses =
     'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -62,6 +64,7 @@ const Button: React.FC<ButtonProps> = ({
       type={type}
       disabled={disabled || busy}
       onClick={onClickTarget}
+      title={title}
     >
       {busy && (
         <svg

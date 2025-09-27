@@ -91,7 +91,10 @@ export function useActionCommand<
       }
 
       if (invalidateCacheKeys) {
-        queryClient.invalidateQueries({ queryKey: invalidateCacheKeys });
+        queryClient.invalidateQueries({
+          queryKey: invalidateCacheKeys,
+          exact: false // we want to support wildcards
+        });
       }
     }
   });

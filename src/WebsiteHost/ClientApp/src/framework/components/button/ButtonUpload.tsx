@@ -29,7 +29,7 @@ export default function ButtonUpload({ className, id, onFileChange, disabled }: 
   return (
     <>
       <label className={classes} data-testid={componentId}>
-        <Icon symbol="pencil" size={14} color={disabled ? 'gray-600' : 'white'} />
+        <Icon symbol="edit" size={14} color={disabled ? 'gray-600' : 'white'} />
         <input
           data-testid={`${componentId}_file_input`}
           type="file"

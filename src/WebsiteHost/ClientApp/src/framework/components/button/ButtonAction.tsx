@@ -24,6 +24,7 @@ export interface ButtonActionProps<
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   busyLabel?: string;
   completeLabel?: string;
+  title?: string;
 }
 
 // Creates a button that is wired into an action.
@@ -39,11 +40,7 @@ export interface ButtonActionProps<
 // 2. Execute the action with the supplied requestData
 // 3. Call the onSuccess callback if the action succeeds, set the label to completeLabel, then back to the label, and enable the button
 // 4. Display any errors after the button, if the action fails.
-export default function ButtonAction<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = any,
-  TResponse = any
->({
+export default function ButtonAction<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any>({
   className,
   id,
   children,
@@ -54,7 +51,8 @@ export default function ButtonAction<
   label,
   variant,
   busyLabel,
-  completeLabel
+  completeLabel,
+  title
 }: ButtonActionProps<TRequestData, ExpectedErrorCode, TResponse>) {
   const { t: translate } = useTranslation();
   const baseClasses = '';
@@ -107,6 +105,7 @@ export default function ButtonAction<
         type="button"
         size="md"
         fullWidth={false}
+        title={title}
       >
         {children}
       </Button>

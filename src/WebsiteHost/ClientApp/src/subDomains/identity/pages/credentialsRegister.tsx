@@ -23,16 +23,19 @@ export const CredentialsRegisterPage: React.FC = () => {
           .object({
             firstName: z
               .string()
-              .min(2, translate('pages.identity.credentials_register.form.fields.first_name.validation')),
+              .min(1, translate('pages.identity.credentials_register.form.fields.first_name.validation'))
+              .max(100, translate('pages.identity.credentials_register.form.fields.first_name.validation')),
             lastName: z
               .string()
-              .min(2, translate('pages.identity.credentials_register.form.fields.last_name.validation')),
+              .min(1, translate('pages.identity.credentials_register.form.fields.last_name.validation'))
+              .max(100, translate('pages.identity.credentials_register.form.fields.last_name.validation')),
             emailAddress: z.email(
               translate('pages.identity.credentials_register.form.fields.email_address.validation')
             ),
             password: z
               .string()
-              .min(8, translate('pages.identity.credentials_register.form.fields.password.validation')),
+              .min(8, translate('pages.identity.credentials_register.form.fields.password.validation'))
+              .max(200, translate('pages.identity.credentials_register.form.fields.password.validation')),
             confirmPassword: z.string(),
             termsAndConditionsAccepted: z.literal(
               true,

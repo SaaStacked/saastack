@@ -3,11 +3,12 @@ import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 import i18n from '../i18n';
-import { OfflineServiceProvider } from '../providers/OfflineServiceContext.tsx';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { CurrentUserProvider } from './CurrentUserContext';
+import { OfflineServiceProvider } from './OfflineServiceContext.tsx';
 import { ThemeProvider } from './ThemeContext.tsx';
 
+export const QueryClientDefaultCacheTimeInMs: number = 10000;
 
 interface AppProvidersProps {
   children: React.ReactNode;
@@ -31,7 +32,7 @@ export function AppProviders({
         queries: {
           retry: false,
           refetchOnWindowFocus: false,
-          staleTime: 10000 // prevents fetch from refreshing more than once every 10 seconds
+          staleTime: QueryClientDefaultCacheTimeInMs // all data is automatically invalidated after 10 seconds
         },
         mutations: { retry: false }
       }

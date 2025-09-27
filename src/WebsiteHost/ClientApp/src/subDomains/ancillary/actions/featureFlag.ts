@@ -1,7 +1,7 @@
 import useActionQuery from '../../../framework/actions/ActionQuery';
 import { getAllFeatureFlags, GetAllFeatureFlagsResponse, getFeatureFlagForCaller, GetFeatureFlagForCallerData, GetFeatureFlagForCallerResponse } from '../../../framework/api/websiteHost';
 import { EmptyRequest } from '../../../framework/api/websiteHost/emptyRequest.ts';
-import featureFlagCacheKeys from './responseCache.ts';
+import ancillaryCacheKeys from './responseCache.ts';
 
 
 export const FeatureFlagAction = (name: string) =>
@@ -15,12 +15,12 @@ export const FeatureFlagAction = (name: string) =>
         }
       }),
     transform: (res) => res.flag,
-    cacheKey: featureFlagCacheKeys.flag(name)
+    cacheKey: ancillaryCacheKeys.features.query(name)
   });
 
 export const FeatureFlagsAction = () =>
   useActionQuery<EmptyRequest, GetAllFeatureFlagsResponse>({
     request: (request) => getAllFeatureFlags(request),
     transform: (res) => res.flags,
-    cacheKey: featureFlagCacheKeys.all
+    cacheKey: ancillaryCacheKeys.features.all
   });

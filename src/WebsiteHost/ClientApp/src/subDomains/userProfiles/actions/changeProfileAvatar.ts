@@ -2,6 +2,7 @@ import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { changeProfileAvatarPatch, ChangeProfileAvatarResponse } from '../../../framework/api/apiHost1';
 import userProfileCacheKeys from './responseCache.ts';
 
+
 export interface ChangeProfileAvatarRequest {
   file: File;
 }
@@ -25,5 +26,5 @@ export const ChangeProfileAvatarAction = (userId: string) =>
     passThroughErrors: {
       400: UploadAvatarErrors.invalid_image
     },
-    invalidateCacheKeys: [[userProfileCacheKeys.me]]
+    invalidateCacheKeys: userProfileCacheKeys.profile.mutate(userId)
   });

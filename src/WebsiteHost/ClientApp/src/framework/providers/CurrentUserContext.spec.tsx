@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AxiosError, AxiosResponse } from 'axios';
-import { getProfileForCaller, GetProfileForCallerResponse, UserProfileClassification, UserProfileForCaller } from '../api/apiHost1';
+import { getOrganization, GetOrganizationResponse, getProfileForCaller, GetProfileForCallerResponse, UserProfileClassification, UserProfileForCaller } from '../api/apiHost1';
 import { logout } from '../api/websiteHost';
 import { anonymousUser } from '../constants';
 import { IOfflineService } from '../services/IOfflineService.ts';
@@ -12,7 +12,8 @@ import { useCurrentUser } from './CurrentUserContext.tsx';
 
 
 vi.mock('../api/apiHost1/services.gen', () => ({
-  getProfileForCaller: vi.fn()
+  getProfileForCaller: vi.fn(),
+  getOrganization: vi.fn()
 }));
 
 vi.mock('../api/websiteHost/services.gen', () => ({
@@ -41,10 +42,12 @@ function createWrapper({ children, offlineService }: { children: React.ReactNode
 describe('CurrentUserContext', () => {
   const offlineService = new MockOfflineService();
   const mockGetProfileForCaller = vi.mocked(getProfileForCaller);
+  const mockGetOrganization = vi.mocked(getOrganization);
   const mockLogout = vi.mocked(logout);
 
   beforeEach(() => {
     mockGetProfileForCaller.mockReset();
+    mockGetOrganization.mockReset();
     mockLogout.mockReset();
   });
 
@@ -67,6 +70,8 @@ describe('CurrentUserContext', () => {
 
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.profile).toStrictEqual(anonymousUser);
+    expect(result.current.organization).toBeUndefined();
+    expect(mockGetOrganization).not.toHaveBeenCalled();
   });
 
   it('when authenticated user, should return user', async () => {
@@ -86,7 +91,7 @@ describe('CurrentUserContext', () => {
       },
       phoneNumber: null,
       timezone: null,
-      defaultOrganizationId: null,
+      defaultOrganizationId: 'adefaultorganizationid',
       features: [],
       roles: []
     } as unknown as UserProfileForCaller;
@@ -102,6 +107,23 @@ describe('CurrentUserContext', () => {
       request: {},
       error: undefined
     } as AxiosResponse<GetProfileForCallerResponse>);
+    const organization = {
+      id: 'anorganizationid',
+      name: 'anorganizationname',
+      createdById: 'auserid',
+      ownership: 'Shared'
+    };
+    mockGetOrganization.mockResolvedValueOnce({
+      data: {
+        organization
+      },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {} as any,
+      request: {},
+      error: undefined
+    } as AxiosResponse<GetOrganizationResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })
@@ -111,6 +133,12 @@ describe('CurrentUserContext', () => {
 
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.profile).toStrictEqual(authenticatedUser);
+    expect(result.current.organization).toStrictEqual(organization);
+    expect(mockGetOrganization).toHaveBeenCalledWith({
+      path: {
+        Id: 'adefaultorganizationid'
+      }
+    });
   });
 
   it('when no profile in response, should return anonymous user', async () => {
@@ -132,6 +160,8 @@ describe('CurrentUserContext', () => {
 
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.profile).toStrictEqual(anonymousUser);
+    expect(result.current.organization).toBeUndefined();
+    expect(mockGetOrganization).not.toHaveBeenCalled();
   });
 
   it('when XHR fails, should return anonymous user', async () => {
@@ -158,6 +188,8 @@ describe('CurrentUserContext', () => {
 
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.profile).toStrictEqual(anonymousUser);
+    expect(result.current.organization).toBeUndefined();
+    expect(mockGetOrganization).not.toHaveBeenCalled();
   });
 
   it('when XHR fails, should logout', async () => {
@@ -185,5 +217,7 @@ describe('CurrentUserContext', () => {
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.profile).toStrictEqual(anonymousUser);
     expect(mockLogout).toHaveBeenCalled();
+    expect(result.current.organization).toBeUndefined();
+    expect(mockGetOrganization).not.toHaveBeenCalled();
   });
 });
