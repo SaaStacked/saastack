@@ -3,12 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
-import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.ts';
+import { ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
 
 export interface ActionQueryConfiguration<
-  TRequestData extends ActionRequestData,
+  TRequestData = any,
   ExpectedErrorCode extends string = '',
   TResponse = any,
   TTransformedResponse = any
@@ -36,8 +36,8 @@ export interface ActionQueryConfiguration<
 // Supports monitoring of requests for displaying progress indicators
 // Supports monitoring of expected errors versus unexpected errors
 // Supports monitoring of online/offline status
-export default function useActionQuery<
-  TRequestData extends ActionRequestData,
+export function useActionQuery<
+  TRequestData = any,
   TResponse = any,
   TTransformedResponse = any,
   ExpectedErrorCode extends string = any

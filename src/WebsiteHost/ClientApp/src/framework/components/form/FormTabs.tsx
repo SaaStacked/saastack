@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
+
 interface TabsProps {
   tabs: Tab[];
   defaultTab?: string;
+  storageKey?: string; // Add this to make it configurable
 }
 
 interface Tab {
@@ -12,8 +14,25 @@ interface Tab {
 }
 
 // Create a set of tabs, that can be used to switch between different views.
-export const FormTabs: React.FC<TabsProps> = ({ tabs, defaultTab }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
+export const FormTabs: React.FC<TabsProps> = ({ tabs, defaultTab, storageKey }) => {
+  const getInitialTab = () => {
+    if (storageKey) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved && tabs.some((tab) => tab.id === saved)) {
+        return saved;
+      }
+    }
+    return defaultTab || tabs[0]?.id;
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (storageKey) {
+      localStorage.setItem(storageKey, tabId);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -22,7 +41,7 @@ export const FormTabs: React.FC<TabsProps> = ({ tabs, defaultTab }) => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === tab.id
                   ? 'border-primary text-primary dark:text-primary-light'

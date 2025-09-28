@@ -2,13 +2,8 @@ import { AxiosError } from 'axios';
 import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 import { ExpectedErrorDetails } from './ApiErrorState.ts';
 
-export interface ActionRequestData extends Record<string, any> {}
 
-export interface ActionResult<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = '',
-  TResponse = any
-> {
+export interface ActionResult<TRequestData = any, ExpectedErrorCode extends string = '', TResponse = any> {
   // To execute the XHR request
   execute: (
     requestData?: TRequestData,
@@ -30,15 +25,11 @@ export interface ActionResult<
   lastRequestValues?: TRequestData | undefined;
 }
 
-export function modifyRequestData<TRequestData extends ActionRequestData>(
-  requestData?: TRequestData,
-  isTenanted?: boolean
-): TRequestData {
+export function modifyRequestData<TRequestData = any>(requestData?: TRequestData, isTenanted?: boolean): TRequestData {
   let submittedRequestData: TRequestData = requestData ?? ({} as TRequestData);
   const hasOrganizationId = () =>
-    Object.keys(submittedRequestData).includes('organizationId') ||
-    submittedRequestData.hasOwnProperty('organizationId') ||
-    'organizationId' in submittedRequestData;
+    submittedRequestData && typeof submittedRequestData === 'object' && 'organizationId' in submittedRequestData;
+
   if (!hasOrganizationId()) {
     if (isTenanted) {
       const currentUser = useCurrentUser();

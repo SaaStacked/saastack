@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { ChangeDefaultOrganizationRequest, UpdateUserResponse } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
@@ -15,21 +16,21 @@ import { GetOrganizationAction } from '../actions/getOrganization.ts';
 
 export const OrganizationsManagePage: React.FC = () => {
   const { t: translate } = useTranslation();
-  const getCurrentUser = useCurrentUser();
+  const { refetch: refetchCurrentUser } = useCurrentUser();
   const listAllMemberships = ListAllMembershipsAction();
   const memberships = listAllMemberships.lastSuccessResponse!;
-  const listAllMembershipsRef = useRef<PageActionRef<EmptyRequest>>(null);
+  const listAllMembershipsTrigger = useRef<PageActionRef<EmptyRequest>>(null);
 
-  useEffect(() => listAllMembershipsRef.current?.execute(), []);
+  useEffect(() => listAllMembershipsTrigger.current?.execute(), []);
 
   return (
-    <PageAction
-      id="get_organization"
-      action={listAllMemberships}
-      ref={listAllMembershipsRef}
-      loadingMessage={translate('pages.organizations.manage.loader.title')}
-    >
-      <FormPage title={translate('pages.organizations.manage.title')} align="top">
+    <FormPage title={translate('pages.organizations.manage.title')} align="top">
+      <PageAction
+        id="get_organization"
+        action={listAllMemberships}
+        ref={listAllMembershipsTrigger}
+        loadingMessage={translate('pages.organizations.manage.loader.title')}
+      >
         <div className="space-y-4">
           {(memberships ?? [])
             .sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0))
@@ -38,8 +39,8 @@ export const OrganizationsManagePage: React.FC = () => {
                 key={membership.organizationId}
                 membership={membership}
                 onMembershipChange={() => {
-                  getCurrentUser.refetch();
-                  listAllMembershipsRef.current?.execute();
+                  refetchCurrentUser();
+                  listAllMembershipsTrigger.current?.execute();
                 }}
               />
             ))}
@@ -50,8 +51,8 @@ export const OrganizationsManagePage: React.FC = () => {
             {translate('pages.organizations.manage.noOrganizations')}
           </div>
         )}
-      </FormPage>
-    </PageAction>
+      </PageAction>
+    </FormPage>
   );
 };
 
@@ -181,7 +182,10 @@ const OrganizationCard: React.FC<{
                   id="switch"
                   action={changeDefaultOrganization}
                   requestData={{ organizationId: membership.organizationId }}
-                  onSuccess={() => onMembershipChange()}
+                  onSuccess={(_params: {
+                    requestData?: ChangeDefaultOrganizationRequest;
+                    response: UpdateUserResponse;
+                  }) => onMembershipChange()}
                   variant="ghost"
                   title={translate('pages.organizations.manage.hints.switch_default')}
                 >

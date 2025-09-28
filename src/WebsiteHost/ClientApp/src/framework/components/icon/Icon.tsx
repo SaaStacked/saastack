@@ -301,7 +301,6 @@ export const allSymbols = [...Object.keys(fontAwesomeSymbols), ...Object.keys(no
 export default function Icon({ className, id, symbol, size = 20, color = 'primary' }: IconProps) {
   const colors = getComputedStyle(document.documentElement);
   const iconColor = colors.getPropertyValue(`--color-${color}`);
-
   const componentId = createComponentId('icon', id);
 
   if (Object.keys(fontAwesomeSymbols).includes(symbol)) {

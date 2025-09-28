@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
+import { ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import Button from '../button/Button.tsx';
 import { createComponentId, toClasses } from '../Components';
@@ -8,11 +8,7 @@ import { BusyLabelRevertAfterMs } from '../form/formSubmitButton/FormSubmitButto
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
 
 
-export interface ButtonActionProps<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = any,
-  TResponse = any
-> {
+export interface ButtonActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
   className?: string;
   id?: string;
   children?: React.ReactNode;
@@ -40,7 +36,7 @@ export interface ButtonActionProps<
 // 2. Execute the action with the supplied requestData
 // 3. Call the onSuccess callback if the action succeeds, set the label to completeLabel, then back to the label, and enable the button
 // 4. Display any errors after the button, if the action fails.
-export default function ButtonAction<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any>({
+export default function ButtonAction<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any>({
   className,
   id,
   children,

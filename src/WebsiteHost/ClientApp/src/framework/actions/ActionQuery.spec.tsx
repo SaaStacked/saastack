@@ -5,16 +5,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AxiosError, AxiosResponse } from 'axios';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
-import useActionQuery from './ActionQuery';
-import { ActionRequestData } from './Actions';
+import { useActionQuery } from './ActionQuery';
 
 
-interface UntenantedRequestData extends ActionRequestData {
+interface UntenantedRequestData {
   name?: string;
   value?: string;
 }
 
-interface TenantedRequestData extends ActionRequestData {
+interface TenantedRequestData {
   name?: string;
   value?: string;
   organizationId?: string;

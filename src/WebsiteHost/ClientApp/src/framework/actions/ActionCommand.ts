@@ -3,15 +3,11 @@ import { useCallback, useEffect } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
-import { ActionRequestData, ActionResult, modifyRequestData } from './Actions.ts';
+import { ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
 
-export interface ActionCommandConfiguration<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = '',
-  TResponse = any
-> {
+export interface ActionCommandConfiguration<TRequestData = any, ExpectedErrorCode extends string = '', TResponse = any> {
   // The generated AXIOS endpoint we need to call
   request: (
     requestData: TRequestData,
@@ -36,11 +32,7 @@ export interface ActionCommandConfiguration<
 // Supports monitoring of requests for displaying progress indicators
 // Supports monitoring of expected errors versus unexpected errors
 // Supports monitoring of online/offline status
-export function useActionCommand<
-  TRequestData extends ActionRequestData,
-  TResponse = any,
-  ExpectedErrorCode extends string = any
->(
+export function useActionCommand<TRequestData = any, TResponse = any, ExpectedErrorCode extends string = any>(
   configuration: ActionCommandConfiguration<TRequestData, ExpectedErrorCode, TResponse>
 ): ActionResult<TRequestData, ExpectedErrorCode, TResponse> {
   const { request, passThroughErrors, onSuccess, invalidateCacheKeys } = configuration;

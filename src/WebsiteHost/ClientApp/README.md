@@ -151,7 +151,7 @@ We recommend the following practices, using the `IRecorder`:
 
 Feature flags are used to control the availability of features in the UI.
 
-Feature flags are defined in the BEFFE, and are available to the UI via the `FeatureFlagAction` to the `getFeatureFlagForCaller()` API.
+Feature flags are defined in the BEFFE, and are available to the UI via the `GetFeatureFlagAction` to the `getFeatureFlagForCaller()` API.
 
 # StoryBook
 

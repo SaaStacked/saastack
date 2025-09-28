@@ -1,17 +1,13 @@
-import React, { useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
+import { ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import { createComponentId } from '../Components';
 import Loader from '../loader/Loader.tsx';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
 
 
-export interface PageActionProps<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = any,
-  TResponse = any
-> {
+export interface PageActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
   id?: string;
   children?: React.ReactNode;
   action: ActionResult<TRequestData, ExpectedErrorCode, TResponse>;
@@ -20,20 +16,22 @@ export interface PageActionProps<
   loadingMessage?: string;
 }
 
-export interface PageActionRef<TRequestData extends ActionRequestData> {
+export interface PageActionRef<TRequestData = any> {
   execute: (requestData?: TRequestData) => void;
   isExecuting: boolean;
+  isSuccess?: boolean;
 }
 
-// Creates a hidden action that can be executed by a ref.
+// Creates a component that contains an action that can be executed by a trigger.
 // Accepts an action, that defines the API call to be made
 // Accepts a set of expected error messages to be displayed on the form, should the action fail with those errors
 // Accepts an onSuccess callback, that is invoked if the action is successful, that can navigate to another page.
 // Accepts a ref that can be called with some requestData to execute the action with
 // When the action is executing, the children are hidden, and a loader is displayed.
 // When the action is successful, the children are revealed.
-const PageAction = React.forwardRef(function ActionHidden<
-  TRequestData extends ActionRequestData,
+// When the action fails, the children are hidden, and the respective error message is displayed.
+const PageAction = forwardRef<PageActionRef<any>, PageActionProps<any, any, any>>(function PageAction<
+  TRequestData = any,
   ExpectedErrorCode extends string = any,
   TResponse = any
 >(props: PageActionProps<TRequestData, ExpectedErrorCode, TResponse>, ref: React.Ref<PageActionRef<TRequestData>>) {
@@ -79,6 +77,10 @@ const PageAction = React.forwardRef(function ActionHidden<
       </div>
     </div>
   );
-});
+}) as <TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any>(
+  props: PageActionProps<TRequestData, ExpectedErrorCode, TResponse> & {
+    ref?: React.Ref<PageActionRef<TRequestData>>;
+  }
+) => React.ReactElement;
 
 export default PageAction;

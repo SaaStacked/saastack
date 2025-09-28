@@ -309,6 +309,9 @@
         },
         "errors": {
           "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
+        },
+        "links": {
+          "organizations": "Back to Organizations"
         }
       }
     },

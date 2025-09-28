@@ -6,15 +6,14 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
 import { useActionCommand } from './ActionCommand';
-import { ActionRequestData } from './Actions';
 
 
-interface UntenantedRequestData extends ActionRequestData {
+interface UntenantedRequestData {
   name?: string;
   value?: string;
 }
 
-interface TenantedRequestData extends ActionRequestData {
+interface TenantedRequestData {
   name?: string;
   value?: string;
   organizationId?: string;

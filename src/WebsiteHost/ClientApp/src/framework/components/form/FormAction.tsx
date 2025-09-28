@@ -2,21 +2,14 @@ import React from 'react';
 import { DefaultValues, FieldValues, FormProvider, useForm, UseFormReturn, ValidationMode } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z, { ZodType } from 'zod';
-import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
+import { ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import { createComponentId, toClasses } from '../Components.ts';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
-import {
-  FormActionContext,
-  FormActionRequiredFieldsContext,
-  FormActionValidationContext
-} from './FormActionContexts.tsx';
+import { FormActionContext, FormActionRequiredFieldsContext, FormActionValidationContext } from './FormActionContexts.tsx';
 
-interface FormActionProps<
-  TRequestData extends ActionRequestData,
-  ExpectedErrorCode extends string = any,
-  TResponse = any
-> {
+
+interface FormActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
   className?: string;
   id?: string;
   children: React.ReactNode;
@@ -43,7 +36,7 @@ interface FormActionProps<
 // 2. Execute the action with the supplied form data
 // 3. Call the onSuccess callback if the action succeeds.
 // 4. Display any errors on the form, if the action fails.
-function FormAction<TRequestData extends ActionRequestData, ExpectedErrorCode extends string = any, TResponse = any>({
+function FormAction<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any>({
   className = '',
   id,
   children,
@@ -54,7 +47,7 @@ function FormAction<TRequestData extends ActionRequestData, ExpectedErrorCode ex
   validationSchema,
   defaultValues,
   disabled
-                                                                                                                     }: FormActionProps<TRequestData, ExpectedErrorCode, TResponse>) {
+}: FormActionProps<TRequestData, ExpectedErrorCode, TResponse>) {
   const formContext = { isSubmitted: false };
   type TValidations = z.infer<typeof validationSchema>;
   const validation = useForm<TValidations>({
