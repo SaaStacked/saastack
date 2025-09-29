@@ -39,34 +39,51 @@ public class AuthTokensApiSpec : WebApiSpec<Program>
         });
 
         await PropagateDomainEventsAsync();
-        var oldTokens = await Api.PostAsync(new AuthenticateCredentialRequest
+        var initialTokens = await Api.PostAsync(new AuthenticateCredentialRequest
         {
             Username = "auser@company.com",
             Password = "1Password!"
         });
 
-        oldTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        oldTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        initialTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
+        initialTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
-        oldTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        oldTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        initialTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
+        initialTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
 
         await Task.Delay(TimeSpan
             .FromSeconds(1)); //HACK: to ensure that the new token is not the same (in time) as the old token
 
-        var oldAccessToken = oldTokens.Content.Value.Tokens.AccessToken.Value;
-        var oldRefreshToken = oldTokens.Content.Value.Tokens.RefreshToken.Value;
-        var newTokens = await Api.PostAsync(new RefreshTokenRequest
+        var initialAccessToken = initialTokens.Content.Value.Tokens.AccessToken.Value;
+        var initialRefreshToken = initialTokens.Content.Value.Tokens.RefreshToken.Value;
+        var firstTokens = await Api.PostAsync(new RefreshTokenRequest
         {
-            RefreshToken = oldRefreshToken
+            RefreshToken = initialRefreshToken
         });
 
-        newTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull().And.NotBe(oldAccessToken);
-        newTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        firstTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull().And.NotBe(initialAccessToken);
+        firstTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
-        newTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull().And.NotBe(oldRefreshToken);
-        newTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        firstTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull().And.NotBe(initialRefreshToken);
+        firstTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+            .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
+
+        await Task.Delay(TimeSpan
+            .FromSeconds(1)); //HACK: to ensure that the new token is not the same (in time) as the old token
+
+        var firstAccessToken = firstTokens.Content.Value.Tokens.AccessToken.Value;
+        var firstRefreshToken = firstTokens.Content.Value.Tokens.RefreshToken.Value;
+        var secondTokens = await Api.PostAsync(new RefreshTokenRequest
+        {
+            RefreshToken = firstRefreshToken
+        });
+
+        secondTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull().And.NotBe(firstAccessToken);
+        secondTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+            .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
+        secondTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull().And.NotBe(firstRefreshToken);
+        secondTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
     }
 

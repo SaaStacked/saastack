@@ -173,7 +173,7 @@ public sealed class AuthTokensRoot : AggregateRootBase
         }
     }
 
-    public Result<Error> RenewTokens(string refreshTokenToRenew, AuthToken accessToken, AuthToken refreshToken,
+    public Result<Error> RenewTokens(string refreshTokenDigestToRenew, AuthToken accessToken, AuthToken refreshToken,
         Optional<AuthToken> idToken)
     {
         if (IsRevoked)
@@ -181,10 +181,9 @@ public sealed class AuthTokensRoot : AggregateRootBase
             return Error.RuleViolation(Resources.AuthTokensRoot_TokensRevoked);
         }
 
-        var decrypted = _encryptionService.Decrypt(RefreshToken.Value);
-        if (!decrypted.Equals(refreshTokenToRenew))
+        if (!RefreshTokenDigest.Value.Equals(refreshTokenDigestToRenew))
         {
-            return Error.RuleViolation(Resources.AuthTokensRoot_RefreshTokenNotMatched);
+            return Error.RuleViolation(Resources.AuthTokensRoot_RefreshTokenDigestNotMatched);
         }
 
         if (IsRefreshTokenExpired)
@@ -192,24 +191,24 @@ public sealed class AuthTokensRoot : AggregateRootBase
             return Error.RuleViolation(Resources.AuthTokensRoot_RefreshTokenExpired);
         }
 
-        var refreshTokenDigest = _tokensService.CreateTokenDigest(refreshTokenToRenew);
+        var decrypted = _encryptionService.Decrypt(refreshToken.EncryptedValue);
+        var refreshTokenDigest = _tokensService.CreateTokenDigest(decrypted);
 
         return RaiseChangeEvent(
             IdentityDomain.Events.AuthTokens.TokensRefreshed(Id, UserId, accessToken, refreshToken, idToken,
                 refreshTokenDigest));
     }
 
-    public Result<Error> Revoke(string refreshToken)
+    public Result<Error> Revoke(string refreshTokenDigestToRevoke)
     {
         if (IsRevoked)
         {
             return Error.RuleViolation(Resources.AuthTokensRoot_TokensRevoked);
         }
 
-        var decrypted = _encryptionService.Decrypt(RefreshToken.Value);
-        if (!decrypted.Equals(refreshToken))
+        if (!RefreshTokenDigest.Value.Equals(refreshTokenDigestToRevoke))
         {
-            return Error.RuleViolation(Resources.AuthTokensRoot_RefreshTokenNotMatched);
+            return Error.RuleViolation(Resources.AuthTokensRoot_RefreshTokenDigestNotMatched);
         }
 
         return RaiseChangeEvent(

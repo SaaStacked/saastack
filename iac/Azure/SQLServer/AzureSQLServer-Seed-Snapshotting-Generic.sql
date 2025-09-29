@@ -87,7 +87,7 @@ CREATE TABLE [dbo].[AuthToken]
     [AccessTokenExpiresOn]  [datetime]       NULL,
     [IdToken]               [nvarchar](4000) NULL,
     [IdTokenExpiresOn]      [datetime]       NULL,
-    [RefreshToken]          [nvarchar](4000) NULL,
+    [RefreshToken]          [nvarchar](2000) NULL,
     [RefreshTokenDigest]    [nvarchar](900)  NULL,
     [RefreshTokenExpiresOn] [datetime]       NULL,
     [UserId]                [nvarchar](100)  NULL,

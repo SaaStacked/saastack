@@ -733,9 +733,11 @@ They are also unlisted in the OpenAPI, and should NEVER be used by any public cl
 
 When an end-user is authenticated, either from one of the in-built authentication mechanisms above, or by 3rd parties, the authentication step often returns a short-lived `access_token`, along with a long-lived `refresh_token`.
 
-The `refresh_-token` can then be stored and used later to re-issue another `access_token` when a previous one has expired. In this way, a user's access to a system can be longer lived (until the `refresh_token` expires). And older `access_tokens` automatically retired (expired).
+The `refresh_-token` can then be persisted (offline) and used later to re-issue another `access_token` when a previous one has expired. In this way, a user's access to a system can be longer lived (until the `refresh_token` expires). And older `access_tokens` automatically retired (expired).
 
-When the `refresh_token` finally expires (e.g. after 7 days). The end-user will be forced to authenticate again, to obtain access to the system.
+> Note: that with every attempt to refresh an `access_token`, the `refresh_token` is automatically renewed, and the expiry date extended. Which means that the `refresh_token` is never actually used more than once, and the users session is essentially infinite while using the product regularly.
+
+When the `refresh_token` finally expires (e.g. after 14 days of no use). The end-user will be forced to authenticate again, to obtain access to the system.
 
 ### Declarative Authentication Syntax
 

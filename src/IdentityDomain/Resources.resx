@@ -81,7 +81,7 @@
     <data name="AuthTokensRoot_TokensExpired" xml:space="preserve">
         <value>These tokens have already expired</value>
     </data>
-    <data name="AuthTokensRoot_RefreshTokenNotMatched" xml:space="preserve">
+    <data name="AuthTokensRoot_RefreshTokenDigestNotMatched" xml:space="preserve">
         <value>This refresh token is unknown</value>
     </data>
     <data name="AuthTokensRoot_TokensRevoked" xml:space="preserve">

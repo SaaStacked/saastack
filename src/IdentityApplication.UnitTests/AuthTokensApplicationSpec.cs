@@ -71,7 +71,6 @@ public class AuthTokensApplicationSpec
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateTokenDigest(It.IsAny<string>()))
             .Returns("adigestvalue");
-
         _accessToken1 = CreateJwtToken("access1");
         _refreshToken1 = CreateJwtToken("refresh1");
         _idToken1 = CreateJwtToken("id1");

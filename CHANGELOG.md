@@ -18,6 +18,20 @@
 
 ---
 
+## [1.0.0] - 2025-10-01
+
+### Non-breaking Changes
+- none
+
+### Breaking Changes
+- none 
+
+### Fixed
+- We have fixed the issues related to refreshing and revoking access_tokens in the `AuthTokensRoot` aggregate, such that they now work correctly when refreshing more than once.
+- We are generating enum values from all OpenAPI specifications in camelCase now, instead of PascalCase. The current WebsiteHost Js App has been updated to use the new enum values.
+
+---
+
 ## [1.0.0] - 2025-09-21
 
 ### Non-breaking Changes

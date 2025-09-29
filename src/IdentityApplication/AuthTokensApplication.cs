@@ -240,7 +240,7 @@ public class AuthTokensApplication : IAuthTokensApplication
             issuedIdToken = idTokenResult.Value.ToOptional();
         }
 
-        var renewed = authTokens.RenewTokens(refreshToken, issuedAccessToken.Value, issuedRefreshToken.Value,
+        var renewed = authTokens.RenewTokens(refreshTokenDigest, issuedAccessToken.Value, issuedRefreshToken.Value,
             issuedIdToken);
         if (renewed.IsFailure)
         {
@@ -285,7 +285,7 @@ public class AuthTokensApplication : IAuthTokensApplication
         }
 
         var authTokens = retrieved.Value.Value;
-        var invalidated = authTokens.Revoke(refreshToken);
+        var invalidated = authTokens.Revoke(refreshTokenDigest);
         if (invalidated.IsFailure)
         {
             return invalidated.Error;

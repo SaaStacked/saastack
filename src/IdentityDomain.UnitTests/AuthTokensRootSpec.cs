@@ -88,7 +88,7 @@ public class AuthTokensRootSpec
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken2", expiresOn).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken2", expiresOn).Value);
 
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_RefreshTokenNotMatched);
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_RefreshTokenDigestNotMatched);
         _encryptionService.Verify(es => es.Decrypt("arefreshtoken1"));
     }
 
@@ -100,10 +100,10 @@ public class AuthTokensRootSpec
             AuthToken.Create(AuthTokenType.AccessToken, "anaccesstoken1", expiresOn).Value,
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken1", expiresOn).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken1", expiresOn).Value);
-        _authTokens.Revoke("adecryptedvalue");
+        _authTokens.Revoke("adigestvalue");
 
         var result =
-            _authTokens.RenewTokens("arefreshtoken1",
+            _authTokens.RenewTokens("adigestvalue",
                 AuthToken.Create(AuthTokenType.AccessToken, "anaccesstoken2", expiresOn).Value,
                 AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken2", expiresOn).Value,
                 AuthToken.Create(AuthTokenType.OtherToken, "anidtoken2", expiresOn).Value);
@@ -125,13 +125,13 @@ public class AuthTokensRootSpec
         _authTokens.TestingOnly_SetTokens("anaccesstoken1", "arefreshtoken1", "anidtoken1", accessTokenExpiresOn1,
             refreshTokenExpiresOn1, idTokenExpiresOn1);
 #endif
-        var result = _authTokens.RenewTokens("adecryptedvalue",
+        var result = _authTokens.RenewTokens("adigestvalue",
             AuthToken.Create(AuthTokenType.AccessToken, "anaccesstoken2", accessTokenExpiresOn2).Value,
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken2", refreshTokenExpiresOn2).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken2", idTokenExpiresOn2).Value);
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_RefreshTokenExpired);
-        _encryptionService.Verify(es => es.Decrypt("arefreshtoken1"));
+        _encryptionService.Verify(es => es.Decrypt(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class AuthTokensRootSpec
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken1", refreshTokenExpiresOn1).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken1", idTokenExpiresOn1).Value);
 
-        var result = _authTokens.RenewTokens("adecryptedvalue",
+        var result = _authTokens.RenewTokens("adigestvalue",
             AuthToken.Create(AuthTokenType.AccessToken, "anaccesstoken2", accessTokenExpiresOn2).Value,
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken2", refreshTokenExpiresOn2).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken2", idTokenExpiresOn2).Value);
@@ -172,9 +172,9 @@ public class AuthTokensRootSpec
             AuthToken.Create(AuthTokenType.AccessToken, "anaccesstoken", expiresOn).Value,
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken", expiresOn).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken", expiresOn).Value);
-        _authTokens.Revoke("adecryptedvalue");
+        _authTokens.Revoke("adigestvalue");
 
-        var result = _authTokens.Revoke("arefreshtoken1");
+        var result = _authTokens.Revoke("adigestvalue");
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_TokensRevoked);
     }
@@ -190,7 +190,7 @@ public class AuthTokensRootSpec
 
         var result = _authTokens.Revoke("anotherrefreshtoken");
 
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_RefreshTokenNotMatched);
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.AuthTokensRoot_RefreshTokenDigestNotMatched);
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class AuthTokensRootSpec
             AuthToken.Create(AuthTokenType.RefreshToken, "arefreshtoken", expiresOn).Value,
             AuthToken.Create(AuthTokenType.OtherToken, "anidtoken", expiresOn).Value);
 
-        _authTokens.Revoke("adecryptedvalue");
+        _authTokens.Revoke("adigestvalue");
 
         _authTokens.AccessToken.Should().BeNone();
         _authTokens.RefreshToken.Should().BeNone();

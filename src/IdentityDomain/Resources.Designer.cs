@@ -150,20 +150,20 @@ namespace IdentityDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This refresh token is unknown.
+        /// </summary>
+        internal static string AuthTokensRoot_RefreshTokenDigestNotMatched {
+            get {
+                return ResourceManager.GetString("AuthTokensRoot_RefreshTokenDigestNotMatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This refresh token has expired.
         /// </summary>
         internal static string AuthTokensRoot_RefreshTokenExpired {
             get {
                 return ResourceManager.GetString("AuthTokensRoot_RefreshTokenExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This refresh token is unknown.
-        /// </summary>
-        internal static string AuthTokensRoot_RefreshTokenNotMatched {
-            get {
-                return ResourceManager.GetString("AuthTokensRoot_RefreshTokenNotMatched", resourceCulture);
             }
         }
         

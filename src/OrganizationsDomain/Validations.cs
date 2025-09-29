@@ -10,11 +10,11 @@ public static class Validations
     public static class Avatar
     {
         public const long MaxSizeInBytes = 134_217_728; //approx 100MB
-        public static readonly IReadOnlyList<string> AllowableContentTypes = new[]
-        {
+        public static readonly IReadOnlyList<string> AllowableContentTypes =
+        [
             "image/jpeg",
             "image/png",
             "image/gif"
-        };
+        ];
     }
 }
