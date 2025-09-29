@@ -83,7 +83,6 @@ const OrganizationCard: React.FC<{
       <div
         className={`relative p-2 rounded-lg ${membership.isDefault ? 'border-accent border-3' : 'border-gray-200 border'}`}
       >
-        {' '}
         {membership.isDefault && (
           <div className="absolute -top-2 left-4 bg-accent text-white px-2 py-1 text-xs font-medium rounded">
             {translate('pages.organizations.manage.labels.current')}
@@ -106,7 +105,6 @@ const OrganizationCard: React.FC<{
               />
             )}
             {
-              // @ts-ignore
               organization?.ownership === 'personal' && (
                 <div
                   className="absolute -bottom-1 -right-1 w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"

@@ -213,7 +213,7 @@ internal static class DataAnnotationsSchemaFilterExtensions
                 }
             }
 
-            schema.Enum.Add(new OpenApiString(bestName));
+            schema.Enum.Add(new OpenApiString(bestName.ToCamelCase()));
         }
     }
 

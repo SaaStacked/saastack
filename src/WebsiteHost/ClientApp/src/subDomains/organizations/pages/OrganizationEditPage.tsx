@@ -66,7 +66,6 @@ export const OrganizationEditPage: React.FC = () => {
                 </div>
               )}
               {
-                // @ts-ignore
                 organization?.ownership === 'personal' && (
                   <div
                     className="absolute -bottom-1 -right-1 w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"

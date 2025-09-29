@@ -14398,14 +14398,14 @@
         ]
       }
     },
-    "/testingonly/authz/none/get": {
+    "/testingonly/authz/anonymous/get": {
       "get": {
         "tags": [
           "TestingWebApi"
         ],
-        "summary": "Tests access with no authorization",
-        "description": "(request type: AuthorizeByNothingTestingOnlyRequest)",
-        "operationId": "AuthorizeByNothingTestingOnly",
+        "summary": "Tests access with no authorization (i.e., anonymous)",
+        "description": "(request type: AuthorizeByAnonymousTestingOnlyRequest)",
+        "operationId": "AuthorizeByAnonymousTestingOnly",
         "responses": {
           "200": {
             "description": "OK",
@@ -14586,8 +14586,8 @@
           "TestingWebApi"
         ],
         "summary": "Tests access with role authorization",
-        "description": "(request type: AuthorizeByRoleTestingOnlyRequest)",
-        "operationId": "AuthorizeByRoleTestingOnly",
+        "description": "(request type: AuthorizeByTokenWithRoleTestingOnlyRequest)",
+        "operationId": "AuthorizeByTokenWithRoleTestingOnly",
         "responses": {
           "200": {
             "description": "OK",
@@ -20596,11 +20596,11 @@
       },
       "CredentialMfaAuthenticatorType": {
         "enum": [
-          "None",
-          "RecoveryCodes",
-          "OobSms",
-          "OobEmail",
-          "TotpAuthenticator"
+          "none",
+          "recoveryCodes",
+          "oobSms",
+          "oobEmail",
+          "totpAuthenticator"
         ],
         "type": "string"
       },
@@ -20633,10 +20633,10 @@
       },
       "CustomEnum": {
         "enum": [
-          "None",
-          "One",
-          "TwentyOne",
-          "OneHundredAndOne"
+          "none",
+          "one",
+          "twentyOne",
+          "oneHundredAndOne"
         ],
         "type": "string"
       },
@@ -20966,22 +20966,22 @@
       },
       "EndUserAccess": {
         "enum": [
-          "Enabled",
-          "Suspended"
+          "enabled",
+          "suspended"
         ],
         "type": "string"
       },
       "EndUserClassification": {
         "enum": [
-          "Person",
-          "Machine"
+          "person",
+          "machine"
         ],
         "type": "string"
       },
       "EndUserStatus": {
         "enum": [
-          "Unregistered",
-          "Registered"
+          "unregistered",
+          "registered"
         ],
         "type": "string"
       },
@@ -21734,8 +21734,8 @@
       },
       "InvoiceStatus": {
         "enum": [
-          "Unpaid",
-          "Paid"
+          "unpaid",
+          "paid"
         ],
         "type": "string"
       },
@@ -22282,25 +22282,25 @@
       },
       "OAuth2GrantType": {
         "enum": [
-          "Authorization_Code",
-          "Refresh_Token",
-          "Client_Credentials",
-          "Password",
-          "Implicit"
+          "authorization_Code",
+          "refresh_Token",
+          "client_Credentials",
+          "password",
+          "implicit"
         ],
         "type": "string"
       },
       "OAuth2ResponseType": {
         "enum": [
-          "Code",
-          "Id_Token",
-          "Token"
+          "code",
+          "id_Token",
+          "token"
         ],
         "type": "string"
       },
       "OAuth2TokenType": {
         "enum": [
-          "Bearer"
+          "bearer"
         ],
         "type": "string"
       },
@@ -22431,8 +22431,8 @@
       },
       "OpenIdConnectCodeChallengeMethod": {
         "enum": [
-          "Plain",
-          "S256"
+          "plain",
+          "s256"
         ],
         "type": "string"
       },
@@ -22732,33 +22732,33 @@
       },
       "OrganizationOwnership": {
         "enum": [
-          "Shared",
-          "Personal"
+          "shared",
+          "personal"
         ],
         "type": "string"
       },
       "PaymentMethodStatus": {
         "enum": [
-          "Invalid",
-          "Valid"
+          "invalid",
+          "valid"
         ],
         "type": "string"
       },
       "PaymentMethodType": {
         "enum": [
-          "None",
-          "Card",
-          "Other"
+          "none",
+          "card",
+          "other"
         ],
         "type": "string"
       },
       "PeriodFrequencyUnit": {
         "enum": [
-          "Eternity",
-          "Day",
-          "Week",
-          "Month",
-          "Year"
+          "eternity",
+          "day",
+          "week",
+          "month",
+          "year"
         ],
         "type": "string"
       },
@@ -23679,8 +23679,8 @@
       },
       "SortDirection": {
         "enum": [
-          "Ascending",
-          "Descending"
+          "ascending",
+          "descending"
         ],
         "type": "string"
       },
@@ -23839,19 +23839,19 @@
       },
       "SubscriptionStatus": {
         "enum": [
-          "Unsubscribed",
-          "Activated",
-          "Canceled",
-          "Canceling"
+          "unsubscribed",
+          "activated",
+          "canceled",
+          "canceling"
         ],
         "type": "string"
       },
       "SubscriptionTier": {
         "enum": [
-          "Unsubscribed",
-          "Standard",
-          "Professional",
-          "Enterprise"
+          "unsubscribed",
+          "standard",
+          "professional",
+          "enterprise"
         ],
         "type": "string"
       },
@@ -24035,18 +24035,18 @@
       },
       "TestingOnlyEnum": {
         "enum": [
-          "Value1",
-          "Value2",
-          "Value3",
-          "Value4"
+          "value1",
+          "value2",
+          "value3",
+          "value4"
         ],
         "type": "string"
       },
       "TokenType": {
         "enum": [
-          "OtherToken",
-          "AccessToken",
-          "RefreshToken"
+          "otherToken",
+          "accessToken",
+          "refreshToken"
         ],
         "type": "string"
       },
@@ -24065,7 +24065,7 @@
       },
       "TwilioMessageStatus": {
         "enum": [
-          "Unknown",
+          "unknown",
           "queued",
           "sending",
           "sent",
@@ -24276,8 +24276,8 @@
       },
       "UserProfileClassification": {
         "enum": [
-          "Person",
-          "Machine"
+          "person",
+          "machine"
         ],
         "type": "string"
       },

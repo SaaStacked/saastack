@@ -900,7 +900,7 @@ export const CredentialMfaAuthenticatorChallengeSchema = {
 } as const;
 
 export const CredentialMfaAuthenticatorTypeSchema = {
-    enum: ['None', 'RecoveryCodes', 'OobSms', 'OobEmail', 'TotpAuthenticator'],
+    enum: ['none', 'recoveryCodes', 'oobSms', 'oobEmail', 'totpAuthenticator'],
     type: 'string'
 } as const;
 
@@ -931,7 +931,7 @@ export const CustomDtoSchema = {
 } as const;
 
 export const CustomEnumSchema = {
-    enum: ['None', 'One', 'TwentyOne', 'OneHundredAndOne'],
+    enum: ['none', 'one', 'twentyOne', 'oneHundredAndOne'],
     type: 'string'
 } as const;
 
@@ -1238,17 +1238,17 @@ export const EndUserSchema = {
 } as const;
 
 export const EndUserAccessSchema = {
-    enum: ['Enabled', 'Suspended'],
+    enum: ['enabled', 'suspended'],
     type: 'string'
 } as const;
 
 export const EndUserClassificationSchema = {
-    enum: ['Person', 'Machine'],
+    enum: ['person', 'machine'],
     type: 'string'
 } as const;
 
 export const EndUserStatusSchema = {
-    enum: ['Unregistered', 'Registered'],
+    enum: ['unregistered', 'registered'],
     type: 'string'
 } as const;
 
@@ -1931,7 +1931,7 @@ export const InvoiceNoteSchema = {
 } as const;
 
 export const InvoiceStatusSchema = {
-    enum: ['Unpaid', 'Paid'],
+    enum: ['unpaid', 'paid'],
     type: 'string'
 } as const;
 
@@ -2408,17 +2408,17 @@ export const OAuth2ClientWithSecretsSchema = {
 } as const;
 
 export const OAuth2GrantTypeSchema = {
-    enum: ['Authorization_Code', 'Refresh_Token', 'Client_Credentials', 'Password', 'Implicit'],
+    enum: ['authorization_Code', 'refresh_Token', 'client_Credentials', 'password', 'implicit'],
     type: 'string'
 } as const;
 
 export const OAuth2ResponseTypeSchema = {
-    enum: ['Code', 'Id_Token', 'Token'],
+    enum: ['code', 'id_Token', 'token'],
     type: 'string'
 } as const;
 
 export const OAuth2TokenTypeSchema = {
-    enum: ['Bearer'],
+    enum: ['bearer'],
     type: 'string'
 } as const;
 
@@ -2534,7 +2534,7 @@ export const OpenApiTestingOnlyResponseSchema = {
 } as const;
 
 export const OpenIdConnectCodeChallengeMethodSchema = {
-    enum: ['Plain', 'S256'],
+    enum: ['plain', 's256'],
     type: 'string'
 } as const;
 
@@ -2773,22 +2773,22 @@ export const OrganizationMemberSchema = {
 } as const;
 
 export const OrganizationOwnershipSchema = {
-    enum: ['Shared', 'Personal'],
+    enum: ['shared', 'personal'],
     type: 'string'
 } as const;
 
 export const PaymentMethodStatusSchema = {
-    enum: ['Invalid', 'Valid'],
+    enum: ['invalid', 'valid'],
     type: 'string'
 } as const;
 
 export const PaymentMethodTypeSchema = {
-    enum: ['None', 'Card', 'Other'],
+    enum: ['none', 'card', 'other'],
     type: 'string'
 } as const;
 
 export const PeriodFrequencyUnitSchema = {
-    enum: ['Eternity', 'Day', 'Week', 'Month', 'Year'],
+    enum: ['eternity', 'day', 'week', 'month', 'year'],
     type: 'string'
 } as const;
 
@@ -3625,7 +3625,7 @@ export const SendSmsRequestSchema = {
 } as const;
 
 export const SortDirectionSchema = {
-    enum: ['Ascending', 'Descending'],
+    enum: ['ascending', 'descending'],
     type: 'string'
 } as const;
 
@@ -3765,12 +3765,12 @@ export const SubscriptionPlanSchema = {
 } as const;
 
 export const SubscriptionStatusSchema = {
-    enum: ['Unsubscribed', 'Activated', 'Canceled', 'Canceling'],
+    enum: ['unsubscribed', 'activated', 'canceled', 'canceling'],
     type: 'string'
 } as const;
 
 export const SubscriptionTierSchema = {
-    enum: ['Unsubscribed', 'Standard', 'Professional', 'Enterprise'],
+    enum: ['unsubscribed', 'standard', 'professional', 'enterprise'],
     type: 'string'
 } as const;
 
@@ -3936,12 +3936,12 @@ export const TestResourceSchema = {
 } as const;
 
 export const TestingOnlyEnumSchema = {
-    enum: ['Value1', 'Value2', 'Value3', 'Value4'],
+    enum: ['value1', 'value2', 'value3', 'value4'],
     type: 'string'
 } as const;
 
 export const TokenTypeSchema = {
-    enum: ['OtherToken', 'AccessToken', 'RefreshToken'],
+    enum: ['otherToken', 'accessToken', 'refreshToken'],
     type: 'string'
 } as const;
 
@@ -3959,7 +3959,7 @@ export const TransferSubscriptionRequestSchema = {
 
 export const TwilioMessageStatusSchema = {
     enum: [
-        'Unknown',
+        'unknown',
         'queued',
         'sending',
         'sent',
@@ -4146,7 +4146,7 @@ export const UserProfileSchema = {
 } as const;
 
 export const UserProfileClassificationSchema = {
-    enum: ['Person', 'Machine'],
+    enum: ['person', 'machine'],
     type: 'string'
 } as const;
 

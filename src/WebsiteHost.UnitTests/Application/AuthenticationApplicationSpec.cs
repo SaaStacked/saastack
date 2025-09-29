@@ -45,7 +45,7 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<AuthenticateCredentialRequest>(),
-                null, It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateResponse
             {
                 Tokens = new AuthenticateTokens
@@ -77,7 +77,7 @@ public class AuthenticationApplicationSpec
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateCredentialRequest>(req =>
             req.Username == "ausername"
             && req.Password == "apassword"
-        ), null, It.IsAny<CancellationToken>()));
+        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<AuthenticateSingleSignOnRequest>(),
-                null, It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateResponse
             {
                 Tokens = new AuthenticateTokens
@@ -117,7 +117,7 @@ public class AuthenticationApplicationSpec
         result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateSingleSignOnRequest>(req =>
             req.AuthCode == "anauthcode"
-        ), null, It.IsAny<CancellationToken>()));
+        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<RefreshTokenRequest>(),
-                null, It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new RefreshTokenResponse
             {
                 Tokens = new AuthenticateTokens
@@ -171,6 +171,6 @@ public class AuthenticationApplicationSpec
         _serviceClient.Verify(
             sc => sc.PostAsync(_caller.Object, It.Is<RefreshTokenRequest>(req =>
                 req.RefreshToken == "arefreshtoken"
-            ), null, It.IsAny<CancellationToken>()));
+            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
     }
 }

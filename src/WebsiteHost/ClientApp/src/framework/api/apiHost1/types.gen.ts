@@ -284,7 +284,7 @@ export type CredentialMfaAuthenticatorChallenge = {
   type: CredentialMfaAuthenticatorType;
 };
 
-export type CredentialMfaAuthenticatorType = 'None' | 'RecoveryCodes' | 'OobSms' | 'OobEmail' | 'TotpAuthenticator';
+export type CredentialMfaAuthenticatorType = 'none' | 'recoveryCodes' | 'oobSms' | 'oobEmail' | 'totpAuthenticator';
 
 export type CustomDto = {
   double?: number;
@@ -294,7 +294,7 @@ export type CustomDto = {
   time?: string;
 };
 
-export type CustomEnum = 'None' | 'One' | 'TwentyOne' | 'OneHundredAndOne';
+export type CustomEnum = 'none' | 'one' | 'twentyOne' | 'oneHundredAndOne';
 
 export type DeleteProfileAvatarResponse = {
   profile: UserProfile;
@@ -389,11 +389,11 @@ export type EndUser = {
   id: string;
 };
 
-export type EndUserAccess = 'Enabled' | 'Suspended';
+export type EndUserAccess = 'enabled' | 'suspended';
 
-export type EndUserClassification = 'Person' | 'Machine';
+export type EndUserClassification = 'person' | 'machine';
 
-export type EndUserStatus = 'Unregistered' | 'Registered';
+export type EndUserStatus = 'unregistered' | 'registered';
 
 export type EventNotification = {
   data: string;
@@ -617,7 +617,7 @@ export type InvoiceNote = {
   description: string;
 };
 
-export type InvoiceStatus = 'Unpaid' | 'Paid';
+export type InvoiceStatus = 'unpaid' | 'paid';
 
 export type InvoiceSummary = {
   amount: number;
@@ -774,11 +774,11 @@ export type OAuth2ClientWithSecrets = {
   secrets: Array<OAuthClientSecret>;
 };
 
-export type OAuth2GrantType = 'Authorization_Code' | 'Refresh_Token' | 'Client_Credentials' | 'Password' | 'Implicit';
+export type OAuth2GrantType = 'authorization_Code' | 'refresh_Token' | 'client_Credentials' | 'password' | 'implicit';
 
-export type OAuth2ResponseType = 'Code' | 'Id_Token' | 'Token';
+export type OAuth2ResponseType = 'code' | 'id_Token' | 'token';
 
-export type OAuth2TokenType = 'Bearer';
+export type OAuth2TokenType = 'bearer';
 
 export type OAuthClientSecret = {
   expiresOnUtc?: string;
@@ -827,7 +827,7 @@ export type OpenApiTestingOnlyResponse = {
   message: string;
 };
 
-export type OpenIdConnectCodeChallengeMethod = 'Plain' | 'S256';
+export type OpenIdConnectCodeChallengeMethod = 'plain' | 's256';
 
 export type OpenIdConnectDiscoveryDocument = {
   authorizationEndpoint: string;
@@ -885,13 +885,13 @@ export type OrganizationMember = {
   id: string;
 };
 
-export type OrganizationOwnership = 'Shared' | 'Personal';
+export type OrganizationOwnership = 'shared' | 'personal';
 
-export type PaymentMethodStatus = 'Invalid' | 'Valid';
+export type PaymentMethodStatus = 'invalid' | 'valid';
 
-export type PaymentMethodType = 'None' | 'Card' | 'Other';
+export type PaymentMethodType = 'none' | 'card' | 'other';
 
-export type PeriodFrequencyUnit = 'Eternity' | 'Day' | 'Week' | 'Month' | 'Year';
+export type PeriodFrequencyUnit = 'eternity' | 'day' | 'week' | 'month' | 'year';
 
 export type PersonCredential = {
   isMfaEnabled: boolean;
@@ -1169,7 +1169,7 @@ export type SendSmsRequest = {
   message: string;
 };
 
-export type SortDirection = 'Ascending' | 'Descending';
+export type SortDirection = 'ascending' | 'descending';
 
 export type Sorting = {
   by: string;
@@ -1224,9 +1224,9 @@ export type SubscriptionPlan = {
   trialEndDateUtc?: string;
 };
 
-export type SubscriptionStatus = 'Unsubscribed' | 'Activated' | 'Canceled' | 'Canceling';
+export type SubscriptionStatus = 'unsubscribed' | 'activated' | 'canceled' | 'canceling';
 
-export type SubscriptionTier = 'Unsubscribed' | 'Standard' | 'Professional' | 'Enterprise';
+export type SubscriptionTier = 'unsubscribed' | 'standard' | 'professional' | 'enterprise';
 
 export type SubscriptionToMigrate = {
   buyerId: string;
@@ -1281,16 +1281,16 @@ export type TestResource = {
   id: string;
 };
 
-export type TestingOnlyEnum = 'Value1' | 'Value2' | 'Value3' | 'Value4';
+export type TestingOnlyEnum = 'value1' | 'value2' | 'value3' | 'value4';
 
-export type TokenType = 'OtherToken' | 'AccessToken' | 'RefreshToken';
+export type TokenType = 'otherToken' | 'accessToken' | 'refreshToken';
 
 export type TransferSubscriptionRequest = {
   userId?: string | null;
 };
 
 export type TwilioMessageStatus =
-  | 'Unknown'
+  | 'unknown'
   | 'queued'
   | 'sending'
   | 'sent'
@@ -1359,7 +1359,7 @@ export type UserProfile = {
   id: string;
 };
 
-export type UserProfileClassification = 'Person' | 'Machine';
+export type UserProfileClassification = 'person' | 'machine';
 
 export type UserProfileForCaller = {
   address: ProfileAddress;
@@ -2971,17 +2971,17 @@ export type GetCallerWithTokenOrApiKeyTestingOnlyResponse = GetCallerTestingOnly
 
 export type GetCallerWithTokenOrApiKeyTestingOnlyError = ProblemDetails | unknown;
 
-export type AuthorizeByNothingTestingOnlyResponse = GetCallerTestingOnlyResponse;
+export type AuthorizeByAnonymousTestingOnlyResponse = GetCallerTestingOnlyResponse;
 
-export type AuthorizeByNothingTestingOnlyError = ProblemDetails | unknown;
+export type AuthorizeByAnonymousTestingOnlyError = ProblemDetails | unknown;
 
 export type AuthorizeByFeatureTestingOnlyResponse = GetCallerTestingOnlyResponse;
 
 export type AuthorizeByFeatureTestingOnlyError = ProblemDetails | unknown;
 
-export type AuthorizeByRoleTestingOnlyResponse = GetCallerTestingOnlyResponse;
+export type AuthorizeByTokenWithRoleTestingOnlyResponse = GetCallerTestingOnlyResponse;
 
-export type AuthorizeByRoleTestingOnlyError = ProblemDetails | unknown;
+export type AuthorizeByTokenWithRoleTestingOnlyError = ProblemDetails | unknown;
 
 export type ContentNegotiationsTestingOnlyData = {
   query?: {
