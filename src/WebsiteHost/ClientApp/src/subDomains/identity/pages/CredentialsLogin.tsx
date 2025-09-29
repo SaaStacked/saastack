@@ -8,7 +8,6 @@ import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import { CredentialsLoginAction, LoginErrors } from '../actions/credentialsLogin.ts';
 
-
 export const CredentialsLoginPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const login = CredentialsLoginAction();

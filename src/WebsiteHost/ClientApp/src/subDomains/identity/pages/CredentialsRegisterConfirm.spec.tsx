@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { ActionResult } from '../../../framework/actions/Actions.ts';
 import { ConfirmPersonCredentialRegistrationRequest, EmptyResponse, ResendPersonCredentialRegistrationConfirmationRequest } from '../../../framework/api/apiHost1';
 import { ConfirmRegisterErrors } from '../actions/credentialsRegisterConfirm.ts';
-import { CredentialsRegisterConfirm } from './credentialsRegisterConfirm';
+import { CredentialsRegisterConfirm } from './CredentialsRegisterConfirm';
 
 
 const mockConfirmAction: ActionResult<

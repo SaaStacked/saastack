@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Button from '../../../framework/components/button/Button.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 
-
 export function HomeAnonymousPage() {
   const { t: translate } = useTranslation();
   return (

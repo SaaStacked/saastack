@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-
 export function PrivacyPage() {
   const { t: translate } = useTranslation();
 
