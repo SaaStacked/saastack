@@ -57,6 +57,14 @@ public static class CommonValidations
     }
 
     /// <summary>
+    ///     Validation for a filenames
+    /// </summary>
+    public static Validation Filename(int min = 1, int max = 100)
+    {
+        return new Validation(@"^[\d\w \.\+\-\(\)\[\]\@]*$", min, max);
+    }
+
+    /// <summary>
     ///     Validation for any freeform text (almost any character)
     /// </summary>
     public static Validation FreeformText(int min = 1, int max = 1000)

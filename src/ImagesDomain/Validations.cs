@@ -24,6 +24,6 @@ public static class Validations
             return AllowableContentTypes.ContainsIgnoreCase(val);
         });
         public static readonly Validation Description = CommonValidations.FreeformText(1, 250);
-        public static readonly Validation Filename = new(@"^[\d\w\.]*$", 1, 100);
+        public static readonly Validation Filename = CommonValidations.Filename(1, 200);
     }
 }
