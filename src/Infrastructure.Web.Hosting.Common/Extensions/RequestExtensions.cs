@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Web.Hosting.Common.Extensions;
 
+
 public static class RequestExtensions
 {
+    private const int MaxCookiePayloadSizeInBytes = 4096;
+
     /// <summary>
     ///     Deletes the authentication cookies from the response
     /// </summary>
@@ -128,6 +131,14 @@ public static class RequestExtensions
             Token = tokens.RefreshToken.Value,
             ExpiresOn = expiresOn
         }.ToJson()!;
+
+        var tokenLength = authToken.Length;
+        if (tokenLength > MaxCookiePayloadSizeInBytes)
+        {
+            var overSize = tokenLength - MaxCookiePayloadSizeInBytes;
+            throw new InvalidOperationException(
+                Resources.RequestExtensions_SetTokensToAuthNCookies_TokenLengthExceeded.Format(overSize));
+        }
 
         // Note: IResponseCookies.Append will automatically call Uri.EscapeDataString on the JSON value
         response.Cookies.Append(AuthenticationConstants.Cookies.Token, authToken,

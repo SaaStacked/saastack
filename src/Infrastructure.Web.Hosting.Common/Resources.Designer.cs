@@ -357,6 +357,15 @@ namespace Infrastructure.Web.Hosting.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authentication token contains too many claims, and has exceeded the max size for an HTTP cookie, by `{0}` bytes. It will be ignored by the browser, and the user will fail authentication.
+        /// </summary>
+        internal static string RequestExtensions_SetTokensToAuthNCookies_TokenLengthExceeded {
+            get {
+                return ResourceManager.GetString("RequestExtensions_SetTokensToAuthNCookies_TokenLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid subscription level.
         /// </summary>
         internal static string RolesAndFeaturesAuthorizationHandler_HandleRequirementAsync_MissingFeature {

@@ -132,4 +132,7 @@
     <data name="JWTTokensService_ClientIdRequired" xml:space="preserve">
       <value>The 'ClientId' is missing and required for the audience of the IdToken</value>
     </data>
+    <data name="RequestExtensions_SetTokensToAuthNCookies_TokenLengthExceeded" xml:space="preserve">
+        <value>Authentication token contains too many claims, and has exceeded the max size for an HTTP cookie, by `{0}` bytes. It will be ignored by the browser, and the user will fail authentication</value>
+    </data>
 </root>
