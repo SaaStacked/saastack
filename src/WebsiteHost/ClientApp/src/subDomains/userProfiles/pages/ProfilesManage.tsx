@@ -14,6 +14,7 @@ import FormSubmitButton from '../../../framework/components/form/formSubmitButto
 import { FormTabs } from '../../../framework/components/form/FormTabs.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
+import Tag from '../../../framework/components/tag/Tag.tsx';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { countryTimezones } from '../../../framework/utils/browser.ts';
 import { ChangeProfileAction } from '../actions/changeProfile.ts';
@@ -98,17 +99,14 @@ const AccountTab: React.FC<{
             <div className="flex flex-wrap gap-2">
               {initialProfile.roles && initialProfile.roles.length > 0 ? (
                 initialProfile.roles.map((role, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                  >
-                    {formatRoleName(role)}
-                  </span>
+                  <Tag key={index} className="text-xs" label={formatRoleName(role)} color="sky" />
                 ))
               ) : (
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
-                  {translate('pages.profiles.manage.tabs.account.form.fields.roles.empty')}
-                </span>
+                <Tag
+                  className="text-xs"
+                  label={translate('pages.profiles.manage.tabs.account.form.fields.roles.empty')}
+                  color="gray"
+                />
               )}
             </div>
           </div>
@@ -119,17 +117,14 @@ const AccountTab: React.FC<{
             <div className="flex flex-wrap gap-2">
               {initialProfile.features && initialProfile.features.length > 0 ? (
                 initialProfile.features.map((feature, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                  >
-                    {formatFeatureName(feature)}
-                  </span>
+                  <Tag key={index} className="text-xs" label={formatFeatureName(feature)} color="lime" />
                 ))
               ) : (
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
-                  {translate('pages.profiles.manage.tabs.account.form.fields.features.empty')}
-                </span>
+                <Tag
+                  className="text-xs"
+                  label={translate('pages.profiles.manage.tabs.account.form.fields.features.empty')}
+                  color="gray"
+                />
               )}
             </div>
           </div>

@@ -7,6 +7,7 @@ import ButtonAction from '../../../framework/components/button/ButtonAction.tsx'
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
+import Tag from '../../../framework/components/tag/Tag.tsx';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { ChangeDefaultOrganizationAction } from '../../endUsers/actions/changeDefaultOrganization.ts';
 import { ListAllMembershipsAction } from '../../endUsers/actions/listAllMemberships.ts';
@@ -85,9 +86,11 @@ const OrganizationCard: React.FC<{
           className={`relative p-2 rounded-lg ${membership.isDefault ? 'border-accent border-3' : 'border-gray-200 border'}`}
         >
           {membership.isDefault && (
-            <div className="absolute -top-2 left-4 bg-accent text-white px-2 py-1 text-xs font-medium rounded">
-              {translate('pages.organizations.manage.labels.current')}
-            </div>
+            <Tag
+              className="absolute -top-3 left-4 text-xs"
+              label={translate('pages.organizations.manage.labels.current')}
+              color="accent"
+            />
           )}
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -125,40 +128,34 @@ const OrganizationCard: React.FC<{
               <div className="space-y-1">
                 <p className="text-sm text-gray-600">
                   <span className="font-medium mr-2">
-                    {translate('pages.organizations.manage.labels.features.label')}:
-                  </span>
-                  {membership.features && membership.features.length > 0 ? (
-                    membership.features.map((feature: string, index: number) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      >
-                        {formatFeatureName(feature)}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">
-                      {translate('pages.organizations.manage.labels.features.empty')}
-                    </span>
-                  )}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium mr-2">
                     {translate('pages.organizations.manage.labels.roles.label')}:
                   </span>
                   {membership.roles && membership.roles.length > 0 ? (
                     membership.roles.map((role: string, index: number) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center mr-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                      >
-                        {formatRoleName(role)}
-                      </span>
+                      <Tag key={index} className="text-xs" label={formatRoleName(role)} color="sky" />
                     ))
                   ) : (
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">
-                      {translate('pages.organizations.manage.labels.roles.empty')}
-                    </span>
+                    <Tag
+                      className="text-xs"
+                      label={translate('pages.organizations.manage.labels.roles.empty')}
+                      color="gray"
+                    />
+                  )}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium mr-2">
+                    {translate('pages.organizations.manage.labels.features.label')}:
+                  </span>
+                  {membership.features && membership.features.length > 0 ? (
+                    membership.features.map((feature: string, index: number) => (
+                      <Tag key={index} className="text-xs" label={formatFeatureName(feature)} color="lime" />
+                    ))
+                  ) : (
+                    <Tag
+                      className="text-xs"
+                      label={translate('pages.organizations.manage.labels.features.empty')}
+                      color="gray"
+                    />
                   )}
                 </p>
               </div>

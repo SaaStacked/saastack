@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import { createComponentId } from '../Components.ts';
+import Tag from '../tag/Tag.tsx';
 
 
 interface UnhandledErrorProps {
@@ -80,12 +81,12 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
               <span className="text-xs text-gray-700 dark:text-gray-300">
                 {translate('components.unhandled_error.status')}:
               </span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+              <Tag className="text-xs" label={translate('pages.organizations.manage.labels.roles.empty')} color="rose">
                 HTTP{' '}
                 <span className="ml-1" data-testid={`${componentId}_details_statusCode`}>
                   {statusCode}
                 </span>
-              </span>
+              </Tag>
               {errorCode && (
                 <>
                   <span className="text-xs text-gray-600 dark:text-gray-400">-</span>

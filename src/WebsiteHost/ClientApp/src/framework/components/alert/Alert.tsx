@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { createComponentId, toClasses } from '../Components.ts';
-import Icon, { IconSymbol, TailwindColor } from '../icon/Icon';
+import Icon, { IconSymbol } from '../icon/Icon';
+import { TailwindColor } from '../typography/Tailwind.ts';
 
 
 interface AlertProps {
