@@ -91,7 +91,9 @@ export function useActionQuery<
         throw new Error('Cannot execute query action when browser is offline');
       }
     },
-    select: onSuccess
+    select: onSuccess,
+    retry: false,
+    throwOnError: (_error: Error, _query) => false
   });
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export function useActionQuery<
     } else {
       handleError(queryError);
     }
-  }, [isError, clearErrors]);
+  }, [isError, queryError]);
 
   const executeCallback = useCallback(
     (
@@ -115,9 +117,18 @@ export function useActionQuery<
       setCurrentRequestData(submittedRequestData);
       currentRequestDataRef.current = submittedRequestData;
 
-      refetch({})
-        .then((result) => onSuccess?.({ requestData, response: result.data as TTransformedResponse }))
+      refetch({
+        throwOnError: false
+      })
+        .then((result) => {
+          // Make sure we don't call onSuccess if there is an error, given that throwOnError is always false
+          if (result.isError && result.error != undefined) {
+            return;
+          }
+          return onSuccess?.({ requestData, response: result.data as TTransformedResponse });
+        })
         .catch((error) => {
+          // we should never get here, since throwOnError is always set to false
           recorder.trace('useActionQuery: Failed to refetch query action', SeverityLevel.Warning);
           throw error;
         });

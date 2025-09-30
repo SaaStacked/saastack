@@ -21,7 +21,7 @@ import { CredentialsRegisterRedirect } from './subDomains/identity/pages/Credent
 import { SsoMicrosoftPage } from './subDomains/identity/pages/SsoMicrosoft.tsx';
 import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEditPage.tsx';
 import { OrganizationNewPage } from './subDomains/organizations/pages/OrganizationNewPage.tsx';
-import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManage.tsx';
+import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManagePage.tsx';
 import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
 
 
@@ -55,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/bookings/reserve" element={<BookingsReservePage />} />
             <Route path="/profile" element={<ProfilesManagePage />} />
             <Route path="/organizations" element={<OrganizationsManagePage />} />
+            <Route path="/organizations/new" element={<OrganizationNewPage />} />
             <Route path="/organizations/:id/edit" element={<OrganizationEditPage />} />
           </Route>
 

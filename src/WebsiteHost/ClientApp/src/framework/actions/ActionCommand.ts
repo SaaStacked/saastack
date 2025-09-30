@@ -7,7 +7,11 @@ import { ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
 
-export interface ActionCommandConfiguration<TRequestData = any, ExpectedErrorCode extends string = '', TResponse = any> {
+export interface ActionCommandConfiguration<
+  TRequestData = any,
+  ExpectedErrorCode extends string = '',
+  TResponse = any
+> {
   // The generated AXIOS endpoint we need to call
   request: (
     requestData: TRequestData,
@@ -88,7 +92,9 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
           exact: false // we want to support wildcards
         });
       }
-    }
+    },
+    throwOnError: (_error: Error) => false,
+    retry: false
   });
 
   useEffect(() => {
@@ -110,7 +116,7 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
         onSuccess: (response, requestData) => onSuccess?.({ requestData, response })
       });
     },
-    [mutate]
+    [mutate, configuration.isTenanted]
   );
 
   const isExecuting = isPending && isError == false && isSuccess == false;

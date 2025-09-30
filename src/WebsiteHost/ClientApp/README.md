@@ -172,11 +172,18 @@ There are a set of very basic components, that can be used anywhere, and there a
 
 Pages are organized according to subdomain.
 
-Page URLs are defined in `src/App.tsx` and if those change, you may need to update the values in the `WebsiteUiService` class to follow.
+Page URLs are defined in `src/App.tsx` and if those change, you MAY need to update the values in the `WebsiteUiService` class to follow.
 
 The relevant pages from the `Identity` subdomain are all implemented fully. You will likely want to keep these for your product. And only change the layout/styling of them.
 
 Pages from sample subdomain (`Cars` and `Bookings`) are also implemented, but you will likely want to delete these for your product. They are here only as examples to follow.
+
+We strongly recommend driving your pages using either: `FormAction` for interactive pages, or `PageAction`, and `ButtonAction` for data display pages. 
+
+These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application doe not work. 
+
+> See more on why you should "actions" here: [JavaScript Actions](../../../docs/design-principles/0200-javascript-actions.md)
+
 
 ### Tailwind Styling
 

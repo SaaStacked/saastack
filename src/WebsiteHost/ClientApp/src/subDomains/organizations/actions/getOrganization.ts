@@ -4,8 +4,12 @@ import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
 import organizationCacheKeys from './responseCache';
 
 
+export enum OrganizationErrorCodes {
+  forbidden = 'forbidden'
+}
+
 export const GetOrganizationAction = (id: string) =>
-  useActionQuery<EmptyRequest, GetOrganizationResponse, Organization>({
+  useActionQuery<EmptyRequest, GetOrganizationResponse, Organization, OrganizationErrorCodes>({
     request: (request) =>
       getOrganization({
         ...request,
@@ -14,5 +18,8 @@ export const GetOrganizationAction = (id: string) =>
         }
       }),
     transform: (res) => res.organization,
+    passThroughErrors: {
+      403: OrganizationErrorCodes.forbidden
+    },
     cacheKey: organizationCacheKeys.organization.query(id)
   });
