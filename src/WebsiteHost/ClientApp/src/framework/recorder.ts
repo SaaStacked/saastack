@@ -3,11 +3,13 @@ import { AzureRecorder } from './recorders/azureRecorder';
 import { NoOpRecorder } from './recorders/noOpRecorder';
 
 
+const IgnoreTraceDebugInProduction: boolean = true;
+
 export interface Recorder {
   crash: (error: Error, message?: string) => void;
-  trace: (message: string, severityLevel: SeverityLevel) => void;
-  traceDebug: (message: string) => void;
-  traceInformation: (message: string) => void;
+  trace: (message: string, severityLevel: SeverityLevel, args?: any) => void;
+  traceDebug: (message: string, args?: any) => void;
+  traceInformation: (message: string, args?: any) => void;
   trackPageView: (path: string) => void;
   trackUsage: (eventName: string, additional?: { [index: string]: any }) => void;
 }
@@ -27,19 +29,19 @@ class LazyLoadingRecorder implements Recorder {
     this.recorder?.crash(error, message);
   }
 
-  trace(message: string, severityLevel: SeverityLevel): void {
+  trace(message: string, severityLevel: SeverityLevel, args?: any): void {
     this.ensureUnderlyingRecorder();
-    this.recorder?.trace(message, severityLevel);
+    this.recorder?.trace(message, severityLevel, args);
   }
 
-  traceDebug(message: string): void {
+  traceDebug(message: string, args?: any): void {
     this.ensureUnderlyingRecorder();
-    this.recorder?.traceDebug(message);
+    this.recorder?.traceDebug(message, args);
   }
 
-  traceInformation(message: string): void {
+  traceInformation(message: string, args?: any): void {
     this.ensureUnderlyingRecorder();
-    this.recorder?.traceInformation(message);
+    this.recorder?.traceInformation(message, args);
   }
 
   trackPageView(path: string): void {
@@ -58,12 +60,12 @@ class LazyLoadingRecorder implements Recorder {
     }
 
     if (window.isHostedOn === 'AZURE') {
-      this.recorder = new AzureRecorder();
+      this.recorder = new AzureRecorder({ ignoreDebug: IgnoreTraceDebugInProduction });
       return;
     }
 
     if (window.isHostedOn === 'AWS') {
-      this.recorder = new AwsRecorder();
+      this.recorder = new AwsRecorder({ ignoreDebug: IgnoreTraceDebugInProduction });
       return;
     }
 

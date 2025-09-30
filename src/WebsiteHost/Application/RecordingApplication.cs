@@ -48,7 +48,7 @@ public class RecordingApplication : IRecordingApplication
         {
             { UsageConstants.Properties.Path, path }
         });
-        
+
         const string eventName = UsageConstants.Events.Web.WebPageVisit;
         if (additional.Remove(UsageConstants.Properties.ForId, out var forId))
         {
@@ -63,29 +63,36 @@ public class RecordingApplication : IRecordingApplication
     }
 
     public Task<Result<Error>> RecordTraceAsync(ICallerContext caller, RecorderTraceLevel level,
-        string messageTemplate, List<string>? arguments, CancellationToken cancellationToken)
+        string messageTemplate, Dictionary<string, object?>? arguments, CancellationToken cancellationToken)
     {
         var args = arguments.Exists()
-            ? arguments.Select(object (arg) => arg).ToArray()
+            ? arguments
+                .Where(pair => pair.Value.Exists())
+                .Select(pair => pair.Value)
+                .ToArray()
             : [];
 
         var call = caller.ToCall();
         switch (level)
         {
             case RecorderTraceLevel.Debug:
-                _recorder.TraceDebug(call, messageTemplate, args);
+                _recorder.TraceDebug(call, messageTemplate, args!);
                 break;
+
             case RecorderTraceLevel.Information:
-                _recorder.TraceInformation(call, messageTemplate, args);
+                _recorder.TraceInformation(call, messageTemplate, args!);
                 break;
+
             case RecorderTraceLevel.Warning:
-                _recorder.TraceWarning(call, messageTemplate, args);
+                _recorder.TraceWarning(call, messageTemplate, args!);
                 break;
+
             case RecorderTraceLevel.Error:
-                _recorder.TraceError(call, messageTemplate, args);
+                _recorder.TraceError(call, messageTemplate, args!);
                 break;
+
             default:
-                _recorder.TraceInformation(call, messageTemplate, args);
+                _recorder.TraceInformation(call, messageTemplate, args!);
                 break;
         }
 
@@ -97,8 +104,8 @@ public class RecordingApplication : IRecordingApplication
         CancellationToken cancellationToken)
     {
         var dictionary = (additional ?? new Dictionary<string, object?>())
-                .Where(pair => pair.Value.Exists())
-                .ToDictionary(pair => pair.Key, pair => pair.Value);
+            .Where(pair => pair.Value.Exists())
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
         var more = AddClientContext(caller, clientDetails, dictionary!);
         if (more.Remove(UsageConstants.Properties.ForId, out var forId))
         {
@@ -120,6 +127,7 @@ public class RecordingApplication : IRecordingApplication
         {
             more.TryAdd(UsageConstants.Properties.ForId, caller.CallerId);
         }
+
         more.TryAdd(UsageConstants.Properties.Timestamp, DateTime.UtcNow);
         more.TryAdd(UsageConstants.Properties.IpAddress, clientDetails.IpAddress.HasValue()
             ? clientDetails.IpAddress
@@ -131,7 +139,7 @@ public class RecordingApplication : IRecordingApplication
             ? clientDetails.Referer
             : "unknown");
         more.TryAdd(UsageConstants.Properties.Component, UsageConstants.Components.BackEndForFrontEndWebHost);
-     
+
         return more;
     }
 }

@@ -9,7 +9,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 [Route("/record/trace", OperationMethod.Post)]
 public class RecordTraceRequest : UnTenantedEmptyRequest<RecordTraceRequest>
 {
-    public List<string>? Arguments { get; set; }
+    public Dictionary<string, object?>? Arguments { get; set; }
 
     [Required] public string? Level { get; set; }
 

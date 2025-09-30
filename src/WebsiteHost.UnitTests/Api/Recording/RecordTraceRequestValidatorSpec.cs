@@ -43,11 +43,11 @@ public class RecordTraceRequestValidatorSpec
     [Fact]
     public void WhenAnArgumentIsNull_ThenThrows()
     {
-        _dto.Arguments = new List<string>
+        _dto.Arguments = new Dictionary<string, object?>
         {
-            "anarg1",
-            null!,
-            "anarg2"
+            { "aname1", "anarg1" },
+            { "aname2", null! },
+            { "aname3", "anarg3" }
         };
 
         _validator.Invoking(x => x.ValidateAndThrow(_dto))
@@ -58,10 +58,11 @@ public class RecordTraceRequestValidatorSpec
     [Fact]
     public void WhenArguments_ThenSucceeds()
     {
-        _dto.Arguments = new List<string>
+        _dto.Arguments = new Dictionary<string, object?>
         {
-            "anarg1",
-            "anarg2"
+            { "aname1", "anarg1" },
+            { "aname2", "anarg2" },
+            { "aname3", "anarg3" }
         };
 
         _validator.ValidateAndThrow(_dto);

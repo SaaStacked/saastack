@@ -52,6 +52,7 @@ async function handleUnauthorizedResponse(error: AxiosError) {
     problem != undefined &&
     problem.response?.data.title === 'csrf_violation'
   ) {
+    recorder.traceDebug('UnAuthorizedHandler: CSRF violation detected, reloading home page');
     forceReloadHome();
     return Promise.reject(error);
   }
@@ -72,27 +73,34 @@ async function handleUnauthorizedResponse(error: AxiosError) {
   }
 
   try {
+    recorder.traceDebug("UnAuthorizedHandler: 401 detected, refreshing user's token");
     // Attempt to refresh the access_token cookies (if exist)
     return await refreshToken().then(async (res) => {
       if (axios.isAxiosError(res)) {
         const error = res as AxiosError;
         if (error.status === HttpStatusCode.Unauthorized || error.status === HttpStatusCode.Locked) {
+          recorder.traceDebug("UnAuthorizedHandler: Refreshing user's token returned 401, forcing logout");
           // Access token does not exist, or Refresh token is expired, or User is locked and cannot be refreshed,
-          // or they cannot be authenticated anymore, the best we can do here is force the user to logout,
+          // or they cannot be authenticated anymore, the best we can do here is force the user to log out,
           // remove all cookies, and force them to login again.
           logout().then(() => forceReloadHome());
         }
+        recorder.traceDebug("UnAuthorizedHandler: Refreshing user's token failed with error:", { error });
         return Promise.reject(error);
       } else {
+        recorder.traceDebug("UnAuthorizedHandler: Refreshed user's token, retrying original request");
         recorder.trackUsage(UsageConstants.UsageScenarios.BrowserAuthRefresh);
         // Retry the original request
         return axios.request(requestConfig).then((res) => {
           if (axios.isAxiosError(res)) {
             const error = res as AxiosError;
             if (error.status === HttpStatusCode.Unauthorized) {
+              recorder.traceDebug('UnAuthorizedHandler: Original request still returns 401, forcing logout');
               // User is not authenticated anymore, the best we can do here is force the user to login again
               forceReloadHome();
+              return Promise.reject(error);
             }
+            recorder.traceDebug('UnAuthorizedHandler: Original request failed with error', { error });
             return Promise.reject(error);
           } else {
             return res;

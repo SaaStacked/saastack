@@ -20,7 +20,18 @@ if (applicationInsightsEnabled) {
   appInsights.loadAppInsights();
 }
 
+interface AzureRecorderOptions {
+  ignoreDebug?: boolean;
+}
+
 export class AzureRecorder extends BrowserRecorder {
+  private readonly ignoreDebug: boolean;
+
+  constructor(options: AzureRecorderOptions = {}) {
+    super();
+    this.ignoreDebug = options.ignoreDebug ?? false;
+  }
+
   crash(error: Error, message?: string): void {
     super.crash(error, message);
     if (!window.isTestingOnly) {
@@ -32,32 +43,39 @@ export class AzureRecorder extends BrowserRecorder {
     }
   }
 
-  trace(message: string, severityLevel: SeverityLevel): void {
-    super.trace(message, severityLevel);
+  trace(message: string, severityLevel: SeverityLevel, args?: any): void {
+    super.trace(message, severityLevel, args);
     if (!window.isTestingOnly) {
       appInsights.trackTrace({
         message,
-        severityLevel: toAISeverity(severityLevel)
+        severityLevel: toAISeverity(severityLevel),
+        properties: args
       });
     }
   }
 
-  traceDebug(message: string): void {
-    super.traceDebug(message);
+  traceDebug(message: string, args?: any): void {
+    super.traceDebug(message, args);
     if (!window.isTestingOnly) {
+      if (this.ignoreDebug) {
+        return;
+      }
+
       appInsights.trackTrace({
         message,
-        severityLevel: AISeverityLevel.Verbose
+        severityLevel: AISeverityLevel.Verbose,
+        properties: args
       });
     }
   }
 
-  traceInformation(message: string): void {
-    super.traceInformation(message);
+  traceInformation(message: string, args?: any): void {
+    super.traceInformation(message, args);
     if (!window.isTestingOnly) {
       appInsights.trackTrace({
         message,
-        severityLevel: AISeverityLevel.Information
+        severityLevel: AISeverityLevel.Information,
+        properties: args
       });
     }
   }

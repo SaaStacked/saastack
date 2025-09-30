@@ -112,8 +112,14 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
     ) => {
       let submittedRequestData: TRequestData = modifyRequestData(requestData, configuration.isTenanted);
 
+      recorder.traceDebug('ActionCommand: Executing command, with request', {
+        submittedRequestData
+      });
       mutate(submittedRequestData, {
-        onSuccess: (response, requestData) => onSuccess?.({ requestData, response })
+        onSuccess: (response, requestData) => {
+          recorder.traceDebug('ActionCommand: Query returned success');
+          return onSuccess?.({ requestData, response });
+        }
       });
     },
     [mutate, configuration.isTenanted]

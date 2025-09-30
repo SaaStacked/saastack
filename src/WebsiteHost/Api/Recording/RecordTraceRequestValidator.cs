@@ -1,4 +1,5 @@
 using Application.Resources.Shared;
+using Common.Extensions;
 using FluentValidation;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 using JetBrains.Annotations;
@@ -19,6 +20,7 @@ public class RecordTraceRequestValidator : AbstractValidator<RecordTraceRequest>
             .WithMessage(Resources.RecordTraceRequestValidator_InvalidMessageTemplate);
         RuleForEach(req => req.Arguments)
             .NotNull()
+            .Must(pair => pair.Value.Exists())
             .WithMessage(Resources.RecordTraceRequestValidator_InvalidMessageArgument);
     }
 }

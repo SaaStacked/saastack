@@ -91,7 +91,14 @@ export function useActionQuery<
         throw new Error('Cannot execute query action when browser is offline');
       }
     },
-    select: onSuccess,
+    select: (data: TResponse) => {
+      if (data === undefined || data === null) {
+        return;
+      }
+      if (onSuccess) {
+        return onSuccess(data);
+      }
+    },
     retry: false,
     throwOnError: (_error: Error, _query) => false
   });
@@ -117,14 +124,17 @@ export function useActionQuery<
       setCurrentRequestData(submittedRequestData);
       currentRequestDataRef.current = submittedRequestData;
 
+      recorder.traceDebug('QueryCommand: Executing query, with request', { request: submittedRequestData });
       refetch({
         throwOnError: false
       })
         .then((result) => {
           // Make sure we don't call onSuccess if there is an error, given that throwOnError is always false
           if (result.isError && result.error != undefined) {
+            recorder.traceDebug('QueryCommand: Query returned error', { result });
             return;
           }
+          recorder.traceDebug('QueryCommand: Query returned success');
           return onSuccess?.({ requestData, response: result.data as TTransformedResponse });
         })
         .catch((error) => {

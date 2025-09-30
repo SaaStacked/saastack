@@ -1,5 +1,6 @@
 import { Recorder, SeverityLevel } from '../recorder';
 
+
 export class NoOpRecorder implements Recorder {
   // @ts-ignore
   crash(error: Error, message?: string): void {
@@ -7,17 +8,17 @@ export class NoOpRecorder implements Recorder {
   }
 
   // @ts-ignore
-  trace(message: string, severityLevel: SeverityLevel): void {
+  trace(message: string, severityLevel: SeverityLevel, args?: any): void {
     // Does nothing by definition
   }
 
   // @ts-ignore
-  traceDebug(message: string): void {
+  traceDebug(message: string, args?: any): void {
     // Does nothing by definition
   }
 
   // @ts-ignore
-  traceInformation(message: string): void {
+  traceInformation(message: string, args?: any): void {
     // Does nothing by definition
   }
 

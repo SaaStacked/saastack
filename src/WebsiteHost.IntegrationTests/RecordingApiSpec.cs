@@ -98,9 +98,9 @@ public class RecordingApiSpec : WebsiteSpec<Program, ApiHost1.Program>
         {
             Level = RecorderTraceLevel.Warning.ToString(),
             MessageTemplate = "amessage {aparam}",
-            Arguments = new List<string>
+            Arguments = new Dictionary<string, object?>
             {
-                "avalue"
+                { "aname", "avalue" }
             }
         };
         await HttpApi.PostAsync(request.MakeApiRoute(), JsonContent.Create(request),
@@ -109,7 +109,7 @@ public class RecordingApiSpec : WebsiteSpec<Program, ApiHost1.Program>
         _recorder.LastTraceMessages.Should().Contain(msg =>
             msg.Message == "amessage {aparam}"
             && msg.Level == StubRecorderTraceLevel.Warning
-            && msg.Arguments!.Length == 1 && (string)msg.Arguments[0] == "avalue");
+            && msg.Arguments!.Length == 1 && ((JsonElement)msg.Arguments[0]).GetString() == "avalue");
     }
 
     [Fact]

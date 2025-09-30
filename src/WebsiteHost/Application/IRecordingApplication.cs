@@ -15,7 +15,7 @@ public interface IRecordingApplication
         CancellationToken cancellationToken);
 
     Task<Result<Error>> RecordTraceAsync(ICallerContext caller, RecorderTraceLevel level, string messageTemplate,
-        List<string>? arguments, CancellationToken cancellationToken);
+        Dictionary<string, object?>? arguments, CancellationToken cancellationToken);
 
     Task<Result<Error>> RecordUsageAsync(ICallerContext caller, string eventName,
         Dictionary<string, object?>? additional, ClientDetails clientDetails, CancellationToken cancellationToken);

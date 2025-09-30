@@ -110,9 +110,9 @@ public class RecordingApplicationSpec
     [Fact]
     public void WhenRecordRecordTraceAsync_ThenRecords()
     {
-        var args = new List<string>
+        var args = new Dictionary<string, object?>
         {
-            "avalue"
+            { "aname", "avalue" }
         };
         _application.RecordTraceAsync(_caller.Object, RecorderTraceLevel.Information, "amessage", args,
             CancellationToken.None);
