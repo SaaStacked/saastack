@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
+
 // Creates a footer at the bottom of the layout
 // Defines a set of links and tools
 export const Footer: React.FC = () => {
@@ -10,7 +11,7 @@ export const Footer: React.FC = () => {
   const { t: translate } = useTranslation();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+    <footer className="relative bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4 py-2 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex space-x-6 text-xs">
