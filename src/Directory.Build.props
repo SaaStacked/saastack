@@ -1,5 +1,4 @@
 <Project>
-
     <!-- Shared assembly information -->
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -7,11 +6,12 @@
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <MSBuildSolutionDirectory Condition="'$(MSBuildSolutionDirectory)' == ''">$(MSBuildThisFileDirectory)</MSBuildSolutionDirectory>
     </PropertyGroup>
 
     <!-- NuGet package information -->
     <PropertyGroup>
-        <Info>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs'))</Info>
+        <Info>$([System.IO.File]::ReadAllText('$(MSBuildSolutionDirectory)\GlobalAssemblyInfo.cs'))</Info>
         <Pattern>^\s*\[assembly: AssemblyDescription\(\s*"([^"]+)"</Pattern>
         <Description>$([System.Text.RegularExpressions.Regex]::Match($(Info), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups[1].Value)</Description>
         <Pattern>^\s*\[assembly: AssemblyCompany\(\s*"([^"]+)"</Pattern>
@@ -24,7 +24,7 @@
 
     <!-- Additional assembly information -->
     <PropertyGroup>
-        <Info>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs'))</Info>
+        <Info>$([System.IO.File]::ReadAllText('$(MSBuildSolutionDirectory)\GlobalAssemblyInfo.cs'))</Info>
         <Pattern>^\s*\[assembly: AssemblyCompany\(\s*"([^"]+)"</Pattern>
         <Company>$([System.Text.RegularExpressions.Regex]::Match($(Info), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups[1].Value)</Company>
         <Pattern>^\s*\[assembly: AssemblyConfiguration\(\s*"([^"]+)"</Pattern>
@@ -40,10 +40,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <RepositoryUrl>https://github.com/jezzsantos/saastack</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/jezzsantos/saastack</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SaaStacked/saastack</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/SaaStacked/saastack</PackageProjectUrl>
         <RepositoryType>GitHub</RepositoryType>
-        <PackageReleaseNotes>https://github.com/jezzsantos/saastack/blob/main/README.md</PackageReleaseNotes>
+        <PackageReleaseNotes>https://github.com/SaaStacked/saastack/blob/main/README.md</PackageReleaseNotes>
         <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     </PropertyGroup>
 
@@ -59,14 +59,6 @@
         <NoWarn>$(NoWarn),1573,1574,1591,1712,1723</NoWarn>
         <RoslynTargetFramework>8.0.19</RoslynTargetFramework> <!-- Update the RuntimeConstants.Dotnet versions also -->
     </PropertyGroup>
-
-    <!-- Runs the analyzers (in memory) on build -->
-    <ItemGroup Condition="'$(IsFrameworkProject)'=='true' AND '$(IsTestProject)'!='true' AND '$(IsRoslynComponent)'!='true' AND '$(ExcludeFromFrameworkAnalyzers)'!='true'">
-        <ProjectReference Include="$(MSBuildThisFileDirectory)\Tools.Analyzers.Framework\Tools.Analyzers.Framework.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(IsFrameworkProject)'!='true' AND '$(IsTestProject)'!='true' AND '$(IsRoslynComponent)'!='true' AND '$(ExcludeFromNonFrameworkAnalyzers)'!='true'">
-        <ProjectReference Include="$(MSBuildThisFileDirectory)\Tools.Analyzers.NonFramework\Tools.Analyzers.NonFramework.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
 
     <!-- Build configurations -->
     <PropertyGroup>

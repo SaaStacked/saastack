@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 
 // Shared assembly information 
 [assembly: AssemblyProduct("SaaStack")]
-[assembly: AssemblyDescription("A comprehensive codebase template for real-world, fully featured SaaS web products. On the .NET platform")]
+[assembly: AssemblyDescription("A comprehensive codebase template for starting your real-world, fully featured SaaS web products. On the .NET platform")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("jezzsantos")]
-[assembly: AssemblyCopyright("Copyright 2023, Jezz Santos")]
+[assembly: AssemblyCompany("SaaStacked")]
+[assembly: AssemblyCopyright("Copyright 2025, SaaStacked")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

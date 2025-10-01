@@ -1,7 +1,0 @@
-### Check Health of ApiHost1
-GET {{apihost1}}/health
-Accept: application/json
-
-### Check Health of WebsiteHost
-GET {{websitehost}}/api/health
-Accept: application/json

@@ -1,7 +1,7 @@
 [![Backend API Ready](https://img.shields.io/badge/Backend_API-Ready-green.svg)](README.md)
 [![Technology Adapters Missing](https://img.shields.io/badge/Technology_Adapters-Some_Missing-yellow.svg)](README.md)
 [![Frontend WebApp Under Construction](https://img.shields.io/badge/FrontendUI-UnderConstruction-yellow.svg)](README.md)
-[![Build and Test](https://github.com/jezzsantos/saastack/actions/workflows/build.yml/badge.svg)](https://github.com/jezzsantos/saastack/actions/workflows/build.yml)
+[![Build and Test](https://github.com/SaaStacked/saastack/actions/workflows/build.yml/badge.svg)](https://github.com/SaaStacked/saastack/actions/workflows/build.yml)
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/jezzsantos)
 
 # SaaStack

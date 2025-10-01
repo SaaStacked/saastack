@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <!-- Outputs the source generated files locally -->
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Subdomains\Generic\AncillaryInfrastructure\AncillaryInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\EndUsersInfrastructure\EndUsersInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\EventNotificationsInfrastructure\EventNotificationsInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\IdentityInfrastructure\IdentityInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Core\BookingsInfrastructure\BookingsInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Core\CarsInfrastructure\CarsInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\ImagesInfrastructure\ImagesInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Framework\Infrastructure\Infrastructure.Web.Hosting.Common\Infrastructure.Web.Hosting.Common.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\OrganizationsInfrastructure\OrganizationsInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\SubscriptionsInfrastructure\SubscriptionsInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Generic\UserProfilesInfrastructure\UserProfilesInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>ApiHost1.IntegrationTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <!-- Runs the source generator (in memory) on build -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Framework\Tools\Tools.Generators.Web.Api\Tools.Generators.Web.Api.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\..\Framework\Tools\Tools.Generators.Workers\Tools.Generators.Workers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <!-- Exclude the output of source generators from the compilation -->
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Required for the Tools.Generators.Workers generator -->
+        <AdditionalFiles Include="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+</Project>

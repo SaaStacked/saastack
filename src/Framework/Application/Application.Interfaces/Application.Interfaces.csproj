@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <IsFrameworkProject>true</IsFrameworkProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Domain\Domain.Interfaces\Domain.Interfaces.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- We need to pin this specific version of System.Linq.Dynamic.Core to 1.5.1, since newer versions break our use of the library -->
+        <!-- we need to suppress the build warnings, since this version contains security vulnerabilities that we do accept -->
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="[1.5.1]" NoWarn="NU1903" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Audits.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Audits.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Audits.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Audits.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+</Project>

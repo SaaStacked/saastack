@@ -50,11 +50,6 @@ jobs:
           npm ci --cache .npm --prefer-offline
           npm run build:releasefordeploy
           npm run build-storybook
-      - name: Build Custom GitHub Actions
-        run: |
-          cd src/Tools.GitHubActions/VariableSubstitution
-          npm ci --cache .npm --prefer-offline
-          npm run build
   test:
     runs-on: windows-latest
     timeout-minutes: 25
@@ -118,12 +113,6 @@ jobs:
           npm ci --cache .npm --prefer-offline
           npm run build:releasefordeploy
           npm run build-storybook
-          npm run test:ci
-      - name: Test Custom GitHub Actions
-        run: |
-          cd src/Tools.GitHubActions/VariableSubstitution
-          npm ci --cache .npm --prefer-offline
-          npm run build
           npm run test:ci
       - name: Testing Report
         uses: dorny/test-reporter@v1.7.0

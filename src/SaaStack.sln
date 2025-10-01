@@ -1,24 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{6FCBB2DA-C131-4207-878B-B69B5101A25C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Framework\Common\Common.csproj", "{6FCBB2DA-C131-4207-878B-B69B5101A25C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56E869FB-D718-421C-85DF-07291F1F47C6}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
-		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\README_DERIVATIVE.md = ..\README_DERIVATIVE.md
 		..\README.md = ..\README.md
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
-		..\docs\DEPLOYMENT.md = ..\docs\DEPLOYMENT.md
-		..\docs\CODING_STANDARDS.md = ..\docs\CODING_STANDARDS.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{508E7DA4-4DF2-4201-955D-CCF70C41AD05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Common.UnitTests\Common.UnitTests.csproj", "{F5C77A86-38AF-40E4-82FC-617E624B2754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Framework\Common.UnitTests\Common.UnitTests.csproj", "{F5C77A86-38AF-40E4-82FC-617E624B2754}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting.Common", "UnitTesting.Common\UnitTesting.Common.csproj", "{7154EBD1-642F-4161-AA25-F1DE82E6930E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting.Common", "Framework\Testing\UnitTesting.Common\UnitTesting.Common.csproj", "{7154EBD1-642F-4161-AA25-F1DE82E6930E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{9270A12C-E16F-4932-89C4-F4ADDDA55AF3}"
 EndProject
@@ -56,339 +53,311 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{B68592DF-E8E8-452A-A46F-5C8ECB178FDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Common", "Infrastructure.Web.Api.Common\Infrastructure.Web.Api.Common.csproj", "{E343B553-2D44-4BA2-AEF0-3B1F7D2DBCF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Common", "Framework\Infrastructure\Infrastructure.Web.Api.Common\Infrastructure.Web.Api.Common.csproj", "{E343B553-2D44-4BA2-AEF0-3B1F7D2DBCF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Interfaces", "Infrastructure.Web.Api.Interfaces\Infrastructure.Web.Api.Interfaces.csproj", "{F9B4357E-7FD0-45FA-87B9-44D7EEB974C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Interfaces", "Framework\Infrastructure\Infrastructure.Web.Api.Interfaces\Infrastructure.Web.Api.Interfaces.csproj", "{F9B4357E-7FD0-45FA-87B9-44D7EEB974C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost1", "ApiHost1\ApiHost1.csproj", "{AC380EA5-16A1-4713-99B4-F259F5397F30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost1", "Hosts\ApiHost1\ApiHost1.csproj", "{AC380EA5-16A1-4713-99B4-F259F5397F30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsApplication", "CarsApplication\CarsApplication.csproj", "{1B29051C-EE8E-4699-94DD-B2502C7A54C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsApplication", "Subdomains\Core\CarsApplication\CarsApplication.csproj", "{1B29051C-EE8E-4699-94DD-B2502C7A54C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.IntegrationTests", "Infrastructure.Web.Api.IntegrationTests\Infrastructure.Web.Api.IntegrationTests.csproj", "{AE57212B-9A30-4577-A795-7B411621BCDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.IntegrationTests", "Framework\Infrastructure\Infrastructure.Web.Api.IntegrationTests\Infrastructure.Web.Api.IntegrationTests.csproj", "{AE57212B-9A30-4577-A795-7B411621BCDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Interfaces", "Application.Interfaces\Application.Interfaces.csproj", "{23FF9513-1B26-41F4-A7FE-1D8A9F0808AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Interfaces", "Framework\Application\Application.Interfaces\Application.Interfaces.csproj", "{23FF9513-1B26-41F4-A7FE-1D8A9F0808AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.WebApi.Common", "IntegrationTesting.WebApi.Common\IntegrationTesting.WebApi.Common.csproj", "{A7CA7AD7-70CA-43F0-BE73-75A01342D571}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.WebApi.Common", "Framework\Testing\IntegrationTesting.WebApi.Common\IntegrationTesting.WebApi.Common.csproj", "{A7CA7AD7-70CA-43F0-BE73-75A01342D571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api", "Tools.Generators.Web.Api\Tools.Generators.Web.Api.csproj", "{7AB39FD6-660F-4400-9955-B92684378492}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api", "Framework\Tools\Tools.Generators.Web.Api\Tools.Generators.Web.Api.csproj", "{7AB39FD6-660F-4400-9955-B92684378492}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{19ADDB2F-B589-49EF-9BDA-BD9908057D60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Common.UnitTests", "Infrastructure.Web.Api.Common.UnitTests\Infrastructure.Web.Api.Common.UnitTests.csproj", "{4CF7C7E2-C95D-4440-9ECF-5D1CE2A46D7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Web.Api.Common.UnitTests\Infrastructure.Web.Api.Common.UnitTests.csproj", "{4CF7C7E2-C95D-4440-9ECF-5D1CE2A46D7A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{865285E7-B20A-41D8-935F-D3A31C91A0D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure.IntegrationTests", "CarsInfrastructure.IntegrationTests\CarsInfrastructure.IntegrationTests.csproj", "{9D8B0C66-59ED-4D86-8F9A-9C38FA5A38DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure.IntegrationTests", "Subdomains\Core\CarsInfrastructure.IntegrationTests\CarsInfrastructure.IntegrationTests.csproj", "{9D8B0C66-59ED-4D86-8F9A-9C38FA5A38DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Common", "Infrastructure.Common\Infrastructure.Common.csproj", "{E569DCF1-592A-4504-A198-62F0F6CC850C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Common", "Framework\Infrastructure\Infrastructure.Common\Infrastructure.Common.csproj", "{E569DCF1-592A-4504-A198-62F0F6CC850C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure.UnitTests", "CarsInfrastructure.UnitTests\CarsInfrastructure.UnitTests.csproj", "{73F951E1-8582-4548-8768-02A446120CD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure.UnitTests", "Subdomains\Core\CarsInfrastructure.UnitTests\CarsInfrastructure.UnitTests.csproj", "{73F951E1-8582-4548-8768-02A446120CD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces", "Domain.Interfaces\Domain.Interfaces.csproj", "{D05B42D9-4E6D-4CE0-B084-94133D1A8CF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces", "Framework\Domain\Domain.Interfaces\Domain.Interfaces.csproj", "{D05B42D9-4E6D-4CE0-B084-94133D1A8CF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5B6DE1D9-649A-47EE-A565-0B641B7838FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Interfaces.UnitTests", "Application.Interfaces.UnitTests\Application.Interfaces.UnitTests.csproj", "{320AA12E-84F4-4021-A859-C663342BA646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Interfaces.UnitTests", "Framework\Application\Application.Interfaces.UnitTests\Application.Interfaces.UnitTests.csproj", "{320AA12E-84F4-4021-A859-C663342BA646}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F47718F-2CA7-46CD-AEAC-556853EE115A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces.UnitTests", "Domain.Interfaces.UnitTests\Domain.Interfaces.UnitTests.csproj", "{4F5ED64B-C08C-439E-A788-B8A320AC43F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces.UnitTests", "Framework\Domain\Domain.Interfaces.UnitTests\Domain.Interfaces.UnitTests.csproj", "{4F5ED64B-C08C-439E-A788-B8A320AC43F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Common", "Domain.Common\Domain.Common.csproj", "{645147FC-CC9C-41FA-97BA-B68CAB079389}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Common", "Framework\Domain\Domain.Common\Domain.Common.csproj", "{645147FC-CC9C-41FA-97BA-B68CAB079389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common", "Application.Common\Application.Common.csproj", "{2BA7F5E5-7E4C-45D0-BA71-948814133D4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common", "Framework\Application\Application.Common\Application.Common.csproj", "{2BA7F5E5-7E4C-45D0-BA71-948814133D4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Interfaces", "Infrastructure.Interfaces\Infrastructure.Interfaces.csproj", "{D4E44221-BAA9-4E42-8A87-96A3D5BDEA8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Interfaces", "Framework\Infrastructure\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj", "{D4E44221-BAA9-4E42-8A87-96A3D5BDEA8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Common.UnitTests", "Domain.Common.UnitTests\Domain.Common.UnitTests.csproj", "{DBDBE926-39DC-423D-9C7E-17664CA672CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Common.UnitTests", "Framework\Domain\Domain.Common.UnitTests\Domain.Common.UnitTests.csproj", "{DBDBE926-39DC-423D-9C7E-17664CA672CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsDomain", "CarsDomain\CarsDomain.csproj", "{23A93A15-21B8-4CA5-B128-1FF4B0C6A861}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsDomain", "Subdomains\Core\CarsDomain\CarsDomain.csproj", "{23A93A15-21B8-4CA5-B128-1FF4B0C6A861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Interfaces", "Application.Persistence.Interfaces\Application.Persistence.Interfaces.csproj", "{F6C71F8B-AFDE-471A-B1DE-6E1E8F3499C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Interfaces", "Framework\Application\Application.Persistence.Interfaces\Application.Persistence.Interfaces.csproj", "{F6C71F8B-AFDE-471A-B1DE-6E1E8F3499C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure", "CarsInfrastructure\CarsInfrastructure.csproj", "{ED71C769-CDA7-4C58-B252-8218DCE3D2B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsInfrastructure", "Subdomains\Core\CarsInfrastructure\CarsInfrastructure.csproj", "{ED71C769-CDA7-4C58-B252-8218DCE3D2B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{BAE0D6F2-6920-4B02-9F30-D71B04B7170D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.Framework", "Tools.Analyzers.Framework\Tools.Analyzers.Framework.csproj", "{DE31F486-AE81-49C0-BA00-3A6A325B7C42}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A25A3BA8-5602-4825-9595-2CF96B166920}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.Framework.UnitTests", "Tools.Analyzers.Framework.UnitTests\Tools.Analyzers.Framework.UnitTests.csproj", "{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generic", "Generic", "{3D4737A4-7C63-428F-946A-9D0C091CEEF9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{4B1A213C-36A7-41A7-BFC7-B3CFF5795912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Templates", "Tools.Templates\Tools.Templates.csproj", "{CDA1C120-6847-4486-863D-875E47291A50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common.UnitTests", "Framework\Application\Application.Common.UnitTests\Application.Common.UnitTests.csproj", "{A67A4EA1-58CF-41ED-AEED-591D4A8A0633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common.UnitTests", "Application.Common.UnitTests\Application.Common.UnitTests.csproj", "{A67A4EA1-58CF-41ED-AEED-591D4A8A0633}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.UnitTests", "Framework\Tools\Tools.Generators.Web.Api.UnitTests\Tools.Generators.Web.Api.UnitTests.csproj", "{64762CCC-834E-47C9-AFAD-B88DB80E3FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.UnitTests", "Tools.Generators.Web.Api.UnitTests\Tools.Generators.Web.Api.UnitTests.csproj", "{64762CCC-834E-47C9-AFAD-B88DB80E3FF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Hosting.Common", "Framework\Infrastructure\Infrastructure.Web.Hosting.Common\Infrastructure.Web.Hosting.Common.csproj", "{16B71536-8CF7-4F58-8CE3-277B8CB0FE45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Hosting.Common", "Infrastructure.Web.Hosting.Common\Infrastructure.Web.Hosting.Common.csproj", "{16B71536-8CF7-4F58-8CE3-277B8CB0FE45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Hosting.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Web.Hosting.Common.UnitTests\Infrastructure.Web.Hosting.Common.UnitTests.csproj", "{4BFC7B38-975F-4470-9D4C-FB95E76B9055}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Hosting.Common.UnitTests", "Infrastructure.Web.Hosting.Common.UnitTests\Infrastructure.Web.Hosting.Common.UnitTests.csproj", "{4BFC7B38-975F-4470-9D4C-FB95E76B9055}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsDomain.UnitTests", "Subdomains\Core\CarsDomain.UnitTests\CarsDomain.UnitTests.csproj", "{7CC2560D-4CA1-4132-BD7A-5E6A799C4F5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsDomain.UnitTests", "CarsDomain.UnitTests\CarsDomain.UnitTests.csproj", "{7CC2560D-4CA1-4132-BD7A-5E6A799C4F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsApplication.UnitTests", "Subdomains\Core\CarsApplication.UnitTests\CarsApplication.UnitTests.csproj", "{B2D7FDB6-BD30-4D8D-86CE-E842AA78BBDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsApplication.UnitTests", "CarsApplication.UnitTests\CarsApplication.UnitTests.csproj", "{B2D7FDB6-BD30-4D8D-86CE-E842AA78BBDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Common", "Framework\Application\Application.Persistence.Common\Application.Persistence.Common.csproj", "{B0E24D63-EE2C-40C4-BCC7-30A826659B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Common", "Application.Persistence.Common\Application.Persistence.Common.csproj", "{B0E24D63-EE2C-40C4-BCC7-30A826659B41}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsDomain", "BookingsDomain\BookingsDomain.csproj", "{8CC62C91-E48C-43CA-97AF-953D931DED4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsDomain", "Subdomains\Core\BookingsDomain\BookingsDomain.csproj", "{8CC62C91-E48C-43CA-97AF-953D931DED4E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3E159E21-E5F0-4734-BF90-B08BD1A47D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsDomain.UnitTests", "BookingsDomain.UnitTests\BookingsDomain.UnitTests.csproj", "{63CC56D7-EFB3-497C-90D3-969435E6812A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsDomain.UnitTests", "Subdomains\Core\BookingsDomain.UnitTests\BookingsDomain.UnitTests.csproj", "{63CC56D7-EFB3-497C-90D3-969435E6812A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsApplication", "BookingsApplication\BookingsApplication.csproj", "{F2A70DDF-D334-4417-9777-14F65230AB10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsApplication", "Subdomains\Core\BookingsApplication\BookingsApplication.csproj", "{F2A70DDF-D334-4417-9777-14F65230AB10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsApplication.UnitTests", "BookingsApplication.UnitTests\BookingsApplication.UnitTests.csproj", "{EDDD4A08-994C-42C8-A462-1D70755B43F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsApplication.UnitTests", "Subdomains\Core\BookingsApplication.UnitTests\BookingsApplication.UnitTests.csproj", "{EDDD4A08-994C-42C8-A462-1D70755B43F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure", "BookingsInfrastructure\BookingsInfrastructure.csproj", "{223B695B-3948-4D1A-B6AF-F4E7D5E7E49B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure", "Subdomains\Core\BookingsInfrastructure\BookingsInfrastructure.csproj", "{223B695B-3948-4D1A-B6AF-F4E7D5E7E49B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure.UnitTests", "BookingsInfrastructure.UnitTests\BookingsInfrastructure.UnitTests.csproj", "{1D8DAC2B-2570-4F11-812C-7C7298AF06FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure.UnitTests", "Subdomains\Core\BookingsInfrastructure.UnitTests\BookingsInfrastructure.UnitTests.csproj", "{1D8DAC2B-2570-4F11-812C-7C7298AF06FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure.IntegrationTests", "BookingsInfrastructure.IntegrationTests\BookingsInfrastructure.IntegrationTests.csproj", "{82CA28A1-940C-4DD0-8046-90412FA67247}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingsInfrastructure.IntegrationTests", "Subdomains\Core\BookingsInfrastructure.IntegrationTests\BookingsInfrastructure.IntegrationTests.csproj", "{82CA28A1-940C-4DD0-8046-90412FA67247}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Interfaces", "Infrastructure.Persistence.Interfaces\Infrastructure.Persistence.Interfaces.csproj", "{9DFC9869-B573-4CCD-A1E3-9F06FBD0B934}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Interfaces", "Framework\Infrastructure\Infrastructure.Persistence.Interfaces\Infrastructure.Persistence.Interfaces.csproj", "{9DFC9869-B573-4CCD-A1E3-9F06FBD0B934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Common", "Infrastructure.Persistence.Common\Infrastructure.Persistence.Common.csproj", "{56F611F5-19C9-4468-9C34-5E5BCD2D312B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Common", "Framework\Infrastructure\Infrastructure.Persistence.Common\Infrastructure.Persistence.Common.csproj", "{56F611F5-19C9-4468-9C34-5E5BCD2D312B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C80478E7-73D7-4237-880A-EDAD60FE88C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Common.UnitTests", "Infrastructure.Persistence.Common.UnitTests\Infrastructure.Persistence.Common.UnitTests.csproj", "{24236BC0-7AD4-4F39-802C-3B41FF61B556}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Persistence.Common.UnitTests\Infrastructure.Persistence.Common.UnitTests.csproj", "{24236BC0-7AD4-4F39-802C-3B41FF61B556}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Interfaces.UnitTests", "Infrastructure.Persistence.Interfaces.UnitTests\Infrastructure.Persistence.Interfaces.UnitTests.csproj", "{1309710A-37E9-434A-AC83-D3E9DC3892EE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.IntegrationTests", "Infrastructure.External.Persistence.IntegrationTests\Infrastructure.External.Persistence.IntegrationTests.csproj", "{45804224-6320-4D13-ABCC-A6B1E28924F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Interfaces.UnitTests", "Framework\Infrastructure\Infrastructure.Persistence.Interfaces.UnitTests\Infrastructure.Persistence.Interfaces.UnitTests.csproj", "{1309710A-37E9-434A-AC83-D3E9DC3892EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F561CAF6-2A8C-4440-B12E-7753F25D9879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Common.UnitTests", "Infrastructure.Common.UnitTests\Infrastructure.Common.UnitTests.csproj", "{C1C8CF7B-0CA5-44E2-9618-E1CFDB9D6B9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Common.UnitTests\Infrastructure.Common.UnitTests.csproj", "{C1C8CF7B-0CA5-44E2-9618-E1CFDB9D6B9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Common.UnitTests", "Application.Persistence.Common.UnitTests\Application.Persistence.Common.UnitTests.csproj", "{E4D95B9C-E9F2-4A91-BF6E-4C94C7ED6CDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Common.UnitTests", "Framework\Application\Application.Persistence.Common.UnitTests\Application.Persistence.Common.UnitTests.csproj", "{E4D95B9C-E9F2-4A91-BF6E-4C94C7ED6CDF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Eventing", "Eventing", "{B7F0BFB3-AC0B-499F-91FC-E5375BE0E415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Interfaces", "Infrastructure.Eventing.Interfaces\Infrastructure.Eventing.Interfaces.csproj", "{C6A44BB3-01B1-49F9-9F93-0B625E3FF1E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Interfaces", "Framework\Infrastructure\Infrastructure.Eventing.Interfaces\Infrastructure.Eventing.Interfaces.csproj", "{C6A44BB3-01B1-49F9-9F93-0B625E3FF1E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Common", "Infrastructure.Eventing.Common\Infrastructure.Eventing.Common.csproj", "{9BFD47BB-CE30-4720-8C70-C71D614B56D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Common", "Framework\Infrastructure\Infrastructure.Eventing.Common\Infrastructure.Eventing.Common.csproj", "{9BFD47BB-CE30-4720-8C70-C71D614B56D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4FE6D8D7-E59B-4667-B6C6-BBF6E87DE351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Common.UnitTests", "Infrastructure.Eventing.Common.UnitTests\Infrastructure.Eventing.Common.UnitTests.csproj", "{372A37E9-57D1-4519-8F8E-168BDD58B013}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Eventing.Common.UnitTests\Infrastructure.Eventing.Common.UnitTests.csproj", "{372A37E9-57D1-4519-8F8E-168BDD58B013}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingStubApiHost", "TestingStubApiHost\TestingStubApiHost.csproj", "{8A592213-C9BE-4400-B58D-315A1D5F1446}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingStubApiHost", "Hosts\TestingStubApiHost\TestingStubApiHost.csproj", "{8A592213-C9BE-4400-B58D-315A1D5F1446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctions.Api.WorkerHost", "AzureFunctions.Api.WorkerHost\AzureFunctions.Api.WorkerHost.csproj", "{FD3CA1E8-F527-477A-98B3-46A48622C385}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctions.Api.WorkerHost", "Hosts\AzureFunctions.Api.WorkerHost\AzureFunctions.Api.WorkerHost.csproj", "{FD3CA1E8-F527-477A-98B3-46A48622C385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Workers.Api", "Infrastructure.Workers.Api\Infrastructure.Workers.Api.csproj", "{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Workers.Api", "Subdomains\Shared\Infrastructure.Workers.Api\Infrastructure.Workers.Api.csproj", "{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Operations.Shared", "Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj", "{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Operations.Shared", "Subdomains\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj", "{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Resources.Shared", "Application.Resources.Shared\Application.Resources.Shared.csproj", "{C84C4D8D-82F5-4751-8DAD-613A281D5C6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Resources.Shared", "Subdomains\Shared\Application.Resources.Shared\Application.Resources.Shared.csproj", "{C84C4D8D-82F5-4751-8DAD-613A281D5C6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Services.Shared", "Application.Services.Shared\Application.Services.Shared.csproj", "{B28CDBB4-F549-4E37-82EE-9AB4389EFE06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Services.Shared", "Subdomains\Shared\Application.Services.Shared\Application.Services.Shared.csproj", "{B28CDBB4-F549-4E37-82EE-9AB4389EFE06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Shared", "Application.Persistence.Shared\Application.Persistence.Shared.csproj", "{580F13F5-712D-4284-946B-7192FBB2CBA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Shared", "Subdomains\Shared\Application.Persistence.Shared\Application.Persistence.Shared.csproj", "{580F13F5-712D-4284-946B-7192FBB2CBA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Shared", "Domain.Shared\Domain.Shared.csproj", "{97D6CA5E-8B76-4F77-8345-D4BB34099F79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Shared", "Subdomains\Shared\Domain.Shared\Domain.Shared.csproj", "{97D6CA5E-8B76-4F77-8345-D4BB34099F79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Shared.UnitTests", "Domain.Shared.UnitTests\Domain.Shared.UnitTests.csproj", "{0B07ED09-50C5-4BE6-B2A8-B4A331F0B4BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Shared.UnitTests", "Subdomains\Shared\Domain.Shared.UnitTests\Domain.Shared.UnitTests.csproj", "{0B07ED09-50C5-4BE6-B2A8-B4A331F0B4BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure", "AncillaryInfrastructure\AncillaryInfrastructure.csproj", "{E559E942-3351-4FFE-8D32-498A8FAA486E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure", "Subdomains\Generic\AncillaryInfrastructure\AncillaryInfrastructure.csproj", "{E559E942-3351-4FFE-8D32-498A8FAA486E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{600081A4-A5E3-48ED-85F2-A36F52C1A459}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B6B0235-BD3F-4604-8E93-B0112A241C63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryApplication", "AncillaryApplication\AncillaryApplication.csproj", "{92924B45-F951-4727-A634-C5F01053A637}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryApplication", "Subdomains\Generic\AncillaryApplication\AncillaryApplication.csproj", "{92924B45-F951-4727-A634-C5F01053A637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure.UnitTests", "AncillaryInfrastructure.UnitTests\AncillaryInfrastructure.UnitTests.csproj", "{AD9554A0-F4A2-4AD9-8F85-9F7AD316E585}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure.UnitTests", "Subdomains\Generic\AncillaryInfrastructure.UnitTests\AncillaryInfrastructure.UnitTests.csproj", "{AD9554A0-F4A2-4AD9-8F85-9F7AD316E585}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryApplication.UnitTests", "AncillaryApplication.UnitTests\AncillaryApplication.UnitTests.csproj", "{0104A4C6-811F-4AD3-B365-9BE0054CE706}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryApplication.UnitTests", "Subdomains\Generic\AncillaryApplication.UnitTests\AncillaryApplication.UnitTests.csproj", "{0104A4C6-811F-4AD3-B365-9BE0054CE706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure.IntegrationTests", "AncillaryInfrastructure.IntegrationTests\AncillaryInfrastructure.IntegrationTests.csproj", "{032ED9AF-8BB5-404A-B81D-EDEED9291C22}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Worker.Api.IntegrationTests", "Infrastructure.Worker.Api.IntegrationTests\Infrastructure.Worker.Api.IntegrationTests.csproj", "{EA58877D-3023-429C-A1A8-E8479441139E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.Persistence.Common", "IntegrationTesting.Persistence.Common\IntegrationTesting.Persistence.Common.csproj", "{B610A0C7-B573-4B25-A9F6-B6E5C4593722}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.Azure", "Infrastructure.External.Persistence.Azure\Infrastructure.External.Persistence.Azure.csproj", "{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryInfrastructure.IntegrationTests", "Subdomains\Generic\AncillaryInfrastructure.IntegrationTests\AncillaryInfrastructure.IntegrationTests.csproj", "{032ED9AF-8BB5-404A-B81D-EDEED9291C22}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3782A767-2274-4F44-80C6-D6C6EEB9C9A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Shared", "Infrastructure.Persistence.Shared\Infrastructure.Persistence.Shared.csproj", "{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Shared", "Subdomains\Shared\Infrastructure.Persistence.Shared\Infrastructure.Persistence.Shared.csproj", "{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryDomain", "AncillaryDomain\AncillaryDomain.csproj", "{7F2357CA-B812-4C95-9507-DD0421966B70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryDomain", "Subdomains\Generic\AncillaryDomain\AncillaryDomain.csproj", "{7F2357CA-B812-4C95-9507-DD0421966B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryDomain.UnitTests", "AncillaryDomain.UnitTests\AncillaryDomain.UnitTests.csproj", "{AA82B265-66A9-483C-BD4B-3AD35D51ABED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AncillaryDomain.UnitTests", "Subdomains\Generic\AncillaryDomain.UnitTests\AncillaryDomain.UnitTests.csproj", "{AA82B265-66A9-483C-BD4B-3AD35D51ABED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.NonFramework", "Tools.Analyzers.NonFramework\Tools.Analyzers.NonFramework.csproj", "{8EE34354-4B11-41AD-BE92-845356A36D00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Interfaces", "Framework\Infrastructure\Infrastructure.Web.Interfaces\Infrastructure.Web.Interfaces.csproj", "{11871155-F741-4AFD-BD9E-9AE7C7670B1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.Common", "Tools.Analyzers.Common\Tools.Analyzers.Common.csproj", "{D09C110B-9639-43D7-8A85-7F2A102554E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Common", "Framework\Infrastructure\Infrastructure.Web.Common\Infrastructure.Web.Common.csproj", "{005FCB6F-860B-4DCC-A699-D1A68823D882}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.NonFramework.UnitTests", "Tools.Analyzers.NonFramework.UnitTests\Tools.Analyzers.NonFramework.UnitTests.csproj", "{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Web.Common.UnitTests\Infrastructure.Web.Common.UnitTests.csproj", "{9BA6D2C4-7FB9-41F7-9396-40704B9878DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Interfaces", "Infrastructure.Web.Interfaces\Infrastructure.Web.Interfaces.csproj", "{11871155-F741-4AFD-BD9E-9AE7C7670B1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Hosting.Common", "Framework\Infrastructure\Infrastructure.Hosting.Common\Infrastructure.Hosting.Common.csproj", "{FB2419FA-457F-406A-AADC-E6E44813896B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Common", "Infrastructure.Web.Common\Infrastructure.Web.Common.csproj", "{005FCB6F-860B-4DCC-A699-D1A68823D882}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost", "Hosts\WebsiteHost\WebsiteHost.csproj", "{9B420F01-63A5-4EEE-B6AC-09717BE179E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Common.UnitTests", "Infrastructure.Web.Common.UnitTests\Infrastructure.Web.Common.UnitTests.csproj", "{9BA6D2C4-7FB9-41F7-9396-40704B9878DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost.IntegrationTests", "Hosts\WebsiteHost.IntegrationTests\WebsiteHost.IntegrationTests.csproj", "{BC14CDD1-E127-4DF7-A1B3-55164CA8D1A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Hosting.Common", "Infrastructure.Hosting.Common\Infrastructure.Hosting.Common.csproj", "{FB2419FA-457F-406A-AADC-E6E44813896B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost.UnitTests", "Hosts\WebsiteHost.UnitTests\WebsiteHost.UnitTests.csproj", "{11F60901-1E1C-4B1B-83E8-261269D2681B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost", "WebsiteHost\WebsiteHost.csproj", "{9B420F01-63A5-4EEE-B6AC-09717BE179E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSLambdas.Api.WorkerHost", "Hosts\AWSLambdas.Api.WorkerHost\AWSLambdas.Api.WorkerHost.csproj", "{1734A5D1-B2C8-4107-9DAA-E3F99F49ABEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost.IntegrationTests", "WebsiteHost.IntegrationTests\WebsiteHost.IntegrationTests.csproj", "{BC14CDD1-E127-4DF7-A1B3-55164CA8D1A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure", "Subdomains\Generic\IdentityInfrastructure\IdentityInfrastructure.csproj", "{5630C518-92EB-482E-A547-99E80FBBD34D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHost.UnitTests", "WebsiteHost.UnitTests\WebsiteHost.UnitTests.csproj", "{11F60901-1E1C-4B1B-83E8-261269D2681B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApplication", "Subdomains\Generic\IdentityApplication\IdentityApplication.csproj", "{A07C0093-5681-447E-BBF7-A0A5C958F14B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.AWS", "Infrastructure.External.Persistence.AWS\Infrastructure.External.Persistence.AWS.csproj", "{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSLambdas.Api.WorkerHost", "AWSLambdas.Api.WorkerHost\AWSLambdas.Api.WorkerHost.csproj", "{1734A5D1-B2C8-4107-9DAA-E3F99F49ABEC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure", "IdentityInfrastructure\IdentityInfrastructure.csproj", "{5630C518-92EB-482E-A547-99E80FBBD34D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApplication", "IdentityApplication\IdentityApplication.csproj", "{A07C0093-5681-447E-BBF7-A0A5C958F14B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityDomain", "IdentityDomain\IdentityDomain.csproj", "{664F1BF8-70F9-4BD8-98BD-632F92F67F81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityDomain", "Subdomains\Generic\IdentityDomain\IdentityDomain.csproj", "{664F1BF8-70F9-4BD8-98BD-632F92F67F81}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{145BE8AD-60D7-46CF-A93B-DB76707A0767}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure.UnitTests", "IdentityInfrastructure.UnitTests\IdentityInfrastructure.UnitTests.csproj", "{FEAC1046-C925-480D-99D8-B5E291414D12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure.UnitTests", "Subdomains\Generic\IdentityInfrastructure.UnitTests\IdentityInfrastructure.UnitTests.csproj", "{FEAC1046-C925-480D-99D8-B5E291414D12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure.IntegrationTests", "IdentityInfrastructure.IntegrationTests\IdentityInfrastructure.IntegrationTests.csproj", "{F4FC8EBF-22F5-4E2D-A1BE-6192CEF5FF78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure.IntegrationTests", "Subdomains\Generic\IdentityInfrastructure.IntegrationTests\IdentityInfrastructure.IntegrationTests.csproj", "{F4FC8EBF-22F5-4E2D-A1BE-6192CEF5FF78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApplication.UnitTests", "IdentityApplication.UnitTests\IdentityApplication.UnitTests.csproj", "{FB36DEBC-4F55-4B59-B3A3-721293D28325}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApplication.UnitTests", "Subdomains\Generic\IdentityApplication.UnitTests\IdentityApplication.UnitTests.csproj", "{FB36DEBC-4F55-4B59-B3A3-721293D28325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityDomain.UnitTests", "IdentityDomain.UnitTests\IdentityDomain.UnitTests.csproj", "{FC2206B5-C7DF-4EA4-A73A-F643DE720B00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityDomain.UnitTests", "Subdomains\Generic\IdentityDomain.UnitTests\IdentityDomain.UnitTests.csproj", "{FC2206B5-C7DF-4EA4-A73A-F643DE720B00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Shared", "Infrastructure.Shared\Infrastructure.Shared.csproj", "{E6B54671-823D-47AC-8BE8-534C6E602AF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Shared", "Subdomains\Shared\Infrastructure.Shared\Infrastructure.Shared.csproj", "{E6B54671-823D-47AC-8BE8-534C6E602AF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Services.Shared", "Domain.Services.Shared\Domain.Services.Shared.csproj", "{608EB36D-3831-40D8-BC2E-778D30DB7D05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Services.Shared", "Subdomains\Shared\Domain.Services.Shared\Domain.Services.Shared.csproj", "{608EB36D-3831-40D8-BC2E-778D30DB7D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Shared.UnitTests", "Infrastructure.Shared.UnitTests\Infrastructure.Shared.UnitTests.csproj", "{4BC73E55-18BB-40BC-B62D-0092ACAEA662}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Shared.UnitTests", "Subdomains\Shared\Infrastructure.Shared.UnitTests\Infrastructure.Shared.UnitTests.csproj", "{4BC73E55-18BB-40BC-B62D-0092ACAEA662}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure", "EndUsersInfrastructure\EndUsersInfrastructure.csproj", "{84C0AEA1-662D-423A-9088-1C86F00C02F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure", "Subdomains\Generic\EndUsersInfrastructure\EndUsersInfrastructure.csproj", "{84C0AEA1-662D-423A-9088-1C86F00C02F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersApplication", "EndUsersApplication\EndUsersApplication.csproj", "{BE5E132A-AADE-4192-A56D-9F1C4AD6E338}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersApplication", "Subdomains\Generic\EndUsersApplication\EndUsersApplication.csproj", "{BE5E132A-AADE-4192-A56D-9F1C4AD6E338}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersDomain", "EndUsersDomain\EndUsersDomain.csproj", "{139188FD-9CBA-470E-9C4A-9116AEFA3150}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersDomain", "Subdomains\Generic\EndUsersDomain\EndUsersDomain.csproj", "{139188FD-9CBA-470E-9C4A-9116AEFA3150}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F2F759A4-6B5D-4E11-AFCC-679BF0E72AE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersDomain.UnitTests", "EndUsersDomain.UnitTests\EndUsersDomain.UnitTests.csproj", "{95559803-EADC-485B-BFB2-954FA1572333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersDomain.UnitTests", "Subdomains\Generic\EndUsersDomain.UnitTests\EndUsersDomain.UnitTests.csproj", "{95559803-EADC-485B-BFB2-954FA1572333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersApplication.UnitTests", "EndUsersApplication.UnitTests\EndUsersApplication.UnitTests.csproj", "{00EF874C-EA73-4190-9983-06B7FABD4B40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersApplication.UnitTests", "Subdomains\Generic\EndUsersApplication.UnitTests\EndUsersApplication.UnitTests.csproj", "{00EF874C-EA73-4190-9983-06B7FABD4B40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.Authorization", "Tools.Generators.Web.Api.Authorization\Tools.Generators.Web.Api.Authorization.csproj", "{DBFD1050-E4F2-4BA9-88B4-E0450A8C77A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.Authorization", "Framework\Tools\Tools.Generators.Web.Api.Authorization\Tools.Generators.Web.Api.Authorization.csproj", "{DBFD1050-E4F2-4BA9-88B4-E0450A8C77A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure.UnitTests", "EndUsersInfrastructure.UnitTests\EndUsersInfrastructure.UnitTests.csproj", "{064B025A-7951-4706-B6A4-86BF6475239C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure.UnitTests", "Subdomains\Generic\EndUsersInfrastructure.UnitTests\EndUsersInfrastructure.UnitTests.csproj", "{064B025A-7951-4706-B6A4-86BF6475239C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure.IntegrationTests", "EndUsersInfrastructure.IntegrationTests\EndUsersInfrastructure.IntegrationTests.csproj", "{306F13C6-CC51-4956-BB88-54355BD05A42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndUsersInfrastructure.IntegrationTests", "Subdomains\Generic\EndUsersInfrastructure.IntegrationTests\EndUsersInfrastructure.IntegrationTests.csproj", "{306F13C6-CC51-4956-BB88-54355BD05A42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.Authorization.UnitTests", "Tools.Generators.Web.Api.Authorization.UnitTests\Tools.Generators.Web.Api.Authorization.UnitTests.csproj", "{E081B52F-A4AC-47A0-B03C-F23BF34CE1E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.Authorization.UnitTests", "Framework\Tools\Tools.Generators.Web.Api.Authorization.UnitTests\Tools.Generators.Web.Api.Authorization.UnitTests.csproj", "{E081B52F-A4AC-47A0-B03C-F23BF34CE1E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D3B68FF7-293B-4458-B8D8-49D3DF59B495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Common", "Tools.Generators.Common\Tools.Generators.Common.csproj", "{578736A6-7CE1-408D-8217-468F35861F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Common", "Framework\Tools\Tools.Generators.Common\Tools.Generators.Common.csproj", "{578736A6-7CE1-408D-8217-468F35861F5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Common.UnitTests", "Tools.Generators.Common.UnitTests\Tools.Generators.Common.UnitTests.csproj", "{6C654E34-B698-4F23-8757-D50C85F51F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Common.UnitTests", "Framework\Tools\Tools.Generators.Common.UnitTests\Tools.Generators.Common.UnitTests.csproj", "{6C654E34-B698-4F23-8757-D50C85F51F5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.IntegrationTests", "Infrastructure.External.IntegrationTests\Infrastructure.External.IntegrationTests.csproj", "{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsDomain", "Subdomains\Generic\OrganizationsDomain\OrganizationsDomain.csproj", "{B0245CF3-0D8D-45FA-889F-EEA42D5A8FEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsDomain", "OrganizationsDomain\OrganizationsDomain.csproj", "{B0245CF3-0D8D-45FA-889F-EEA42D5A8FEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure", "Subdomains\Generic\OrganizationsInfrastructure\OrganizationsInfrastructure.csproj", "{84A43D97-0448-453A-B700-068AA5F9A896}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure", "OrganizationsInfrastructure\OrganizationsInfrastructure.csproj", "{84A43D97-0448-453A-B700-068AA5F9A896}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsApplication", "OrganizationsApplication\OrganizationsApplication.csproj", "{A7FCBC99-8D3A-4C4A-A321-4CC717D7D46B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsApplication", "Subdomains\Generic\OrganizationsApplication\OrganizationsApplication.csproj", "{A7FCBC99-8D3A-4C4A-A321-4CC717D7D46B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90ED1D1C-5960-4F56-94F1-8063490725C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsDomain.UnitTests", "OrganizationsDomain.UnitTests\OrganizationsDomain.UnitTests.csproj", "{C4741A39-17C4-42FC-8D98-21EA8DDE2AB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsDomain.UnitTests", "Subdomains\Generic\OrganizationsDomain.UnitTests\OrganizationsDomain.UnitTests.csproj", "{C4741A39-17C4-42FC-8D98-21EA8DDE2AB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsApplication.UnitTests", "OrganizationsApplication.UnitTests\OrganizationsApplication.UnitTests.csproj", "{5546E812-E7FC-45C9-B744-72786FB0F2E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsApplication.UnitTests", "Subdomains\Generic\OrganizationsApplication.UnitTests\OrganizationsApplication.UnitTests.csproj", "{5546E812-E7FC-45C9-B744-72786FB0F2E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure.IntegrationTests", "OrganizationsInfrastructure.IntegrationTests\OrganizationsInfrastructure.IntegrationTests.csproj", "{4DBA0B71-413D-43A9-AF68-150135A74F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure.IntegrationTests", "Subdomains\Generic\OrganizationsInfrastructure.IntegrationTests\OrganizationsInfrastructure.IntegrationTests.csproj", "{4DBA0B71-413D-43A9-AF68-150135A74F5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure.UnitTests", "OrganizationsInfrastructure.UnitTests\OrganizationsInfrastructure.UnitTests.csproj", "{B2ABB588-A7D4-44DB-8A2B-C1657D57D546}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationsInfrastructure.UnitTests", "Subdomains\Generic\OrganizationsInfrastructure.UnitTests\OrganizationsInfrastructure.UnitTests.csproj", "{B2ABB588-A7D4-44DB-8A2B-C1657D57D546}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting.CodeAnalysis.Common", "UnitTesting.CodeAnalysis.Common\UnitTesting.CodeAnalysis.Common.csproj", "{3A491D02-702A-4738-B3F5-26066E60F834}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting.CodeAnalysis.Common", "Framework\Testing\UnitTesting.CodeAnalysis.Common\UnitTesting.CodeAnalysis.Common.csproj", "{3A491D02-702A-4738-B3F5-26066E60F834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectureTesting.Common", "ArchitectureTesting.Common\ArchitectureTesting.Common.csproj", "{2BFDAE75-55B4-4E37-8107-F585389A4C08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesDomain", "Subdomains\Generic\UserProfilesDomain\UserProfilesDomain.csproj", "{B61F308E-DB79-4655-9CB4-F50666159A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost1.ArchitectureTests", "ApiHost1.ArchitectureTests\ApiHost1.ArchitectureTests.csproj", "{C393178E-FEEB-49F3-9820-182FED0EA387}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesApplication", "Subdomains\Generic\UserProfilesApplication\UserProfilesApplication.csproj", "{DE456D83-8C43-4A07-BC26-02B358C48F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesDomain", "UserProfilesDomain\UserProfilesDomain.csproj", "{B61F308E-DB79-4655-9CB4-F50666159A9B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesApplication", "UserProfilesApplication\UserProfilesApplication.csproj", "{DE456D83-8C43-4A07-BC26-02B358C48F3B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure", "UserProfilesInfrastructure\UserProfilesInfrastructure.csproj", "{7E08C871-D41C-4BF7-9A24-7DD0A244EF18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure", "Subdomains\Generic\UserProfilesInfrastructure\UserProfilesInfrastructure.csproj", "{7E08C871-D41C-4BF7-9A24-7DD0A244EF18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{153F22CE-3C45-4CF5-991A-01C866EC429F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesDomain.UnitTests", "UserProfilesDomain.UnitTests\UserProfilesDomain.UnitTests.csproj", "{A9517C8F-EAFB-4CC2-8EAF-71105AD6EF88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesDomain.UnitTests", "Subdomains\Generic\UserProfilesDomain.UnitTests\UserProfilesDomain.UnitTests.csproj", "{A9517C8F-EAFB-4CC2-8EAF-71105AD6EF88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesApplication.UnitTests", "UserProfilesApplication.UnitTests\UserProfilesApplication.UnitTests.csproj", "{2F4A4802-AD6F-472A-BD65-58896285E00C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesApplication.UnitTests", "Subdomains\Generic\UserProfilesApplication.UnitTests\UserProfilesApplication.UnitTests.csproj", "{2F4A4802-AD6F-472A-BD65-58896285E00C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure.IntegrationTests", "UserProfilesInfrastructure.IntegrationTests\UserProfilesInfrastructure.IntegrationTests.csproj", "{8CB11E5D-01DE-4FCF-98B1-4998E80D561D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure.IntegrationTests", "Subdomains\Generic\UserProfilesInfrastructure.IntegrationTests\UserProfilesInfrastructure.IntegrationTests.csproj", "{8CB11E5D-01DE-4FCF-98B1-4998E80D561D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure.UnitTests", "UserProfilesInfrastructure.UnitTests\UserProfilesInfrastructure.UnitTests.csproj", "{A9D1A686-DEBA-4EC6-93E2-290392F41B13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfilesInfrastructure.UnitTests", "Subdomains\Generic\UserProfilesInfrastructure.UnitTests\UserProfilesInfrastructure.UnitTests.csproj", "{A9D1A686-DEBA-4EC6-93E2-290392F41B13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events.Shared", "Domain.Events.Shared\Domain.Events.Shared.csproj", "{3AC2CCAF-A248-4FCA-9C42-BD207E528D27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events.Shared", "Subdomains\Shared\Domain.Events.Shared\Domain.Events.Shared.csproj", "{3AC2CCAF-A248-4FCA-9C42-BD207E528D27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Events.Shared", "Integration.Events.Shared\Integration.Events.Shared.csproj", "{99DC5CFB-1DF8-45E4-9EE8-49D44B637198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Events.Shared", "Subdomains\Shared\Integration.Events.Shared\Integration.Events.Shared.csproj", "{99DC5CFB-1DF8-45E4-9EE8-49D44B637198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure", "ImagesInfrastructure\ImagesInfrastructure.csproj", "{A8B227E5-731A-42B4-9FE6-A82575264146}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure", "Subdomains\Generic\ImagesInfrastructure\ImagesInfrastructure.csproj", "{A8B227E5-731A-42B4-9FE6-A82575264146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesApplication", "ImagesApplication\ImagesApplication.csproj", "{C895C9BA-442D-418E-964B-71BFD98D3170}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesApplication", "Subdomains\Generic\ImagesApplication\ImagesApplication.csproj", "{C895C9BA-442D-418E-964B-71BFD98D3170}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDomain", "ImagesDomain\ImagesDomain.csproj", "{EB7E9A6C-54D3-4A13-BC89-9BE81EEE5A9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDomain", "Subdomains\Generic\ImagesDomain\ImagesDomain.csproj", "{EB7E9A6C-54D3-4A13-BC89-9BE81EEE5A9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F1C02AC7-F281-4FF3-BFE6-7549F32E6CD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure.UnitTests", "ImagesInfrastructure.UnitTests\ImagesInfrastructure.UnitTests.csproj", "{AB219C71-3645-4E5A-A96B-357C613FC6E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure.UnitTests", "Subdomains\Generic\ImagesInfrastructure.UnitTests\ImagesInfrastructure.UnitTests.csproj", "{AB219C71-3645-4E5A-A96B-357C613FC6E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesApplication.UnitTests", "ImagesApplication.UnitTests\ImagesApplication.UnitTests.csproj", "{B082ABE4-2A00-4BC9-9C0B-64EC46384B87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesApplication.UnitTests", "Subdomains\Generic\ImagesApplication.UnitTests\ImagesApplication.UnitTests.csproj", "{B082ABE4-2A00-4BC9-9C0B-64EC46384B87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDomain.UnitTests", "ImagesDomain.UnitTests\ImagesDomain.UnitTests.csproj", "{75CBA0BF-A7A6-433B-BDE0-6A4C64D33C1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDomain.UnitTests", "Subdomains\Generic\ImagesDomain.UnitTests\ImagesDomain.UnitTests.csproj", "{75CBA0BF-A7A6-433B-BDE0-6A4C64D33C1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure.IntegrationTests", "ImagesInfrastructure.IntegrationTests\ImagesInfrastructure.IntegrationTests.csproj", "{3B7202F6-9FE0-450D-A77F-937935988CD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesInfrastructure.IntegrationTests", "Subdomains\Generic\ImagesInfrastructure.IntegrationTests\ImagesInfrastructure.IntegrationTests.csproj", "{3B7202F6-9FE0-450D-A77F-937935988CD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventNotifications", "EventNotifications", "{57853763-7287-43FB-8CF0-67AED9C303CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure", "EventNotificationsInfrastructure\EventNotificationsInfrastructure.csproj", "{269EEDCB-6CCF-4798-B8B4-81F337795F59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure", "Subdomains\Generic\EventNotificationsInfrastructure\EventNotificationsInfrastructure.csproj", "{269EEDCB-6CCF-4798-B8B4-81F337795F59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsApplication", "EventNotificationsApplication\EventNotificationsApplication.csproj", "{59FC6CA2-BC94-4D75-96A5-4E158075BF23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsApplication", "Subdomains\Generic\EventNotificationsApplication\EventNotificationsApplication.csproj", "{59FC6CA2-BC94-4D75-96A5-4E158075BF23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E15AB9C5-C0F1-471D-BFC3-72ED133C4470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure.IntegrationTests", "EventNotificationsInfrastructure.IntegrationTests\EventNotificationsInfrastructure.IntegrationTests.csproj", "{3BD4DB80-FDF9-4845-89CD-4947E4B77058}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure.IntegrationTests", "Subdomains\Generic\EventNotificationsInfrastructure.IntegrationTests\EventNotificationsInfrastructure.IntegrationTests.csproj", "{3BD4DB80-FDF9-4845-89CD-4947E4B77058}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure.UnitTests", "EventNotificationsInfrastructure.UnitTests\EventNotificationsInfrastructure.UnitTests.csproj", "{41729001-D63B-4C95-AAE7-AC976EC306D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsInfrastructure.UnitTests", "Subdomains\Generic\EventNotificationsInfrastructure.UnitTests\EventNotificationsInfrastructure.UnitTests.csproj", "{41729001-D63B-4C95-AAE7-AC976EC306D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsApplication.UnitTests", "EventNotificationsApplication.UnitTests\EventNotificationsApplication.UnitTests.csproj", "{E1D4D16F-9F16-4EF7-8893-A43446EC1653}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotificationsApplication.UnitTests", "Subdomains\Generic\EventNotificationsApplication.UnitTests\EventNotificationsApplication.UnitTests.csproj", "{E1D4D16F-9F16-4EF7-8893-A43446EC1653}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Hosting.Common.UnitTests", "Infrastructure.Hosting.Common.UnitTests\Infrastructure.Hosting.Common.UnitTests.csproj", "{C85713CE-CFEC-4A47-8A2E-B9FAAC20EB72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Hosting.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Hosting.Common.UnitTests\Infrastructure.Hosting.Common.UnitTests.csproj", "{C85713CE-CFEC-4A47-8A2E-B9FAAC20EB72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure", "SubscriptionsInfrastructure\SubscriptionsInfrastructure.csproj", "{AC4B3281-7555-4CDD-9574-96B73D2414D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure", "Subdomains\Generic\SubscriptionsInfrastructure\SubscriptionsInfrastructure.csproj", "{AC4B3281-7555-4CDD-9574-96B73D2414D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsApplication", "SubscriptionsApplication\SubscriptionsApplication.csproj", "{00E15D5F-CECF-4B2C-8C88-FCC526DB9EED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsApplication", "Subdomains\Generic\SubscriptionsApplication\SubscriptionsApplication.csproj", "{00E15D5F-CECF-4B2C-8C88-FCC526DB9EED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsDomain", "SubscriptionsDomain\SubscriptionsDomain.csproj", "{EB8FC27F-3138-4311-BF55-0590019ED5A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsDomain", "Subdomains\Generic\SubscriptionsDomain\SubscriptionsDomain.csproj", "{EB8FC27F-3138-4311-BF55-0590019ED5A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1A2524F5-09D6-4774-A585-96DBAC6E9CAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsDomain.UnitTests", "SubscriptionsDomain.UnitTests\SubscriptionsDomain.UnitTests.csproj", "{687C172C-1B65-476F-B951-DD82E3C9CB69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsDomain.UnitTests", "Subdomains\Generic\SubscriptionsDomain.UnitTests\SubscriptionsDomain.UnitTests.csproj", "{687C172C-1B65-476F-B951-DD82E3C9CB69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsApplication.UnitTests", "SubscriptionsApplication.UnitTests\SubscriptionsApplication.UnitTests.csproj", "{BCD2C514-FEE5-4B06-9A80-A0908AB4BC8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsApplication.UnitTests", "Subdomains\Generic\SubscriptionsApplication.UnitTests\SubscriptionsApplication.UnitTests.csproj", "{BCD2C514-FEE5-4B06-9A80-A0908AB4BC8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure.UnitTests", "SubscriptionsInfrastructure.UnitTests\SubscriptionsInfrastructure.UnitTests.csproj", "{06282A09-852B-4628-988B-D0379FDFC4E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure.UnitTests", "Subdomains\Generic\SubscriptionsInfrastructure.UnitTests\SubscriptionsInfrastructure.UnitTests.csproj", "{06282A09-852B-4628-988B-D0379FDFC4E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure.IntegrationTests", "SubscriptionsInfrastructure.IntegrationTests\SubscriptionsInfrastructure.IntegrationTests.csproj", "{90055376-3EB3-4AFD-B413-1CE6EC1CC909}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubscriptionsInfrastructure.IntegrationTests", "Subdomains\Generic\SubscriptionsInfrastructure.IntegrationTests\SubscriptionsInfrastructure.IntegrationTests.csproj", "{90055376-3EB3-4AFD-B413-1CE6EC1CC909}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{2B24670B-EFAC-4779-B6BA-B34C17D3D39D}"
 	ProjectSection(SolutionItems) = preProject
@@ -396,17 +365,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{2B24670B-EFAC-
 		..\.github\workflows\deploy-azure.yml = ..\.github\workflows\deploy-azure.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost1.IntegrationTests", "ApiHost1.IntegrationTests\ApiHost1.IntegrationTests.csproj", "{E7B97607-58EA-4357-B649-E48A6F719A3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost1.IntegrationTests", "Hosts\ApiHost1.IntegrationTests\ApiHost1.IntegrationTests.csproj", "{E7B97607-58EA-4357-B649-E48A6F719A3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.Website.Common", "IntegrationTesting.Website.Common\IntegrationTesting.Website.Common.csproj", "{88B5D089-4D17-4CFF-AFA7-9F7037CD6C7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.Website.Common", "Framework\Testing\IntegrationTesting.Website.Common\IntegrationTesting.Website.Common.csproj", "{88B5D089-4D17-4CFF-AFA7-9F7037CD6C7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Shared.UnitTests", "Application.Persistence.Shared.UnitTests\Application.Persistence.Shared.UnitTests.csproj", "{4D8A1473-2804-402F-AF18-8920A86EEDB7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.Kurrent", "Infrastructure.External.Persistence.Kurrent\Infrastructure.External.Persistence.Kurrent.csproj", "{E7D4CD46-E7A7-4466-A718-A322CA6FE677}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.GitHubActions", "Tools.GitHubActions\Tools.GitHubActions.csproj", "{BF293010-EB3D-4508-8C46-F583589120CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.Azure.UnitTests", "Infrastructure.External.Persistence.Azure.UnitTests\Infrastructure.External.Persistence.Azure.UnitTests.csproj", "{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Persistence.Shared.UnitTests", "Subdomains\Shared\Application.Persistence.Shared.UnitTests\Application.Persistence.Shared.UnitTests.csproj", "{4D8A1473-2804-402F-AF18-8920A86EEDB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IAC", "IAC", "{5C263252-2914-4FC0-8AEF-7E936C77CAFD}"
 EndProject
@@ -421,25 +384,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{
 		..\iac\Azure\SQLServer\AzureSQLServer-Seed-Snapshotting-Generic.sql = ..\iac\Azure\SQLServer\AzureSQLServer-Seed-Snapshotting-Generic.sql
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalAdapters", "ExternalAdapters", "{DE3384F0-BE7B-44BD-933F-40B120C6139E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Workers", "Framework\Tools\Tools.Generators.Workers\Tools.Generators.Workers.csproj", "{A9CACF79-40DB-45BD-99E3-F20DD7C892FC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{63E63749-6B20-4D8A-84C6-069C83A4999D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Workers.UnitTests", "Framework\Tools\Tools.Generators.Workers.UnitTests\Tools.Generators.Workers.UnitTests.csproj", "{0F4E5C4D-8E37-4542-98F8-CE1B837F2EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External", "Infrastructure.External\Infrastructure.External.csproj", "{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctions.Api.WorkerHost.UnitTests", "Hosts\AzureFunctions.Api.WorkerHost.UnitTests\AzureFunctions.Api.WorkerHost.UnitTests.csproj", "{A1CFACAA-D10E-4B60-8DF0-D3A07063A7C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.UnitTests", "Infrastructure.External.UnitTests\Infrastructure.External.UnitTests.csproj", "{6F7B430E-95CD-4665-BB23-FD076C77554D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSLambdas.Api.WorkerHost.UnitTests", "Hosts\AWSLambdas.Api.WorkerHost.UnitTests\AWSLambdas.Api.WorkerHost.UnitTests.csproj", "{CB4547D3-020F-419D-B205-F93A7EE7D45F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.TestingOnly", "Infrastructure.External.Persistence.TestingOnly\Infrastructure.External.Persistence.TestingOnly.csproj", "{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events.Shared.UnitTests", "Subdomains\Shared\Domain.Events.Shared.UnitTests\Domain.Events.Shared.UnitTests.csproj", "{A0C12ADC-118B-44CE-B84D-36FBD4312535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Workers", "Tools.Generators.Workers\Tools.Generators.Workers.csproj", "{A9CACF79-40DB-45BD-99E3-F20DD7C892FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Analyzers.Common", "Framework\Tools\Tools.Analyzers.Common\Tools.Analyzers.Common.csproj", "{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Workers.UnitTests", "Tools.Generators.Workers.UnitTests\Tools.Generators.Workers.UnitTests.csproj", "{0F4E5C4D-8E37-4542-98F8-CE1B837F2EB5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalAdapters", "ExternalAdapters", "{93C5C45C-9125-4A8F-9378-52C8949F80DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctions.Api.WorkerHost.UnitTests", "AzureFunctions.Api.WorkerHost.UnitTests\AzureFunctions.Api.WorkerHost.UnitTests.csproj", "{A1CFACAA-D10E-4B60-8DF0-D3A07063A7C4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSLambdas.Api.WorkerHost.UnitTests", "AWSLambdas.Api.WorkerHost.UnitTests\AWSLambdas.Api.WorkerHost.UnitTests.csproj", "{CB4547D3-020F-419D-B205-F93A7EE7D45F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events.Shared.UnitTests", "Domain.Events.Shared.UnitTests\Domain.Events.Shared.UnitTests.csproj", "{A0C12ADC-118B-44CE-B84D-36FBD4312535}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.TestingOnly", "ExternalAdapters\Infrastructure.External.Persistence.TestingOnly\Infrastructure.External.Persistence.TestingOnly.csproj", "{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -598,24 +557,6 @@ Global
 		{ED71C769-CDA7-4C58-B252-8218DCE3D2B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED71C769-CDA7-4C58-B252-8218DCE3D2B5}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{ED71C769-CDA7-4C58-B252-8218DCE3D2B5}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{CDA1C120-6847-4486-863D-875E47291A50}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{A67A4EA1-58CF-41ED-AEED-591D4A8A0633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A67A4EA1-58CF-41ED-AEED-591D4A8A0633}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A67A4EA1-58CF-41ED-AEED-591D4A8A0633}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -724,12 +665,6 @@ Global
 		{1309710A-37E9-434A-AC83-D3E9DC3892EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1309710A-37E9-434A-AC83-D3E9DC3892EE}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{1309710A-37E9-434A-AC83-D3E9DC3892EE}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{45804224-6320-4D13-ABCC-A6B1E28924F7}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{C1C8CF7B-0CA5-44E2-9618-E1CFDB9D6B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1C8CF7B-0CA5-44E2-9618-E1CFDB9D6B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1C8CF7B-0CA5-44E2-9618-E1CFDB9D6B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -844,24 +779,6 @@ Global
 		{032ED9AF-8BB5-404A-B81D-EDEED9291C22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{032ED9AF-8BB5-404A-B81D-EDEED9291C22}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{032ED9AF-8BB5-404A-B81D-EDEED9291C22}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{EA58877D-3023-429C-A1A8-E8479441139E}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -880,24 +797,6 @@ Global
 		{AA82B265-66A9-483C-BD4B-3AD35D51ABED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA82B265-66A9-483C-BD4B-3AD35D51ABED}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{AA82B265-66A9-483C-BD4B-3AD35D51ABED}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{8EE34354-4B11-41AD-BE92-845356A36D00}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{D09C110B-9639-43D7-8A85-7F2A102554E2}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{11871155-F741-4AFD-BD9E-9AE7C7670B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{11871155-F741-4AFD-BD9E-9AE7C7670B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11871155-F741-4AFD-BD9E-9AE7C7670B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -940,12 +839,6 @@ Global
 		{11F60901-1E1C-4B1B-83E8-261269D2681B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{11F60901-1E1C-4B1B-83E8-261269D2681B}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{11F60901-1E1C-4B1B-83E8-261269D2681B}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{1734A5D1-B2C8-4107-9DAA-E3F99F49ABEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1734A5D1-B2C8-4107-9DAA-E3F99F49ABEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1734A5D1-B2C8-4107-9DAA-E3F99F49ABEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -1078,12 +971,6 @@ Global
 		{6C654E34-B698-4F23-8757-D50C85F51F5B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C654E34-B698-4F23-8757-D50C85F51F5B}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{6C654E34-B698-4F23-8757-D50C85F51F5B}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{B0245CF3-0D8D-45FA-889F-EEA42D5A8FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0245CF3-0D8D-45FA-889F-EEA42D5A8FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0245CF3-0D8D-45FA-889F-EEA42D5A8FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -1132,18 +1019,6 @@ Global
 		{3A491D02-702A-4738-B3F5-26066E60F834}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3A491D02-702A-4738-B3F5-26066E60F834}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{3A491D02-702A-4738-B3F5-26066E60F834}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{C393178E-FEEB-49F3-9820-182FED0EA387}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{B61F308E-DB79-4655-9CB4-F50666159A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B61F308E-DB79-4655-9CB4-F50666159A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B61F308E-DB79-4655-9CB4-F50666159A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -1336,42 +1211,6 @@ Global
 		{4D8A1473-2804-402F-AF18-8920A86EEDB7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D8A1473-2804-402F-AF18-8920A86EEDB7}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{4D8A1473-2804-402F-AF18-8920A86EEDB7}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{BF293010-EB3D-4508-8C46-F583589120CE}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{6F7B430E-95CD-4665-BB23-FD076C77554D}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 		{A9CACF79-40DB-45BD-99E3-F20DD7C892FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9CACF79-40DB-45BD-99E3-F20DD7C892FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9CACF79-40DB-45BD-99E3-F20DD7C892FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -1402,6 +1241,18 @@ Global
 		{A0C12ADC-118B-44CE-B84D-36FBD4312535}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0C12ADC-118B-44CE-B84D-36FBD4312535}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{A0C12ADC-118B-44CE-B84D-36FBD4312535}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5C77A86-38AF-40E4-82FC-617E624B2754} = {508E7DA4-4DF2-4201-955D-CCF70C41AD05}
@@ -1438,9 +1289,7 @@ Global
 		{F6C71F8B-AFDE-471A-B1DE-6E1E8F3499C6} = {BA1AEAEC-68CD-4855-A8CB-0DC2070B6A8C}
 		{ED71C769-CDA7-4C58-B252-8218DCE3D2B5} = {57FDFB31-D6B6-4369-A78C-6F3D3AEA0D79}
 		{BAE0D6F2-6920-4B02-9F30-D71B04B7170D} = {9270A12C-E16F-4932-89C4-F4ADDDA55AF3}
-		{DE31F486-AE81-49C0-BA00-3A6A325B7C42} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{A25A3BA8-5602-4825-9595-2CF96B166920} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
-		{3E6AA34C-02F9-4B8B-8307-FC9CA25DB7AD} = {A25A3BA8-5602-4825-9595-2CF96B166920}
 		{33E2D4C7-525A-41CE-858C-F6A944160618} = {864DED88-9252-46EB-9D13-00269C7333F9}
 		{7AB39FD6-660F-4400-9955-B92684378492} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{8BD4E8A7-95BE-43EA-8627-A002D440DFDF} = {33E2D4C7-525A-41CE-858C-F6A944160618}
@@ -1454,7 +1303,6 @@ Global
 		{806F1A7A-5D96-44ED-A9D9-C61660DD5488} = {3D4737A4-7C63-428F-946A-9D0C091CEEF9}
 		{DC9FFCBD-F591-401C-8D5F-6643CF2C1D19} = {3D4737A4-7C63-428F-946A-9D0C091CEEF9}
 		{AC380EA5-16A1-4713-99B4-F259F5397F30} = {4B1A213C-36A7-41A7-BFC7-B3CFF5795912}
-		{CDA1C120-6847-4486-863D-875E47291A50} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{A67A4EA1-58CF-41ED-AEED-591D4A8A0633} = {5B6DE1D9-649A-47EE-A565-0B641B7838FF}
 		{64762CCC-834E-47C9-AFAD-B88DB80E3FF8} = {A25A3BA8-5602-4825-9595-2CF96B166920}
 		{16B71536-8CF7-4F58-8CE3-277B8CB0FE45} = {B68592DF-E8E8-452A-A46F-5C8ECB178FDF}
@@ -1492,7 +1340,6 @@ Global
 		{AD9554A0-F4A2-4AD9-8F85-9F7AD316E585} = {600081A4-A5E3-48ED-85F2-A36F52C1A459}
 		{0104A4C6-811F-4AD3-B365-9BE0054CE706} = {600081A4-A5E3-48ED-85F2-A36F52C1A459}
 		{032ED9AF-8BB5-404A-B81D-EDEED9291C22} = {600081A4-A5E3-48ED-85F2-A36F52C1A459}
-		{B610A0C7-B573-4B25-A9F6-B6E5C4593722} = {5838EE94-374F-4A6F-A231-1BC1C87985F4}
 		{3782A767-2274-4F44-80C6-D6C6EEB9C9A5} = {864DED88-9252-46EB-9D13-00269C7333F9}
 		{580F13F5-712D-4284-946B-7192FBB2CBA8} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
 		{C84C4D8D-82F5-4751-8DAD-613A281D5C6C} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
@@ -1502,9 +1349,6 @@ Global
 		{9B6B0235-BD3F-4604-8E93-B0112A241C63} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
 		{7F2357CA-B812-4C95-9507-DD0421966B70} = {DC9FFCBD-F591-401C-8D5F-6643CF2C1D19}
 		{AA82B265-66A9-483C-BD4B-3AD35D51ABED} = {600081A4-A5E3-48ED-85F2-A36F52C1A459}
-		{8EE34354-4B11-41AD-BE92-845356A36D00} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
-		{D09C110B-9639-43D7-8A85-7F2A102554E2} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
-		{3EF40C54-AACB-45B7-A013-BB46F3F8FC35} = {A25A3BA8-5602-4825-9595-2CF96B166920}
 		{11871155-F741-4AFD-BD9E-9AE7C7670B1C} = {B68592DF-E8E8-452A-A46F-5C8ECB178FDF}
 		{005FCB6F-860B-4DCC-A699-D1A68823D882} = {B68592DF-E8E8-452A-A46F-5C8ECB178FDF}
 		{9BA6D2C4-7FB9-41F7-9396-40704B9878DC} = {19ADDB2F-B589-49EF-9BDA-BD9908057D60}
@@ -1545,8 +1389,6 @@ Global
 		{4DBA0B71-413D-43A9-AF68-150135A74F5B} = {90ED1D1C-5960-4F56-94F1-8063490725C4}
 		{B2ABB588-A7D4-44DB-8A2B-C1657D57D546} = {90ED1D1C-5960-4F56-94F1-8063490725C4}
 		{3A491D02-702A-4738-B3F5-26066E60F834} = {5838EE94-374F-4A6F-A231-1BC1C87985F4}
-		{C393178E-FEEB-49F3-9820-182FED0EA387} = {D3B68FF7-293B-4458-B8D8-49D3DF59B495}
-		{2BFDAE75-55B4-4E37-8107-F585389A4C08} = {5838EE94-374F-4A6F-A231-1BC1C87985F4}
 		{B61F308E-DB79-4655-9CB4-F50666159A9B} = {8BB22358-7F43-462F-B26E-D83B9A4711CC}
 		{DE456D83-8C43-4A07-BC26-02B358C48F3B} = {8BB22358-7F43-462F-B26E-D83B9A4711CC}
 		{7E08C871-D41C-4BF7-9A24-7DD0A244EF18} = {8BB22358-7F43-462F-B26E-D83B9A4711CC}
@@ -1582,32 +1424,22 @@ Global
 		{06282A09-852B-4628-988B-D0379FDFC4E1} = {1A2524F5-09D6-4774-A585-96DBAC6E9CAE}
 		{90055376-3EB3-4AFD-B413-1CE6EC1CC909} = {1A2524F5-09D6-4774-A585-96DBAC6E9CAE}
 		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
-		{EA58877D-3023-429C-A1A8-E8479441139E} = {9B6B0235-BD3F-4604-8E93-B0112A241C63}
 		{2B24670B-EFAC-4779-B6BA-B34C17D3D39D} = {56E869FB-D718-421C-85DF-07291F1F47C6}
 		{AE57212B-9A30-4577-A795-7B411621BCDA} = {19ADDB2F-B589-49EF-9BDA-BD9908057D60}
 		{E7B97607-58EA-4357-B649-E48A6F719A3B} = {D3B68FF7-293B-4458-B8D8-49D3DF59B495}
 		{88B5D089-4D17-4CFF-AFA7-9F7037CD6C7C} = {5838EE94-374F-4A6F-A231-1BC1C87985F4}
-		{BF293010-EB3D-4508-8C46-F583589120CE} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{5C263252-2914-4FC0-8AEF-7E936C77CAFD} = {56E869FB-D718-421C-85DF-07291F1F47C6}
 		{F39B3109-A863-46EA-AC73-317207764ADE} = {5C263252-2914-4FC0-8AEF-7E936C77CAFD}
 		{1E28068B-6B6A-4808-A09A-25CD0EABB748} = {F39B3109-A863-46EA-AC73-317207764ADE}
-		{5DD98C48-F081-4CD1-9F01-1FF19323FC1E} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
-		{3B5EF7A1-1889-4ED9-B0DD-FBB88DE95F90} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
-		{E7D4CD46-E7A7-4466-A718-A322CA6FE677} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
 		{E6B54671-823D-47AC-8BE8-534C6E602AF2} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
-		{63E63749-6B20-4D8A-84C6-069C83A4999D} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
-		{7549CF63-1BA4-44EC-B4AF-32C2145A71E2} = {63E63749-6B20-4D8A-84C6-069C83A4999D}
-		{45804224-6320-4D13-ABCC-A6B1E28924F7} = {63E63749-6B20-4D8A-84C6-069C83A4999D}
-		{A4E40A61-6C36-4C1E-B5D5-68546B2387C3} = {63E63749-6B20-4D8A-84C6-069C83A4999D}
-		{9B2C8ABD-CBE2-4EF1-8B21-30ED864AFDD4} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
-		{6F7B430E-95CD-4665-BB23-FD076C77554D} = {63E63749-6B20-4D8A-84C6-069C83A4999D}
 		{F62B2502-76F5-4A1A-AA88-9ACA83CDBCFA} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
 		{4D8A1473-2804-402F-AF18-8920A86EEDB7} = {9B6B0235-BD3F-4604-8E93-B0112A241C63}
-		{5BFA65F0-6E6C-4705-8240-06D34BCF06F6} = {DE3384F0-BE7B-44BD-933F-40B120C6139E}
 		{A9CACF79-40DB-45BD-99E3-F20DD7C892FC} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{0F4E5C4D-8E37-4542-98F8-CE1B837F2EB5} = {A25A3BA8-5602-4825-9595-2CF96B166920}
 		{A1CFACAA-D10E-4B60-8DF0-D3A07063A7C4} = {D3B68FF7-293B-4458-B8D8-49D3DF59B495}
 		{CB4547D3-020F-419D-B205-F93A7EE7D45F} = {D3B68FF7-293B-4458-B8D8-49D3DF59B495}
 		{A0C12ADC-118B-44CE-B84D-36FBD4312535} = {9B6B0235-BD3F-4604-8E93-B0112A241C63}
+		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
+		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E} = {93C5C45C-9125-4A8F-9378-52C8949F80DD}
 	EndGlobalSection
 EndGlobal
