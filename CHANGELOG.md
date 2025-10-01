@@ -21,14 +21,19 @@
 ## [1.0.0] - 2025-10-01
 
 ### Non-breaking Changes
-- none
+- Added Organization pages to the WebsiteHost
+- 
 
 ### Breaking Changes
 - none 
 
 ### Fixed
-- We have fixed the issues related to refreshing and revoking access_tokens in the `AuthTokensRoot` aggregate, such that they now work correctly when refreshing more than once.
-- We are generating enum values from all OpenAPI specifications in camelCase now, instead of PascalCase. The current WebsiteHost Js App has been updated to use the new enum values.
+- Issues related to refreshing and revoking access_tokens in the `AuthTokensRoot` aggregate, such that they now work correctly when refreshing more than once.
+- Now generating enum values from all OpenAPI specifications in camelCase now instead of PascalCase (to comply with actual values emitted from API responses).
+  - The current WebsiteHost Js App has been updated to use the new enum values.
+- Fixed how the `BrowserRecorder` uses `console.log()` in testingOnly mode, and reports to the BEFFE.
+- Fixed how the other recorders (`Azurerecorder` and `AwsRecorder`) report debug messages to their respect logging services.
+- We are more permissive on the names of uploaded filenames, to include more common characters.
 
 ---
 
