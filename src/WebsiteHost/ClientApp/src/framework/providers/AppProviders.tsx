@@ -30,11 +30,8 @@ export function AppProviders({
     new QueryClient({
       defaultOptions: {
         queries: {
-          retry: false,
-          refetchOnWindowFocus: false,
           staleTime: QueryClientDefaultCacheTimeInMs // all data is automatically invalidated after 10 seconds
         },
-        mutations: { retry: false }
       }
     });
 

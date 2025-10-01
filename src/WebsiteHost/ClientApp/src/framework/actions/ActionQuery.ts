@@ -44,7 +44,7 @@ export function useActionQuery<
 >(
   configuration: ActionQueryConfiguration<TRequestData, ExpectedErrorCode, TResponse, TTransformedResponse>
 ): ActionResult<TRequestData, ExpectedErrorCode, TTransformedResponse> {
-  const { request, passThroughErrors, cacheKey, transform: onSuccess } = configuration;
+  const { request, passThroughErrors, cacheKey, transform: onTransform } = configuration;
 
   const { onError: handleError, expectedError, unexpectedError, clearErrors } = useApiErrorState(passThroughErrors);
 
@@ -87,19 +87,29 @@ export function useActionQuery<
           throw error;
         }
       } else {
-        recorder.trace('useActionQuery: Cannot execute query when browser is offline', SeverityLevel.Warning);
+        recorder.trace('QueryCommand: Cannot execute query when browser is offline', SeverityLevel.Warning);
         throw new Error('Cannot execute query action when browser is offline');
       }
     },
-    select: (data: TResponse) => {
-      if (data === undefined || data === null) {
-        return;
-      }
-      if (onSuccess) {
-        return onSuccess(data);
-      }
-    },
+    select: useCallback(
+      (data: TResponse) => {
+        recorder.traceDebug('QueryCommand: Query returned success');
+        if (data === undefined || data === null) {
+          recorder.traceDebug('QueryCommand: Query returned no data!');
+          return;
+        }
+        if (onTransform) {
+          return onTransform(data);
+        }
+      },
+      [onTransform]
+    ),
     retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
     throwOnError: (_error: Error, _query) => false
   });
 
@@ -134,8 +144,9 @@ export function useActionQuery<
             recorder.traceDebug('QueryCommand: Query returned error', { result });
             return;
           }
-          recorder.traceDebug('QueryCommand: Query returned success');
-          return onSuccess?.({ requestData, response: result.data as TTransformedResponse });
+          if (onSuccess) {
+            onSuccess({ requestData, response: result.data as TTransformedResponse });
+          }
         })
         .catch((error) => {
           // we should never get here, since throwOnError is always set to false

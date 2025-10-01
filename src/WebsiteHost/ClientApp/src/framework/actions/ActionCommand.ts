@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
@@ -53,7 +53,6 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
     isSuccess,
     isError,
     isPending,
-    error: mutationError,
     variables
   } = useMutation({
     mutationFn: async (requestData) => {
@@ -77,33 +76,31 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
           throw error;
         }
       } else {
-        recorder.trace('useActionCommand: Cannot execute command when browser is offline', SeverityLevel.Warning);
+        recorder.trace('ActionCommand: Cannot execute command when browser is offline', SeverityLevel.Warning);
         throw new Error('Cannot execute command action when browser is offline');
       }
     },
-    onSuccess: (result: TResponse, _: TRequestData) => {
-      if (onSuccess) {
-        onSuccess(result);
-      }
-
+    onSuccess: (response: TResponse, _requestData: TRequestData) => {
+      recorder.traceDebug('ActionCommand: Mutation returned success');
+      clearErrors();
       if (invalidateCacheKeys) {
+        recorder.traceDebug('ActionCommand: clearing cache keys', { invalidateCacheKeys });
         queryClient.invalidateQueries({
           queryKey: invalidateCacheKeys,
           exact: false // we want to support wildcards
         });
       }
+      if (onSuccess) {
+        onSuccess(response);
+      }
+    },
+    onError: (error) => {
+      recorder.traceDebug('ActionCommand: Command returned error', { error });
+      handleError(error);
     },
     throwOnError: (_error: Error) => false,
     retry: false
   });
-
-  useEffect(() => {
-    if (!isError) {
-      clearErrors();
-    } else {
-      handleError(mutationError);
-    }
-  }, [isError, clearErrors]);
 
   const executeCallback = useCallback(
     (
@@ -117,8 +114,9 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
       });
       mutate(submittedRequestData, {
         onSuccess: (response, requestData) => {
-          recorder.traceDebug('ActionCommand: Query returned success');
-          return onSuccess?.({ requestData, response });
+          if (onSuccess) {
+            onSuccess({ requestData, response });
+          }
         }
       });
     },

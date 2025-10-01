@@ -2,7 +2,7 @@ import { recordCrash, recordPageView, recordTrace, recordUse } from '../api/webs
 import { Recorder, SeverityLevel } from '../recorder';
 
 
-const SkipDebugTracesInTestingOnly: boolean = false;
+const SkipDebugTracesInTestingOnly: boolean = true;
 
 interface BrowserRecorderOptions {
   skipDebugTracesInTestingOnly: boolean;
