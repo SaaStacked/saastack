@@ -196,10 +196,9 @@ export const RecordTraceRequestSchema = {
   type: 'object',
   properties: {
     arguments: {
-      type: 'array',
-      items: {
-        required: ['chars', 'length'],
-        type: 'string'
+      type: 'object',
+      additionalProperties: {
+        nullable: true
       },
       nullable: true
     },

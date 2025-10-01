@@ -8,8 +8,7 @@ using Common;
 using Common.Extensions;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Interfaces;
-using Infrastructure.Web.Api.Operations.Shared._3rdParties.Fake;
-using Microsoft.AspNetCore.Http;
+using Infrastructure.Web.Api.Operations.Shared._3rdParties.FakeProvider;
 using SubscriptionsApplication;
 
 namespace SubscriptionsInfrastructure.Api._3rdParties;
@@ -21,7 +20,7 @@ public class FakeBillingProviderApi : IWebApiService
     private readonly ISubscriptionsApplication _subscriptionsApplication;
     private readonly IWebhookNotificationAuditService _webHookNotificationAuditService;
 
-    public FakeBillingProviderApi(IRecorder recorder, IHttpContextAccessor httpContextAccessor,
+    public FakeBillingProviderApi(IRecorder recorder,
         ICallerContextFactory callerFactory, ISubscriptionsApplication subscriptionsApplication,
         IWebhookNotificationAuditService webHookNotificationAuditService)
     {
@@ -31,7 +30,7 @@ public class FakeBillingProviderApi : IWebApiService
         _webHookNotificationAuditService = webHookNotificationAuditService;
     }
 
-    public async Task<ApiEmptyResult> NotifyWebhookEvent(FakeBillingProviderNotifyWebHookEventRequest request,
+    public async Task<ApiEmptyResult> NotifyWebhookEvent(NotifyFakeBillingProviderWebHookEventRequest request,
         CancellationToken cancellationToken)
     {
         var caller = _callerFactory.Create();
@@ -50,21 +49,23 @@ public class FakeBillingProviderApi : IWebApiService
         }
 
         var audit = created.Value;
-        if (request.EventType == FakeBillingProviderEventType.PaymentMethodCreated)
+        if (request.EventType != FakeBillingProviderEventType.PaymentMethodCreated)
         {
-            var customerId = request.Content!["customer_id"].ToString()!;
-            var result =
-                await NotifyBuyerPaymentMethodChangedAsync(maintenance, audit, customerId, cancellationToken);
-            if (result.IsFailure)
-            {
-                return () => new Result<EmptyResponse, Error>(result.Error);
-            }
+            return () => new Result<EmptyResponse, Error>(new EmptyResponse());
+        }
+
+        var customerId = request.CustomerId!;
+        var result =
+            await AddPaymentMethod(maintenance, audit, customerId, cancellationToken);
+        if (result.IsFailure)
+        {
+            return () => new Result<EmptyResponse, Error>(result.Error);
         }
 
         return () => new Result<EmptyResponse, Error>(new EmptyResponse());
     }
 
-    private async Task<Result<Error>> NotifyBuyerPaymentMethodChangedAsync(ICallerContext caller,
+    private async Task<Result<Error>> AddPaymentMethod(ICallerContext caller,
         WebhookNotificationAudit audit, string customerId, CancellationToken cancellationToken)
     {
         var retrievedState = await _subscriptionsApplication.GetProviderStateForBuyerAsync(caller,
@@ -80,9 +81,7 @@ public class FakeBillingProviderApi : IWebApiService
         var updatedState = new SubscriptionMetadata(retrievedState.Value)
         {
             [FakeBillingProviderConstants.MetadataProperties.CustomerId] = customerId,
-            [FakeBillingProviderConstants.MetadataProperties.PaymentMethodId] = "apaymentmethodid",
-            [FakeBillingProviderConstants.MetadataProperties.PaymentMethodStatus] = "valid",
-            [FakeBillingProviderConstants.MetadataProperties.PaymentMethodType] = "card"
+            [FakeBillingProviderConstants.MetadataProperties.PaymentMethodId] = "apaymentmethodid"
         };
 
         var notified = await _subscriptionsApplication.NotifyBuyerPaymentMethodChangedAsync(caller,

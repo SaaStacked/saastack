@@ -8,7 +8,7 @@ using Domain.Interfaces.Validations;
 using FluentAssertions;
 using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Shared.ApplicationServices;
-using Infrastructure.Web.Api.Operations.Shared._3rdParties.Fake;
+using Infrastructure.Web.Api.Operations.Shared._3rdParties.FakeProvider;
 using Infrastructure.Web.Api.Operations.Shared.Organizations;
 using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using Infrastructure.Web.Common.Extensions;
@@ -603,13 +603,10 @@ public class SubscriptionsApiSpec
 
         private async Task AddPaymentMethod(LoginDetails login)
         {
-            await Api.PostAsync(new FakeBillingProviderNotifyWebHookEventRequest
+            await Api.PostAsync(new NotifyFakeBillingProviderWebHookEventRequest
             {
-                EventType = FakeBillingProviderEventType.PaymentMethodCreated,
-                Content = new Dictionary<string, object>
-                {
-                    { "customer_id", login.DefaultOrganizationId! }
-                }
+                CustomerId = login.DefaultOrganizationId!,
+                EventType = FakeBillingProviderEventType.PaymentMethodCreated
             });
         }
 

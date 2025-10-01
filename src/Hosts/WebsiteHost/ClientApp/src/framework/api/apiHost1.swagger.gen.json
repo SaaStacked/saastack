@@ -2966,102 +2966,6 @@
         ]
       }
     },
-    "/webhooks/chargebee": {
-      "post": {
-        "tags": [
-          "ChargebeeApi"
-        ],
-        "summary": "Notifies a Chargebee event, via a webhook",
-        "description": "(request type: ChargebeeNotifyWebhookEventRequest)",
-        "operationId": "ChargebeeNotifyWebhookEvent",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChargebeeNotifyWebhookEventRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Validation": {
-                    "summary": "Validation Error",
-                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
-                  },
-                  "RuleViolation": {
-                    "summary": "Rule Violation",
-                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized: The client must authenticate itself to get the requested response"
-          },
-          "402": {
-            "description": "Payment Required: The client must have payment information to get the requested response"
-          },
-          "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
-          },
-          "404": {
-            "description": "Not Found: The server cannot find the requested resource"
-          },
-          "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
-          },
-          "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
-          },
-          "423": {
-            "description": "Locked: The current resource is locked and cannot be accessed"
-          },
-          "500": {
-            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Unexpected": {
-                    "summary": "Unexpected Error",
-                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/oauth2/clients/{Id}/consent": {
       "post": {
         "tags": [
@@ -6293,6 +6197,102 @@
         ]
       }
     },
+    "/webhooks/billingproviders/fake": {
+      "post": {
+        "tags": [
+          "FakeBillingProviderApi"
+        ],
+        "summary": "Notifies when a fake billing provider backend event has occurred",
+        "description": "(request type: FakeBillingProviderNotifyWebHookEventRequest)",
+        "operationId": "FakeBillingProviderNotifyWebHookEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FakeBillingProviderNotifyWebHookEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/flags/{UserId}/{Name}": {
       "get": {
         "tags": [
@@ -7778,102 +7778,6 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/RegisterMachineResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Validation": {
-                    "summary": "Validation Error",
-                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
-                  },
-                  "RuleViolation": {
-                    "summary": "Rule Violation",
-                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized: The client must authenticate itself to get the requested response"
-          },
-          "402": {
-            "description": "Payment Required: The client must have payment information to get the requested response"
-          },
-          "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
-          },
-          "404": {
-            "description": "Not Found: The server cannot find the requested resource"
-          },
-          "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
-          },
-          "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
-          },
-          "423": {
-            "description": "Locked: The current resource is locked and cannot be accessed"
-          },
-          "500": {
-            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Unexpected": {
-                    "summary": "Unexpected Error",
-                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/webhooks/mailgun": {
-      "post": {
-        "tags": [
-          "MailgunApi"
-        ],
-        "summary": "Notifies a Mailgun event, via a webhook",
-        "description": "(request type: MailgunNotifyWebhookEventRequest)",
-        "operationId": "MailgunNotifyWebhookEvent",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MailgunNotifyWebhookEventRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
                 }
               }
             }
@@ -18375,124 +18279,6 @@
         }
       }
     },
-    "/webhooks/twilio": {
-      "post": {
-        "tags": [
-          "TwilioApi"
-        ],
-        "summary": "Notifies a Twilio event, via a webhook",
-        "description": "(request type: TwilioNotifyWebhookEventRequest)",
-        "operationId": "TwilioNotifyWebhookEvent",
-        "requestBody": {
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "apiVersion": {
-                    "type": "string"
-                  },
-                  "errorCode": {
-                    "type": "string"
-                  },
-                  "from": {
-                    "type": "string"
-                  },
-                  "messageSid": {
-                    "type": "string"
-                  },
-                  "messageStatus": { },
-                  "rawDlrDoneDate": {
-                    "type": "integer"
-                  },
-                  "smsStatus": { },
-                  "to": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Validation": {
-                    "summary": "Validation Error",
-                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
-                  },
-                  "RuleViolation": {
-                    "summary": "Rule Violation",
-                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized: The client must authenticate itself to get the requested response"
-          },
-          "402": {
-            "description": "Payment Required: The client must have payment information to get the requested response"
-          },
-          "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
-          },
-          "404": {
-            "description": "Not Found: The server cannot find the requested resource"
-          },
-          "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
-          },
-          "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
-          },
-          "423": {
-            "description": "Locked: The current resource is locked and cannot be accessed"
-          },
-          "500": {
-            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Unexpected": {
-                    "summary": "Unexpected Error",
-                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/usages/deliver": {
       "post": {
         "tags": [
@@ -20144,160 +19930,6 @@
         },
         "additionalProperties": false
       },
-      "ChargebeeEventContent": {
-        "required": [
-          "customer",
-          "subscription"
-        ],
-        "type": "object",
-        "properties": {
-          "customer": {
-            "$ref": "#/components/schemas/ChargebeeEventCustomer"
-          },
-          "subscription": {
-            "$ref": "#/components/schemas/ChargebeeEventSubscription"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChargebeeEventCustomer": {
-        "required": [
-          "id",
-          "paymentMethod"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "payment_method": {
-            "$ref": "#/components/schemas/ChargebeePaymentMethod"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChargebeeEventSubscription": {
-        "required": [
-          "billingPeriodUnit",
-          "currencyCode",
-          "customerId",
-          "id",
-          "status"
-        ],
-        "type": "object",
-        "properties": {
-          "billing_period": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "billing_period_unit": {
-            "type": "string"
-          },
-          "cancelled_at": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "currency_code": {
-            "type": "string"
-          },
-          "customer_id": {
-            "type": "string"
-          },
-          "deleted": {
-            "type": "boolean"
-          },
-          "id": {
-            "type": "string"
-          },
-          "next_billing_at": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "status": {
-            "type": "string"
-          },
-          "subscription_items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChargebeeEventSubscriptionItem"
-            }
-          },
-          "trial_end": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "trial_start": {
-            "type": "integer",
-            "format": "int64"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChargebeeEventSubscriptionItem": {
-        "required": [
-          "itemPriceId",
-          "itemType"
-        ],
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "item_price_id": {
-            "type": "string"
-          },
-          "item_type": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unit_price": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChargebeeNotifyWebhookEventRequest": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "$ref": "#/components/schemas/ChargebeeEventContent"
-          },
-          "event_type": {
-            "type": "string",
-            "nullable": true
-          },
-          "id": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChargebeePaymentMethod": {
-        "required": [
-          "id",
-          "status",
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
       "CompleteCredentialResetRequest": {
         "required": [
           "password",
@@ -21072,6 +20704,30 @@
             "items": {
               "$ref": "#/components/schemas/SubscriptionToMigrate"
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      "FakeBillingProviderEventType": {
+        "enum": [
+          "paymentMethodCreated"
+        ],
+        "type": "string"
+      },
+      "FakeBillingProviderNotifyWebHookEventRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": { },
+            "nullable": true
+          },
+          "eventId": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/FakeBillingProviderEventType"
           }
         },
         "additionalProperties": false
@@ -21895,122 +21551,6 @@
             "format": "date-time"
           },
           "id": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunDeliveryStatus": {
-        "required": [
-          "description"
-        ],
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunEventData": {
-        "required": [
-          "deliveryStatus",
-          "event",
-          "id",
-          "message",
-          "reason",
-          "severity"
-        ],
-        "type": "object",
-        "properties": {
-          "delivery-status": {
-            "$ref": "#/components/schemas/MailgunDeliveryStatus"
-          },
-          "event": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "message": {
-            "$ref": "#/components/schemas/MailgunMessage"
-          },
-          "reason": {
-            "type": "string"
-          },
-          "severity": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunMessage": {
-        "required": [
-          "headers"
-        ],
-        "type": "object",
-        "properties": {
-          "headers": {
-            "$ref": "#/components/schemas/MailgunMessageHeaders"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunMessageHeaders": {
-        "required": [
-          "from",
-          "messageId",
-          "subject",
-          "to"
-        ],
-        "type": "object",
-        "properties": {
-          "from": {
-            "type": "string"
-          },
-          "message-id": {
-            "type": "string"
-          },
-          "subject": {
-            "type": "string"
-          },
-          "to": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunNotifyWebhookEventRequest": {
-        "type": "object",
-        "properties": {
-          "event-data": {
-            "$ref": "#/components/schemas/MailgunEventData"
-          },
-          "signature": {
-            "$ref": "#/components/schemas/MailgunSignature"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MailgunSignature": {
-        "required": [
-          "signature",
-          "timestamp",
-          "token"
-        ],
-        "type": "object",
-        "properties": {
-          "signature": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "string"
-          },
-          "token": {
             "type": "string"
           }
         },
@@ -24062,24 +23602,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "TwilioMessageStatus": {
-        "enum": [
-          "unknown",
-          "queued",
-          "sending",
-          "sent",
-          "failed",
-          "delivered",
-          "undelivered",
-          "receiving",
-          "received",
-          "accepted",
-          "scheduled",
-          "read",
-          "canceled"
-        ],
-        "type": "string"
       },
       "UnInviteMemberFromOrganizationResponse": {
         "required": [

@@ -155,51 +155,6 @@ export type ChangeSubscriptionPlanRequest = {
   planId?: string | null;
 };
 
-export type ChargebeeEventContent = {
-  customer: ChargebeeEventCustomer;
-  subscription: ChargebeeEventSubscription;
-};
-
-export type ChargebeeEventCustomer = {
-  id: string;
-  payment_method?: ChargebeePaymentMethod;
-};
-
-export type ChargebeeEventSubscription = {
-  billing_period?: number;
-  billing_period_unit?: string;
-  cancelled_at?: number;
-  currency_code?: string;
-  customer_id?: string;
-  deleted?: boolean;
-  id: string;
-  next_billing_at?: number;
-  status: string;
-  subscription_items?: Array<ChargebeeEventSubscriptionItem>;
-  trial_end?: number;
-  trial_start?: number;
-};
-
-export type ChargebeeEventSubscriptionItem = {
-  amount?: number;
-  item_price_id?: string;
-  item_type?: string;
-  quantity?: number;
-  unit_price?: number;
-};
-
-export type ChargebeeNotifyWebhookEventRequest = {
-  content?: ChargebeeEventContent;
-  event_type?: string | null;
-  id?: string | null;
-};
-
-export type ChargebeePaymentMethod = {
-  id: string;
-  status: string;
-  type: string;
-};
-
 export type CompleteCredentialResetRequest = {
   password: string;
 };
@@ -417,6 +372,16 @@ export type ExchangeOAuth2ForTokensResponse = {
 export type ExportSubscriptionsToMigrateResponse = {
   metadata: SearchResultMetadata;
   subscriptions: Array<SubscriptionToMigrate>;
+};
+
+export type FakeBillingProviderEventType = 'paymentMethodCreated';
+
+export type FakeBillingProviderNotifyWebHookEventRequest = {
+  content?: {
+    [key: string]: unknown;
+  } | null;
+  eventId?: string | null;
+  eventType?: FakeBillingProviderEventType;
 };
 
 export type FeatureFlag = {
@@ -663,42 +628,6 @@ export type MachineCredential = {
   description?: string;
   expiresOnUtc?: string;
   id: string;
-};
-
-export type MailgunDeliveryStatus = {
-  description: string;
-};
-
-export type MailgunEventData = {
-  'delivery-status'?: MailgunDeliveryStatus;
-  event: string;
-  id: string;
-  message: MailgunMessage;
-  reason: string;
-  severity: string;
-  timestamp?: number;
-};
-
-export type MailgunMessage = {
-  headers: MailgunMessageHeaders;
-};
-
-export type MailgunMessageHeaders = {
-  from: string;
-  'message-id'?: string;
-  subject: string;
-  to: string;
-};
-
-export type MailgunNotifyWebhookEventRequest = {
-  'event-data'?: MailgunEventData;
-  signature?: MailgunSignature;
-};
-
-export type MailgunSignature = {
-  signature: string;
-  timestamp: string;
-  token: string;
 };
 
 export type MakeBookingRequest = {
@@ -1289,21 +1218,6 @@ export type TransferSubscriptionRequest = {
   userId?: string | null;
 };
 
-export type TwilioMessageStatus =
-  | 'unknown'
-  | 'queued'
-  | 'sending'
-  | 'sent'
-  | 'failed'
-  | 'delivered'
-  | 'undelivered'
-  | 'receiving'
-  | 'received'
-  | 'accepted'
-  | 'scheduled'
-  | 'read'
-  | 'canceled';
-
 export type UnInviteMemberFromOrganizationResponse = {
   organization: Organization;
 };
@@ -1818,14 +1732,6 @@ export type TakeOfflineCarPatchResponse = GetCarResponse;
 
 export type TakeOfflineCarPatchError = ProblemDetails | unknown;
 
-export type ChargebeeNotifyWebhookEventData = {
-  body?: ChargebeeNotifyWebhookEventRequest;
-};
-
-export type ChargebeeNotifyWebhookEventResponse = EmptyResponse;
-
-export type ChargebeeNotifyWebhookEventError = ProblemDetails | unknown;
-
 export type ConsentOauth2ClientForCallerData = {
   body?: ConsentOAuth2ClientForCallerRequest;
   path: {
@@ -2171,6 +2077,14 @@ export type UnassignPlatformRolesPatchResponse = UpdateUserResponse;
 
 export type UnassignPlatformRolesPatchError = ProblemDetails | unknown;
 
+export type FakeBillingProviderNotifyWebHookEventData = {
+  body?: FakeBillingProviderNotifyWebHookEventRequest;
+};
+
+export type FakeBillingProviderNotifyWebHookEventResponse = EmptyResponse;
+
+export type FakeBillingProviderNotifyWebHookEventError = ProblemDetails | unknown;
+
 export type GetFeatureFlagData = {
   path: {
     Name: string;
@@ -2306,14 +2220,6 @@ export type RegisterMachineData = {
 export type RegisterMachineResponse2 = RegisterMachineResponse;
 
 export type RegisterMachineError = ProblemDetails | unknown;
-
-export type MailgunNotifyWebhookEventData = {
-  body?: MailgunNotifyWebhookEventRequest;
-};
-
-export type MailgunNotifyWebhookEventResponse = EmptyResponse;
-
-export type MailgunNotifyWebhookEventError = ProblemDetails | unknown;
 
 export type ChangeDefaultOrganizationPutData = {
   body?: ChangeDefaultOrganizationRequest;
@@ -3348,23 +3254,6 @@ export type ValidationsValidatedPostTestingOnlyData = {
 export type ValidationsValidatedPostTestingOnlyResponse = StringMessageTestingOnlyResponse;
 
 export type ValidationsValidatedPostTestingOnlyError = ProblemDetails | unknown;
-
-export type TwilioNotifyWebhookEventData = {
-  body?: {
-    apiVersion?: string;
-    errorCode?: string;
-    from?: string;
-    messageSid?: string;
-    messageStatus?: unknown;
-    rawDlrDoneDate?: number;
-    smsStatus?: unknown;
-    to?: string;
-  };
-};
-
-export type TwilioNotifyWebhookEventResponse = EmptyResponse;
-
-export type TwilioNotifyWebhookEventError = ProblemDetails | unknown;
 
 export type DeliverUsageData = {
   body?: DeliverUsageRequest;

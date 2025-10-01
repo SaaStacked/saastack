@@ -78,7 +78,9 @@ export type RecordPageViewRequest = {
 };
 
 export type RecordTraceRequest = {
-  arguments?: Array<string> | null;
+  arguments?: {
+    [key: string]: unknown;
+  } | null;
   level: string;
   messageTemplate: string;
 };

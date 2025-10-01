@@ -143,6 +143,8 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     where THost : class
 {
     protected const string PasswordForPerson = "1Password!";
+
+    private const string AllHostsRelativeSolutionPath = "Hosts";
     private const string DotNetCommandLineWithLaunchProfileArgumentsFormat =
         "run --no-build --configuration {0} --launch-profile {1} --project \"{2}\"";
     private const string TestingServerUrl = "https://localhost";
@@ -237,7 +239,9 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     {
         var assembly = typeof(TAnotherHost).Assembly;
         var projectName = assembly.GetName().Name!;
-        var projectPath = Path.Combine(Solution.NavigateUpToSolutionDirectoryPath(), projectName);
+        var solutionPath = Solution.NavigateUpToSolutionDirectoryPath();
+        var relativeProjectPath = Path.Combine(AllHostsRelativeSolutionPath, projectName);
+        var projectPath = Path.Combine(solutionPath, relativeProjectPath);
 
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
         var launchProfileName = $"{projectName}-{env}";

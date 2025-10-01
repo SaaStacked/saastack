@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ExternalAdapters\Infrastructure.External.Persistence.TestingOnly\Infrastructure.External.Persistence.TestingOnly.csproj" />
+        <ProjectReference Include="..\..\ExternalAdapters\Infrastructure.External.TestingOnly\Infrastructure.External.TestingOnly.csproj" />
         <ProjectReference Include="..\..\Subdomains\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj" />
         <ProjectReference Include="..\..\Framework\Infrastructure\Infrastructure.Web.Hosting.Common\Infrastructure.Web.Hosting.Common.csproj" />
     </ItemGroup>

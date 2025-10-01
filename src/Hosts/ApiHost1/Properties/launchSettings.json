@@ -29,11 +29,11 @@
     },
     "Api-SourceGenerators-Development": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../ApiHost1/ApiHost1.csproj"
+      "targetProject": "../../Hosts/ApiHost1/ApiHost1.csproj"
     },
     "Common-SourceGenerators-Development": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../Common/Common.csproj"
+      "targetProject": "../../Framework/Common/Common.csproj"
     }
   }
 }

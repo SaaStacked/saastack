@@ -22,6 +22,7 @@ using Infrastructure.Common.Extensions;
 using Infrastructure.Eventing.Common.Notifications;
 using Infrastructure.Eventing.Common.Projections.ReadModels;
 using Infrastructure.Eventing.Interfaces.Notifications;
+using Infrastructure.External.TestingOnly.ApplicationServices;
 using Infrastructure.Hosting.Common;
 using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Hosting.Common.Recording;
@@ -120,7 +121,11 @@ public static class HostExtensions
             services.AddHttpContextAccessor();
 
             // EXTEND: Default technology adapters
-            services.AddSingleton<IFeatureFlags, EmptyFeatureFlags>();
+            services.AddSingleton<IFeatureFlags>(c => new FakeFeatureFlagProviderServiceClient(
+                c.GetRequiredService<IRecorder>(),
+                c.GetRequiredServiceForPlatform<IConfigurationSettings>(),
+                c.GetRequiredService<IHttpClientFactory>(),
+                c.GetRequiredService<JsonSerializerOptions>()));
         }
 
         void RegisterConfiguration(bool isMultiTenanted)

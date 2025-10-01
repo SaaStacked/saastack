@@ -1,5 +1,9 @@
 # WebsiteHost JS App
 
+This explains how the JavaScript App is built and deployed, and how its components work.
+
+IMPORTANT: Make sure you have already set up your local environment for developing the JS App, from the instructions in the main [README.md](../../../../README_DERIVATIVE.md).
+
 ## Packaging & Bundling
 
 We use [Vite](https://vitejs.dev/) for fast development and building, which outputs JavaScript files to the `wwwroot` folder, with some other static assets live (e.g. SEO images, and SEO configuration) that are stored in the `public` folder. See the `../.gitignore` file for more details.
@@ -180,7 +184,7 @@ Pages from sample subdomain (`Cars` and `Bookings`) are also implemented, but yo
 
 We strongly recommend driving your pages using either: `FormAction` for interactive pages, or `PageAction`, and `ButtonAction` for data display pages. 
 
-These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application doe not work. 
+These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application does not work. 
 
 > See more on why you should "actions" here: [JavaScript Actions](../../../docs/design-principles/0200-javascript-actions.md)
 

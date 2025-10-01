@@ -281,10 +281,14 @@ public sealed class HostRecorder : IRecorder, IDisposable
         {
             CrashReporterOption.None => new NoOpCrashReporter(),
             CrashReporterOption.Cloud =>
+#if TESTINGONLY
+                new NoOpCrashReporter(),
+#else
 #if HOSTEDONAZURE
                 new ApplicationInsightsCrashReporter(container),
 #elif HOSTEDONAWS
                 new AWSCloudWatchCrashReporter(logger),
+#endif
 #endif
             _ => throw new ArgumentOutOfRangeException(nameof(options.MetricReporting))
         };
@@ -310,10 +314,14 @@ public sealed class HostRecorder : IRecorder, IDisposable
         {
             MetricReporterOption.None => new NoOpMetricReporter(),
             MetricReporterOption.Cloud =>
+#if TESTINGONLY
+                new NoOpMetricReporter(),
+#else
 #if HOSTEDONAZURE
                 new ApplicationInsightsMetricReporter(container),
 #elif HOSTEDONAWS
                 new AWSCloudWatchMetricReporter(container),
+#endif
 #endif
             _ => throw new ArgumentOutOfRangeException(nameof(options.MetricReporting))
         };

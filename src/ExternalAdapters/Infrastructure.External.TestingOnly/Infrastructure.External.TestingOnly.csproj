@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>$(AssemblyName).UnitTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Framework\Common\Common.csproj" />
+        <ProjectReference Include="..\..\Framework\Infrastructure\Infrastructure.Web.Api.Common\Infrastructure.Web.Api.Common.csproj" />
+        <ProjectReference Include="..\..\Framework\Infrastructure\Infrastructure.Web.Api.Interfaces\Infrastructure.Web.Api.Interfaces.csproj" />
+        <ProjectReference Include="..\..\Subdomains\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj" />
+    </ItemGroup>
+</Project>

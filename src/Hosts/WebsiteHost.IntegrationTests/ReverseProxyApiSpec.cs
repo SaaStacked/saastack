@@ -37,6 +37,11 @@ public class ReverseProxyApiSpec : WebsiteSpec<Program, ApiHost1.Program>
         result.Should().Contain("<html");
     }
 
+    /// <summary>
+    ///     NOTE: this test may fail if the JS App has not been "npm run build",
+    ///     and the favicon.ico is not in the output folder,
+    ///     and also if the favicon.ico file has been changed
+    /// </summary>
     [Fact]
     public async Task WhenRequestAStaticFile_ThenDoesNotReverseProxy()
     {

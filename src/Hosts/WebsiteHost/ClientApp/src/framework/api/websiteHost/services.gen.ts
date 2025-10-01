@@ -125,49 +125,6 @@ import type { AuthenticateData, AuthenticateError, AuthenticateResponse2, BeffeA
 
 
 
-
-;
-
-
-;
-
-
-;
-
-
-
-
-
-
-
-;
-
-
-
-
-
-
-
-;
-
-
-
-
-
-
-
-;
-
-
-;
-
-
-;
-
-
-;
-
-
 export const client = createClient(createConfig());
 
 /**

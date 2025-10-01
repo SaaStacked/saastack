@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\ExternalAdapters\Infrastructure.External.TestingOnly\Infrastructure.External.TestingOnly.csproj" />
         <ProjectReference Include="..\..\..\Subdomains\Shared\Application.Services.Shared\Application.Services.Shared.csproj" />
         <ProjectReference Include="..\..\..\Subdomains\Shared\Domain.Shared\Domain.Shared.csproj" />
         <ProjectReference Include="..\..\..\Subdomains\Shared\Domain.Events.Shared\Domain.Events.Shared.csproj" />
