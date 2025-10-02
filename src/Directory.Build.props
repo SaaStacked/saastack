@@ -64,7 +64,7 @@
     <PropertyGroup>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn),436,NU5125</NoWarn>
-        <Configurations>Debug;Release;ReleaseForDeploy</Configurations>
+        <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
         <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
@@ -86,16 +86,6 @@
         <Optimize>true</Optimize>
         <OutputPath>bin\$(Configuration)\</OutputPath>
         <DefineConstants>$(DefineConstants);TRACE;TESTINGONLY;$(HostingPlatform)</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseForDeploy|AnyCPU'">
-        <NoWarn>$(NoWarn),436,NU5125,CS1998,CS0649,CS8618,CS8604</NoWarn>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\$(Configuration)\</OutputPath>
-        <DefineConstants>$(DefineConstants);TRACE;$(HostingPlatform)</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>

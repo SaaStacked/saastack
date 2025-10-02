@@ -14,7 +14,7 @@ Essentially, we are building high-quality products (tools) for other developers 
 
 There is no suggestion or contribution that you could make that would be too minor or meaningless.
 
-We are all human and we all make mistakes every day, so even minor typos and corrections to any part of this product are always more than welcome.
+We are all human, and we all make mistakes every day, so even minor typos and corrections to any part of this product are always more than welcome.
 
 Improving the clarity of the code and of the documentation is very welcome and super important. No one person can get this right on their own. They only have one perspective, and we are all biased and shaped by our own experiences. And none of us is (or looks like) the end-user of the product we produce. So if you can help shape this product to improve the end user's experience of it, please make a contribution small or large.
 
@@ -50,7 +50,7 @@ The Code of Conduct covers our behavior as members of the community, in any foru
 
 ### Be considerate
 
-Your work will be used by other people, and you in turn will depend on the work of others. Any decision you take will affect users and colleagues, and we expect you to take those consequences into account when making decisions. Even if it's not obvious at the time, our contributions to SaaStack will impact the work of others. For example, changes to code, infrastructure, policy, documentation and translations during a release may negatively impact others' work.
+Your work will be used by other people, and you in turn will depend on the work of others. Any decision you take will affect users and colleagues, and we expect you to take those consequences in to account when making decisions. Even if it's not obvious at the time, our contributions to SaaStack will impact the work of others. For example, changes to code, infrastructure, policy, documentation and translations during a release may negatively impact others' work.
 
 ### Be respectful
 
@@ -125,15 +125,14 @@ That documentation is intended to be part of the template itself that users of t
 * Build the solution
 * or run `dotnet build` on the `src/SaaStack.sln` solution
 
-There are 3 flavors of build configuration: `Debug`, `Release` and `ReleaseForDeploy`, these are very standard build configurations, and they have been enhanced.
+There are 2 flavors of build configuration: `Debug`, `Release`, these are very standard build configurations, and they have been enhanced.
 
 * `Debug` includes symbols for debugging, and defines `TESTINGONLY`, it is intended to be used on developers desktops for local development.
 * `Release` does not include debugging symbols, and defines `TESTINGONLY`, it is intended to be used to verify the release and run tests in CI.
-* `ReleaseForDeploy` does not include debugging symbols, and does not include `TESTINGONLY`, it is intended to be built in CI as a final build.
 
-* `TESTINGONLY` is a conditional compilation variable, that is used in code blocks: `#if TESTINGONLY...#endif`. It is for including code specifically for testing purposes only - not for deploying to Staging/Production environments. (Code surrounded by `#if TESTINGONLY...` is removed by the compiler in the `ReleaseForDeploy` flavor).
+* `TESTINGONLY` is a conditional compilation variable, that is used in code blocks: `#if TESTINGONLY...#endif`. It is for including code specifically for testing purposes only - not for deploying to Staging/Production environments. (Code surrounded by `#if TESTINGONLY...` is removed by the compiler in the production builds).
 
-> The `Release` and `ReleaseForDeploy` build flavors must pass in GitHub actions to submit changes to the codebase
+> The `Release` build flavor must pass in GitHub actions to submit changes to the codebase
 
 ## Testing the code
 
@@ -151,9 +150,9 @@ There are 3 flavors of build configuration: `Debug`, `Release` and `ReleaseForDe
 
 ### Documenting changes
 
-> Releases to this project are a little different than ordinary projects, because we are releasing a codebase template.
+> Releases to this project are a little different from ordinary projects, because we are releasing a codebase template.
 
-When our users first clone this template (as their own), they will be versioning the codebase their own way (using the [CHANGELOG.md](https://github.com/SaaStacked/saastack/blob/main/CHANGELOG.md) included in their copy of the template itself.
+When our users first clone this template (as their own), they will be versioning the codebase their own way (using the [CHANGELOG.md](https://github.com/SaaStacked/saastack/blob/main/CHANGELOG.md) included in their copy of the template itself).
 
 > The included [CHANGELOG.md](https://github.com/SaaStacked/saastack/blob/main/CHANGELOG.md) should not be updated by contributors of this project, for changes to this project.
 
@@ -166,7 +165,7 @@ We will maintain the project [CHANGELOG](https://github.com/SaaStacked/saastack/
 * A 'release' in this project will contain one or more 'entries', and each 'entry' may relate to one or more individual 'commits' over some (ideally, short) period of time.
 * However, each 'entry' that we document in each 'release' (in the CHANGELOG) will attempt to describe a larger capability/feature/fix to the template. Individual git 'commits' are probably not as important to track for our users, as larger capabilities/features/fixes. We expect that our users will need to decide whether to upgrade their copies based on the value of each release, or ignore it.
 * Each 'entry' in the log will declare whether the change is breaking.(Non-breaking entries will not need a designation).
-* If an 'entry' is designated as breaking then it is also accompanied by a detailed explanation about how it breaks previous copies of the template, and what would need to be changed/migrated by our users to incorporate this change into an existing copy of their template.
+* If an 'entry' is designated as breaking, then it is also accompanied by a detailed explanation about how it breaks previous copies of the template, and what would need to be changed/migrated by our users to incorporate this change into an existing copy of their template.
 * All entries are created in the log as soon as work is complete enough, before a 'release' is created. Those 'entries' are captured in the `[Unreleased]` section at the top of the log.
 
 To version a release:
