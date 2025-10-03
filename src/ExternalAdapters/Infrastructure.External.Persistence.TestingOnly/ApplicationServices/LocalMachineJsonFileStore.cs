@@ -6,7 +6,7 @@ using Common.Configuration;
 using Common.Extensions;
 using Domain.Interfaces;
 using Domain.Interfaces.ValueObjects;
-using Infrastructure.Persistence.Common.Extensions;
+using Infrastructure.External.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Interfaces.ApplicationServices;
 using Polly;

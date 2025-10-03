@@ -2,7 +2,7 @@
 using Common.Extensions;
 using Domain.Interfaces.ValueObjects;
 
-namespace Infrastructure.Persistence.Common.Extensions;
+namespace Infrastructure.External.Persistence.Common.Extensions;
 
 public static class TypeExtensions
 {
@@ -58,7 +58,7 @@ public static class TypeExtensions
     }
 
     /// <summary>
-    ///     Whether the <see cref="type" /> represents a <see cref="Optional{Enum}" />
+    ///     Whether the <see cref="type" /> represents a <see cref="Optional" />
     /// </summary>
     public static bool IsOptionalEnum(this Type type)
     {

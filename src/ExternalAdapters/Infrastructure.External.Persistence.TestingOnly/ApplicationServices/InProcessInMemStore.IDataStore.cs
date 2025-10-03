@@ -3,7 +3,7 @@ using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
-using Infrastructure.Persistence.Common.Extensions;
+using Infrastructure.External.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Interfaces;
 using QueryAny;
 using Task = System.Threading.Tasks.Task;
@@ -18,7 +18,7 @@ partial class InProcessInMemStore : IDataStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         ArgumentNullException.ThrowIfNull(entity);
 
         if (!_documents.TryGetValue(containerName, out var document))
@@ -39,7 +39,7 @@ partial class InProcessInMemStore : IDataStore
     public Task<Result<long, Error>> CountAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
 
         return Task.FromResult<Result<long, Error>>(_documents.TryGetValue(containerName, out var value)
             ? value.Count
@@ -49,7 +49,7 @@ partial class InProcessInMemStore : IDataStore
     Task<Result<Error>> IDataStore.DestroyAllAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
 
         _documents.Remove(containerName);
 
@@ -64,7 +64,7 @@ partial class InProcessInMemStore : IDataStore
         where TQueryableEntity : IQueryableEntity
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(metadata);
 
@@ -88,8 +88,8 @@ partial class InProcessInMemStore : IDataStore
     public Task<Result<Error>> RemoveAsync(string containerName, string id, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
 
         if (_documents.TryGetValue(containerName, out var document)
             && document.ContainsKey(id))
@@ -104,8 +104,8 @@ partial class InProcessInMemStore : IDataStore
         CommandEntity entity, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
         ArgumentNullException.ThrowIfNull(entity);
 
         var hydrationProperties = entity.ToHydrationProperties();
@@ -120,8 +120,8 @@ partial class InProcessInMemStore : IDataStore
         PersistedEntityMetadata metadata, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
         ArgumentNullException.ThrowIfNull(metadata);
 
         if (_documents.TryGetValue(containerName, out var document)

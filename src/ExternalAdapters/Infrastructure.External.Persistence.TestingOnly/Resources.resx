@@ -24,12 +24,6 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
-    <data name="AnyStore_MissingId" xml:space="preserve">
-        <value>Id cannot be empty</value>
-    </data>
-    <data name="AnyStore_MissingContainerName" xml:space="preserve">
-        <value>ContainerName cannot be empty</value>
-    </data>
     <data name="InProcessInMemDataStore_MissingBlobName" xml:space="preserve">
         <value>BlobName cannot be empty</value>
     </data>

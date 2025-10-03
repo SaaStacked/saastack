@@ -14,7 +14,7 @@ partial class LocalMachineJsonFileStore : IBlobStore
     public Task<Result<Error>> DeleteAsync(string containerName, string blobName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
 
         var container = EnsureContainer(GetBlobStoreContainerPath(containerName, null));
@@ -28,7 +28,7 @@ partial class LocalMachineJsonFileStore : IBlobStore
     Task<Result<Error>> IBlobStore.DestroyAllAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
 
         var blobStore = EnsureContainer(GetBlobStoreContainerPath(containerName, null));
         blobStore.Erase();
@@ -41,7 +41,7 @@ partial class LocalMachineJsonFileStore : IBlobStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -69,7 +69,7 @@ partial class LocalMachineJsonFileStore : IBlobStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
         contentType.ThrowIfNotValuedParameter(nameof(contentType),
             Resources.InProcessInMemDataStore_MissingContentType);

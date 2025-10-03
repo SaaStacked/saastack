@@ -96,33 +96,6 @@ namespace Infrastructure.Persistence.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, events between version {2} and version {3} have not been entered into stream yet.
-        /// </summary>
-        internal static string EventStore_ConcurrencyVerificationFailed_MissingUpdates {
-            get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_MissingUpdates", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process has updated the stream at the same time, since version {2}.
-        /// </summary>
-        internal static string EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated {
-            get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process may have cleared the stream?.
-        /// </summary>
-        internal static string EventStore_ConcurrencyVerificationFailed_StreamReset {
-            get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_StreamReset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The aggregate does not have an Identifier.
         /// </summary>
         internal static string IEventSourcingDddCommandStore_SaveWithAggregateIdMissing {
@@ -200,24 +173,6 @@ namespace Infrastructure.Persistence.Common {
         internal static string SnapshottingStore_DtoMissingIdentifier {
             get {
                 return ResourceManager.GetString("SnapshottingStore_DtoMissingIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type {0} does not exist.
-        /// </summary>
-        internal static string StoreExtensions_InvalidJoinType {
-            get {
-                return ResourceManager.GetString("StoreExtensions_InvalidJoinType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type {0} does not exist.
-        /// </summary>
-        internal static string TypeExtensions_InvalidType {
-            get {
-                return ResourceManager.GetString("TypeExtensions_InvalidType", resourceCulture);
             }
         }
     }
