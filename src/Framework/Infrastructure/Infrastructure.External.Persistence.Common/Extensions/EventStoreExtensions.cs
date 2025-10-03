@@ -3,7 +3,7 @@ using Common.Extensions;
 using Domain.Common.ValueObjects;
 using Infrastructure.Persistence.Interfaces;
 
-namespace Infrastructure.Persistence.Common.Extensions;
+namespace Infrastructure.External.Persistence.Common.Extensions;
 
 public static class EventStoreExtensions
 {

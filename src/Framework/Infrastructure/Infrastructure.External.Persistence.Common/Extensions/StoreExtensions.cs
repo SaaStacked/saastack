@@ -6,7 +6,7 @@ using Domain.Interfaces;
 using Infrastructure.Persistence.Interfaces;
 using QueryAny;
 
-namespace Infrastructure.Persistence.Common.Extensions;
+namespace Infrastructure.External.Persistence.Common.Extensions;
 
 public static class StoreExtensions
 {
@@ -86,7 +86,7 @@ public static class StoreExtensions
         Func<QueriedEntity, Task<Dictionary<string, HydrationProperties>>> getJoinedEntitiesAsync)
         where TQueryableEntity : IQueryableEntity
     {
-        var take = query.GetDefaultTake(maxQueryResults);
+        var take = GetDefaultTake<TQueryableEntity>(query, maxQueryResults);
         if (take == 0)
         {
             return new QueryResults<QueryEntity>();
@@ -125,17 +125,16 @@ public static class StoreExtensions
                 var rightEntities = joinedContainer.Collection
                     .ToDictionary(e => e.Key, e => e.Value);
 
-                joinedEntities = join
-                    .JoinResults(primaryEntities, rightEntities,
-                        joinedEntity.Selects.ProjectSelectedJoinedProperties());
+                joinedEntities = JoinResults(join, primaryEntities, rightEntities,
+                    ProjectSelectedJoinedProperties(joinedEntity.Selects));
             }
         }
 
         var results = joinedEntities
             .ToDictionary(pair => pair.Key, pair => pair.Value.ToObjectDictionary())
-            .AsQueryable();
-        var orderBy = query.ToDynamicLinqOrderByClause(metadata);
-        var skip = query.GetDefaultSkip();
+            .AsQueryable<KeyValuePair<string, IReadOnlyDictionary<string, object?>>>();
+        var orderBy = query.ToDynamicLinqOrderByClause<TQueryableEntity>(metadata);
+        var skip = GetDefaultSkip<TQueryableEntity>(query);
 
         if (query.Wheres.Any())
         {
@@ -147,10 +146,10 @@ public static class StoreExtensions
         var totalCount = results.Count();
         var items = results
             .OrderBy(orderBy)
-            .Skip(skip)
+            .Skip<KeyValuePair<string, IReadOnlyDictionary<string, object?>>>(skip)
             .Take(take)
             .Select(sel => new KeyValuePair<string, HydrationProperties>(sel.Key, new HydrationProperties(sel.Value)))
-            .CherryPickSelectedProperties(query)
+            .CherryPickSelectedProperties<TQueryableEntity>(query)
             .Select(ped => QueryEntity.FromProperties(ped.Value, metadata))
             .ToList();
 
@@ -160,10 +159,12 @@ public static class StoreExtensions
     /// <summary>
     ///     Returns the default ordering field for the specified <see cref="query" />.
     ///     Order of precedence:
-    ///     1. <see cref="ResultOptions.OrderBy" />
-    ///     2. If selected in query, <see cref="QueryEntity.LastPersistedAtUtc" />
-    ///     3. If selected in query, <see cref="QueryEntity.Id" />
-    ///     4. First of the <see cref="QueryClause{TPrimaryEntity}.Select{TValue}" />
+    ///     1. <see cref="QueryAny.ResultOptions.OrderBy" />
+    ///     2. If selected in query, <see cref="Infrastructure.Persistence.Interfaces.PersistedEntity.LastPersistedAtUtc" />
+    ///     3. If selected in query, <see cref="Infrastructure.Persistence.Interfaces.PersistedEntity.Id" />
+    ///     4. First of the
+    ///     <see
+    ///         cref="QueryAny.QueryClause{TPrimaryEntity}.Select{TValue}(System.Linq.Expressions.Expression{System.Func{TPrimaryEntity,TValue}})" />
     /// </summary>
     public static string GetDefaultOrdering<TQueryableEntity>(this QueryClause<TQueryableEntity> query,
         PersistedEntityMetadata metadata)
@@ -178,7 +179,7 @@ public static class StoreExtensions
                 : DefaultOrderingFieldName;
         }
 
-        var selectedFields = query.GetAllSelectedFields();
+        var selectedFields = GetAllSelectedFields(query);
         if (selectedFields.Any())
         {
             if (selectedFields.Contains(by))
@@ -284,12 +285,12 @@ public static class StoreExtensions
             var rightEntityProperties = rightEntity.Value;
             foreach (var select in selectedFromJoinPropertyNames)
             {
-                if (!rightEntityProperties.HasPropertyValue(select.FieldName))
+                if (!HasPropertyValue(rightEntityProperties, select.FieldName))
                 {
                     continue;
                 }
 
-                leftEntityProperties.CopyPropertyValue(rightEntityProperties, select);
+                CopyPropertyValue(leftEntityProperties, rightEntityProperties, select);
             }
 
             return leftEntity;
@@ -302,7 +303,7 @@ public static class StoreExtensions
             QueryClause<TQueryableEntity> query)
         where TQueryableEntity : IQueryableEntity
     {
-        var selectedPropertyNames = query.GetAllSelectedFields();
+        var selectedPropertyNames = GetAllSelectedFields(query);
 
         if (!selectedPropertyNames.Any())
         {
@@ -335,7 +336,7 @@ public static class StoreExtensions
 
         return primarySelects
             .Select(select => select.FieldName)
-            .Concat(joinedSelects.Select(select => select.JoinedFieldName))
+            .Concat<string>(joinedSelects.Select(select => select.JoinedFieldName))
             .ToList();
     }
 

@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using Infrastructure.Persistence.Common.Extensions;
+using Infrastructure.External.Persistence.Common.Extensions;
 using QueryAny;
 using Xunit;
 
-namespace Infrastructure.Persistence.Common.UnitTests.Extensions;
+namespace Infrastructure.External.Persistence.Common.UnitTests.Extensions;
 
 [Trait("Category", "Unit")]
 public class DynamicLinqWhereExtensionsSpec

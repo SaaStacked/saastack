@@ -3,7 +3,7 @@ using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
-using Infrastructure.Persistence.Common.Extensions;
+using Infrastructure.External.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Interfaces;
 using QueryAny;
 using Task = System.Threading.Tasks.Task;
@@ -19,7 +19,7 @@ partial class LocalMachineJsonFileStore : IDataStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         ArgumentNullException.ThrowIfNull(entity);
 
         var container = EnsureContainer(GetDocumentStoreContainerPath(containerName));
@@ -33,7 +33,7 @@ partial class LocalMachineJsonFileStore : IDataStore
     public Task<Result<long, Error>> CountAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
 
         var container = EnsureContainer(GetDocumentStoreContainerPath(containerName));
 
@@ -44,7 +44,7 @@ partial class LocalMachineJsonFileStore : IDataStore
     Task<Result<Error>> IDataStore.DestroyAllAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
 
         var documentStore = EnsureContainer(GetDocumentStoreContainerPath(containerName));
         documentStore.Erase();
@@ -61,7 +61,7 @@ partial class LocalMachineJsonFileStore : IDataStore
         where TQueryableEntity : IQueryableEntity
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
+            Common.Resources.AnyStore_MissingContainerName);
         ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(metadata);
 
@@ -87,8 +87,8 @@ partial class LocalMachineJsonFileStore : IDataStore
     public Task<Result<Error>> RemoveAsync(string containerName, string id, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
 
         var container = EnsureContainer(GetDocumentStoreContainerPath(containerName));
         if (container.Exists(id))
@@ -103,8 +103,8 @@ partial class LocalMachineJsonFileStore : IDataStore
         CommandEntity entity, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
         ArgumentNullException.ThrowIfNull(entity);
 
         var container = EnsureContainer(GetDocumentStoreContainerPath(containerName));
@@ -120,8 +120,8 @@ partial class LocalMachineJsonFileStore : IDataStore
         PersistedEntityMetadata metadata, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Resources.AnyStore_MissingContainerName);
-        id.ThrowIfNotValuedParameter(nameof(id), Resources.AnyStore_MissingId);
+            Common.Resources.AnyStore_MissingContainerName);
+        id.ThrowIfNotValuedParameter(nameof(id), Common.Resources.AnyStore_MissingId);
         ArgumentNullException.ThrowIfNull(metadata);
 
         var container = EnsureContainer(GetDocumentStoreContainerPath(containerName));

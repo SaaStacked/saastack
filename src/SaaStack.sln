@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Framework\Common\Common.csproj", "{6FCBB2DA-C131-4207-878B-B69B5101A25C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56E869FB-D718-421C-85DF-07291F1F47C6}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
@@ -11,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{508E7DA4-4DF2-4201-955D-CCF70C41AD05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Framework\Common\Common.csproj", "{6FCBB2DA-C131-4207-878B-B69B5101A25C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Framework\Common.UnitTests\Common.UnitTests.csproj", "{F5C77A86-38AF-40E4-82FC-617E624B2754}"
 EndProject
@@ -169,8 +169,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Eventing.Common.UnitTests", "Framework\Infrastructure\Infrastructure.Eventing.Common.UnitTests\Infrastructure.Eventing.Common.UnitTests.csproj", "{372A37E9-57D1-4519-8F8E-168BDD58B013}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingStubApiHost", "Hosts\TestingStubApiHost\TestingStubApiHost.csproj", "{8A592213-C9BE-4400-B58D-315A1D5F1446}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Workers.Api", "Subdomains\Shared\Infrastructure.Workers.Api\Infrastructure.Workers.Api.csproj", "{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Web.Api.Operations.Shared", "Subdomains\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj", "{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}"
 EndProject
@@ -379,6 +377,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Per
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.TestingOnly", "ExternalAdapters\Infrastructure.External.TestingOnly\Infrastructure.External.TestingOnly.csproj", "{6F7C5546-D2B9-4825-8548-4C1BA1696B7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.Common", "Framework\Infrastructure\Infrastructure.External.Persistence.Common\Infrastructure.External.Persistence.Common.csproj", "{E2001351-74B6-4FE1-8086-825B1B7E27DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{93B75158-7F96-48C2-BE91-1054C0044C5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Persistence.Common.UnitTests", "Framework\Infrastructure\Infrastructure.External.Persistence.Common.UnitTests\Infrastructure.External.Persistence.Common.UnitTests.csproj", "{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{ACADADF6-5669-46AF-9306-0895EFF1D764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -581,10 +587,6 @@ Global
 		{8A592213-C9BE-4400-B58D-315A1D5F1446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A592213-C9BE-4400-B58D-315A1D5F1446}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A592213-C9BE-4400-B58D-315A1D5F1446}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9891AEEA-6DEC-446E-AAC1-1E30FCD25BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -937,6 +939,14 @@ Global
 		{6F7C5546-D2B9-4825-8548-4C1BA1696B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F7C5546-D2B9-4825-8548-4C1BA1696B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F7C5546-D2B9-4825-8548-4C1BA1696B7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2001351-74B6-4FE1-8086-825B1B7E27DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2001351-74B6-4FE1-8086-825B1B7E27DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2001351-74B6-4FE1-8086-825B1B7E27DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2001351-74B6-4FE1-8086-825B1B7E27DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5C77A86-38AF-40E4-82FC-617E624B2754} = {508E7DA4-4DF2-4201-955D-CCF70C41AD05}
@@ -1105,7 +1115,6 @@ Global
 		{BCD2C514-FEE5-4B06-9A80-A0908AB4BC8E} = {1A2524F5-09D6-4774-A585-96DBAC6E9CAE}
 		{06282A09-852B-4628-988B-D0379FDFC4E1} = {1A2524F5-09D6-4774-A585-96DBAC6E9CAE}
 		{90055376-3EB3-4AFD-B413-1CE6EC1CC909} = {1A2524F5-09D6-4774-A585-96DBAC6E9CAE}
-		{4FAF0FF3-DF73-40D8-866E-EE67013C52F6} = {3782A767-2274-4F44-80C6-D6C6EEB9C9A5}
 		{2B24670B-EFAC-4779-B6BA-B34C17D3D39D} = {56E869FB-D718-421C-85DF-07291F1F47C6}
 		{AE57212B-9A30-4577-A795-7B411621BCDA} = {19ADDB2F-B589-49EF-9BDA-BD9908057D60}
 		{E7B97607-58EA-4357-B649-E48A6F719A3B} = {D3B68FF7-293B-4458-B8D8-49D3DF59B495}
@@ -1119,5 +1128,9 @@ Global
 		{F9BA9ECF-1D72-4639-8AC4-E74B5C922FFF} = {BAE0D6F2-6920-4B02-9F30-D71B04B7170D}
 		{7EFA6CF5-8DD0-4AFB-AAEC-1A1295FA5C4E} = {93C5C45C-9125-4A8F-9378-52C8949F80DD}
 		{6F7C5546-D2B9-4825-8548-4C1BA1696B7F} = {93C5C45C-9125-4A8F-9378-52C8949F80DD}
+		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203} = {93B75158-7F96-48C2-BE91-1054C0044C5D}
+		{ACADADF6-5669-46AF-9306-0895EFF1D764} = {0358DED1-114C-4EFB-98C7-3D6B50A127DF}
+		{93B75158-7F96-48C2-BE91-1054C0044C5D} = {ACADADF6-5669-46AF-9306-0895EFF1D764}
+		{E2001351-74B6-4FE1-8086-825B1B7E27DA} = {ACADADF6-5669-46AF-9306-0895EFF1D764}
 	EndGlobalSection
 EndGlobal

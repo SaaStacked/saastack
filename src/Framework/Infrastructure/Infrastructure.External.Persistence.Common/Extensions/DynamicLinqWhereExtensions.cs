@@ -5,7 +5,7 @@ using Infrastructure.Persistence.Interfaces;
 using JetBrains.Annotations;
 using QueryAny;
 
-namespace Infrastructure.Persistence.Common.Extensions;
+namespace Infrastructure.External.Persistence.Common.Extensions;
 
 /// <summary>
 ///     See reference: https://dynamic-linq.net/expression-language
@@ -20,7 +20,7 @@ public static class DynamicLinqWhereExtensions
         where TQueryableEntity : IQueryableEntity
 
     {
-        var orderBy = query.GetDefaultOrdering(metadata).ToFieldName();
+        var orderBy = query.GetDefaultOrdering<TQueryableEntity>(metadata).ToFieldName();
         orderBy = $"{orderBy}{(query.ResultOptions.OrderBy.Direction == OrderDirection.Descending ? " DESC" : "")}";
 
         return orderBy;
@@ -34,7 +34,7 @@ public static class DynamicLinqWhereExtensions
         var builder = new StringBuilder();
         foreach (var where in wheres)
         {
-            builder.Append(where.ToWhereClause());
+            builder.Append(ToWhereClause(where));
         }
 
         return builder.ToString();
@@ -47,17 +47,17 @@ public static class DynamicLinqWhereExtensions
             var condition = where.Condition;
 
             return
-                $"{where.Operator.ToOperatorClause()}{condition.ToConditionClause()}";
+                $"{ToOperatorClause(where.Operator)}{condition.ToConditionClause()}";
         }
 
         if (where.NestedWheres != null && where.NestedWheres.Any())
         {
             var builder = new StringBuilder();
-            builder.Append($"{where.Operator.ToOperatorClause()}");
+            builder.Append($"{ToOperatorClause(where.Operator)}");
             builder.Append('(');
             foreach (var nestedWhere in where.NestedWheres)
             {
-                builder.Append($"{nestedWhere.ToWhereClause()}");
+                builder.Append($"{ToWhereClause(nestedWhere)}");
             }
 
             builder.Append(')');
@@ -116,7 +116,7 @@ public static class DynamicLinqWhereExtensions
 
     private static string ToConditionClause(this WhereCondition condition)
     {
-        var fieldName = condition.FieldName.ToFieldName();
+        var fieldName = ToFieldName(condition.FieldName);
         var @operator = condition.Operator.ToConditionClause();
         var value = condition.Value;
 
@@ -175,7 +175,7 @@ public static class DynamicLinqWhereExtensions
             return $"{fieldName} != null and Double({fieldName}) {@operator} {value}";
         }
 
-        return value.ToWhereConditionOtherValueString(fieldName, @operator);
+        return ToWhereConditionOtherValueString(value, fieldName, @operator);
     }
 
     private static string ToFieldName(this string fieldName)

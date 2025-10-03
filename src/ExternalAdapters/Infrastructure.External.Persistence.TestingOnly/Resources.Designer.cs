@@ -60,24 +60,6 @@ namespace Infrastructure.External.Persistence.TestingOnly {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ContainerName cannot be empty.
-        /// </summary>
-        internal static string AnyStore_MissingContainerName {
-            get {
-                return ResourceManager.GetString("AnyStore_MissingContainerName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Id cannot be empty.
-        /// </summary>
-        internal static string AnyStore_MissingId {
-            get {
-                return ResourceManager.GetString("AnyStore_MissingId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to BlobName cannot be empty.
         /// </summary>
         internal static string InProcessInMemDataStore_MissingBlobName {

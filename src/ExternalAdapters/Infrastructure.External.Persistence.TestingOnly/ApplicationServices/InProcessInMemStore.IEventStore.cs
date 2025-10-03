@@ -3,8 +3,8 @@ using Common;
 using Common.Extensions;
 using Domain.Interfaces;
 using Domain.Interfaces.Entities;
+using Infrastructure.External.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Common.ApplicationServices;
-using Infrastructure.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Interfaces;
 using QueryAny;
 using Task = System.Threading.Tasks.Task;
@@ -53,8 +53,7 @@ partial class InProcessInMemStore : IEventStore
             {
                 var storeType = GetType().Name;
                 return Error.EntityExists(
-                    Infrastructure.Persistence.Common.Resources
-                        .EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated
+                    Common.Resources.EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated
                         .Format(storeType, streamName, version));
             }
         }

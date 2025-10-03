@@ -1,10 +1,10 @@
 using Common.Extensions;
 using Domain.Interfaces.ValueObjects;
 using FluentAssertions;
-using Infrastructure.Persistence.Common.Extensions;
+using Infrastructure.External.Persistence.Common.Extensions;
 using Xunit;
 
-namespace Infrastructure.Persistence.Common.UnitTests.Extensions;
+namespace Infrastructure.External.Persistence.Common.UnitTests.Extensions;
 
 [Trait("Category", "Unit")]
 public class TypeExtensionsSpec
