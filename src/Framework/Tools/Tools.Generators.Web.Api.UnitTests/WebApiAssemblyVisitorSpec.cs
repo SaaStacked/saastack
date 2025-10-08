@@ -403,7 +403,7 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.Constructors.First().MethodBody.Should().BeEmpty();
                 registration.Class.TypeName.Name.Should().Be("AServiceClass");
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
-                registration.Class.TypeName.FullName.Should().Be("ANamespace.AServiceClass");
+                registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
                 registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
                                                     + $"         return \"\";{Environment.NewLine}"
@@ -458,7 +458,7 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.Constructors.First().MethodBody.Should().BeEmpty();
                 registration.Class.TypeName.Name.Should().Be("AServiceClass");
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
-                registration.Class.TypeName.FullName.Should().Be("ANamespace.AServiceClass");
+                registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
                 registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
                                                     + $"         return \"\";{Environment.NewLine}"
@@ -515,7 +515,7 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.Constructors.First().MethodBody.Should().BeEmpty();
                 registration.Class.TypeName.Name.Should().Be("AServiceClass");
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
-                registration.Class.TypeName.FullName.Should().Be("ANamespace.AServiceClass");
+                registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
                 registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
                                                     + $"         return \"\";{Environment.NewLine}"

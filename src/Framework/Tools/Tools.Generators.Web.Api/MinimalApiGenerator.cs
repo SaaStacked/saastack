@@ -84,10 +84,15 @@ namespace {assemblyNamespace}
             .SelectMany(registration => registration.Class.UsingNamespaces)
             .Concat(RequiredUsingNamespaces)
             .Distinct()
-            .OrderByDescending(s => s)
+            .Select(s => s.StartsWith("extern alias")
+                ? s
+                : $"using {s};")
+            .OrderByDescending(s => s.StartsWith("extern alias")) // extern aliases
+            .ThenByDescending(s => !s.Contains(" = ")) // regular usings
+            .ThenByDescending(s => s) // aliased usings
             .ToList();
 
-        allNamespaces.ForEach(@using => usingList.AppendLine($"using {@using};"));
+        allNamespaces.ForEach(@using => usingList.AppendLine(@using));
 
         return usingList.ToString();
     }
@@ -123,7 +128,7 @@ namespace {assemblyNamespace}
                 endpointRegistrations.AppendLine(
                     $"            {groupName}.{endPointMethodName}(\"{registration.RoutePath}\",");
                 endpointRegistrations.AppendLine(
-                    $"                async (global::System.IServiceProvider serviceProvider, global::{registration.RequestDto.FullName} request) =>");
+                    $"                async (global::System.IServiceProvider serviceProvider, {registration.RequestDto.FullName} request) =>");
                 endpointRegistrations.AppendLine(
                     $"                {methodBody})");
 
@@ -268,7 +273,7 @@ namespace {assemblyNamespace}
         handlerMethod.AppendLine(
             $"                    static async Task<global::Microsoft.AspNetCore.Http.IResult>"
             + $" Handle(global::System.IServiceProvider services, "
-            + $"global::{registration.RequestDto.FullName} request, "
+            + $"{registration.RequestDto.FullName} request, "
             + $"global::System.Threading.CancellationToken cancellationToken)");
         handlerMethod.AppendLine("                    {");
 
@@ -294,7 +299,7 @@ namespace {assemblyNamespace}
         }
 
         handlerMethod.AppendLine(
-            $"                        var api = new global::{registration.Class.TypeName.FullName}({callingParameters});");
+            $"                        var api = new {registration.Class.TypeName.FullName}({callingParameters});");
         var asyncAwait = registration.IsAsync
             ? "await "
             : string.Empty;

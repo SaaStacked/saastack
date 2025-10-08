@@ -385,6 +385,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.External.Per
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{ACADADF6-5669-46AF-9306-0895EFF1D764}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.Generators.Web.Api.UnitTests.TestData", "Framework\Tools\Tools.Generators.Web.Api.UnitTests.TestData\Tools.Generators.Web.Api.UnitTests.TestData.csproj", "{956CF5AD-BBE6-4E60-A427-801337C6E8E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1226,6 +1228,12 @@ Global
 		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
 		{BF65A27B-4F5A-4B82-9202-77EC4E8AE203}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.ReleaseForDeploy|Any CPU.ActiveCfg = ReleaseForDeploy|Any CPU
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4}.ReleaseForDeploy|Any CPU.Build.0 = ReleaseForDeploy|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5C77A86-38AF-40E4-82FC-617E624B2754} = {508E7DA4-4DF2-4201-955D-CCF70C41AD05}
@@ -1411,5 +1419,6 @@ Global
 		{ACADADF6-5669-46AF-9306-0895EFF1D764} = {0358DED1-114C-4EFB-98C7-3D6B50A127DF}
 		{93B75158-7F96-48C2-BE91-1054C0044C5D} = {ACADADF6-5669-46AF-9306-0895EFF1D764}
 		{E2001351-74B6-4FE1-8086-825B1B7E27DA} = {ACADADF6-5669-46AF-9306-0895EFF1D764}
+		{956CF5AD-BBE6-4E60-A427-801337C6E8E4} = {A25A3BA8-5602-4825-9595-2CF96B166920}
 	EndGlobalSection
 EndGlobal

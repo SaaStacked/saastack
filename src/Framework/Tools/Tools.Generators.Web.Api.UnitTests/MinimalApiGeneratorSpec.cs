@@ -6,6 +6,7 @@ using Generators::Domain.Interfaces.Authorization;
 using Generators::JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Tools.Generators.Web.Api.UnitTests.TestData;
 using Xunit;
 using MinimalApiGenerator = Generators::Tools.Generators.Web.Api.MinimalApiGenerator;
 
@@ -28,7 +29,9 @@ public class MinimalApiGeneratorSpec
         var references = new List<MetadataReference>
         {
             MetadataReference.CreateFromFile(typeof(MinimalApiGenerator).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location)
+            MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(IAliasedDependency).GetTypeInfo().Assembly.Location)
+                .WithAliases(new [] {"AnExternAlias"})
         };
         AdditionalCompilationAssemblies.ToList()
             .ForEach(item => references.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, item))));
@@ -163,7 +166,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -243,7 +246,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -325,7 +328,190 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
+                                   .WithOpenApi(op =>
+                                       {
+                                           op.OperationId = "A";
+                                           op.Description = "(request type: ARequest)";
+                                           op.Responses.Clear();
+                                           return op;
+                                       });
+                   
+                           }
+                       }
+                   }
+
+
+                   """);
+        }
+
+        [Fact]
+        public void WhenDefinesAMethodWithAnExternAliasedDependency_ThenGenerates()
+        {
+            var compilation = CreateCompilation("""
+                                                extern alias AnExternAlias;
+                                                using System;
+                                                using System.Threading;
+                                                using Infrastructure.Web.Api.Interfaces;
+                                                using AnExternAlias::Tools.Generators.Web.Api.UnitTests.TestData;
+
+                                                namespace ANamespace;
+
+                                                public class AResponse : IWebResponse
+                                                {
+                                                }
+                                                [Route("aroute", OperationMethod.Get)]
+                                                public class ARequest : WebRequest<ARequest, AResponse>
+                                                {
+                                                }
+                                                public class AServiceClass : IWebApiService
+                                                {
+                                                    public AServiceClass(IAliasedDependency aliasedDependency)
+                                                    {
+                                                    }
+                                                    
+                                                    public async Task<string> AMethod(ARequest request, CancellationToken cancellationToken)
+                                                    {
+                                                         return "";
+                                                    }
+                                                }
+                                                """);
+
+            var result = Generate(compilation);
+
+            result.Should().Be(
+                $$$"""
+                   // <auto-generated/>
+                   extern alias AnExternAlias;
+                   using System.Threading;
+                   using System;
+                   using Microsoft.Extensions.DependencyInjection;
+                   using Microsoft.AspNetCore.Http;
+                   using Microsoft.AspNetCore.Builder;
+                   using Infrastructure.Web.Api.Interfaces;
+                   using Infrastructure.Web.Api.Common.Extensions;
+                   using AnExternAlias::Tools.Generators.Web.Api.UnitTests.TestData;
+
+                   namespace compilation
+                   {
+                       public static class MinimalApiRegistration
+                       {
+                           public static void RegisterRoutes(this global::Microsoft.AspNetCore.Builder.WebApplication app)
+                           {
+                               var aserviceclassGroup = app.MapGroup(string.Empty)
+                                   .WithTags("AServiceClass")
+                                   .RequireCors("__DefaultCorsPolicy")
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.HttpRecordingFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ApiUsageFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.RequestCorrelationFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ContentNegotiationFilter>();
+                               aserviceclassGroup.MapGet("aroute",
+                                   async (global::System.IServiceProvider serviceProvider, global::ANamespace.ARequest request) =>
+                                   {
+                                       return await Handle(serviceProvider, request, global::System.Threading.CancellationToken.None);
+                   
+                                       static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::ANamespace.ARequest request, global::System.Threading.CancellationToken cancellationToken)
+                                       {
+                                           var aliasedDependency = services.GetRequiredService<AnExternAlias::Tools.Generators.Web.Api.UnitTests.TestData.IAliasedDependency>();
+                   
+                                           var api = new global::ANamespace.AServiceClass(aliasedDependency);
+                                           var result = await api.AMethod(request, cancellationToken);
+                                           return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
+                                       }
+                                   })
+                                   .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
+                                   .WithOpenApi(op =>
+                                       {
+                                           op.OperationId = "A";
+                                           op.Description = "(request type: ARequest)";
+                                           op.Responses.Clear();
+                                           return op;
+                                       });
+                   
+                           }
+                       }
+                   }
+
+
+                   """);
+        }
+        [Fact]
+        public void WhenDefinesAMethodWithAliasedUsings_ThenGenerates()
+        {
+            var compilation = CreateCompilation("""
+                                                extern alias AnExternAlias;
+                                                using System;
+                                                using System.Threading;
+                                                using Infrastructure.Web.Api.Interfaces;
+                                                using AnExternAliasedType = AnExternAlias::Tools.Generators.Web.Api.UnitTests.TestData.AnAliasedType;
+                                                using AnotherType = Infrastructure.Web.Api.Interfaces.IWebResponse;
+
+                                                namespace ANamespace;
+
+                                                public class AResponse : IWebResponse
+                                                {
+                                                }
+                                                [Route("aroute", OperationMethod.Get)]
+                                                public class ARequest : WebRequest<ARequest, AResponse>
+                                                {
+                                                }
+                                                public class AServiceClass : IWebApiService
+                                                {
+                                                    public AServiceClass()
+                                                    {
+                                                    }
+                                                    
+                                                    public async Task<string> AMethod(ARequest request, CancellationToken cancellationToken)
+                                                    {
+                                                         return "";
+                                                    }
+                                                }
+                                                """);
+
+            var result = Generate(compilation);
+
+            result.Should().Be(
+                $$$"""
+                   // <auto-generated/>
+                   extern alias AnExternAlias;
+                   using System.Threading;
+                   using System;
+                   using Microsoft.Extensions.DependencyInjection;
+                   using Microsoft.AspNetCore.Http;
+                   using Microsoft.AspNetCore.Builder;
+                   using Infrastructure.Web.Api.Interfaces;
+                   using Infrastructure.Web.Api.Common.Extensions;
+                   using AnotherType = Infrastructure.Web.Api.Interfaces.IWebResponse;
+                   using AnExternAliasedType = AnExternAlias::Tools.Generators.Web.Api.UnitTests.TestData.AnAliasedType;
+                   
+                   namespace compilation
+                   {
+                       public static class MinimalApiRegistration
+                       {
+                           public static void RegisterRoutes(this global::Microsoft.AspNetCore.Builder.WebApplication app)
+                           {
+                               var aserviceclassGroup = app.MapGroup(string.Empty)
+                                   .WithTags("AServiceClass")
+                                   .RequireCors("__DefaultCorsPolicy")
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.HttpRecordingFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ApiUsageFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.RequestCorrelationFilter>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ContentNegotiationFilter>();
+                               aserviceclassGroup.MapGet("aroute",
+                                   async (global::System.IServiceProvider serviceProvider, global::ANamespace.ARequest request) =>
+                                   {
+                                       return await Handle(serviceProvider, request, global::System.Threading.CancellationToken.None);
+                   
+                                       static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::ANamespace.ARequest request, global::System.Threading.CancellationToken cancellationToken)
+                                       {
+                                           var api = new global::ANamespace.AServiceClass();
+                                           var result = await api.AMethod(request, cancellationToken);
+                                           return result.HandleApiResult(global::Infrastructure.Web.Api.Interfaces.OperationMethod.Get);
+                                       }
+                                   })
+                                   .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -408,7 +594,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -491,7 +677,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -573,7 +759,7 @@ public class MinimalApiGeneratorSpec
                                     }
                                 })
                                 .RequireAuthorization("{{{AuthenticationConstants.Authorization.HMACPolicyName}}}")
-                                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                 .WithOpenApi(op =>
                                     {
                                         op.OperationId = "A";
@@ -655,7 +841,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -737,7 +923,7 @@ public class MinimalApiGeneratorSpec
                                     }
                                 })
                                 .RequireAuthorization("{{{AuthenticationConstants.Authorization.PrivateInterHostPolicyName}}}")
-                                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                 .ExcludeFromDescription();
                 
                         }
@@ -755,6 +941,7 @@ public class MinimalApiGeneratorSpec
                                                 using System;
                                                 using System.Threading;
                                                 using Application.Interfaces;
+                                                using Infrastructure.Interfaces;
                                                 using Infrastructure.Web.Api.Interfaces;
 
                                                 namespace ANamespace;
@@ -795,6 +982,7 @@ public class MinimalApiGeneratorSpec
                    using Microsoft.AspNetCore.Builder;
                    using Infrastructure.Web.Api.Interfaces;
                    using Infrastructure.Web.Api.Common.Extensions;
+                   using Infrastructure.Interfaces;
                    using Application.Interfaces;
 
                    namespace compilation
@@ -817,7 +1005,7 @@ public class MinimalApiGeneratorSpec
                    
                                        static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::ANamespace.ARequest request, global::System.Threading.CancellationToken cancellationToken)
                                        {
-                                           var callerFactory = services.GetRequiredService<<global namespace>.ICallerContextFactory>();
+                                           var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
                    
                                            var api = new global::ANamespace.AServiceClass(callerFactory);
                                            var result = await api.AMethod(request, cancellationToken);
@@ -825,7 +1013,7 @@ public class MinimalApiGeneratorSpec
                                        }
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.AnonymousPolicyName}}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -911,7 +1099,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.PaidTrial.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Operations.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -997,7 +1185,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -1084,7 +1272,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";
@@ -1168,7 +1356,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1253,7 +1441,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1276,7 +1464,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1361,7 +1549,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1446,7 +1634,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1469,7 +1657,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .DisableAntiforgery()
                                    .WithOpenApi(op =>
                                        {
@@ -1556,7 +1744,7 @@ public class MinimalApiGeneratorSpec
                                    })
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.TokenPolicyName}}}")
                                    .RequireAuthorization("{{{AuthenticationConstants.Authorization.RolesAndFeaturesPolicyName}}}:{|Features|:{|Platform|:[|{{{PlatformFeatures.Basic.Name}}}|]},|Roles|:{|Platform|:[|{{{PlatformRoles.Standard.Name}}}|]}}")
-                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<ANamespace.ARequest>>()
+                                   .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::ANamespace.ARequest>>()
                                    .WithOpenApi(op =>
                                        {
                                            op.OperationId = "A";

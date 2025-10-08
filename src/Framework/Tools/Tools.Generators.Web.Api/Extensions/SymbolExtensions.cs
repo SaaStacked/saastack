@@ -1,3 +1,4 @@
+using Common.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -43,17 +44,41 @@ public static class SymbolExtensions
             : symbol.DeclaringSyntaxReferences.FirstOrDefault();
         if (syntaxReference is null)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
-        var usingSyntaxes = syntaxReference.SyntaxTree.GetRoot()
+        var root = syntaxReference.SyntaxTree.GetRoot();
+        var usingSyntaxes = root
             .DescendantNodes()
             .OfType<UsingDirectiveSyntax>();
+        var aliasSyntaxes = root
+            .DescendantNodes()
+            .OfType<ExternAliasDirectiveSyntax>();
 
-        return usingSyntaxes.Select(us => us.Name!.ToString())
+        var usingDeclarations = usingSyntaxes
+            .Select(uds =>
+            {
+                if (uds.Name is QualifiedNameSyntax qualifiedName)
+                {
+                    if (uds.Alias.Exists())
+                    {
+                        return $"{uds.Alias.ToFullString()}{qualifiedName.ToFullString()}";
+                    }
+                }
+
+                return uds.Name!.ToFullString();
+            })
             .Distinct()
-            .OrderByDescending(s => s)
+            .OrderByDescending(s => s);
+        var aliasDeclarations = aliasSyntaxes
+            .Select(us => us.ToString())
+            .Distinct()
+            .OrderByDescending(s => s);
+        var namespaces = usingDeclarations
+            .Concat(aliasDeclarations)
             .ToList();
+
+        return namespaces;
     }
 
     public static bool IsClass(this ITypeSymbol type)

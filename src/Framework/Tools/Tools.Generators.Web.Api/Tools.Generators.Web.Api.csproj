@@ -38,6 +38,9 @@
         <Compile Include="..\..\Common\Extensions\ObjectExtensions.cs">
             <Link>Reference\Common\Extensions\ObjectExtensions.cs</Link>
         </Compile>
+        <Compile Include="..\..\Infrastructure\Infrastructure.Interfaces\ICallerContextFactory.cs">
+            <Link>Reference\Infrastructure.Interfaces\ICallerContextFactory.cs</Link>
+        </Compile>
         <Compile Include="..\..\Infrastructure\Infrastructure.Web.Api.Interfaces\IWebApiService.cs">
             <Link>Reference\Infrastructure.Web.Api.Interfaces\IWebApiService.cs</Link>
         </Compile>

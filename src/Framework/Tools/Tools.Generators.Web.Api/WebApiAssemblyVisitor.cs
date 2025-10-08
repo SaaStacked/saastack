@@ -1,6 +1,7 @@
 using Common.Extensions;
 using Infrastructure.Web.Api.Interfaces;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Tools.Generators.Web.Api.Extensions;
 
 namespace Tools.Generators.Web.Api;
@@ -31,8 +32,8 @@ public class WebApiAssemblyVisitor : SymbolVisitor
     private readonly INamedTypeSymbol _baseApiAttributeSymbol;
     private readonly CancellationToken _cancellationToken;
     private readonly INamedTypeSymbol _cancellationTokenSymbol;
-    private readonly INamedTypeSymbol _multipartFormDataSymbol;
     private readonly INamedTypeSymbol _formUrlEncodedSymbol;
+    private readonly INamedTypeSymbol _multipartFormDataSymbol;
     private readonly INamedTypeSymbol _routeAttributeSymbol;
     private readonly INamedTypeSymbol _serviceInterfaceSymbol;
     private readonly INamedTypeSymbol _tenantedWebRequestInterfaceSymbol;
@@ -193,12 +194,8 @@ public class WebApiAssemblyVisitor : SymbolVisitor
             var operationAuthorization = FromAuthorizeAttribute(authorizeAttributes);
             var isTestingOnly = bool.Parse(routeAttributeParameters[3].Value!.ToString()!);
             var requestType = method.Parameters[0].Type;
-            var requestTypeName = requestType.Name;
-            var requestTypeNamespace = requestType.ContainingNamespace.ToDisplayString();
             var requestTypeIsMultiTenanted = requestType.IsDerivedFrom(_tenantedWebRequestInterfaceSymbol);
             var responseType = GetResponseType(method.Parameters[0].Type);
-            var responseTypeName = responseType.Name;
-            var responseTypeNamespace = responseType.ContainingNamespace.ToDisplayString();
             var methodBody = method.GetMethodBody();
             var methodName = method.Name;
             var isAsync = method.IsAsync;
@@ -209,9 +206,9 @@ public class WebApiAssemblyVisitor : SymbolVisitor
             OperationRegistrations.Add(new ServiceOperationRegistration
             {
                 Class = classRegistration,
-                RequestDto = new TypeName(requestTypeNamespace, requestTypeName),
+                RequestDto = new TypeName(requestType),
                 IsRequestDtoTenanted = requestTypeIsMultiTenanted,
-                ResponseDto = new TypeName(responseTypeNamespace, responseTypeName),
+                ResponseDto = new TypeName(responseType),
                 OperationMethod = operationType,
                 OperationAccess = operationAccess,
                 OperationAuthorization = operationAuthorization,
@@ -240,7 +237,7 @@ public class WebApiAssemblyVisitor : SymbolVisitor
 
         TypeName GetServiceName()
         {
-            return new TypeName(symbol.ContainingNamespace.ToDisplayString(), symbol.Name);
+            return new TypeName(symbol);
         }
 
         static OperationMethod FromOperationVerb(string? operation)
@@ -354,7 +351,7 @@ public class WebApiAssemblyVisitor : SymbolVisitor
                     IsInjectionCtor = isInjectionCtor,
                     CtorParameters = constructor.Parameters.Select(param => new ConstructorParameter
                         {
-                            TypeName = new TypeName(param.Type.ContainingNamespace.ToDisplayString(), param.Type.Name),
+                            TypeName = new TypeName(param),
                             VariableName = param.Name
                         })
                         .ToList(),
@@ -473,9 +470,9 @@ public class WebApiAssemblyVisitor : SymbolVisitor
 
         public bool IsAsync { get; set; }
 
-        public bool IsMultipartFormData { get; set; }
-
         public bool IsFormUrlEncoded { get; set; }
+
+        public bool IsMultipartFormData { get; set; }
 
         public bool IsRequestDtoTenanted { get; set; }
 
@@ -510,13 +507,49 @@ public class WebApiAssemblyVisitor : SymbolVisitor
 
     public record TypeName
     {
-        public TypeName(string @namespace, string name)
+        public TypeName(IParameterSymbol symbol) : this(symbol, symbol.Type.ContainingNamespace.ToDisplayString(), symbol.Type.Name)
         {
-            Namespace = @namespace;
+        }
+
+        public TypeName(ITypeSymbol symbol) : this(symbol, symbol.ContainingNamespace.ToDisplayString(), symbol.Name)
+        {
+        }
+
+        public TypeName(INamedTypeSymbol symbol) : this(symbol, symbol.ContainingNamespace.ToDisplayString(),
+            symbol.Name)
+        {
+        }
+
+        private TypeName(ISymbol symbol, string @namespace, string name)
+        {
+            if (IsAliasedNamespace(symbol, @namespace, out var alias))
+            {
+                Namespace = $"{alias}::{@namespace}";
+                IsAliased = true;
+            }
+            else
+            {
+                Namespace = @namespace;
+                IsAliased = false;
+            }
+
             Name = name;
         }
 
-        public string FullName => $"{Namespace}.{Name}";
+        public string FullName
+        {
+            get
+            {
+                if (IsAliased)
+                {
+                    return $"{Namespace}.{Name}";
+                }
+
+                return $"global::{Namespace}.{Name}";
+            }
+        }
+
+        public bool IsAliased { get; }
 
         public string Name { get; }
 
@@ -534,7 +567,7 @@ public class WebApiAssemblyVisitor : SymbolVisitor
                 return true;
             }
 
-            return Name == other.Name && Namespace == other.Namespace;
+            return Name == other.Name && Namespace == other.Namespace && IsAliased == other.IsAliased;
         }
 
         public override int GetHashCode()
@@ -543,10 +576,50 @@ public class WebApiAssemblyVisitor : SymbolVisitor
             var hash = 17;
             hash = hash * 23 + Namespace.GetHashCode();
             hash = hash * 23 + Name.GetHashCode();
+            hash = hash * 23 + IsAliased.GetHashCode();
             return hash;
 #else
-            return HashCode.Combine(Namespace, Name);
+            return HashCode.Combine(Namespace, Name, IsAliased);
 #endif
+        }
+
+        private static bool IsAliasedNamespace(ISymbol symbol, string @namespace, out string alias)
+        {
+            alias = null!;
+            var syntaxReference = symbol.DeclaringSyntaxReferences.IsDefaultOrEmpty
+                ? null
+                : symbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (syntaxReference is null)
+            {
+                return false;
+            }
+
+            var syntax = syntaxReference.SyntaxTree.GetRoot();
+            if (syntax.NotExists())
+            {
+                return false;
+            }
+
+            var aliases = syntax
+                .DescendantNodes()
+                .OfType<UsingDirectiveSyntax>()
+                .Select(s => s.Name!.ToString())
+                .Distinct()
+                .Where(s => s.Contains("::"))
+                .ToDictionary(pair => pair.Substring(pair.IndexOf("::", StringComparison.Ordinal) + 2),
+                    pair => pair.Substring(0, pair.IndexOf("::", StringComparison.Ordinal)));
+            if (!aliases.HasAny())
+            {
+                return false;
+            }
+
+            if (!aliases.TryGetValue(@namespace, out var found))
+            {
+                return false;
+            }
+
+            alias = found;
+            return true;
         }
     }
 

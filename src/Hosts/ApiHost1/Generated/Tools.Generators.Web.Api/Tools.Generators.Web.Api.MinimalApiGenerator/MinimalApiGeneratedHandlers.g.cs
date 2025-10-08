@@ -42,7 +42,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.Health.HealthCheckRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.Health.HealthCheckRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "HealthCheck";
@@ -65,8 +65,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithHMACTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthNHMAC(request, cancellationToken);
@@ -75,7 +75,7 @@ namespace ApiHost1
                 })
                 .RequireAuthorization("HMAC")
                 .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_internal_service|]}}")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithHMACTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithHMACTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetCallerWithHMACTestingOnly";
@@ -92,8 +92,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithPrivateInterHostTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthNPrivateApi(request, cancellationToken);
@@ -101,7 +101,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("PrivateInterHost")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithPrivateInterHostTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithPrivateInterHostTestingOnlyRequest>>()
                 .ExcludeFromDescription();
 #endif
 #if TESTINGONLY
@@ -112,8 +112,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithTokenOrAPIKeyTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthNToken(request, cancellationToken);
@@ -122,7 +122,7 @@ namespace ApiHost1
                 })
                 .RequireAuthorization("Token")
                 .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithTokenOrAPIKeyTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithTokenOrAPIKeyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetCallerWithTokenOrAPIKeyTestingOnly";
@@ -139,8 +139,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthZAnonymous(request, cancellationToken);
@@ -148,7 +148,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByAnonymousTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "AuthorizeByAnonymousTestingOnly";
@@ -165,8 +165,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByFeatureTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthZByFeature(request, cancellationToken);
@@ -175,7 +175,7 @@ namespace ApiHost1
                 })
                 .RequireAuthorization("Token")
                 .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_paidtrial_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByFeatureTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByFeatureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "AuthorizeByFeatureTestingOnly";
@@ -192,8 +192,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.AuthZByRole(request, cancellationToken);
@@ -202,7 +202,7 @@ namespace ApiHost1
                 })
                 .RequireAuthorization("Token")
                 .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "AuthorizeByTokenWithRoleTestingOnly";
@@ -219,8 +219,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ContentNegotiationsTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ContentNegotiationGet(request, cancellationToken);
@@ -228,7 +228,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ContentNegotiationsTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ContentNegotiationsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ContentNegotiationsTestingOnly";
@@ -245,8 +245,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.DestroyAllRepositoriesRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.DestroyAllRepositories(request, cancellationToken);
@@ -254,7 +254,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.DestroyAllRepositoriesRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.DestroyAllRepositoriesRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "DestroyAllRepositories";
@@ -271,8 +271,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.DownloadStreamTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.DownloadImage(request, cancellationToken);
@@ -280,7 +280,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.DownloadStreamTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.DownloadStreamTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "DownloadStreamTestingOnly";
@@ -297,8 +297,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsErrorTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ErrorsError(request, cancellationToken);
@@ -306,7 +306,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsErrorTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsErrorTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ErrorsErrorTestingOnly";
@@ -323,8 +323,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsThrowTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ErrorsThrows(request, cancellationToken);
@@ -332,7 +332,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsThrowTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ErrorsThrowTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ErrorsThrowTestingOnly";
@@ -349,8 +349,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.FormatsTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.FormatsRoundTrip(request, cancellationToken);
@@ -358,7 +358,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.FormatsTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.FormatsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "FormatsTestingOnly";
@@ -375,8 +375,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithSimpleArrayTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralArrayGet(request, cancellationToken);
@@ -384,7 +384,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithSimpleArrayTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithSimpleArrayTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetWithSimpleArrayTestingOnly";
@@ -401,8 +401,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralEmptyBodyPost(request, cancellationToken);
@@ -410,7 +410,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostWithEmptyBodyTestingOnly";
@@ -427,8 +427,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralEmptyBodyRequiredPost(request, cancellationToken);
@@ -436,7 +436,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithEmptyBodyAndRequiredPropertiesTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostWithEmptyBodyAndRequiredPropertiesTestingOnly";
@@ -453,8 +453,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRouteParamsAndEmptyBodyTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralEmptyBodyWithRouteParamsPost(request, cancellationToken);
@@ -462,7 +462,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRouteParamsAndEmptyBodyTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRouteParamsAndEmptyBodyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostWithRouteParamsAndEmptyBodyTestingOnly";
@@ -479,8 +479,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralGet(request, cancellationToken);
@@ -488,7 +488,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetTestingOnly";
@@ -505,8 +505,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralPost(request, cancellationToken);
@@ -514,7 +514,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostTestingOnly";
@@ -531,8 +531,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.SearchTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GeneralSearch(request, cancellationToken);
@@ -540,7 +540,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.SearchTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.SearchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "SearchTestingOnly";
@@ -557,8 +557,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetInsecureTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.GetInsecure(request, cancellationToken);
@@ -566,7 +566,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetInsecureTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetInsecureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetInsecureTestingOnly";
@@ -583,8 +583,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostFormUrlEncodedTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiFormUrlEncoded(request, cancellationToken);
@@ -592,7 +592,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostFormUrlEncodedTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostFormUrlEncodedTestingOnlyRequest>>()
                 .DisableAntiforgery()
                 .WithOpenApi(op =>
                     {
@@ -610,8 +610,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiGetTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiGet(request, cancellationToken);
@@ -619,7 +619,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiGetTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "OpenApiGetTestingOnly";
@@ -636,8 +636,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostMultiPartFormDataTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiMultiPartForm(request, cancellationToken);
@@ -645,7 +645,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostMultiPartFormDataTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostMultiPartFormDataTestingOnlyRequest>>()
                 .DisableAntiforgery()
                 .WithOpenApi(op =>
                     {
@@ -663,8 +663,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiPost(request, cancellationToken);
@@ -672,7 +672,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "OpenApiPostTestingOnly";
@@ -689,8 +689,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiPut(request, cancellationToken);
@@ -698,7 +698,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "OpenApiPutTestingOnly (Put)";
@@ -713,8 +713,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.OpenApiPut(request, cancellationToken);
@@ -722,7 +722,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.OpenApiPutTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "OpenApiPutTestingOnly (Patch)";
@@ -739,8 +739,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostInsecureTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.PostInsecure(request, cancellationToken);
@@ -748,7 +748,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostInsecureTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostInsecureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostInsecureTestingOnly";
@@ -765,8 +765,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithRedirectTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.RedirectGet(request, cancellationToken);
@@ -774,7 +774,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithRedirectTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetWithRedirectTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "GetWithRedirectTestingOnly";
@@ -791,8 +791,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRedirectTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.RedirectPost(request, cancellationToken);
@@ -800,7 +800,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRedirectTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.PostWithRedirectTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "PostWithRedirectTestingOnly";
@@ -817,8 +817,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.RequestCorrelationsTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.RequestCorrelationGet(request, cancellationToken);
@@ -826,7 +826,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.RequestCorrelationsTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.RequestCorrelationsTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "RequestCorrelationsTestingOnly";
@@ -843,8 +843,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesDelete1(request, cancellationToken);
@@ -852,7 +852,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesDeleteTestingOnly";
@@ -869,8 +869,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteWithResponseTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesDelete2(request, cancellationToken);
@@ -878,7 +878,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteWithResponseTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesDeleteWithResponseTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesDeleteWithResponseTestingOnly";
@@ -895,8 +895,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesGetTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesGet(request, cancellationToken);
@@ -904,7 +904,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesGetTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesGetTestingOnly";
@@ -921,8 +921,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesPost1(request, cancellationToken);
@@ -930,7 +930,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesPostTestingOnly";
@@ -947,8 +947,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostWithLocationTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesPost2(request, cancellationToken);
@@ -956,7 +956,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostWithLocationTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPostWithLocationTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesPostWithLocationTestingOnly";
@@ -973,8 +973,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesPutPatch(request, cancellationToken);
@@ -982,7 +982,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesPutPatchTestingOnly (Put)";
@@ -997,8 +997,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesPutPatch(request, cancellationToken);
@@ -1006,7 +1006,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesPutPatchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesPutPatchTestingOnly (Patch)";
@@ -1023,8 +1023,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesSearchTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.StatusesSearch(request, cancellationToken);
@@ -1032,7 +1032,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesSearchTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.StatusesSearchTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "StatusesSearchTestingOnly";
@@ -1049,8 +1049,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsUnvalidatedTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ValidationsUnvalidated(request, cancellationToken);
@@ -1058,7 +1058,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsUnvalidatedTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsUnvalidatedTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ValidationsUnvalidatedTestingOnly";
@@ -1075,8 +1075,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedGetTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ValidationsValidatedGet(request, cancellationToken);
@@ -1084,7 +1084,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedGetTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedGetTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ValidationsValidatedGetTestingOnly";
@@ -1101,8 +1101,8 @@ namespace ApiHost1
 
                     static async Task<global::Microsoft.AspNetCore.Http.IResult> Handle(global::System.IServiceProvider services, global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedPostTestingOnlyRequest request, global::System.Threading.CancellationToken cancellationToken)
                     {
-                        var callerFactory = services.GetRequiredService<Infrastructure.Interfaces.ICallerContextFactory>();
-                        var serviceProvider = services.GetRequiredService<System.IServiceProvider>();
+                        var callerFactory = services.GetRequiredService<global::Infrastructure.Interfaces.ICallerContextFactory>();
+                        var serviceProvider = services.GetRequiredService<global::System.IServiceProvider>();
 
                         var api = new global::ApiHost1.Api.TestingOnly.TestingWebApi(callerFactory, serviceProvider);
                         var result = await api.ValidationsValidatedPost(request, cancellationToken);
@@ -1110,7 +1110,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Anonymous")
-                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedPostTestingOnlyRequest>>()
+                .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.ValidationsValidatedPostTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
                         op.OperationId = "ValidationsValidatedPostTestingOnly";
