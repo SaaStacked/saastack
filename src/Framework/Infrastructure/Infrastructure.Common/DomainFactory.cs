@@ -98,14 +98,14 @@ public class DomainFactory : IDomainFactory
             if (methodInfo.NotExists())
             {
                 throw new InvalidOperationException(
-                    Resources.DomainFactory_AggregateRootFactoryMethodNotFound.Format(type.Name,
+                    Resources.DomainFactory_AggregateRootFactoryMethodNotFound.Format(type.ToString(),
                         FactoryMethodName));
             }
 
             if (IsWrongNamedOrHasParameters(methodInfo))
             {
                 throw new InvalidOperationException(
-                    Resources.DomainFactory_FactoryMethodHasParameters.Format(type.Name,
+                    Resources.DomainFactory_FactoryMethodHasParameters.Format(type.ToString(),
                         methodInfo.Name, FactoryMethodName));
             }
 
@@ -121,7 +121,7 @@ public class DomainFactory : IDomainFactory
         if (!_aggregateRootFactories.ContainsKey(aggregateType))
         {
             throw new InvalidOperationException(
-                Resources.DomainFactory_AggregateTypeNotFound.Format(aggregateType.Name));
+                Resources.DomainFactory_AggregateTypeNotFound.Format(aggregateType.ToString()));
         }
 
         var identifier =
@@ -138,7 +138,7 @@ public class DomainFactory : IDomainFactory
         var baseEntityType = GetBaseType(entityType);
         if (!_persistableEntityFactories.ContainsKey(baseEntityType))
         {
-            throw new InvalidOperationException(Resources.DomainFactory_EntityTypeNotFound.Format(entityType.Name));
+            throw new InvalidOperationException(Resources.DomainFactory_EntityTypeNotFound.Format(entityType.ToString()));
         }
 
         var identifier =
@@ -156,7 +156,7 @@ public class DomainFactory : IDomainFactory
         if (!_valueObjectFactories.ContainsKey(baseValueObjectType))
         {
             throw new InvalidOperationException(
-                Resources.DomainFactory_ValueObjectTypeNotFound.Format(valueObjectType.Name));
+                Resources.DomainFactory_ValueObjectTypeNotFound.Format(valueObjectType.ToString()));
         }
 
         return _valueObjectFactories[baseValueObjectType](rehydratingPropertyValue, _container);
