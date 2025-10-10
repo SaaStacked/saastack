@@ -189,12 +189,12 @@ public class CarsApiModule : ISubDomainModule
     
     public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
     
     public Action<ConfigurationManager, IServiceCollection> RegisterServices
     {
-        get { return (_, services) => { services.AddScoped<ICarsApplication, CarsApplication.CarsApplication>(); }; }
+        get { return (_, _, services) => { services.AddScoped<ICarsApplication, CarsApplication.CarsApplication>(); }; }
     }
 }
 ```

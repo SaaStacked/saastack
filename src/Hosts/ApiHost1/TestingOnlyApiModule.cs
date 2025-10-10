@@ -7,9 +7,9 @@ namespace ApiHost1;
 
 public class TestingOnlyApiModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly? DomainAssembly => null;
@@ -18,9 +18,9 @@ public class TestingOnlyApiModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(TestingWebApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
-        get { return (_, _) => { }; }
+        get { return (_, _, _) => { }; }
     }
 }
 #endif

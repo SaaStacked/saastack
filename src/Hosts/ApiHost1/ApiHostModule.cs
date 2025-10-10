@@ -10,16 +10,16 @@ namespace ApiHost1;
 /// </summary>
 public class ApiHostModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
         get
         {
             // The TestingOnlyApiModule is already used in TESTINGONLY, and it registers the endpoints of this module already.
             // We do not want to create duplicate endpoints here.
 #if !TESTINGONLY
-            return (app, _) => app.RegisterRoutes();
+            return (_, app, _) => app.RegisterRoutes();
 #else
-            return (_, _) =>
+            return (_, _, _) =>
             {
                 // Add your host specific middleware here
             };
@@ -33,11 +33,11 @@ public class ApiHostModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(HealthApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, _) =>
+            return (_, _, _) =>
             {
                 // Add your host specific dependencies here
             };

@@ -6,9 +6,7 @@ using Common;
 using Domain.Interfaces.Authorization;
 using Domain.Interfaces.Validations;
 using FluentAssertions;
-using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Shared.ApplicationServices;
-using Infrastructure.Web.Api.Operations.Shared._3rdParties.FakeProvider;
 using Infrastructure.Web.Api.Operations.Shared.Organizations;
 using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using Infrastructure.Web.Common.Extensions;
@@ -16,9 +14,13 @@ using IntegrationTesting.WebApi.Common;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using SubscriptionsDomain;
+using Xunit;
+#if TESTINGONLY
+using Infrastructure.Hosting.Common.Extensions;
+using Infrastructure.Web.Api.Operations.Shared._3rdParties.FakeProvider;
 using SubscriptionsInfrastructure.Api._3rdParties;
 using SubscriptionsInfrastructure.IntegrationTests.Stubs;
-using Xunit;
+#endif
 
 namespace SubscriptionsInfrastructure.IntegrationTests;
 
@@ -342,7 +344,9 @@ public class SubscriptionsApiSpec
             }, req => req.SetJWTBearerToken(login.AccessToken))).Content.Value.Subscription;
 
             result.BuyerId.Should().Be(login.Profile!.UserId);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.OwningEntityId.Should().Be(login.DefaultOrganizationId);
             result.BuyerReference.Should().Be(login.DefaultOrganizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
@@ -382,7 +386,9 @@ public class SubscriptionsApiSpec
             result.OwningEntityId.Should().Be(organizationId);
             result.BuyerReference.Should().Be(login.DefaultOrganizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.Status.Should().Be(SubscriptionStatus.Activated);
             result.CanceledDateUtc.Should().BeNull();
             result.Plan.Id.Should().Be("apaid2");
@@ -445,7 +451,9 @@ public class SubscriptionsApiSpec
             result.OwningEntityId.Should().Be(organizationId);
             result.BuyerReference.Should().Be(login.DefaultOrganizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.Status.Should().Be(SubscriptionStatus.Activated);
             result.CanceledDateUtc.Should().BeNull();
             result.Plan.Id.Should().Be("apaid2");
@@ -474,7 +482,9 @@ public class SubscriptionsApiSpec
             result.OwningEntityId.Should().Be(organizationId);
             result.BuyerReference.Should().Be(login.DefaultOrganizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.Status.Should().Be(SubscriptionStatus.Canceling);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow.AddMonths(1), TimeSpan.FromMinutes(1));
             result.Plan.Id.Should().Be("apaidtrial");
@@ -503,7 +513,9 @@ public class SubscriptionsApiSpec
             result.OwningEntityId.Should().Be(organizationId);
             result.BuyerReference.Should().Be(organizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.Status.Should().Be(SubscriptionStatus.Canceled);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
             result.Plan.Id.Should().Be("apaidtrial");
@@ -556,7 +568,9 @@ public class SubscriptionsApiSpec
             result.OwningEntityId.Should().Be(organizationId);
             result.BuyerReference.Should().Be(login.DefaultOrganizationId);
             result.SubscriptionReference.Should().MatchRegex(CommonValidations.GuidN.Expression);
-            result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result.ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result.Status.Should().Be(SubscriptionStatus.Activated);
             result.CanceledDateUtc.Should().BeNull();
             result.Plan.Id.Should().Be("apaidtrial");
@@ -603,16 +617,20 @@ public class SubscriptionsApiSpec
 
         private async Task AddPaymentMethod(LoginDetails login)
         {
-            await Api.PostAsync(new NotifyFakeBillingProviderWebHookEventRequest
+#if TESTINGONLY
+                 await Api.PostAsync(new NotifyFakeBillingProviderWebHookEventRequest
             {
                 CustomerId = login.DefaultOrganizationId!,
                 EventType = FakeBillingProviderEventType.PaymentMethodCreated
             });
+#endif
         }
 
         private static void OverrideDependencies(IServiceCollection services)
         {
-            services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#if TESTINGONLY
+                 services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#endif
         }
     }
 }

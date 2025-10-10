@@ -24,9 +24,9 @@ namespace AncillaryInfrastructure;
 
 public class AncillaryModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(AuditRoot).Assembly;
@@ -40,11 +40,11 @@ public class AncillaryModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(UsagesApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddPerHttpRequest<IRecordingApplication, RecordingApplication>();
                 services.AddPerHttpRequest<IFeatureFlagsApplication, FeatureFlagsApplication>();

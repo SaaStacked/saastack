@@ -1,9 +1,7 @@
 using System.Net;
 using ApiHost1;
-using Application.Resources.Shared;
 using Application.Services.Shared;
 using FluentAssertions;
-using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Shared.ApplicationServices;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
@@ -11,9 +9,13 @@ using IntegrationTesting.WebApi.Common;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using SubscriptionsDomain;
+using Xunit;
+#if TESTINGONLY
+using Application.Resources.Shared;
+using Infrastructure.Hosting.Common.Extensions;
 using SubscriptionsInfrastructure.Api._3rdParties;
 using SubscriptionsInfrastructure.IntegrationTests.Stubs;
-using Xunit;
+#endif
 
 namespace SubscriptionsInfrastructure.IntegrationTests;
 
@@ -106,7 +108,9 @@ public class MigrationsApiSpec
             result.Count.Should().Be(1);
             result[0].BuyerId.Should().Be(login.Profile!.UserId);
             result[0].OwningEntityId.Should().Be(login.DefaultOrganizationId);
-            result[0].ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#if TESTINGONLY
+                 result[0].ProviderName.Should().Be(FakeBillingProviderConstants.ProviderName);
+#endif
             result[0].ProviderState.Should().NotBeEmpty();
             result[0].Buyer[nameof(SubscriptionBuyer.Id)].Should().Be(login.Profile!.UserId);
             result[0].Buyer[nameof(SubscriptionBuyer.Name)].Should()
@@ -144,7 +148,9 @@ public class MigrationsApiSpec
 
         private static void OverrideDependencies(IServiceCollection services)
         {
-            services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#if TESTINGONLY
+                 services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#endif
         }
     }
 }

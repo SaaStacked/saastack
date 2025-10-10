@@ -1,4 +1,5 @@
-using Infrastructure.Web.Api.Interfaces;
+#if TESTINGONLY
+     using Infrastructure.Web.Api.Interfaces;
 
 namespace Infrastructure.Web.Api.Operations.Shared._3rdParties.FakeProvider;
 
@@ -11,3 +12,4 @@ public class GetFakeFeatureFlagProviderFlagRequest : UnTenantedRequest<GetFakeFe
 {
     public string? Name { get; set; }
 }
+#endif

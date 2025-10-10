@@ -13,9 +13,10 @@ public class SubdomainModules
 {
     private readonly List<Assembly> _apiAssemblies = new();
     private readonly Dictionary<Type, string> _entityPrefixes = new();
-    private readonly List<Action<WebApplication, List<MiddlewareRegistration>>>
+    private readonly List<Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>>>
         _minimalApiRegistrationFunctions = new();
-    private readonly List<Action<ConfigurationManager, IServiceCollection>> _serviceCollectionFunctions = new();
+    private readonly List<Action<WebHostOptions, ConfigurationManager, IServiceCollection>>
+        _serviceCollectionFunctions = new();
     private readonly List<Assembly> _subdomainAssemblies = new();
 
     public IReadOnlyList<Assembly> ApiAssemblies => _apiAssemblies;
@@ -27,9 +28,10 @@ public class SubdomainModules
     /// <summary>
     ///     Configure middleware in the pipeline
     /// </summary>
-    public void ConfigureMiddleware(WebApplication app, List<MiddlewareRegistration> middlewares)
+    public void ConfigureMiddleware(WebHostOptions hostOptions, WebApplication app,
+        List<MiddlewareRegistration> middlewares)
     {
-        _minimalApiRegistrationFunctions.ForEach(func => func(app, middlewares));
+        _minimalApiRegistrationFunctions.ForEach(func => func(hostOptions, app, middlewares));
     }
 
     /// <summary>
@@ -60,8 +62,9 @@ public class SubdomainModules
     /// <summary>
     ///     Registers all the services with the dependency injection container
     /// </summary>
-    public void RegisterServices(ConfigurationManager configuration, IServiceCollection serviceCollection)
+    public void RegisterServices(WebHostOptions hostOptions, ConfigurationManager configuration,
+        IServiceCollection serviceCollection)
     {
-        _serviceCollectionFunctions.ForEach(func => func(configuration, serviceCollection));
+        _serviceCollectionFunctions.ForEach(func => func(hostOptions, configuration, serviceCollection));
     }
 }

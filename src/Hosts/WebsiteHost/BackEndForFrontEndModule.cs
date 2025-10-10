@@ -15,11 +15,11 @@ namespace WebsiteHost;
 
 public class BackEndForFrontEndModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
         get
         {
-            return (app, middlewares) =>
+            return (_, app, middlewares) =>
             {
                 app.RegisterRoutes();
                 middlewares.Add(new MiddlewareRegistration(33, webApp =>
@@ -44,11 +44,11 @@ public class BackEndForFrontEndModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(RecordingApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddControllersWithViews();
                 services.AddSingleton<IJsAppBundler, ViteJsAppBundler>();

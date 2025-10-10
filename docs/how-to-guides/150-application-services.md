@@ -250,7 +250,7 @@ public Action<ConfigurationManager, IServiceCollection> RegisterServices
 {
     get
     {
-        return (_, services) =>
+        return (_, _, services) =>
         {
             // Other registrations...
 

@@ -1,4 +1,5 @@
-using System.Text.Json;
+#if TESTINGONLY
+     using System.Text.Json;
 using Common;
 using Common.Configuration;
 using Common.FeatureFlags;
@@ -99,3 +100,4 @@ public class FakeFeatureFlagProviderServiceClient : IFeatureFlags
         return DefaultEnabled;
     }
 }
+#endif

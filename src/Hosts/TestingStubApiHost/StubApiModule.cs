@@ -35,11 +35,11 @@ public class StubApiModule : ISubdomainModule
         { WorkerConstants.Queues.Provisionings, new DrainAllProvisioningsRequest() }
     };
 
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
         get
         {
-            return (app, middlewares) =>
+            return (_, app, middlewares) =>
             {
                 app.RegisterRoutes();
 
@@ -70,11 +70,11 @@ public class StubApiModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(StubHelloApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (configuration, services) =>
+            return (_, configuration, services) =>
             {
                 services.AddLogging(builder =>
                 {

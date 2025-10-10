@@ -25,9 +25,9 @@ namespace UserProfilesInfrastructure;
 
 public class UserProfilesModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(UserProfileRoot).Assembly;
@@ -39,11 +39,11 @@ public class UserProfilesModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(UserProfilesApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 // EXTEND: Change this service for your preferred 3rd party provider
                 services.AddSingleton<IAvatarService, NoOpAvatarService>();

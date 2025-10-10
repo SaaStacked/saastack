@@ -21,9 +21,9 @@ namespace EventNotificationsInfrastructure;
 
 public class EventNotificationsModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly? DomainAssembly => null;
@@ -32,11 +32,11 @@ public class EventNotificationsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(DomainEventsApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddSingleton<IDomainEventingMessageBusTopic>(c =>
                     new DomainEventingMessageBusTopic(c.GetRequiredService<IRecorder>(),

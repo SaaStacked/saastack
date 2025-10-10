@@ -1,4 +1,5 @@
-using Application.Interfaces;
+#if TESTINGONLY
+     using Application.Interfaces;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
@@ -215,3 +216,4 @@ public enum CancelWhen
     Immediately,
     EndOfPeriod
 }
+#endif

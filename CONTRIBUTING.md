@@ -138,7 +138,6 @@ There are 2 flavors of build configuration: `Debug`, `Release`, these are very s
 
 * Run all the **unit** tests (`Category=Unit`)
 * Run all the **unit** tests (`Category=Unit.Tooling`)
-* Run all the **architecture** tests (`Category=Unit.Architecture`)
 * Run all the **integration** tests (`Category=Integration.API`)
 * Run all the **integration** tests (`Category=Integration.Website`)
 

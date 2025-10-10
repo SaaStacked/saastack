@@ -61,7 +61,7 @@ public class SubdomainModulesSpec
                 EntityPrefixes = new Dictionary<Type, string>(),
                 InfrastructureAssembly = typeof(SubdomainModulesSpec).Assembly,
                 DomainAssembly = typeof(SubdomainModulesSpec).Assembly,
-                RegisterServices = (_, _) => { }
+                RegisterServices = (_, _, _) => { }
             }))
             .Should().Throw<ArgumentNullException>();
     }
@@ -74,7 +74,7 @@ public class SubdomainModulesSpec
             EntityPrefixes = new Dictionary<Type, string>(),
             InfrastructureAssembly = typeof(SubdomainModulesSpec).Assembly,
             DomainAssembly = typeof(SubdomainModulesSpec).Assembly,
-            ConfigureMiddleware = (_, _) => { },
+            ConfigureMiddleware = (_, _, _) => { },
             RegisterServices = null!
         });
 
@@ -84,15 +84,17 @@ public class SubdomainModulesSpec
     [Fact]
     public void WhenRegisterServicesAndNoModules_ThenAppliedToAllModules()
     {
+        var hostOptions = WebHostOptions.BackEndForFrontEndWebHost;
         var configuration = new ConfigurationManager();
         var services = new ServiceCollection();
 
-        _modules.RegisterServices(configuration, services);
+        _modules.RegisterServices(hostOptions, configuration, services);
     }
 
     [Fact]
     public void WhenRegisterServices_ThenAppliedToAllModules()
     {
+        var hostOptions = WebHostOptions.BackEndForFrontEndWebHost;
         var configuration = new ConfigurationManager();
         var services = new ServiceCollection();
         var wasCalled = false;
@@ -101,11 +103,11 @@ public class SubdomainModulesSpec
             InfrastructureAssembly = typeof(SubdomainModulesSpec).Assembly,
             DomainAssembly = typeof(SubdomainModulesSpec).Assembly,
             EntityPrefixes = new Dictionary<Type, string>(),
-            ConfigureMiddleware = (_, _) => { },
-            RegisterServices = (_, _) => { wasCalled = true; }
+            ConfigureMiddleware = (_, _, _) => { },
+            RegisterServices = (_, _, _) => { wasCalled = true; }
         });
 
-        _modules.RegisterServices(configuration, services);
+        _modules.RegisterServices(hostOptions, configuration, services);
 
         wasCalled.Should().BeTrue();
     }
@@ -113,14 +115,17 @@ public class SubdomainModulesSpec
     [Fact]
     public void WhenConfigureHostAndNoModules_ThenAppliedToAllModules()
     {
+        var hostOptions = WebHostOptions.BackEndForFrontEndWebHost;
+
         var app = WebApplication.Create();
 
-        _modules.ConfigureMiddleware(app, new List<MiddlewareRegistration>());
+        _modules.ConfigureMiddleware(hostOptions, app, new List<MiddlewareRegistration>());
     }
 
     [Fact]
     public void WhenConfigureHost_ThenAppliedToAllModules()
     {
+        var hostOptions = WebHostOptions.BackEndForFrontEndWebHost;
         var app = WebApplication.Create();
         var wasCalled = false;
         _modules.Register(new TestModule
@@ -128,11 +133,11 @@ public class SubdomainModulesSpec
             InfrastructureAssembly = typeof(SubdomainModulesSpec).Assembly,
             DomainAssembly = typeof(SubdomainModulesSpec).Assembly,
             EntityPrefixes = new Dictionary<Type, string>(),
-            ConfigureMiddleware = (_, _) => { wasCalled = true; },
-            RegisterServices = (_, _) => { }
+            ConfigureMiddleware = (_, _, _) => { wasCalled = true; },
+            RegisterServices = (_, _, _) => { }
         });
 
-        _modules.ConfigureMiddleware(app, new List<MiddlewareRegistration>());
+        _modules.ConfigureMiddleware(hostOptions, app, new List<MiddlewareRegistration>());
 
         wasCalled.Should().BeTrue();
     }
@@ -140,7 +145,8 @@ public class SubdomainModulesSpec
 
 public class TestModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware { get; init; } = null!;
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware { get; init; } =
+        null!;
 
     public Assembly? DomainAssembly { get; set; }
 
@@ -148,5 +154,5 @@ public class TestModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly { get; init; } = null!;
 
-    public Action<ConfigurationManager, IServiceCollection>? RegisterServices { get; init; }
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices { get; init; }
 }

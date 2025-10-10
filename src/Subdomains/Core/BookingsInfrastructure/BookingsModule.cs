@@ -14,9 +14,9 @@ namespace BookingsInfrastructure;
 
 public class BookingsModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(BookingRoot).Assembly;
@@ -29,11 +29,11 @@ public class BookingsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(BookingsApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddPerHttpRequest<IBookingsApplication, BookingsApplication.BookingsApplication>();
                 services.AddPerHttpRequest<IBookingRepository, BookingRepository>();

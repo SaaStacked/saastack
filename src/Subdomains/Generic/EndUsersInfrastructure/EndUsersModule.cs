@@ -27,9 +27,9 @@ namespace EndUsersInfrastructure;
 
 public class EndUsersModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(EndUserRoot).Assembly;
@@ -42,11 +42,11 @@ public class EndUsersModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(EndUsersApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddPerHttpRequest<IEndUsersApplication>(c =>
                     new EndUsersApplication.EndUsersApplication(c.GetRequiredService<IRecorder>(),

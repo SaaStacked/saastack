@@ -497,7 +497,7 @@ public Action<ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddPerHttpRequest<ICarsApplication, CarsApplication.CarsApplication>();
                 services.AddPerHttpRequest<ICarRepository, CarRepository>();

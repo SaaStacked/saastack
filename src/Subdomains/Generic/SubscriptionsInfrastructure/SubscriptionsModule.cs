@@ -24,9 +24,9 @@ namespace SubscriptionsInfrastructure;
 
 public class SubscriptionsModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(SubscriptionRoot).Assembly;
@@ -38,11 +38,11 @@ public class SubscriptionsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(SubscriptionsApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 //EXTEND: Change the billing provider and supporting APIs/Applications/Services
                 services.AddSingleton<IBillingProvider, SimpleBillingProvider>();

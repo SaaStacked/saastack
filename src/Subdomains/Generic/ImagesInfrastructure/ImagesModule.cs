@@ -26,9 +26,9 @@ namespace ImagesInfrastructure;
 
 public class ImagesModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(ImageRoot).Assembly;
@@ -40,11 +40,11 @@ public class ImagesModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(ImagesApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddSingleton<IFileUploadService, FileUploadService>();
                 services.AddPerHttpRequest<IImagesApplication>(c =>

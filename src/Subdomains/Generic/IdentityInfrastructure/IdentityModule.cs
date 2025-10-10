@@ -28,9 +28,9 @@ namespace IdentityInfrastructure;
 
 public class IdentityModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(PersonCredentialRoot).Assembly;
@@ -50,11 +50,11 @@ public class IdentityModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(CredentialsApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 //EXTEND: Change the identity server provider and its supporting APIs/Applications/Services
                 services.AddPerHttpRequest<IIdentityServerProvider, NativeIdentityServerProvider>();

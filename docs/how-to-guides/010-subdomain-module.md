@@ -121,14 +121,14 @@ public class CarsModule : ISubdomainModule
 
     public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Action<ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 // Any Application/Domain services that are consumed by the Application/Domain classes
                 services.AddSingleton<IFoundationService, CarFoundationService>();

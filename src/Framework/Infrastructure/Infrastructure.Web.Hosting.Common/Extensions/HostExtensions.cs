@@ -1,5 +1,3 @@
-#define USEDATABASEEVENTSTORE //EXTEND: Set this to true if you are using a database event store in production
-
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Application.Interfaces;
@@ -9,7 +7,7 @@ using Application.Services.Shared;
 using Common;
 using Common.Configuration;
 using Common.Extensions;
-using Common.FeatureFlags;
+using Common.Recording;
 using Domain.Common;
 using Domain.Common.Identity;
 using Domain.Interfaces;
@@ -19,10 +17,10 @@ using Domain.Interfaces.Services;
 using Domain.Shared;
 using Infrastructure.Common;
 using Infrastructure.Common.Extensions;
+using Infrastructure.Common.Recording;
 using Infrastructure.Eventing.Common.Notifications;
 using Infrastructure.Eventing.Common.Projections.ReadModels;
 using Infrastructure.Eventing.Interfaces.Notifications;
-using Infrastructure.External.TestingOnly.ApplicationServices;
 using Infrastructure.Hosting.Common;
 using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Hosting.Common.Recording;
@@ -46,18 +44,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 #if TESTINGONLY
 using Domain.Events.Shared.TestingOnly;
-
-#else
-#if HOSTEDONAZURE
-using Infrastructure.External.Persistence.Azure.ApplicationServices;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Microsoft.ApplicationInsights.Extensibility;
-
-#elif HOSTEDONAWS
-using Amazon.XRay.Recorder.Core;
-using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using Infrastructure.Persistence.Common.ApplicationServices;
-#endif
+using Common.FeatureFlags;
+using Infrastructure.External.TestingOnly.ApplicationServices;
 #endif
 
 namespace Infrastructure.Web.Hosting.Common.Extensions;
@@ -85,12 +73,12 @@ public static class HostExtensions
         RegisterApiRequests();
         RegisterApiDocumentation(hostOptions.HostName, hostOptions.HostVersion, hostOptions.UsesApiDocumentation);
         RegisterNotifications(hostOptions.UsesNotifications);
-        modules.RegisterServices(appBuilder.Configuration, services);
         RegisterApplicationServices(hostOptions.IsMultiTenanted,
             hostOptions.ReceivesWebhooks);
         RegisterPersistence(hostOptions.Persistence.UsesQueues, hostOptions.IsMultiTenanted);
         RegisterEventing(hostOptions.Persistence.UsesEventing);
         RegisterCors(hostOptions.CORS);
+        modules.RegisterServices(hostOptions, appBuilder.Configuration, services);
 
         var app = appBuilder.Build();
 
@@ -106,7 +94,7 @@ public static class HostExtensions
         app.EnableEventingPropagation(middlewares, hostOptions.Persistence.UsesEventing);
         app.EnableOtherFeatures(middlewares, hostOptions);
 
-        modules.ConfigureMiddleware(app, middlewares);
+        modules.ConfigureMiddleware(hostOptions, app, middlewares);
 
         middlewares
             .OrderBy(mw => mw.Priority)
@@ -120,12 +108,16 @@ public static class HostExtensions
             services.AddAntiforgery();
             services.AddHttpContextAccessor();
 
-            // EXTEND: Default technology adapters
+            // EXTEND: Any global technology adapters
+            services.AddSingleton<ICrashReporter, NoOpCrashReporter>();
+            services.AddSingleton<IMetricReporter, NoOpMetricReporter>();
+#if TESTINGONLY
             services.AddSingleton<IFeatureFlags>(c => new FakeFeatureFlagProviderServiceClient(
                 c.GetRequiredService<IRecorder>(),
                 c.GetRequiredServiceForPlatform<IConfigurationSettings>(),
                 c.GetRequiredService<IHttpClientFactory>(),
                 c.GetRequiredService<JsonSerializerOptions>()));
+#endif
         }
 
         void RegisterConfiguration(bool isMultiTenanted)
@@ -157,30 +149,6 @@ public static class HostExtensions
 
         void RegisterRecording()
         {
-#if HOSTEDONAZURE
-#if !TESTINGONLY
-            // Note: Apply sampling, but never sample any Exceptions
-            services.Configure<TelemetryConfiguration>(config =>
-            {
-                var builder = config.DefaultTelemetrySink.TelemetryProcessorChainBuilder;
-                builder.UseAdaptiveSampling(10, "Exception");
-                builder.Build();
-            });
-
-            services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
-            {
-                // We always want this to be false
-                // See https://learn.microsoft.com/en-us/azure/azure-monitor/app/sampling-classic-api#configure-sampling-settings
-                EnableAdaptiveSampling = false
-            });
-#endif
-#elif HOSTEDONAWS
-#if !TESTINGONLY
-            AWSXRayRecorder.InitializeInstance(appBuilder.Configuration);
-            AWSSDKHandler.RegisterXRayForAllServices();
-#endif
-            services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
-#endif
             services.AddLogging(builder =>
             {
                 builder.ClearProviders();
@@ -193,12 +161,6 @@ public static class HostExtensions
                     options.IncludeScopes = false;
                 });
                 builder.AddDebug();
-#else
-#if HOSTEDONAZURE
-                builder.AddApplicationInsights();
-#elif HOSTEDONAWS
-                builder.AddLambdaLogger();
-#endif
 #endif
                 builder.AddEventSourceLogger();
             });
@@ -559,101 +521,6 @@ public static class HostExtensions
                 }));
 #if TESTINGONLY
             TestingOnlyHostExtensions.RegisterStoreForTestingOnly(services, usesQueues, isMultiTenanted);
-#else
-#if HOSTEDONAZURE
-            // EXTEND: Add your production persistence stores here
-#if USEDATABASEEVENTSTORE
-            services.AddForPlatform<IDataStore, IEventStore, AzureSqlServerStore>(c =>
-                AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                    AzureSqlServerStoreOptions.Credentials(c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-#else
-                services.AddSingleton<IKurrentEventStoreClient>(c =>
-                    new SharedKurrentEventStoreClient(c.GetRequiredServiceForPlatform<IConfigurationSettings>()));
-                services.AddForPlatform<IEventStore>(c =>
-                    KurrentEventStore.Create(c.GetRequiredService<IRecorder>(),
-                        KurrentEventStoreOptions.SharedClient(c.GetRequiredService<IKurrentEventStoreClient>())));
-                services.AddForPlatform<IDataStore>(c =>
-                    AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureSqlServerStoreOptions.Credentials(c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-#endif
-            services.AddForPlatform<IBlobStore>(c =>
-                AzureStorageAccountBlobStore.Create(c.GetRequiredService<IRecorder>(),
-                    AzureStorageAccountStoreOptions.Credentials(
-                        c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-            services.AddForPlatform<IQueueStore>(c =>
-                AzureStorageAccountQueueStore.Create(c.GetRequiredService<IRecorder>(),
-                    AzureStorageAccountStoreOptions.Credentials(
-                        c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-            services.AddForPlatform<IMessageBusStore>(c =>
-                AzureServiceBusStore.Create(c.GetRequiredService<IRecorder>(),
-                    AzureServiceBusStoreOptions.Credentials(
-                        c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-
-            if (isMultiTenanted)
-            {
-#if USEDATABASEEVENTSTORE
-                services.AddPerHttpRequest<IDataStore, IEventStore, AzureSqlServerStore>(c =>
-                    AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureSqlServerStoreOptions.Credentials(
-                            c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-#else
-                    services.AddPerHttpRequest<IEventStore>(c =>
-                        KurrentEventStore.Create(c.GetRequiredService<IRecorder>(),
-                            KurrentEventStoreOptions.SharedClient(c.GetRequiredService<IKurrentEventStoreClient>())));
-                    services.AddPerHttpRequest<IDataStore>(c =>
-                        AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                            AzureSqlServerStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-#endif
-                services.AddPerHttpRequest<IBlobStore>(c =>
-                    AzureStorageAccountBlobStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureStorageAccountStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-                services.AddPerHttpRequest<IQueueStore>(c =>
-                    AzureStorageAccountQueueStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureStorageAccountStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-                services.AddPerHttpRequest<IMessageBusStore>(c =>
-                    AzureServiceBusStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureServiceBusStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-            }
-            else
-            {
-#if USEDATABASEEVENTSTORE
-                services.AddSingleton<IDataStore, IEventStore, AzureSqlServerStore>(c =>
-                    AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureSqlServerStoreOptions.Credentials(
-                            c.GetRequiredServiceForPlatform<IConfigurationSettings>())));
-#else
-                    services.AddSingleton<IEventStore>(c =>
-                        KurrentEventStore.Create(c.GetRequiredService<IRecorder>(),
-                            KurrentEventStoreOptions.SharedClient(c.GetRequiredService<IKurrentEventStoreClient>())));
-                    services.AddSingleton<IDataStore>(c =>
-                        AzureSqlServerStore.Create(c.GetRequiredService<IRecorder>(),
-                            AzureSqlServerStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-#endif
-                services.AddSingleton<IBlobStore>(c =>
-                    AzureStorageAccountBlobStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureStorageAccountStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-                services.AddSingleton<IQueueStore>(c =>
-                    AzureStorageAccountQueueStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureStorageAccountStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-                services.AddSingleton<IMessageBusStore>(c =>
-                    AzureServiceBusStore.Create(c.GetRequiredService<IRecorder>(),
-                        AzureServiceBusStoreOptions.Credentials(c.GetRequiredService<IConfigurationSettings>())));
-            }
-#elif HOSTEDONAWS
-            //HACK: Need AWS production stores here like DynamoDbDataStore
-            services.AddForPlatform<IDataStore, IEventStore, IBlobStore, IQueueStore, IMessageBusStore, NoOpStore>(_ =>
-                NoOpStore.Instance);
-            if (isMultiTenanted)
-            {
-                services.AddPerHttpRequest<IDataStore, IEventStore, IBlobStore, IQueueStore, IMessageBusStore, NoOpStore>(_ =>
-                    NoOpStore.Instance);
-            }
-            else
-            {
-                services.AddSingleton<IDataStore, IEventStore, IBlobStore, IQueueStore, IMessageBusStore, NoOpStore>(_ =>
-                    NoOpStore.Instance);
-            }
-#endif
 #endif
         }
 

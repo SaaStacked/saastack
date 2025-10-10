@@ -20,9 +20,9 @@ namespace CarsInfrastructure;
 
 public class CarsModule : ISubdomainModule
 {
-    public Action<WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
+    public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware
     {
-        get { return (app, _) => app.RegisterRoutes(); }
+        get { return (_, app, _) => app.RegisterRoutes(); }
     }
 
     public Assembly DomainAssembly => typeof(CarRoot).Assembly;
@@ -35,11 +35,11 @@ public class CarsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(CarsApi).Assembly;
 
-    public Action<ConfigurationManager, IServiceCollection> RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 services.AddPerHttpRequest<ICarsApplication, CarsApplication.CarsApplication>();
                 services.AddPerHttpRequest<ICarRepository, CarRepository>();

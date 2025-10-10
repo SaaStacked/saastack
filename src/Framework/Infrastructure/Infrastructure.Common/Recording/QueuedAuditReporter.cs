@@ -1,14 +1,4 @@
-﻿#if !TESTINGONLY
-using Infrastructure.Persistence.Common.ApplicationServices;
-#if HOSTEDONAZURE
-using Infrastructure.External.Persistence.Azure.ApplicationServices;
-#elif HOSTEDONAWS
-using Infrastructure.External.Persistence.AWS.ApplicationServices;
-#endif
-#else
-using Infrastructure.Persistence.Interfaces;
-#endif
-using Application.Interfaces.Services;
+﻿using Application.Interfaces.Services;
 using Application.Persistence.Shared;
 using Application.Persistence.Shared.ReadModels;
 using Common;
@@ -17,6 +7,7 @@ using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
+using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Shared.ApplicationServices;
 
 namespace Infrastructure.Common.Recording;
@@ -30,21 +21,12 @@ public class QueuedAuditReporter : IAuditReporter
     private readonly IHostSettings _hostSettings;
     private readonly IAuditMessageQueueRepository _repository;
 
-    // ReSharper disable once UnusedParameter.Local
     public QueuedAuditReporter(IDependencyContainer container, IConfigurationSettings settings,
         IHostSettings hostSettings)
         : this(new AuditMessageQueueRepository(NoOpRecorder.Instance,
             container.GetRequiredService<IHostSettings>(),
             container.GetRequiredService<IMessageQueueMessageIdFactory>(),
-#if !TESTINGONLY
-#if HOSTEDONAZURE
-            AzureStorageAccountQueueStore.Create(NoOpRecorder.Instance, AzureStorageAccountStoreOptions.Credentials(settings))
-#elif HOSTEDONAWS
-            AWSSQSQueueStore.Create(NoOpRecorder.Instance, settings)
-#endif
-#else
             container.GetRequiredServiceForPlatform<IQueueStore>()
-#endif
         ), hostSettings)
     {
     }

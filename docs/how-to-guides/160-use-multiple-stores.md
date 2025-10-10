@@ -80,7 +80,7 @@ You would be registering this custom repository in your subdomain module . For e
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 ... other registrations
                 services.AddPerHttpRequest<ICarRepository, CarRepository>();
@@ -100,7 +100,7 @@ So, the first thing to do is create a new instance of the `IDataStore` that conn
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 ... other registrations
                 services.AddPerHttpRequest<ICarRepository>(c => new CarRepository(
@@ -124,7 +124,7 @@ Now, we don't want to inject the SQL database adapter when we are running or tes
     {
         get
         {
-            return (_, services) =>
+            return (_, _, services) =>
             {
                 ... other registrations
 #if TESTINGONLY

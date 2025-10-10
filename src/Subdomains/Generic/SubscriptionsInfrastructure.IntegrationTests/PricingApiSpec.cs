@@ -69,7 +69,9 @@ public class PricingApiSpec
 
         private static void OverrideDependencies(IServiceCollection services)
         {
-            services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#if TESTINGONLY
+                 services.AddPerHttpRequest<IBillingProvider, StubFakeBillingProvider>();
+#endif
         }
     }
 }

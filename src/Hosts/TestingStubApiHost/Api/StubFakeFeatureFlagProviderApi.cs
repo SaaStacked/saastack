@@ -1,4 +1,5 @@
-using System.Reflection;
+#if TESTINGONLY
+     using System.Reflection;
 using Common;
 using Common.Configuration;
 using Common.FeatureFlags;
@@ -70,3 +71,4 @@ public sealed class StubFakeFeatureFlagProviderApi : StubApiBase
         };
     }
 }
+#endif
