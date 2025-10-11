@@ -3,13 +3,13 @@ using Application.Interfaces;
 using Application.Resources.Shared;
 using Common;
 using FluentAssertions;
-using IdentityInfrastructure.ApplicationServices;
+using Infrastructure.External.TestingOnly.ApplicationServices;
 using Moq;
 using UnitTesting.Common;
 using UnitTesting.Common.Validation;
 using Xunit;
 
-namespace IdentityInfrastructure.UnitTests.ApplicationServices;
+namespace Infrastructure.External.TestingOnly.UnitTests.ApplicationServices;
 
 [Trait("Category", "Unit")]
 public class FakeSSOAuthenticationProviderSpec
@@ -30,7 +30,7 @@ public class FakeSSOAuthenticationProviderSpec
                 x.AuthenticateAsync(_caller.Object, string.Empty, "acodeverifier", "anemailaddress",
                     CancellationToken.None))
             .Should().ThrowAsync<ArgumentOutOfRangeException>()
-            .WithMessageLike(Resources.AnySSOAuthenticationProvider_MissingAuthCode);
+            .WithMessageLike(Common.Resources.AnySSOAuthenticationProvider_MissingAuthCode);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class FakeSSOAuthenticationProviderSpec
     {
         await _provider.Invoking(x => x.RefreshTokenAsync(_caller.Object, string.Empty, CancellationToken.None))
             .Should().ThrowAsync<ArgumentOutOfRangeException>()
-            .WithMessageLike(Resources.AnySSOAuthenticationProvider_MissingRefreshToken);
+            .WithMessageLike(Common.Resources.AnySSOAuthenticationProvider_MissingRefreshToken);
     }
 
     [Fact]

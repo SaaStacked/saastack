@@ -18,7 +18,7 @@ public class TestingOnlyApiModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(TestingWebApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get { return (_, _, _) => { }; }
     }

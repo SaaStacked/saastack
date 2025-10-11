@@ -4,9 +4,8 @@ using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 using Common.Extensions;
-using IdentityApplication.ApplicationServices;
 
-namespace IdentityInfrastructure.ApplicationServices;
+namespace Infrastructure.External.TestingOnly.ApplicationServices;
 
 /// <summary>
 ///     Provides a fake example <see cref="ISSOAuthenticationProvider" /> that can be copied for real providers,
@@ -31,7 +30,7 @@ public class FakeSSOAuthenticationProvider : ISSOAuthenticationProvider
         string? codeVerifier, string? emailAddress, CancellationToken cancellationToken)
     {
         authCode.ThrowIfNotValuedParameter(nameof(authCode),
-            Resources.AnySSOAuthenticationProvider_MissingAuthCode);
+            Common.Resources.AnySSOAuthenticationProvider_MissingAuthCode);
 
         if (emailAddress.HasNoValue())
         {
@@ -58,7 +57,7 @@ public class FakeSSOAuthenticationProvider : ISSOAuthenticationProvider
         string refreshToken, CancellationToken cancellationToken)
     {
         refreshToken.ThrowIfNotValuedParameter(nameof(refreshToken),
-            Resources.AnySSOAuthenticationProvider_MissingRefreshToken);
+            Common.Resources.AnySSOAuthenticationProvider_MissingRefreshToken);
 
         var retrievedTokens =
             await _auth2Service.RefreshTokenAsync(caller,

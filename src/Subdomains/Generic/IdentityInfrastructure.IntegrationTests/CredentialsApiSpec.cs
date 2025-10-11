@@ -9,9 +9,7 @@ using Domain.Interfaces.Authorization;
 using FluentAssertions;
 using IdentityApplication.ApplicationServices;
 using IdentityDomain;
-using IdentityInfrastructure.ApplicationServices;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
-using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Infrastructure.Web.Common.Extensions;
 using IntegrationTesting.WebApi.Common;
 using IntegrationTesting.WebApi.Common.Stubs;
@@ -19,6 +17,10 @@ using Microsoft.Extensions.DependencyInjection;
 using UnitTesting.Common.Validation;
 using Xunit;
 using TokensService = Infrastructure.Shared.DomainServices.TokensService;
+#if TESTINGONLY
+using Infrastructure.External.TestingOnly.ApplicationServices;
+using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
+#endif
 
 namespace IdentityInfrastructure.IntegrationTests;
 

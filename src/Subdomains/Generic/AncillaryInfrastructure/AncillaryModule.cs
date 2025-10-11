@@ -40,7 +40,7 @@ public class AncillaryModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(UsagesApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

@@ -7,9 +7,8 @@ using Application.Interfaces;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
-using IdentityApplication.ApplicationServices;
 
-namespace IdentityInfrastructure.ApplicationServices;
+namespace Infrastructure.External.TestingOnly.ApplicationServices;
 
 /// <summary>
 ///     Provides a fake example OAuth2 service that returns a set of OAuth tokens
@@ -62,7 +61,7 @@ public class FakeOAuth2Service : IOAuth2Service
     {
         var accessToken = tokens.Single(tok => tok.Type == TokenType.AccessToken).Value;
         var uid = Convert.ToBase64String(MD5.HashData(Encoding.UTF8.GetBytes(authCode)));
-        var claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToArray();
+        var claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToArray<Claim>();
         var emailAddress = claims.Single(c => c.Type == ClaimTypes.Email).Value;
         var firstName = claims.Single(c => c.Type == ClaimTypes.GivenName).Value;
         var lastName = claims.Single(c => c.Type == ClaimTypes.Surname).Value;

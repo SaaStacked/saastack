@@ -11,6 +11,7 @@ env:
   IS_CI_BUILD: 'true'
   SOLUTION_PATH: 'src/SaaStack.sln'
   TESTINGONLY_BUILD_CONFIGURATION: 'Release'
+  DEPLOY_BUILD_CONFIGURATION: 'ReleaseForDeploy'
   DOTNET_VERSION: 8.0.413
   NODEJS_VERSION: '22'
 
@@ -24,6 +25,8 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 25
     steps:
+      - name: Enable long paths
+        run: git config --system core.longpaths true
       - uses: actions/checkout@v3
       - name: Install .NET
         uses: actions/setup-dotnet@v3
@@ -33,12 +36,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODEJS_VERSION}}
-      - name: Restore dependencies
-        run: dotnet restore "${{env.SOLUTION_PATH}}"
       - name: Build (Backend) for AWS Testing
         run: dotnet build --configuration ${{env.TESTINGONLY_BUILD_CONFIGURATION}} "${{env.SOLUTION_PATH}}" -p:HostingPlatform=HOSTEDONAWS
       - name: Build (Backend) for Azure Testing
         run: dotnet build --configuration ${{env.TESTINGONLY_BUILD_CONFIGURATION}} "${{env.SOLUTION_PATH}}" -p:HostingPlatform=HOSTEDONAZURE
+      - name: Build (Backend) for Azure Deploy
+        run: dotnet build --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "${{env.SOLUTION_PATH}}" -p:HostingPlatform=HOSTEDONAZURE
+      - name: Build (Backend) for AWS Deploy
+        run: dotnet build --configuration ${{env.DEPLOY_BUILD_CONFIGURATION}} "${{env.SOLUTION_PATH}}" -p:HostingPlatform=HOSTEDONAWS
       - name: Unit Test (Backend)
         uses: nick-fields/retry@v2
         with:

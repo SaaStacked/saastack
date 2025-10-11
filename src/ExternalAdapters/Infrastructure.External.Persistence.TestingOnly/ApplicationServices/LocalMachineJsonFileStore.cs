@@ -105,11 +105,9 @@ public sealed partial class LocalMachineJsonFileStore : IDisposable
 
         if (TryNotifyBusTopicMessage(e.FullPath))
         {
+            // ReSharper disable once RedundantJumpStatement
             return;
         }
-
-        // ReSharper disable once RedundantJumpStatement
-        return;
     }
 
     private static void VerifyRootPath(string path)
@@ -652,6 +650,7 @@ internal static class LocalMachineFileStoreExtensions
 
         if (typeof(IDehydratableValueObject).IsAssignableFrom(targetPropertyType))
         {
+            // ReSharper disable once DuplicatedStatements
             return propertyValue.Value;
         }
 

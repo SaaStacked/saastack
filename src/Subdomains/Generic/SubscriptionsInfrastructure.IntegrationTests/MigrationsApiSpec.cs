@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SubscriptionsDomain;
 using Xunit;
 #if TESTINGONLY
-using Application.Resources.Shared;
 using Infrastructure.Hosting.Common.Extensions;
 using SubscriptionsInfrastructure.Api._3rdParties;
 using SubscriptionsInfrastructure.IntegrationTests.Stubs;

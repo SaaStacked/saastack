@@ -3,7 +3,7 @@ using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 
-namespace IdentityApplication.ApplicationServices;
+namespace Application.Services.Shared;
 
 /// <summary>
 ///     Defines a Single Sign On provider of authentication services

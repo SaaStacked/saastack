@@ -325,8 +325,7 @@ public partial class UserProfilesApplication : IUserProfilesApplication
             profiles.Count);
 
         return profiles
-            .ConvertAll(profile => profile.ToProfile())
-            .ToList();
+            .ConvertAll(profile => profile.ToProfile());
     }
 
     public async Task<Result<UserProfileForCaller, Error>> GetCurrentUserProfileAsync(ICallerContext caller,

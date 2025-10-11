@@ -60,8 +60,6 @@ public static class HttRequestExtensions
             {
                 return username;
             }
-
-            return Optional<string>.None;
         }
 
         return Optional<string>.None;

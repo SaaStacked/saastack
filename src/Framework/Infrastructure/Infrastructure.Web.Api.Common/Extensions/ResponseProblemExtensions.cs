@@ -27,6 +27,7 @@ public static class ResponseProblemExtensions
             (int)HttpStatusCode.MethodNotAllowed => Error.PreconditionViolation(problem.Title),
             (int)HttpStatusCode.Conflict => Error.EntityExists(problem.Title),
             (int)HttpStatusCode.Locked => Error.EntityLocked(problem.Title),
+            // ReSharper disable once RedundantSwitchExpressionArms
             (int)HttpStatusCode.InternalServerError => Error.Unexpected(problem.Title),
             _ => Error.Unexpected(problem.Title)
         };

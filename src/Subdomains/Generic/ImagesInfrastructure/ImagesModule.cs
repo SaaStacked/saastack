@@ -40,7 +40,7 @@ public class ImagesModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(ImagesApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

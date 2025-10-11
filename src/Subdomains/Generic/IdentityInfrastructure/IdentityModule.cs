@@ -23,7 +23,9 @@ using Infrastructure.Web.Hosting.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+#if TESTINGONLY
+using Infrastructure.External.TestingOnly.ApplicationServices;
+#endif
 namespace IdentityInfrastructure;
 
 public class IdentityModule : ISubdomainModule
@@ -50,7 +52,7 @@ public class IdentityModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(CredentialsApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {
@@ -88,8 +90,8 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<APIKeyRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<APIKeyRoot, APIKeyProjection>(
-                    c => new APIKeyProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<APIKeyRoot, APIKeyProjection>(c =>
+                    new APIKeyProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.AddPerHttpRequest<IAuthTokensRepository>(c =>
@@ -103,8 +105,8 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<PersonCredentialRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<PersonCredentialRoot, PersonCredentialProjection>(
-                    c => new PersonCredentialProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<PersonCredentialRoot, PersonCredentialProjection>(c =>
+                    new PersonCredentialProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.AddPerHttpRequest<ISSOUsersRepository>(c =>
@@ -112,8 +114,8 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<SSOUserRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<SSOUserRoot, SSOUserProjection>(
-                    c => new SSOUserProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<SSOUserRoot, SSOUserProjection>(c =>
+                    new SSOUserProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.AddPerHttpRequest<IOAuth2ClientRepository>(c =>
@@ -121,8 +123,8 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<OAuth2ClientRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<OAuth2ClientRoot, OAuth2ClientProjection>(
-                    c => new OAuth2ClientProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<OAuth2ClientRoot, OAuth2ClientProjection>(c =>
+                    new OAuth2ClientProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.AddPerHttpRequest<IOAuth2ClientConsentRepository>(c =>
@@ -130,8 +132,8 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<OAuth2ClientConsentRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<OAuth2ClientConsentRoot, OAuth2ClientConsentProjection>(
-                    c => new OAuth2ClientConsentProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<OAuth2ClientConsentRoot, OAuth2ClientConsentProjection>(c =>
+                    new OAuth2ClientConsentProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.AddPerHttpRequest<IOpenIdConnectAuthorizationRepository>(c =>
@@ -139,12 +141,12 @@ public class IdentityModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<OpenIdConnectAuthorizationRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<OpenIdConnectAuthorizationRoot, OpenIdConnectAuthorizationProjection>(
-                    c => new OpenIdConnectAuthorizationProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<OpenIdConnectAuthorizationRoot, OpenIdConnectAuthorizationProjection>(c =>
+                    new OpenIdConnectAuthorizationProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.RegisterEventing<ProviderAuthTokensRoot, ProviderAuthTokensProjection>(
-                    c => new ProviderAuthTokensProjection(c.GetRequiredService<IRecorder>(),
+                services.RegisterEventing<ProviderAuthTokensRoot, ProviderAuthTokensProjection>(c =>
+                    new ProviderAuthTokensProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
 
@@ -154,7 +156,6 @@ public class IdentityModule : ISubdomainModule
                 services.AddPerHttpRequest<ISSOProvidersService, SSOProvidersService>();
 
 #if TESTINGONLY
-                // EXTEND: replace these registrations with your own OAuth2 implementations
                 services.AddSingleton<ISSOAuthenticationProvider, FakeSSOAuthenticationProvider>();
 #endif
             };

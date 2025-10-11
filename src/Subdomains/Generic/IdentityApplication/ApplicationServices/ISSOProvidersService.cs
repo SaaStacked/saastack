@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Resources.Shared;
+using Application.Services.Shared;
 using Common;
 
 namespace IdentityApplication.ApplicationServices;

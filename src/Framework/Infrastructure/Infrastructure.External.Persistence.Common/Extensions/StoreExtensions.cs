@@ -86,7 +86,7 @@ public static class StoreExtensions
         Func<QueriedEntity, Task<Dictionary<string, HydrationProperties>>> getJoinedEntitiesAsync)
         where TQueryableEntity : IQueryableEntity
     {
-        var take = GetDefaultTake<TQueryableEntity>(query, maxQueryResults);
+        var take = GetDefaultTake(query, maxQueryResults);
         if (take == 0)
         {
             return new QueryResults<QueryEntity>();
@@ -132,9 +132,9 @@ public static class StoreExtensions
 
         var results = joinedEntities
             .ToDictionary(pair => pair.Key, pair => pair.Value.ToObjectDictionary())
-            .AsQueryable<KeyValuePair<string, IReadOnlyDictionary<string, object?>>>();
-        var orderBy = query.ToDynamicLinqOrderByClause<TQueryableEntity>(metadata);
-        var skip = GetDefaultSkip<TQueryableEntity>(query);
+            .AsQueryable();
+        var orderBy = query.ToDynamicLinqOrderByClause(metadata);
+        var skip = GetDefaultSkip(query);
 
         if (query.Wheres.Any())
         {
@@ -146,10 +146,10 @@ public static class StoreExtensions
         var totalCount = results.Count();
         var items = results
             .OrderBy(orderBy)
-            .Skip<KeyValuePair<string, IReadOnlyDictionary<string, object?>>>(skip)
+            .Skip(skip)
             .Take(take)
             .Select(sel => new KeyValuePair<string, HydrationProperties>(sel.Key, new HydrationProperties(sel.Value)))
-            .CherryPickSelectedProperties<TQueryableEntity>(query)
+            .CherryPickSelectedProperties(query)
             .Select(ped => QueryEntity.FromProperties(ped.Value, metadata))
             .ToList();
 
@@ -336,7 +336,7 @@ public static class StoreExtensions
 
         return primarySelects
             .Select(select => select.FieldName)
-            .Concat<string>(joinedSelects.Select(select => select.JoinedFieldName))
+            .Concat(joinedSelects.Select(select => select.JoinedFieldName))
             .ToList();
     }
 

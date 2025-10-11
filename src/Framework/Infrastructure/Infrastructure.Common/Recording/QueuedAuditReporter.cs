@@ -2,7 +2,6 @@
 using Application.Persistence.Shared;
 using Application.Persistence.Shared.ReadModels;
 using Common;
-using Common.Configuration;
 using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
@@ -21,8 +20,7 @@ public class QueuedAuditReporter : IAuditReporter
     private readonly IHostSettings _hostSettings;
     private readonly IAuditMessageQueueRepository _repository;
 
-    public QueuedAuditReporter(IDependencyContainer container, IConfigurationSettings settings,
-        IHostSettings hostSettings)
+    public QueuedAuditReporter(IDependencyContainer container, IHostSettings hostSettings)
         : this(new AuditMessageQueueRepository(NoOpRecorder.Instance,
             container.GetRequiredService<IHostSettings>(),
             container.GetRequiredService<IMessageQueueMessageIdFactory>(),

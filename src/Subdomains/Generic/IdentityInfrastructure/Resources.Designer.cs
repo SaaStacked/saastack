@@ -60,24 +60,6 @@ namespace IdentityInfrastructure {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;AuthCode&apos; must be provided for this authentication attempt.
-        /// </summary>
-        internal static string AnySSOAuthenticationProvider_MissingAuthCode {
-            get {
-                return ResourceManager.GetString("AnySSOAuthenticationProvider_MissingAuthCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;RefreshToken&apos; must be provided for this refresh attempt.
-        /// </summary>
-        internal static string AnySSOAuthenticationProvider_MissingRefreshToken {
-            get {
-                return ResourceManager.GetString("AnySSOAuthenticationProvider_MissingRefreshToken", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The &apos;PhoneNumber&apos; is either missing or invalid.
         /// </summary>
         internal static string AssociatePasswordMfaAuthenticatorForCallerRequestValidator_InvalidPhoneNumber {
@@ -472,15 +454,6 @@ namespace IdentityInfrastructure {
         internal static string ExchangeOAuth2ForTokensRequestValidator_ScopeMustBeNull {
             get {
                 return ResourceManager.GetString("ExchangeOAuth2ForTokensRequestValidator_ScopeMustBeNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;Username&apos; must be provided for this authentication attempt.
-        /// </summary>
-        internal static string FakeSSOAuthenticationProvider_MissingUsername {
-            get {
-                return ResourceManager.GetString("FakeSSOAuthenticationProvider_MissingUsername", resourceCulture);
             }
         }
         

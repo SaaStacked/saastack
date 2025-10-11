@@ -43,7 +43,7 @@ public class OrganizationsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(OrganizationsModule).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

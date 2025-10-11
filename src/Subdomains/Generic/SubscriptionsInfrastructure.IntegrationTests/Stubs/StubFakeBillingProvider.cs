@@ -1,5 +1,5 @@
 #if TESTINGONLY
-     using Application.Interfaces;
+using Application.Interfaces;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
@@ -46,7 +46,7 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
     {
         var paymentMethod = ProviderPaymentMethod.Empty;
         if (current.State.TryGetValue(FakeBillingProviderConstants.MetadataProperties.PaymentMethodId,
-                out var paymentMethodId))
+                out _))
         {
             paymentMethod = ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
                 BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None).Value;

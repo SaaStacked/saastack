@@ -33,7 +33,7 @@ public class ApiHostModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(HealthApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

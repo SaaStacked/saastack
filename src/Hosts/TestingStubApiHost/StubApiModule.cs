@@ -70,7 +70,7 @@ public class StubApiModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(StubHelloApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

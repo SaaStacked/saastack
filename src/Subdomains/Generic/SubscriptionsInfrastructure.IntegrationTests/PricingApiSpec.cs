@@ -8,8 +8,10 @@ using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using IntegrationTesting.WebApi.Common;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
-using SubscriptionsInfrastructure.IntegrationTests.Stubs;
 using Xunit;
+#if TESTINGONLY
+using SubscriptionsInfrastructure.IntegrationTests.Stubs;
+#endif
 
 namespace SubscriptionsInfrastructure.IntegrationTests;
 

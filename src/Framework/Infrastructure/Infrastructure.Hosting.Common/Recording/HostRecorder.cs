@@ -291,7 +291,6 @@ public sealed class HostRecorder : IRecorder, IDisposable
         {
             AuditReporterOption.None => new NoOpAuditReporter(),
             AuditReporterOption.ReliableQueue => new QueuedAuditReporter(container,
-                container.GetRequiredServiceForPlatform<IConfigurationSettings>(),
                 container.GetRequiredService<IHostSettings>()),
             _ => throw new ArgumentOutOfRangeException(nameof(options.MetricReporting))
         };

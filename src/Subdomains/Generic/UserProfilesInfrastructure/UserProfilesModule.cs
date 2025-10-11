@@ -39,7 +39,7 @@ public class UserProfilesModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(UserProfilesApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

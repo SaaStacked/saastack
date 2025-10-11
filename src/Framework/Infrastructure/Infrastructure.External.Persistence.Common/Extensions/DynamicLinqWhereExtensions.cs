@@ -20,7 +20,7 @@ public static class DynamicLinqWhereExtensions
         where TQueryableEntity : IQueryableEntity
 
     {
-        var orderBy = query.GetDefaultOrdering<TQueryableEntity>(metadata).ToFieldName();
+        var orderBy = query.GetDefaultOrdering(metadata).ToFieldName();
         orderBy = $"{orderBy}{(query.ResultOptions.OrderBy.Direction == OrderDirection.Descending ? " DESC" : "")}";
 
         return orderBy;

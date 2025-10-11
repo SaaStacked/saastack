@@ -29,7 +29,7 @@ public class BookingsModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(BookingsApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

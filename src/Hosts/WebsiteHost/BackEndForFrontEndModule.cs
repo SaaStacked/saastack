@@ -44,7 +44,7 @@ public class BackEndForFrontEndModule : ISubdomainModule
 
     public Assembly InfrastructureAssembly => typeof(RecordingApi).Assembly;
 
-    public Action<WebHostOptions, ConfigurationManager, IServiceCollection>? RegisterServices
+    public Action<WebHostOptions, ConfigurationManager, IServiceCollection> RegisterServices
     {
         get
         {

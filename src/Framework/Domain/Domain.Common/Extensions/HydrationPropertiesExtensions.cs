@@ -26,8 +26,6 @@ public static class HydrationPropertiesExtensions
 
                 return new Optional<TValue>((TValue)value);
             }
-
-            return Optional<TValue>.None;
         }
 
         return Optional<TValue>.None;

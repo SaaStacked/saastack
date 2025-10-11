@@ -4,15 +4,17 @@ using Application.Interfaces;
 using Application.Services.Shared;
 using Common.Extensions;
 using FluentAssertions;
-using IdentityInfrastructure.ApplicationServices;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
-using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
-using Infrastructure.Web.Common.Extensions;
 using IntegrationTesting.WebApi.Common;
 using IntegrationTesting.WebApi.Common.Stubs;
 using Microsoft.Extensions.DependencyInjection;
 using UnitTesting.Common.Validation;
 using Xunit;
+#if TESTINGONLY
+using Infrastructure.External.TestingOnly.ApplicationServices;
+using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
+using Infrastructure.Web.Common.Extensions;
+#endif
 
 namespace IdentityInfrastructure.IntegrationTests;
 
