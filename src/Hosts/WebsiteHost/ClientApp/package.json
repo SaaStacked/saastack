@@ -1,7 +1,7 @@
 {
   "name": "saastack-websitehost",
   "version": "1.0.0",
-  "description": "A BEFFE website host",
+  "description": "A comprehensive codebase template for starting your real-world, fully featured SaaS web products. On the .NET platform",
   "scripts": {
     "build": "vite build --mode development",
     "build:releasefordeploy": "vite build --mode production",
@@ -13,8 +13,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "author": "jezzsantos",
-  "license": "https://github.com/jezzsantos/saastack/blob/main/LICENSE",
+  "author": "SaaStacked",
+  "license": "https://github.com/SaaStacked/saastack/blob/main/LICENSE",
   "type": "module",
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.53.7",

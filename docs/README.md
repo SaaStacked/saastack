@@ -6,9 +6,9 @@
 
 This repository is a template. The main idea is that you copy (or fork) the whole repo, modify it to be yours, and use it to start building out your new product.
 
-Sign up to the [Standard Edition of SaaStacked](https://www.saastacked.com) and download all the technology adapters that you will need to suit your specific cloud deployment on AWS,  Azure or Google Cloud and choice of 3rd party services.
+Sign up to the [Standard Edition of SaaStacked](https://www.saastacked.com) and download all the technology adapters that you will need to deploy this codebase to your specific cloud deployment on AWS,  Azure or Google Cloud and choice of 3rd party services. Standard also comes with additional documentation, and developer tooling, to make creating your own product so much simpler and more consistent for your team.
 
-Once there, we will guide you through the process of cloning and owning the entire codebase, making it your product, installing your adapters, and getting it build, tested and deployed within your first day!
+Once you have Standard, we will guide you through the process of cloning and owning the entire codebase, making it your unique product, install all your technology adapters, automate your CI and CD pipelines, automate the deployment to your cloud provider and provide you with additional developer tools & documentation and getting it build, tested and deployed within your first day!
 
 ## All Use cases
 
@@ -30,19 +30,21 @@ Learn about the [Design Principles and Implementation details](design-principles
 
 ## How-To Guides
 
-Read the [How To Guides](how-to-guides/README.md) to help you get started and perform the most common tasks in working with and customizing this codebase template to suit your product needs.
+With  [SaaStack Standard](https://www.saastacked.com) we give you numerous and detailed "How To Guides" to help you get started and perform the most common tasks in working with and customizing this codebase template to suit your product needs. 
+
+We know that most developers/engineers don't want to read the docs, even if they have them at their finger tips. But you AI tools and copilots have no issue reading them all and then using them to vibe up your new feature! 
 
 # More Documentation
 
-In the Standard edition we have further documentation for extensive tooling, coding standards to pre-program your AI tools, and documentation to deploy everything on your chose Cloud Platform. 
+In the [SaaStack Standard](https://www.saastacked.com) we have further documentation for extensive tooling, coding standards to pre-program your AI tools, and documentation to deploy everything on your chose Cloud Platform. 
 
 Sign up to the [Standard Edition of SaaStacked](https://www.saastacked.com) to receive these benefits.
 
 ### Tooling
 
-As well as a code template, there is custom tooling (tailored to this codebase) to guide you to being more productive with using this template.
+As well as a code template, there is a ton of developer tooling (tailored to this codebase) to guide you to being more productive with using this template.
 
-We make extensive use Roslyn Analyzers, Code Fixes and Source Generators and Architecture tests to help you and your team be highly productive in following the established patterns this codebase. And more importantly detect and fix when those principles are violated.
+We make extensive use Roslyn Analyzers, Code Fixes and Source Generators, coding templates and Architecture tests to help you and your team be highly productive in following the established patterns this codebase. And more importantly detect and fix when those principles are inadvertently violated. Which we know they often are when the pressure is on.
 
 For example, we make it trivial to define robust REST APIs, and under the covers, the tooling converts those API definitions into minimal APIs for you. But you never have to write all that minimal API boilerplate stuff, or worry about how it is organized in code. This is all hidden away from you, not requiring any input from you.
 
@@ -56,13 +58,8 @@ We also give you several macros in the text editor (a.k.a. Live Templates) for c
 
 You can see all of these things in the Framework/Tools projects.
 
-### Deployment
+### Vibe Coding
 
-The codebase is ready for deployment immediately, from your GitHub repository.
-Deployment can be performed by any tool set to any environment, any way you like, we just made it easy for GitHub actions.
-
-### Coding Standards
-
-We have extensive documentation on coding standards, not just for your team to read, but also in a format that you can point your favorite AI tools to read and learn about the codebase.
+In [SaaStack Standard](https://www.saastacked.com), we have extensive documentation on coding standards, not just for your team to read, but also in a format that you can point your favorite AI tools to read and learn about the codebase.
 
 In addition, we support additional memory and rules for files for specific AI tools like [Augment Code](https://www.augmentcode.com/).
