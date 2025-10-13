@@ -66,7 +66,7 @@ public class HostOptions
     {
     }
 
-    private HostOptions(string hostName, bool isMultiTenanted, PersistenceOptions persistence,
+    protected HostOptions(string hostName, bool isMultiTenanted, PersistenceOptions persistence,
         RecorderOptions recording) : this(hostName)
     {
         IsMultiTenanted = isMultiTenanted;

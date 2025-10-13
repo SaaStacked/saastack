@@ -92,6 +92,18 @@ public class RecorderOptions
         }
     };
 
+    public RecorderOptions() : this(string.Empty, new RecordingEnvironmentOptions(), new RecordingEnvironmentOptions())
+    {
+    }
+
+    public RecorderOptions(string usageComponentName, RecordingEnvironmentOptions production,
+        RecordingEnvironmentOptions testing)
+    {
+        UsageComponentName = usageComponentName;
+        Production = production;
+        Testing = testing;
+    }
+
     public RecordingEnvironmentOptions CurrentEnvironment
     {
         get
@@ -104,11 +116,11 @@ public class RecorderOptions
         }
     }
 
-    public RecordingEnvironmentOptions Production { get; private set; } = new();
+    public RecordingEnvironmentOptions Production { get; init; }
 
-    public RecordingEnvironmentOptions Testing { get; private set; } = new();
+    public RecordingEnvironmentOptions Testing { get; init; }
 
-    public string UsageComponentName { get; private set; } = string.Empty;
+    public string UsageComponentName { get; init; }
 }
 
 /// <summary>
