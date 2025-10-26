@@ -2,6 +2,9 @@
 [![Frontend WebApp Ready](https://img.shields.io/badge/Frontend_App-Ready-green.svg)](README.md)
 [![Build and Test](https://github.com/SaaStacked/saastack/actions/workflows/build.yml/badge.svg)](https://github.com/SaaStacked/saastack/actions/workflows/build.yml)
 
+[![Basic Available](https://img.shields.io/badge/Free_SKU_Available-009966.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Standard_SKU_Available-B87333.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Premium_SKU_Available-A67C00.svg)](https://www.saastacked.com)
+
+
 # SaaStack
 
 Are you about to build a new SaaS product from scratch on .NET?
@@ -57,16 +60,15 @@ or, if you prefer hosting on AWS:
 
 ## How is the code structured?
 
-150+ projects!!
+100+ projects!!
 
-Yes, 150 projects! Why? because the world has moved on.
+Yes, 100 projects! Why? because the world has moved on, and you are building a long-lived highly maintainable product now.
 
-If you are used to cramming in all your code into one or three assemblies for your API, then you are not managing dependencies very well at all.
+If you are used to cramming in all your code into one or three assemblies for your API, then you are not managing dependencies very well at all, and that thing simply isn't going to scale. Too much software in too few deployable units.
 
-Even if you think you are, your favorite IDE makes it far too easy to violate decoupling rules, just by adding a `using` statement to some type, you are inadvertently adding dangerous coupling. Then, later down the track, when scaling out becomes an issue, how will you factor out that code from that tight set of assemblies into another deployable unit, when the code is all tangled up with all the rest of that code? You can't. That's why we have automated tests, and a bunch Roslyn rules to stop you accidentally creating *accidental complexity* for the sake of expediency.
+You need to structure things better to manage complexity in the long run. Even your favorite IDE makes it far too easy to violate de-coupling rules, just by adding a `using` statement to some type, somewhere else in the codebase you are possibly inadvertently adding dangerous coupling. Then, later down the track, when scaling out becomes an issue, you won't be able to factor out that code from that tight set of assemblies into another deployable unit. You simply can't. That's why we have not only very structured boundaries, but we have also included automated tests, Roslyn analyzers and other developer tooling to prevent and warn you when you are accidentally create *accidental complexity* for the sake of expediency.
 
-Instead, what you will want at that time is a codebase structure with a very intentional separation of "modules" and separate deployable units. That are designed to be separated. These "modules" are best contained across assemblies that are explicitly separated in layers, and backed by tooling to enforce that separation, and enforce the decoupling of types - to avoid the spaghetti code that is always ahead of your team today and tomorrow.
-
+So not only are you getting a comprehensive production-ready, and battle tested codebase, ready to go, you are also getting a very structured and maintainable codebase that is ready to grow with you, with the tools to keep things clean in the future. Its quite a bit more that a project template.
 
 
 The best experience for working with this template is in an IDE like JetBrains Rider, or Visual Studio, or Visual Studio Code (with solution file).
@@ -187,3 +189,34 @@ The starter template also takes care of these specific kinds of things:
   * It utilizes common patterns and abstractions around popular libraries (that are the most up-to-date in the .NET world), so you can switch them out for your preferences.
   * It defines horizontal layers and vertical slices to make changing code in any component easier and more reliable.
   * It enforces dependency direction rules so that layers and subdomains are not inadvertently coupled together (enforcing architectural constraints)
+
+## Is this all you get?
+
+From this open source project, you get all this for _Free_:
+* You can clone, build, test, run, debug, and develop all this locally!
+  * No local dependencies on any infrastructure, no databases, no docker containers, nothing!
+  * Develop on Windows, On MacOS, On Linux.
+* The codebase is team ready, so you can onboard new team members and get them up to speed quickly.
+* You can start designing and building your product right now, complete with a CI pipeline in GitHub.
+  * Build out your product
+  * Demo it to your company from your local machine.
+
+But what you can't yet do, is deploy this into a commercial production environment:
+
+For that you need a few more things:
+* You need a set of cloud provider connectors to connect to: databases, queues, message buses, and APM for monitoring
+  * So you can run this product in either Azure or AWS.
+* You need a set of production environment technology adapters, to interact (both ways) to various 3rd party services
+  * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, LaunchDarkly, etc.
+* You need an automated deployment pipeline to push releases to a cloud production environment, in minutes.
+* And you could use some more helpful documentation to learn the patterns and techniques
+  * Coding standards for your team
+  * Tools to keep consistency
+  * Rules and conventions to train your favorite AI tool to help you knock out your future product at rapid speed!
+
+
+That is what [SaaStack Standard](https://www.saastacked.com) and [SaaStack Premium](https://www.saastacked.com) are all about.
+
+<a href="https://www.saastacked.com"><img alt="SaaStack Licenses" src="docs/images/Skus.png" width="850" /></a>
+
+Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud. Then get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
