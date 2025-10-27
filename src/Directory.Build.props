@@ -60,6 +60,16 @@
         <RoslynTargetFramework>8.0.19</RoslynTargetFramework> <!-- Update the RuntimeConstants.Dotnet versions also -->
     </PropertyGroup>
 
+    <!-- Analyzers for Standard and Premium only -->
+    <!--
+    <ItemGroup Condition="'$(IsFrameworkProject)'=='true' AND '$(IsTestProject)'!='true' AND '$(IsRoslynComponent)'!='true' AND '$(ExcludeFromFrameworkAnalyzers)'!='true'">
+        <ProjectReference Include="$(MSBuildThisFileDirectory)\Framework\Tools\Tools.Analyzers.Framework\Tools.Analyzers.Framework.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(IsFrameworkProject)'!='true' AND '$(IsTestProject)'!='true' AND '$(IsRoslynComponent)'!='true' AND '$(ExcludeFromNonFrameworkAnalyzers)'!='true'">
+        <ProjectReference Include="$(MSBuildThisFileDirectory)\Framework\Tools\Tools.Analyzers.NonFramework\Tools.Analyzers.NonFramework.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+    -->
+
     <!-- Build configurations -->
     <PropertyGroup>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
