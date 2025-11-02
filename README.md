@@ -2,26 +2,32 @@
 [![Frontend WebApp Ready](https://img.shields.io/badge/Frontend_App-Ready-green.svg)](README.md)
 [![Build and Test](https://github.com/SaaStacked/saastack/actions/workflows/build.yml/badge.svg)](https://github.com/SaaStacked/saastack/actions/workflows/build.yml)
 
-[![Basic Available](https://img.shields.io/badge/Free_SKU_Available-009966.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Standard_SKU_Available-B87333.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Premium_SKU_Available-A67C00.svg)](https://www.saastacked.com)
+[![Basic Available](https://img.shields.io/badge/Free_SKU_Available-B8C8D1.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Standard_SKU_Available-3BBEC6.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Premium_SKU_Available-F5AD20.svg)](https://www.saastacked.com)
 
 
 # SaaStack
 
 Are you about to build a new SaaS product from scratch on .NET?
 
-Then start with SaaStack. It’s not just a codebase template—it’s your unfair advantage.
+Then do yourself a huge favor, and don't start it from scratch. Start with SaaStack instead.
 
-SaaStack saves you months (or years) of engineering work by giving you a fully-featured, scalable foundation for real-world SaaS products. It solves the unavoidable: user authentication, API access, authorization schemes, third-party integrations, management API.
+It’s not just a codebase template — it’s your startup's unfair advantage.
 
-Yes, .NET offers the building blocks already—but you still need to know how to wire it all up in a way that scales, survives, and adapts. That takes serious architecture skills that most founding engineers or CTOs simply don’t have on day one.
+SaaStack saves you months (possibly even years) of engineering work (and rework) by giving you a fully-featured, scalable foundation for real-world SaaS products, based on all the latest and great dotnet tech.
+
+It solves the unavoidable work of building out: user authentication, API access, authorization schemes, third-party integrations, management APIs, an initial website, and making all this secure and ready for scale, as well as being highly testable and robust.
+
+Your job as a founding engineer (or startup CTO) is not to do all this from scratch yourself, but to make smart tech, team, tooling and timing decisions that make you move fast, get your ideas to market and start iterating on product market fit.
+
+If you start from scratch youself, yes its fun and exciting, but you have months of work ahead of you just to get something reasonable working for your customers, and that's time and money you dont have to waste. Why not learn from those who have done this ten's of times before in multiple startups? and who can show you what is important to establish in your first couple years, long before you discover you can't do these things, when the crunch comes. 
 
 Skip the startup trap:
 
-- ❌ Reinventing the wheel, where we already have standard solutions
-- ❌ Rushing forward on a fragile foundation, that is untestable, insecure, and with no production observability
-- ❌ Building a tangled monolith, destined for a rewrite next year, when you discover that you cannot move fast, stuck in a big-ball-of-mud
+- ❌ Reinventing the wheel, where we already have well-known standard solutions
+- ❌ Rushing forward on a fragile foundation, that is under-engineered, untestable, insecure, and with no production observability, or extensibility.
+- ❌ Building a tangled monolith, destined for a rewrite next year, when you discover that you and your team cannot move fast, stuck in a big-ball-of-mud.
 
-SaaStack is opinionated, but it is also flexible and extensible and real-world, it is not a sample.
+SaaStack is opinionated, but it is also flexible and extensible and real-world. It is not a sample, it has been used and honed in a dozen real world SaaS products already (by the authors).
 
 Since it is a codebase and not a nuget package (secret sauce), you never get boxed inside it waiting for some other team to improve it for you.
 - ✅ It’s already battle-tested in several live SaaS companies - you benefit from their in-the-wild learnings and optimizations.
@@ -160,7 +166,7 @@ The starter template also takes care of these specific kinds of things:
   * It defines a ruleset about how JSON is represented on the wire and how requests are deserialized (to cope with different client styles)
   * It localizes developer errors
   * It handles and maps common exceptions to standard HTTP status codes
-  * It returns standard HTTP statuses for successful requests based on the HTTP method (e.g., GET = 200, POST = 201, PUT = 202, DELETE = 204)
+  * It returns standard HTTP statuses for successful requests based on the HTTP method (e.g., `GET`= 200, `POST` = 201, `PUT` = 202, `DELETE` = 204)
   * Provides a Swagger UI.
 * Infrastructure
   * All infrastructure components are independently testable adapters
@@ -219,4 +225,6 @@ That is what [SaaStack Standard](https://www.saastacked.com) and [SaaStack Premi
 
 <a href="https://www.saastacked.com"><img alt="SaaStack Licenses" src="docs/images/Skus.png" width="850" /></a>
 
-Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud. Then get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
+Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud. 
+
+Then get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
