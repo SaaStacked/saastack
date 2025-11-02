@@ -7,7 +7,7 @@ export function AboutPage() {
   return (
     <article className="prose dark:prose-invert max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <img src="/images/mascot/mascot.png" alt="SaaStack Mascot" className="w-24 h-24 mx-auto mb-6" />
+        <img src="/images/logo.png" alt="SaaStack" className="w-24 h-24 mx-auto mb-6" />
         <h1 className="text-4xl font-bold text-accent-dark dark:text-accent-light mb-4">
           {translate('pages.about.title')}
         </h1>

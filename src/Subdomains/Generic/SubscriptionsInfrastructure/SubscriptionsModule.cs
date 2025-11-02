@@ -44,9 +44,6 @@ public class SubscriptionsModule : ISubdomainModule
         {
             return (_, _, services) =>
             {
-                // EXTEND: Change the billing provider and supporting APIs/Applications/Services
-                services.AddSingleton<IBillingProvider, SimpleBillingProvider>();
-
                 // EXTEND: Add any additional services for this subdomain
                 services
                     .AddPerHttpRequest<ISubscriptionsApplication, SubscriptionsApplication.SubscriptionsApplication>();
@@ -62,6 +59,7 @@ public class SubscriptionsModule : ISubdomainModule
                     _ => new SubscriptionNotifier()
                 );
 
+                services.AddSingleton<IBillingProvider, SimpleBillingProvider>();
                 services.AddPerHttpRequest<ISubscriptionsService>(c =>
                     new SubscriptionsInProcessServiceClient(c.LazyGetRequiredService<ISubscriptionsApplication>()));
             };
