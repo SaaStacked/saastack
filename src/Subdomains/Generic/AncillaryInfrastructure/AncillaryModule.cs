@@ -46,6 +46,7 @@ public class AncillaryModule : ISubdomainModule
         {
             return (_, _, services) =>
             {
+                // EXTEND: Add any additional services for this subdomain
                 services.AddPerHttpRequest<IRecordingApplication, RecordingApplication>();
                 services.AddPerHttpRequest<IFeatureFlagsApplication, FeatureFlagsApplication>();
                 services.AddPerHttpRequest<IAncillaryApplication, AncillaryApplication.AncillaryApplication>();

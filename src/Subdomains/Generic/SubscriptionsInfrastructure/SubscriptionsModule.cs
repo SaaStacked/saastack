@@ -44,9 +44,10 @@ public class SubscriptionsModule : ISubdomainModule
         {
             return (_, _, services) =>
             {
-                //EXTEND: Change the billing provider and supporting APIs/Applications/Services
+                // EXTEND: Change the billing provider and supporting APIs/Applications/Services
                 services.AddSingleton<IBillingProvider, SimpleBillingProvider>();
 
+                // EXTEND: Add any additional services for this subdomain
                 services
                     .AddPerHttpRequest<ISubscriptionsApplication, SubscriptionsApplication.SubscriptionsApplication>();
                 services.AddPerHttpRequest<ISubscriptionRepository, SubscriptionRepository>();
