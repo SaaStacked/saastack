@@ -128,7 +128,7 @@ public class RecordingApplication : IRecordingApplication
             more.TryAdd(UsageConstants.Properties.ForId, caller.CallerId);
         }
 
-        more.TryAdd(UsageConstants.Properties.Timestamp, DateTime.UtcNow);
+        more.TryAdd(UsageConstants.Properties.Timestamp, DateTime.UtcNow.ToIso8601());
         more.TryAdd(UsageConstants.Properties.IpAddress, clientDetails.IpAddress.HasValue()
             ? clientDetails.IpAddress
             : "unknown");

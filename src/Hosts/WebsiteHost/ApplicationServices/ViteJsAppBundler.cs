@@ -49,8 +49,8 @@ public class ViteJsAppBundler : IJsAppBundler
         {
             return new JsAppBundleOptions
             {
-                JsPath = jsAppData.Main!.Js!,
-                CssPath = jsAppData.Main!.Css!,
+                JsPath = $"/{jsAppData.Main!.Js!}",
+                CssPath = $"/{jsAppData.Main!.Css!}",
                 IsBundled = true
             };
         }

@@ -76,6 +76,7 @@ export const CredentialsRegisterPage: React.FC = () => {
           type="email"
           label={translate('pages.identity.credentials_register.form.fields.email_address.label')}
           placeholder={translate('pages.identity.credentials_register.form.fields.email_address.placeholder')}
+          autoComplete="username"
         />
         <FormInput
           id="password"

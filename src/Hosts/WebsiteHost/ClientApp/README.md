@@ -2,7 +2,7 @@
 
 This explains how the JavaScript App is built and deployed, and how its components work.
 
-IMPORTANT: Make sure you have already set up your local environment for developing the JS App, from the instructions in the main [README.md](../../../../README_DERIVATIVE.md).
+IMPORTANT: Make sure you have already set up your local environment for developing the JS App, from the instructions in the main [README.md](../../../../README.md).
 
 ## Packaging & Bundling
 
@@ -55,7 +55,7 @@ This is the recommended approach to build your pages because these 'Action-enabl
 5. Caching responses, when the action is successful.
 6. Invalidating caches, when the action is successful.
 
-> See the [JavaScript Action](../../../docs/design-principles/0200-javascript-actions.md) for more details.
+> See the [JavaScript Action](../../../../docs/design-principles/0200-javascript-actions.md) for more details.
 
 ### Caching
 
@@ -116,7 +116,7 @@ We use [Vitest](https://vitest.dev/) for unit testing, which provides a Jest-com
 Configuration is defined in `.env` files.
 
 * When running locally, `npm run dev` will use the `.env` file, and will overwrite any values defined in `.env.local` file.
-* When building for production, `npm run build` will use the `.env.deploy` file.
+* When building for production, `npm run build` will use the `.env.production` file. See: https://vite.dev/guide/env-and-mode
 
 There is a special variable called: `window.isTestingOnly` which you SHOULD use to conditionally execute code that is only relevant in local or CI testing environments.
 
@@ -186,7 +186,7 @@ We strongly recommend driving your pages using either: `FormAction` for interact
 
 These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application does not work. 
 
-> See more on why you should "actions" here: [JavaScript Actions](../../../docs/design-principles/0200-javascript-actions.md)
+> See more on why you should "actions" here: [JavaScript Actions](../../../../docs/design-principles/0200-javascript-actions.md)
 
 
 ### Tailwind Styling

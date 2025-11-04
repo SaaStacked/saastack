@@ -4,6 +4,7 @@
 interface ImportMetaEnv {
   readonly VITE_APPLICATIONINSIGHTS_CONNECTIONSTRING: string;
   readonly VITE_WEBSITEHOSTBASEURL: string;
+  readonly VITE_APIHOST1BASEURL: string;
   //EXTEND: add more variables from the .env file
 }
 

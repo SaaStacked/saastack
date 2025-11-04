@@ -562,8 +562,15 @@ public class JsonClient : IHttpJsonClient, IDisposable
         problem = new ResponseProblem();
         try
         {
+            
             var details = responseText.FromJson<OAuth2Rfc6749ProblemDetails>();
             if (details.NotExists() || details.Error.HasNoValue())
+            {
+                return false;
+            }
+
+            //Must be a known error, like: invalid_request, unauthorized_client, access_denied, unsupported_response_type, invalid_scope, server_error, temporarily_unavailable
+            if (!details.Error.IsMatchWith("^[a-zA-Z_]{5,200}$"))
             {
                 return false;
             }
@@ -573,6 +580,7 @@ public class JsonClient : IHttpJsonClient, IDisposable
         }
         catch (JsonException)
         {
+            problem = statusCode.ToResponseProblem(responseText);
             return false;
         }
     }
@@ -634,6 +642,12 @@ public class JsonClient : IHttpJsonClient, IDisposable
             return true;
         }
         catch (JsonException)
+        {
+            problem = statusCode.ToResponseProblem(Resources.JsonClient_TryParseNonStandardErrors_NonStandard,
+                responseText);
+            return true;
+        }
+        catch (Exception)
         {
             return false;
         }
