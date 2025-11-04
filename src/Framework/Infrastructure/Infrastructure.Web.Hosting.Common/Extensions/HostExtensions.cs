@@ -7,6 +7,7 @@ using Application.Services.Shared;
 using Common;
 using Common.Configuration;
 using Common.Extensions;
+using Common.FeatureFlags;
 using Common.Recording;
 using Domain.Common;
 using Domain.Common.Identity;
@@ -44,7 +45,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 #if TESTINGONLY
 using Domain.Events.Shared.TestingOnly;
-using Common.FeatureFlags;
 using Infrastructure.External.TestingOnly.ApplicationServices;
 #endif
 
@@ -112,11 +112,26 @@ public static class HostExtensions
             services.AddSingleton<ICrashReporter, NoOpCrashReporter>();
             services.AddSingleton<IMetricReporter, NoOpMetricReporter>();
 #if TESTINGONLY
+            services.AddSingleton<IAuditReporter>(c => new QueuedAuditReporter(
+                c.GetRequiredService<IHostSettings>(),
+                c.GetRequiredService<IMessageQueueMessageIdFactory>(),
+                c.GetRequiredServiceForPlatform<IQueueStore>())); // Uses LocalMachineJsonFileStore
+            services.AddSingleton<IUsageReporter>(c => new QueuedUsageReporter(
+                c.GetRequiredService<IHostSettings>(),
+                c.GetRequiredService<IMessageQueueMessageIdFactory>(),
+                c.GetRequiredServiceForPlatform<IQueueStore>())); // Uses LocalMachineJsonFileStore
+#else
+            services.AddSingleton<IAuditReporter, NoOpAuditReporter>();
+            services.AddSingleton<IUsageReporter, NoOpUsageReporter>();
+#endif
+#if TESTINGONLY
             services.AddSingleton<IFeatureFlags>(c => new FakeFeatureFlagProviderServiceClient(
                 c.GetRequiredService<IRecorder>(),
                 c.GetRequiredServiceForPlatform<IConfigurationSettings>(),
                 c.GetRequiredService<IHttpClientFactory>(),
                 c.GetRequiredService<JsonSerializerOptions>()));
+#else
+            services.AddSingleton<IFeatureFlags, EmptyFeatureFlags>();
 #endif
         }
 

@@ -51,12 +51,15 @@ public static class WebApplicationExtensions
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-        }, "Pipeline: Serving static HTML/CSS/JS is enabled"));
+            return MiddlewareRegistration.Result.Report("Pipeline: Serving static HTML/CSS/JS is enabled");
+        }));
         middlewares.Add(new MiddlewareRegistration(CustomMiddlewareIndex + 100, app =>
         {
             app.UseMiddleware<CSRFMiddleware>();
             app.UseMiddleware<ReverseProxyMiddleware>();
-        }, "Pipeline: BEFFE reverse proxy with CSRF protection is enabled"));
+            return MiddlewareRegistration.Result.Report(
+                "Pipeline: BEFFE reverse proxy with CSRF protection is enabled");
+        }));
     }
 
     /// <summary>
@@ -102,7 +105,8 @@ public static class WebApplicationExtensions
                 await Results.Problem(details)
                     .ExecuteAsync(context);
             }));
-        }, "Pipeline: Exception Shielding is enabled"));
+            return MiddlewareRegistration.Result.Report("Pipeline: Exception Shielding is enabled");
+        }));
     }
 
     /// <summary>
@@ -116,14 +120,17 @@ public static class WebApplicationExtensions
             return;
         }
 
-        var httpContext = builder.Services.GetRequiredService<IHttpContextFactory>().Create(new FeatureCollection());
-        var policy = builder.Services.GetRequiredService<ICorsPolicyProvider>()
-            .GetPolicyAsync(httpContext, WebHostingConstants.DefaultCORSPolicyName).GetAwaiter().GetResult()!
-            .ToString();
+        middlewares.Add(new MiddlewareRegistration(40, app =>
+        {
+            app.UseCors();
 
-        middlewares.Add(new MiddlewareRegistration(40, app => { app.UseCors(); },
-            "Pipeline: CORS is enabled: Policy -> {Policy}",
-            policy));
+            var httpContext = builder.Services.GetRequiredService<IHttpContextFactory>()
+                .Create(new FeatureCollection());
+            var policy = builder.Services.GetRequiredService<ICorsPolicyProvider>()
+                .GetPolicyAsync(httpContext, WebHostingConstants.DefaultCORSPolicyName).GetAwaiter().GetResult()!
+                .ToString();
+            return MiddlewareRegistration.Result.Report("Pipeline: CORS is enabled: Policy -> {Policy}", policy);
+        }));
     }
 
     /// <summary>
@@ -153,25 +160,31 @@ public static class WebApplicationExtensions
                 readModelRelay.Stop();
                 notificationRelay.Stop();
             });
-        }, "Pipeline: Event Projections/Notifications are enabled"));
+            return MiddlewareRegistration.Result.Report("Pipeline: Event Projections/Notifications are enabled");
+        }));
 
-        var subscriberService = builder.Services.GetService<IDomainEventingSubscriberService>();
-        if (subscriberService.Exists())
-        {
-            var subscribers = subscriberService.SubscriptionNames;
-            var subscriptionNames = subscribers.JoinAsOredChoices(", ");
-            middlewares.Add(new MiddlewareRegistration(CustomMiddlewareIndex + 45,
-                _ =>
+        middlewares.Add(new MiddlewareRegistration(CustomMiddlewareIndex + 45,
+            _ =>
+            {
+                var subscriberService = builder.Services.GetService<IDomainEventingSubscriberService>();
+                if (subscriberService.NotExists())
                 {
-                    var registered = subscriberService.RegisterAllSubscribersAsync(CancellationToken.None)
-                        .GetAwaiter().GetResult();
-                    if (registered.IsFailure)
-                    {
-                        throw new InvalidOperationException(registered.Error.Message);
-                    }
-                },
-                $"Feature: Registered the following {subscribers.Count} subscribers to topic {EventingConstants.Topics.DomainEvents}, subscribers: {subscriptionNames}"));
-        }
+                    return MiddlewareRegistration.Result.Ignore;
+                }
+
+                var subscribers = subscriberService.SubscriptionNames;
+                var subscriptionNames = subscribers.JoinAsOredChoices(", ");
+                var registered = subscriberService.RegisterAllSubscribersAsync(CancellationToken.None)
+                    .GetAwaiter().GetResult();
+                if (registered.IsFailure)
+                {
+                    throw new InvalidOperationException(registered.Error.Message);
+                }
+
+                return MiddlewareRegistration.Result.Report(
+                    "Feature: Registered the following {Count} subscribers to topic {Topic}, subscribers: {SubscriptionNames}",
+                    subscribers.Count, EventingConstants.Topics.DomainEvents, subscriptionNames);
+            }));
     }
 
     /// <summary>
@@ -186,8 +199,11 @@ public static class WebApplicationExtensions
         }
 
         middlewares.Add(new MiddlewareRegistration(52, //Must be after authentication and before Authorization 
-            app => { app.UseMiddleware<MultiTenancyMiddleware>(); },
-            "Pipeline: Multi-Tenancy detection is enabled"));
+            app =>
+            {
+                app.UseMiddleware<MultiTenancyMiddleware>();
+                return MiddlewareRegistration.Result.Report("Pipeline: Multi-Tenancy detection is enabled");
+            }));
     }
 
     /// <summary>
@@ -196,66 +212,79 @@ public static class WebApplicationExtensions
     public static void EnableOtherFeatures(this WebApplication builder,
         List<MiddlewareRegistration> middlewares, WebHostOptions hostOptions)
     {
-        var loggers = builder.Services.GetServices<ILoggerProvider>()
-            .Select(logger => logger.GetType().Name).Join(", ");
         middlewares.Add(new MiddlewareRegistration(-80, _ =>
         {
-            //Nothing to register
-        }, "Feature: Logging to -> {Providers}", loggers));
+            //Nothing to register, only reporting
+            var loggers = builder.Services.GetServices<ILoggerProvider>()
+                .Select(logger => logger.GetType().Name).Join(", ");
+            return MiddlewareRegistration.Result.Report("Feature: Logging to -> {Providers}", loggers);
+        }));
 
-        var appSettings = ((ConfigurationManager)builder.Configuration).Sources
-            .OfType<JsonConfigurationSource>()
-            .Select(jsonSource => jsonSource.Path)
-            .Join(", ");
         middlewares.Add(new MiddlewareRegistration(-70, _ =>
         {
-            //Nothing to register
-        }, "Feature: Configuration loaded from -> {Sources}", appSettings));
+            //Nothing to register only reporting
+            var appSettings = ((ConfigurationManager)builder.Configuration).Sources
+                .OfType<JsonConfigurationSource>()
+                .Select(jsonSource => jsonSource.Path)
+                .Join(", ");
+            return MiddlewareRegistration.Result.Report("Feature: Configuration loaded from -> {Sources}",
+                appSettings);
+        }));
 
-        var recorder = builder.Services.GetRequiredService<IRecorder>()
-            .ToString()!;
         middlewares.Add(new MiddlewareRegistration(-60, _ =>
         {
-            //Nothing to register
-        }, "Feature: Recording with -> {Recorder}", recorder));
+            //Nothing to register only reporting
+            var recorder = builder.Services.GetRequiredService<IRecorder>()
+                .ToString()!;
+            return MiddlewareRegistration.Result.Report("Feature: Recording with -> {Recorder}", recorder);
+        }));
 
-        if (hostOptions.UsesApiDocumentation)
-        {
-            var prefix = hostOptions.IsBackendForFrontEnd
-                ? WebConstants.BackEndForFrontEndDocsPath.Trim('/')
-                : string.Empty; //Note: puts the swagger docs at the root of the API
-            var url = builder.Configuration.GetValue<string>(WebHostDefaults.ServerUrlsKey);
-            var path = prefix.HasValue()
-                ? $"{url}/{prefix}"
-                : url!;
-            middlewares.Add(new MiddlewareRegistration(-50,
-                app =>
-                {
-                    app.MapSwagger();
-                    app.UseSwaggerUI(options =>
-                    {
-                        var jsonEndpoint = WebConstants.SwaggerEndpointFormat.Format(hostOptions.HostVersion);
-                        options.DocumentTitle = hostOptions.HostName;
-                        options.SwaggerEndpoint(jsonEndpoint, hostOptions.HostName);
-                        options.RoutePrefix = prefix;
-                    });
-                }, "Feature: Open API documentation enabled with Swagger UI -> {Path}", path));
-        }
-
-        var dataStore = builder.Services.GetRequiredServiceForPlatform<IDataStore>().GetType().Name;
-        var eventStore = builder.Services.GetRequiredServiceForPlatform<IEventStore>().GetType().Name;
-        var queueStore = builder.Services.GetRequiredServiceForPlatform<IQueueStore>().GetType().Name;
-        var blobStore = builder.Services.GetRequiredServiceForPlatform<IBlobStore>().GetType().Name;
-        var messageBusStore = builder.Services.GetRequiredServiceForPlatform<IMessageBusStore>().GetType().Name;
-        middlewares.Add(new MiddlewareRegistration(-40, _ =>
+        middlewares.Add(new MiddlewareRegistration(-50,
+            app =>
             {
-                //Nothing to register
-            },
-            "Feature: Platform Persistence stores: DataStore -> {DataStore}, EventStore -> {EventStore}, MessageBusStore -> {messageBusStore}, QueueStore -> {QueueStore}, BlobStore -> {BlobStore}",
-            dataStore, eventStore, messageBusStore, queueStore, blobStore));
+                if (!hostOptions.UsesApiDocumentation)
+                {
+                    return MiddlewareRegistration.Result.Ignore;
+                }
 
-        middlewares.Add(new MiddlewareRegistration(56, app => { app.UseAntiforgery(); },
-            "Pipeline: Anti-forgery detection"));
+                var prefix = hostOptions.IsBackendForFrontEnd
+                    ? WebConstants.BackEndForFrontEndDocsPath.Trim('/')
+                    : string.Empty; //Note: puts the swagger docs at the root of the API
+                var url = builder.Configuration.GetValue<string>(WebHostDefaults.ServerUrlsKey);
+                var path = prefix.HasValue()
+                    ? $"{url}/{prefix}"
+                    : url!;
+
+                app.MapSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    var jsonEndpoint = WebConstants.SwaggerEndpointFormat.Format(hostOptions.HostVersion);
+                    options.DocumentTitle = hostOptions.HostName;
+                    options.SwaggerEndpoint(jsonEndpoint, hostOptions.HostName);
+                    options.RoutePrefix = prefix;
+                });
+                return MiddlewareRegistration.Result.Report(
+                    "Feature: Open API documentation enabled with Swagger UI -> {Path}", path);
+            }));
+
+        middlewares.Add(new MiddlewareRegistration(-40, _ =>
+        {
+            //Nothing to register only reporting
+            var dataStore = builder.Services.GetRequiredServiceForPlatform<IDataStore>().GetType().Name;
+            var eventStore = builder.Services.GetRequiredServiceForPlatform<IEventStore>().GetType().Name;
+            var queueStore = builder.Services.GetRequiredServiceForPlatform<IQueueStore>().GetType().Name;
+            var blobStore = builder.Services.GetRequiredServiceForPlatform<IBlobStore>().GetType().Name;
+            var messageBusStore = builder.Services.GetRequiredServiceForPlatform<IMessageBusStore>().GetType().Name;
+            return MiddlewareRegistration.Result.Report(
+                "Feature: Platform Persistence stores: DataStore -> {DataStore}, EventStore -> {EventStore}, MessageBusStore -> {messageBusStore}, QueueStore -> {QueueStore}, BlobStore -> {BlobStore}",
+                dataStore, eventStore, messageBusStore, queueStore, blobStore);
+        }));
+
+        middlewares.Add(new MiddlewareRegistration(56, app =>
+        {
+            app.UseAntiforgery();
+            return MiddlewareRegistration.Result.Report("Pipeline: Anti-forgery detection is enabled");
+        }));
     }
 
     /// <summary>
@@ -274,7 +303,8 @@ public static class WebApplicationExtensions
                 context.Request.EnableBuffering();
                 await next();
             });
-        }, "Pipeline: Rewinding of requests is enabled"));
+            return MiddlewareRegistration.Result.Report("Pipeline: Rewinding of requests is enabled");
+        }));
     }
 
     /// <summary>
@@ -283,12 +313,20 @@ public static class WebApplicationExtensions
     public static void EnableSecureAccess(this WebApplication builder,
         List<MiddlewareRegistration> middlewares, AuthorizationOptions authorization)
     {
-        middlewares.Add(new MiddlewareRegistration(50, app => { app.UseAuthentication(); },
-            "Pipeline: Authentication is enabled: HMAC -> {HMAC}, APIKeys -> {APIKeys}, Tokens -> {Tokens}, Cookie -> {Cookie}",
-            authorization.UsesHMAC, authorization.UsesApiKeys, authorization.UsesTokens,
-            authorization.UsesAuthNCookie));
+        middlewares.Add(new MiddlewareRegistration(50, app =>
+        {
+            app.UseAuthentication();
+            return MiddlewareRegistration.Result.Report(
+                "Pipeline: Authentication is enabled: HMAC -> {HMAC}, APIKeys -> {APIKeys}, Tokens -> {Tokens}, Cookie -> {Cookie}",
+                authorization.UsesHMAC, authorization.UsesApiKeys, authorization.UsesTokens,
+                authorization.UsesAuthNCookie);
+        }));
         middlewares.Add(
-            new MiddlewareRegistration(54, app => { app.UseAuthorization(); },
-                "Pipeline: Authorization is enabled: Anonymous -> Enabled, Roles -> Enabled, Features -> Enabled"));
+            new MiddlewareRegistration(54, app =>
+            {
+                app.UseAuthorization();
+                return MiddlewareRegistration.Result.Report(
+                    "Pipeline: Authorization is enabled: Anonymous -> Enabled, Roles -> Enabled, Features -> Enabled");
+            }));
     }
 }

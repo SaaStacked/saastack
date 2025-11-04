@@ -3,11 +3,9 @@ using Application.Interfaces.Services;
 using Application.Persistence.Shared;
 using Application.Persistence.Shared.ReadModels;
 using Common;
-using Common.Configuration;
 using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
-using Domain.Interfaces.Services;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Shared.ApplicationServices;
 
@@ -23,13 +21,9 @@ public class QueuedUsageReporter : IUsageReporter
     private readonly IUsageMessageQueue _queue;
 
     // ReSharper disable once UnusedParameter.Local
-    public QueuedUsageReporter(IDependencyContainer container, IConfigurationSettings settings,
-        IHostSettings hostSettings)
-        : this(new UsageMessageQueue(NoOpRecorder.Instance,
-            container.GetRequiredService<IHostSettings>(),
-            container.GetRequiredService<IMessageQueueMessageIdFactory>(),
-            container.GetRequiredServiceForPlatform<IQueueStore>()
-        ), hostSettings)
+    public QueuedUsageReporter(IHostSettings hostSettings, IMessageQueueMessageIdFactory messageIdFactory,
+        IQueueStore queueStore)
+        : this(new UsageMessageQueue(NoOpRecorder.Instance, hostSettings, messageIdFactory, queueStore), hostSettings)
     {
     }
 

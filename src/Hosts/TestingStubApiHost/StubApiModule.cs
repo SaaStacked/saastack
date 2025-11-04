@@ -44,21 +44,24 @@ public class StubApiModule : ISubdomainModule
                 app.RegisterRoutes();
 
 #if TESTINGONLY
-                var stubDrainingServices = app.Services.GetServices<IHostedService>()
-                    .OfType<StubCloudWorkerService>()
-                    .ToList();
-                if (stubDrainingServices.HasAny())
+                middlewares.Add(new MiddlewareRegistration(-40, _ =>
                 {
+                    //Nothing to register, only reporting
+                    var stubDrainingServices = app.Services.GetServices<IHostedService>()
+                        .OfType<StubCloudWorkerService>()
+                        .ToList();
+                    if (stubDrainingServices.HasNone())
+                    {
+                        return MiddlewareRegistration.Result.Ignore;
+                    }
+
                     var stubDrainingService = stubDrainingServices[0];
                     var queues = stubDrainingService.MonitoredQueues.Join(", ");
                     var topics = stubDrainingService.MonitoredBusTopics.Join(", ");
-                    middlewares.Add(new MiddlewareRegistration(-40, _ =>
-                        {
-                            //Nothing to register
-                        },
+                    return MiddlewareRegistration.Result.Report(
                         "Feature: Background worker for message draining is enabled, on: queues -> {Queues}, and bus topics -> {Topics}",
-                        queues, topics));
-                }
+                        queues, topics);
+                }));
 #endif
             };
         }

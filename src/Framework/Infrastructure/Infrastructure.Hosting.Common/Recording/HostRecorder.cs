@@ -1,8 +1,6 @@
 using System.Text;
 using Application.Interfaces;
-using Application.Interfaces.Services;
 using Common;
-using Common.Configuration;
 using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
@@ -290,8 +288,7 @@ public sealed class HostRecorder : IRecorder, IDisposable
         return options.AuditReporting switch
         {
             AuditReporterOption.None => new NoOpAuditReporter(),
-            AuditReporterOption.ReliableQueue => new QueuedAuditReporter(container,
-                container.GetRequiredService<IHostSettings>()),
+            AuditReporterOption.ReliableQueue => container.GetRequiredService<IAuditReporter>(),
             _ => throw new ArgumentOutOfRangeException(nameof(options.MetricReporting))
         };
     }
@@ -313,9 +310,7 @@ public sealed class HostRecorder : IRecorder, IDisposable
         return options.UsageReporting switch
         {
             UsageReporterOption.None => new NoOpUsageReporter(),
-            UsageReporterOption.ReliableQueue => new QueuedUsageReporter(container,
-                container.GetRequiredServiceForPlatform<IConfigurationSettings>(),
-                container.GetRequiredService<IHostSettings>()),
+            UsageReporterOption.ReliableQueue => container.GetRequiredService<IUsageReporter>(),
             _ => throw new ArgumentOutOfRangeException(nameof(options.MetricReporting))
         };
     }

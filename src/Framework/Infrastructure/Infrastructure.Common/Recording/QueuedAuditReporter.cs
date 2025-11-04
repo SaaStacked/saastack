@@ -5,7 +5,6 @@ using Common;
 using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
-using Domain.Interfaces.Services;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Shared.ApplicationServices;
 
@@ -20,16 +19,14 @@ public class QueuedAuditReporter : IAuditReporter
     private readonly IHostSettings _hostSettings;
     private readonly IAuditMessageQueueRepository _repository;
 
-    public QueuedAuditReporter(IDependencyContainer container, IHostSettings hostSettings)
-        : this(new AuditMessageQueueRepository(NoOpRecorder.Instance,
-            container.GetRequiredService<IHostSettings>(),
-            container.GetRequiredService<IMessageQueueMessageIdFactory>(),
-            container.GetRequiredServiceForPlatform<IQueueStore>()
-        ), hostSettings)
+    public QueuedAuditReporter(IHostSettings hostSettings, IMessageQueueMessageIdFactory messageIdFactory,
+        IQueueStore queueStore)
+        : this(new AuditMessageQueueRepository(NoOpRecorder.Instance, hostSettings, messageIdFactory, queueStore),
+            hostSettings)
     {
     }
 
-    internal QueuedAuditReporter(IAuditMessageQueueRepository repository, IHostSettings hostSettings)
+    private QueuedAuditReporter(IAuditMessageQueueRepository repository, IHostSettings hostSettings)
     {
         _repository = repository;
         _hostSettings = hostSettings;
