@@ -9,7 +9,6 @@ using Common.FeatureFlags;
 using FluentAssertions;
 using Infrastructure.Web.Api.Common.Clients;
 using Infrastructure.Web.Api.Common.Extensions;
-using Infrastructure.Web.Api.Interfaces;
 using Infrastructure.Web.Api.Interfaces.Clients;
 using Infrastructure.Web.Api.Operations.Shared.EventNotifications;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
@@ -24,7 +23,6 @@ using Microsoft.AspNetCore.Mvc.Testing.Handlers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using UnitTesting.Common;
 using Xunit;
 
@@ -145,12 +143,11 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     protected const string PasswordForPerson = "1Password!";
 
     private const string AllHostsRelativeSolutionPath = "Hosts";
+    private const string BuildConfiguration = "Debug";
     private const string DotNetCommandLineWithLaunchProfileArgumentsFormat =
         "run --no-build --configuration {0} --launch-profile {1} --project \"{2}\"";
+    private const string LaunchProfile = "Testing";
     private const string TestingServerUrl = "https://localhost";
-    private const int WaitStateRetries = 30;
-    // ReSharper disable once StaticMemberInGenericType
-    private static readonly TimeSpan WaitStateInterval = TimeSpan.FromSeconds(1);
     protected readonly IHttpJsonClient Api;
     protected readonly IHttpClient HttpApi;
     protected readonly StubUserNotificationsService UserNotificationsService;
@@ -243,9 +240,8 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
         var relativeProjectPath = Path.Combine(AllHostsRelativeSolutionPath, projectName);
         var projectPath = Path.Combine(solutionPath, relativeProjectPath);
 
-        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-        var launchProfileName = $"{projectName}-{env}";
-        const string configuration = "Debug";
+        var launchProfileName = $"{projectName}-{LaunchProfile}";
+        const string configuration = BuildConfiguration;
         var arguments =
             DotNetCommandLineWithLaunchProfileArgumentsFormat.Format(configuration, launchProfileName, projectPath);
         var executable = Environment.ExpandEnvironmentVariables(DotNetExe);
@@ -366,21 +362,6 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
         await PropagateDomainEventsAsync();
 
         return person.Content.Value;
-    }
-
-    /// <summary>
-    ///     We retry the specified <see cref="request" />  until the <see cref="predicate" /> of the response is achieved
-    /// </summary>
-    protected async Task<JsonResponse<TResponse>> WaitForGetStateAsync<TResponse>(
-        Predicate<JsonResponse<TResponse>> predicate,
-        IWebRequest<TResponse> request, Action<HttpRequestMessage>? filter = null)
-        where TResponse : IWebResponse, new()
-    {
-        var retryPolicy = Policy
-            .HandleResult<JsonResponse<TResponse>>(res => !predicate(res))
-            .WaitAndRetryAsync(WaitStateRetries, _ => WaitStateInterval);
-
-        return await retryPolicy.ExecuteAsync(async () => await Api.GetAsync(request, filter));
     }
 
     private static string GetEmailForPerson(LoginUser who)

@@ -1,6 +1,15 @@
 ﻿{
   "profiles": {
-    "TestingStubApiHost-Development": {
+    "TestingStubApiHost-Local": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:5656",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "TestingStubApiHost-Testing": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

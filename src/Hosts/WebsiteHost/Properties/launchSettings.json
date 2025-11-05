@@ -1,6 +1,15 @@
 ﻿{
   "profiles": {
-    "WebsiteHost-Development": {
+    "WebsiteHost-Local": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:5101",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "WebsiteHost-Testing": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

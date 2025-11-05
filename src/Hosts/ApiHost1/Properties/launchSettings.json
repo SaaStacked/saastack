@@ -1,6 +1,15 @@
 ﻿{
   "profiles": {
-    "ApiHost1-Development": {
+    "ApiHost1-Local": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "ApiHost1-Testing": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
