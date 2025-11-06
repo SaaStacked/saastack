@@ -54,40 +54,57 @@ This codebase template gives you most of the things all SaaS products will need 
 
 ## What is in the box?
 
+### Demo Site
+
+We have a demo SaaS product called "[LoopCar](https://loopcar-websitehost.azurewebsites.net/)" for you to try out! (If you are interest, you can see the backend API [here](https://loopcar-apihost1.azurewebsites.net) too).
+
+> This is hosted in Azure
+
+### Azure Deployment
+
+This is what you get if you prefer to host it in Azure:
+
 ![Azure](docs/images/Physical-Architecture-Azure.png)
 
-> You can find the Azure [demo API here](https://saastack-apihost1.azurewebsites.net/) and the [demo WebApp here](https://saastack-websitehost.azurewebsites.net/).
+### AWS Deployment
 
-or, if you prefer hosting on AWS:
+This is what you get, if you prefer host it in AWS:
 
 ![AWS](docs/images/Physical-Architecture-AWS.png)
 
-> Demos on AWS coming soon.
-
 ## How is the code structured?
 
-100+ projects!!
+Modularly, in both Horizonal layers and Vertical slices, and in over 100+ projects!!
 
-Yes, 100 projects! Why? because the world has moved on, and you are building a long-lived highly maintainable product now.
+Yes, 100 projects! Why? because the world has moved on, and you are building a long-lived highly maintainable product now that needs to scale with your business and with your growing team.
 
-If you are used to cramming in all your code into one or three assemblies for your API, then you are not managing dependencies very well at all, and that thing simply isn't going to scale. Too much software in too few deployable units.
+> Bad smells: If you are used to cramming in all your code into one or three assemblies for your entire API, then you are not managing dependencies very well at all, and that codebase simply isn't going to scale. Too much software, too tangled and in too few deployable units. You won't be able to scale it, maintain it for the business nor for your team.
 
-You need to structure things better to manage complexity in the long run. Even your favorite IDE makes it far too easy to violate de-coupling rules, just by adding a `using` statement to some type, somewhere else in the codebase you are possibly inadvertently adding dangerous coupling. Then, later down the track, when scaling out becomes an issue, you won't be able to factor out that code from that tight set of assemblies into another deployable unit. You simply can't. That's why we have not only very structured boundaries, but we have also included automated tests, Roslyn analyzers and other developer tooling to prevent and warn you when you are accidentally create *accidental complexity* for the sake of expediency.
+In larger codebases, you need to structure things much better to manage complexity in the long run. Everything is against you in a rapidly growing business like a startup.
 
-So not only are you getting a comprehensive production-ready, and battle tested codebase, ready to go, you are also getting a very structured and maintainable codebase that is ready to grow with you, with the tools to keep things clean in the future. Its quite a bit more that a project template.
+> Even your favorite code IDE makes it far too easy to violate de-coupling rules, just by adding a `using` statement to some type, somewhere else in the codebase you are possibly inadvertently adding dangerous coupling.
 
+Then, later down the track, when scaling-out your business and your team becomes a real-life issue, you won't be able to factor out code from a tight set of jumbled assemblies, into anything cohesive as another deployable unit. You simply can't do it.
 
-The best experience for working with this template is in an IDE like JetBrains Rider, or Visual Studio, or Visual Studio Code (with solution file).
+> Let alone not being able to split up your SQL database of tangled JOINS and reused and cramped tables. 
 
-None of these tools nowadays (since 2022 for Visual Studio) have issues anymore with loading hundreds of projects! It is simply not a design constraint anymore. Coupling dependencies is the main issue you need to focus on managing more carefully today. A .NET project (and by extension the assembly it produces) are simply just a bounded container of code, it is not the runtime process, and nor is it deployable unit.
+These are the reasons why we not only have very structured boundaries form the get go, but we have automated tests and highly testable isolated components and modules, along with Roslyn analyzers, architecture tests, and other developer tooling to prevent you from applying these bad practices inadvertently as the pressure increases, when you are highly susceptible to create *accidental complexity* for the sake of expediency.
 
-> If working in an IDE is not your team's thing, then you can also rearrange the project folders into whatever structure you like. SaaStack is a starter template after all! Nothing says you can't change the folder structure to what suits your context. Nothing says you can't combine the code in the projects. Go for it, have it your way! We simply recommend the structure we have given you as a starting point.
+SaaStack is far more than just a codebase. Not only are you getting a comprehensive production-ready, and battle tested codebase, ready to go, but you are also getting a set of tools and practices included to help you and your team to grow and keep it sustainable in the long run.
+
+### Handling the structure
+
+The best experience for working with this template is in an IDE like JetBrains Rider, or Visual Studio, or Visual Studio Code (with solution file), because these tools can supporting all the developer tooling we have included.
+
+None of these IDEs nowadays (since 2022 for Visual Studio) have issues anymore with loading 100+ projects! It is simply not a design constraint anymore. Coupling dependencies is the main issue you need to focus on managing more carefully today. A .NET project (and by extension the assembly it produces) are simply just a bounded container of code, it is not the runtime process, and nor is it deployable unit anymore.
+
+> Tip: If working in an IDE is not your team's thing, then you can also rearrange the project folders into whatever structure you like. SaaStack is a template after all! Nothing says you can't change the folder structure to what suits your context. Nothing says you can't combine the code in the projects. Go for it, have it your way! We simply recommend the structure we have given you as a starting point. This is just our best opinion about what works best for the teams that have worked with it for long periods of time.
 
 ![Solution](docs/images/Logical-Structure.png)
 
-## Who is it for?
+## Who is this for?
 
-This starter template is NOT for everyone, nor for EVERY software project, nor for EVERY skill level.
+This starter codebase is NOT for everyone, nor for EVERY software project, nor for EVERY skill level.
 
 > We need to say that because all software products are different, there is not one silver bullet for all of them.
 
@@ -99,7 +116,7 @@ This starter template is NOT for everyone, nor for EVERY software project, nor f
   2. Managing complexity over long periods of time is non-negotiable (~1-10 years), and avoiding big balls of mud (BBOMs) is paramount to you,
   3. Where many hands will touch the codebase (i.e., over the course of its entire life). Of course, if you are working alone on a project, you will have personal preferences, free from the practical constraints of working in teams.
 
-## What is it for?
+## What business is it for?
 
 The kinds of '*known scenarios*' that this template is designed specifically for:
 
@@ -117,16 +134,18 @@ Are these trade-offs suitable for any kind of software project?
 
 > Want to know what the initial design constraints, assumptions, and trade-offs are, then see our [Decisions Log](docs/decisions/README.md) and [Design Principles](docs/design-principles/README.md) for more details on that.
 
-## What does it give you?
+## How do you use it?
 
-It is a starter "template," not a 3rd party library or a fancy 3rd party framework. Once you clone it, it is all yours:
+It is a starter "template," not a 3rd party library or a fancy 3rd party framework.
 
-* You copy this codebase, as is, as your new codebase for your product.
-* You rename a few things to the name of your product.
-* You compile it, you run its tests, and you deploy its pieces into your cloud environment (e.g., Azure, AWS, or Google Cloud).
+Once you clone the codebase, it is all yours!
+
+* You copy this codebase, as is, as your new codebase for your product, push it to a new git repo, as is.
+* You rename a few things to make this your SaaS product.
+* You compile it, you run its tests, and you deploy its pieces into your cloud environment (e.g., Azure, AWS).
 * You then continue to evolve and add your own features to it (by following the established code patterns).
 * You then evolve and adapt the code to wherever you need it to go.
-  * Don't like those patterns? Then change them to suit your preferences. There are no rigid frameworks or other dev teams to plead with.
+  * Don't like those patterns? Then change them to suit your preferences. There are no rigid frameworks or other dev teams to bargain with.
 * At some point, you will delete the example subdomain modules (Cars and Bookings) that are provided as examples to follow and, of course, replace them with your own subdomain modules.
 * Read the [documentation](docs/README.md) to figure out what it already has and how things work.
   * So that you either don't need to worry about those specific things yet (and can focus on more valuable things), or you can modify them to suit your specific needs. It is your code, so you do as you please to it.
@@ -139,9 +158,9 @@ Since this starter "template" is NOT a framework (of the type you usually depend
 
 What happens when the performance of this modular monolith requires that you MUST scale it out and break it into independently deployable pieces?
 
-> Remember: No business can afford the expense of waiting for you to re-write your product, so forget that idea!
+> Remember: No business can afford the expense of waiting for you to re-write your product at some future date - so forget that idea!
 
-This codebase has been explicitly designed so that you can split it up and deploy its various modules into separate deployable units as you see fit (when your product is ready for that).
+This codebase has been explicitly designed so that you can split it up and deploy its various modules into separate deployable units as you see fit (when your product is ready for that, or when your team grows large enough to warrant that).
 
 Unlike a traditional monolithic codebase (i.e., a single deployable unit), all modules in this Modular Monolith codebase have been designed (and enforced) to be de-coupled and deployed independently in the future.
 
@@ -149,42 +168,40 @@ You just have to decide which modules belong in which deployed components, wire 
 
 > No more re-builds and extensive re-engineering to build a new distributed codebase when the time comes. It is all already in there for that future date.
 
-## What does it contain?
+## What does this codebase contain?
 
 It is a fully functioning and tested system with some common "base" functionality.
 
 It demonstrates a working example of a *made-up* SaaS car-sharing platform just for demonstration purposes.
 
-> You would, of course, replace that stuff with your own code! It is only there to demonstrate real code examples you can learn from.
+See it running for real, [here](https://loopcar-websitehost.azurewebsites.net/).
+
+> You would, of course, NOT be building a car sharing business, and you of course, will be replacing that stuff with your own code! It is only there to demonstrate real code examples you can learn from.
 
 The starter template also takes care of these specific kinds of things:
 
 * Deployment
   * It can be deployed in Azure (e.g., App Services or Functions) or in AWS (e.g., EC2 instances or Lambdas)
   * It is designed to be split into as many deployable pieces as you want when needed. (You simply replace the "RPC adapters" with "HttpClient adapters").
-* REST API
+* REST API:
   * It defines a ruleset about how JSON is represented on the wire and how requests are deserialized (to cope with different client styles)
   * It localizes developer errors
   * It handles and maps common exceptions to standard HTTP status codes
   * It returns standard HTTP statuses for successful requests based on the HTTP method (e.g., `GET`= 200, `POST` = 201, `PUT` = 202, `DELETE` = 204)
   * Provides a Swagger UI.
-* Infrastructure
+* Infrastructure & Extensibility:
   * All infrastructure components are independently testable adapters
   * It implements multi-tenancy for inbound HTTP requests (e.g., HTTP Host headers, URL keys, etc.)
   * It implements multi-tenancy (for data segregation) using either data partitioning, physical partitioning, or both.
-  * It implements polyglot persistence, so you can use whatever persistence technology is appropriate for each module per data load (e.g., SQLServer, Postgres, Redis, DynamoDB, Amazon RDS, LocalFile, In-Memory, etc.)
+  * It implements polyglot persistence, so you can use whatever persistence technology is appropriate for each module per data load (e.g., Microsoft SQLServer, Postgres, Redis, DynamoDB, Amazon RDS, Local File, In-Memory, etc.)
   * It integrated 3rd party identity providers for authentication, 2FA, SSO, and credential management (e.g., Auth0, Microsoft Graph, Google, Amazon Cognito, etc.).
-  * It integrates billing subscription management providers so that you can charge for your product use and determine feature sets based on subscription levels (e.g., Stripe, ChargeBee, Chargify, etc.).
-  * It integrates feature flagging providers to control how to access your features and roll them out safely (e.g., LaunchDarkly, GitLab, Unleashed, etc.)
+  * It integrates billing subscription management providers so that you can charge for your product use and determine feature sets based on subscription levels (e.g., Stripe, Chargebee, Maxio, etc.).
+  * It integrates feature flagging providers to control how to access your features and roll them out safely (e.g., Launch Darkly, GitLab, Unleashed, etc.)
   * It integrates product usage metrics to monitor and measure the actual usage of your product (e.g., MixPanel, Google Analytics, Application Insights, Amazon XRay, etc.)
   * It integrates crash analytics and structured logging so you can plug in your own preferred monitoring (e.g., Application Insights, CloudWatch, Sentry.io, etc.).
   * It uses dependency injection extensively so that all modules and components remain testable and configurable.
   * It defines standard and unified configuration patterns (e.g., using `appsettings.json`) to load tenanted or non-tenanted runtime settings.
-* Application
-  * Supports one or more applications, agnostic to infrastructure interop (i.e., allows you to expose each application as a REST API (default) or as a reliable Queue, or any other kind of infrastructure)
-  * Supports transaction scripts + anemic domain model or Domain Driven Design
-  * Applications are aligned to audiences and subdomains
-* Others
+* Developer Experience:
   * It provides documented code examples for the most common use cases. Simply follow and learn from the existing patterns in the codebase
   * It provides [how-to guides](docs/how-to-guides/README.md) for performing the most common things on a codebase like this until you've learned the patterns.
   * It provides a [decision log](docs/decisions/README.md) so you can see why certain design decisions were made.
@@ -195,10 +212,48 @@ The starter template also takes care of these specific kinds of things:
   * It utilizes common patterns and abstractions around popular libraries (that are the most up-to-date in the .NET world), so you can switch them out for your preferences.
   * It defines horizontal layers and vertical slices to make changing code in any component easier and more reliable.
   * It enforces dependency direction rules so that layers and subdomains are not inadvertently coupled together (enforcing architectural constraints)
+  * It gives you a functional README.md file so new hires to your team will be onboarded in less than an hour!
+
+## Try it out yourself!
+
+1. Download and explore the codebase and documentation
+
+    ```
+    git clone https://github.com/SaaStacked/saastack.git
+    cd saastack
+    ```
+
+2. Build the back end, and build the front end.
+
+    ```
+    dotnet build "src/SaaStack.sln"
+    cd src/Hosts/WebsiteHost/ClientApp
+    
+    npm install
+    npm run build
+    ```
+
+3. Run some of the back end tests
+
+    ```
+    cd ../../../../
+    dotnet test --no-build --filter:"Category=Unit" "src/SaaStack.sln"
+    ```
+
+4. Launch the API, the Web App, and stubs - nothing to install locally!
+
+    ```
+    dotnet run --no-build --launch-profile "ApiHost1-local" --project "src/Hosts/ApiHost1/ApiHost1.csproj"
+    dotnet run --no-build --launch-profile "WebsiteHost-local" --project "src/Hosts/WebsiteHost/WebsiteHost.csproj"
+    dotnet run --no-build --launch-profile "TestingStubApiHost-local" --project "src/Hosts/TestingStubApiHost/TestingStubApiHost.csproj"
+    
+    start https://localhost:5001
+    start https://localhost:5101
+    ```
 
 ## Is this all you get?
 
-From this open source project, you get all this for _Free_:
+From this open source project, you get ALL of this for _Free_:
 * You can clone, build, test, run, debug, and develop all this locally!
   * No local dependencies on any infrastructure, no databases, no docker containers, nothing!
   * Develop on Windows, On MacOS, On Linux.
@@ -213,7 +268,7 @@ For that you need a few more things:
 * You need a set of cloud provider connectors to connect to: databases, queues, message buses, and APM for monitoring
   * So you can run this product in either Azure or AWS.
 * You need a set of production environment technology adapters, to interact (both ways) to various 3rd party services
-  * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, LaunchDarkly, etc.
+  * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, Launch Darkly, etc.
 * You need an automated deployment pipeline to push releases to a cloud production environment, in minutes.
 * And you could use some more helpful documentation to learn the patterns and techniques
   * Coding standards for your team
