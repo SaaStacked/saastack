@@ -34,7 +34,7 @@ public static class HostedModules
         modules.Register(new CarsModule());
         modules.Register(new BookingsModule());
 
-        // EXTEND: Register any installed technology modules here
+        // UPGRADE: Register newly installed external adapter modules here
 
         return modules;
     }

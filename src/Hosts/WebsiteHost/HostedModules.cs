@@ -9,6 +9,8 @@ public static class HostedModules
         var modules = new SubdomainModules();
         modules.Register(new BackEndForFrontEndModule());
 
+        // UPGRADE: Register newly installed external adapter modules here
+
         return modules;
     }
 }
