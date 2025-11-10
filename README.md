@@ -219,7 +219,7 @@ The starter template also takes care of these specific kinds of things:
 1. Download and explore the codebase and documentation
 
     ```
-    git clone https://github.com/SaaStacked/saastack.git
+    git clone https://github.com/SaaStacked/saastack.git --depth=1
     cd saastack
     ```
 
