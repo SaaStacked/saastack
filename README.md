@@ -216,33 +216,45 @@ The starter template also takes care of these specific kinds of things:
 
 ## Try it out yourself!
 
-1. Download and explore the codebase and documentation
+1. Download and explore the codebase and documentation (don't fork, start fresh instead)
 
-    ```
-    git clone https://github.com/SaaStacked/saastack.git --depth=1
-    cd saastack
+    ```bash
+    git clone https://github.com/SaaStacked/saastack.git
+    ren saastack yourproductname
+    cd yourproductname
+    rmdir .git /S/Q
+    git config --global init.defaultBranch main
+    git init
+    git add .
+    git commit -m "Initial commit for MyProduct"
     ```
 
-2. Build the back end, and build the front end.
+2. Open the solution in your favorite IDE (we recommend JetBrains Rider)
 
+    ```bash
+    rider src/SaaStack.sln
     ```
+
+4. Build the back end, and build the front end.
+
+    ```bash
     dotnet build "src/SaaStack.sln"
-    cd src/Hosts/WebsiteHost/ClientApp
     
+    cd src/Hosts/WebsiteHost/ClientApp
     npm install
     npm run build
     ```
 
-3. Run some of the back end tests
+5. Run some of the back end tests
 
-    ```
+    ```bash
     cd ../../../../
     dotnet test --no-build --filter:"Category=Unit" "src/SaaStack.sln"
     ```
 
-4. Launch the API, the Web App, and stubs - nothing to install locally!
+6. Launch the API, the Web App, and stubs - nothing to install locally!
 
-    ```
+    ```bash
     dotnet run --no-build --launch-profile "ApiHost1-local" --project "src/Hosts/ApiHost1/ApiHost1.csproj"
     dotnet run --no-build --launch-profile "WebsiteHost-local" --project "src/Hosts/WebsiteHost/WebsiteHost.csproj"
     dotnet run --no-build --launch-profile "TestingStubApiHost-local" --project "src/Hosts/TestingStubApiHost/TestingStubApiHost.csproj"
@@ -253,33 +265,45 @@ The starter template also takes care of these specific kinds of things:
 
 ## Is this all you get?
 
-From this open source project, you get ALL of this for _Free_:
-* You can clone, build, test, run, debug, and develop all this locally!
-  * No local dependencies on any infrastructure, no databases, no docker containers, nothing!
-  * Develop on Windows, On MacOS, On Linux.
-* The codebase is team ready, so you can onboard new team members and get them up to speed quickly.
-* You can start designing and building your product right now, complete with a CI pipeline in GitHub.
-  * Build out your product
-  * Demo it to your company from your local machine.
+From this GitHub project, you get ALL of this for _Free_:
+1. You can clone, build, test, run, debug, and develop all this locally!
+
+   * No local dependencies on any infrastructure, no databases, no docker containers, nothing!
+
+   * Develop on Windows, On MacOS, On Linux.
+
+2. You can onboard new team members and get them up to speed quickly.
+
+3. You can start designing and building your product right now, complete with a CI pipeline in GitHub.
+
+   * Build out your product
+
+   * Demo it to your company from your local machine.
 
 But what you can't yet do, is deploy this into a commercial production environment:
 
-For that you need a few more things:
-* You need a set of cloud provider connectors to connect to: databases, queues, message buses, and APM for monitoring
-  * So you can run this product in either Azure or AWS.
-* You need a set of production environment technology adapters, to interact (both ways) to various 3rd party services
-  * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, Launch Darkly, etc.
-* You need an automated deployment pipeline to push releases to a cloud production environment, in minutes.
-* And you could use some more helpful documentation to learn the patterns and techniques
-  * Coding standards for your team
-  * Tools to keep consistency
-  * Rules and conventions to train your favorite AI tool to help you knock out your future product at rapid speed!
+To get your new product to market, you need a few more things:
+1. You need a set of cloud provider connectors to connect to: databases, queues, message buses, and APM for monitoring
+   * So you can run this product in either Azure or AWS.
+
+2. You need a set of production environment technology adapters, to interact (both ways) to various 3rd party services
+   * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, Launch Darkly, etc.
+
+3. You need an automated deployment pipeline to push releases to a cloud production environment, in minutes.
+
+4. And you could use some more helpful tools & documentation to learn the patterns and techniques
+
+   * Coding standards for your team
+
+   * Tools to keep consistency
+
+   * Rules and conventions to train your favorite AI tool to help you knock out your future product at rapid speed!
 
 
 That is what [SaaStack Standard](https://www.saastacked.com) and [SaaStack Premium](https://www.saastacked.com) are all about.
 
 <a href="https://www.saastacked.com"><img alt="SaaStack Licenses" src="docs/images/Skus.png" width="850" /></a>
 
-Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud. 
+Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud!
 
 Then get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
