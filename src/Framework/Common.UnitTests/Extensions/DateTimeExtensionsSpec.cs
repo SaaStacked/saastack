@@ -401,7 +401,78 @@ public class DateTimeExtensionsSpec
     }
 
     [Fact]
+    public void WhenToNearestMinuteAndHasMinutes_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 0);
+
+        var result = datum.ToNearestMinute();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestMinuteAndHasSeconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9);
+
+        var result = datum.ToNearestMinute();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestMinuteAndHasMilliseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9);
+
+        var result = datum.ToNearestMinute();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestMinuteAndHasMicroseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9, 9);
+
+        var result = datum.ToNearestMinute();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestMinuteAndHasNanoseconds_ThenReturnsRounded()
+    {
+        var datum = DateTime.UtcNow;
+
+        var result = datum.ToNearestMinute();
+
+        result.Should().Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, 0, 0, 0,
+            datum.Kind));
+    }
+
+    [Fact]
+    public void WhenToNearestSecondAndHasSeconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9);
+
+        var result = datum.ToNearestSecond();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 9, 0, 0));
+    }
+
+    [Fact]
     public void WhenToNearestSecondAndHasMilliseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9);
+
+        var result = datum.ToNearestSecond();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 9, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestSecondAndHasMicroseconds_ThenReturnsRounded()
     {
         var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9, 9);
 
@@ -418,26 +489,38 @@ public class DateTimeExtensionsSpec
         var result = datum.ToNearestSecond();
 
         result.Should()
-            .Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, datum.Second, 0, 0));
+            .Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, datum.Second, 0, 0,
+                datum.Kind));
     }
 
     [Fact]
-    public void WhenToNearestMinuteAndHasMilliseconds_ThenReturnsRounded()
+    public void WhenToNearestMillisecondAndHasMilliseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9);
+
+        var result = datum.ToNearestMillisecond();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 9, 9, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestMillisecondAndHasMicroseconds_ThenReturnsRounded()
     {
         var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9, 9);
 
-        var result = datum.ToNearestMinute();
+        var result = datum.ToNearestMillisecond();
 
-        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 0, 0, 0));
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 23, 9, 9, 0));
     }
 
     [Fact]
-    public void WhenToNearestMinuteAndHasNanoseconds_ThenReturnsRounded()
+    public void WhenToNearestMillisecondAndHasNanoseconds_ThenReturnsRounded()
     {
         var datum = DateTime.UtcNow;
 
-        var result = datum.ToNearestMinute();
+        var result = datum.ToNearestMillisecond();
 
-        result.Should().Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, 0, 0, 0));
+        result.Should().Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, datum.Second,
+            datum.Millisecond, 0, datum.Kind));
     }
 }
