@@ -15,7 +15,7 @@ partial class AncillaryApplication
     public async Task<Result<Error>> DrainAllProvisioningsAsync(ICallerContext caller,
         CancellationToken cancellationToken)
     {
-        await _provisioningMessageQueue.DrainAllQueuedMessagesAsync(
+        await _provisioningMessageQueue.DrainAllQueuedMessagesAsync(_recorder,
             message => NotifyProvisioningInternalAsync(caller, message, cancellationToken), cancellationToken);
 
         _recorder.TraceInformation(caller.ToCall(), "Drained all provisioning messages");

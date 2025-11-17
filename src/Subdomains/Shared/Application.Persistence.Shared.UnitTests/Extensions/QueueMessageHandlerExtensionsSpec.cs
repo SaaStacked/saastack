@@ -3,6 +3,7 @@ using Application.Persistence.Shared.Extensions;
 using Application.Persistence.Shared.ReadModels;
 using Common;
 using Common.Extensions;
+using Common.Recording;
 using FluentAssertions;
 using Moq;
 using UnitTesting.Common;
@@ -64,7 +65,8 @@ public class QueueMessageHandlerExtensionsSpec
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        await repository.Object.DrainAllQueuedMessagesAsync(handler.Object, CancellationToken.None);
+        await repository.Object.DrainAllQueuedMessagesAsync(NoOpRecorder.Instance, handler.Object,
+            CancellationToken.None);
 
         handler.Verify(x => x(message), Times.Never);
     }
@@ -78,7 +80,8 @@ public class QueueMessageHandlerExtensionsSpec
             .ReturnsAsync(false);
         var handler = new Mock<Func<EmailMessage, Task<Result<bool, Error>>>>();
 
-        await repository.Object.DrainAllQueuedMessagesAsync(handler.Object, CancellationToken.None);
+        await repository.Object.DrainAllQueuedMessagesAsync(NoOpRecorder.Instance, handler.Object,
+            CancellationToken.None);
 
         repository.Verify(rep => rep.PopSingleAsync(
             It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),
@@ -97,7 +100,8 @@ public class QueueMessageHandlerExtensionsSpec
             .ReturnsAsync(false);
         var handler = new Mock<Func<EmailMessage, Task<Result<bool, Error>>>>();
 
-        await repository.Object.DrainAllQueuedMessagesAsync(handler.Object, CancellationToken.None);
+        await repository.Object.DrainAllQueuedMessagesAsync(NoOpRecorder.Instance, handler.Object,
+            CancellationToken.None);
 
         repository.Verify(rep => rep.PopSingleAsync(
             It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),

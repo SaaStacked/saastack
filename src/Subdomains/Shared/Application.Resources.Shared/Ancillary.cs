@@ -19,14 +19,6 @@ public class Audit : IIdentifiableResource
     public required string Id { get; set; }
 }
 
-public enum RecorderTraceLevel
-{
-    Debug = 0,
-    Information = 1,
-    Warning = 2,
-    Error = 3
-}
-
 public class DeliveredEmail : IIdentifiableResource
 {
     public List<DateTime> Attempts { get; set; } = new();

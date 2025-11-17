@@ -38,23 +38,24 @@ public static class HttpRequestExtensions
     public static async Task<bool> VerifyHMACSignatureAsync(this HttpRequest request, string signature, string secret,
         CancellationToken cancellationToken)
     {
-        if (request.Body.Position != 0)
+        try
+        {
+            request.RewindBody();
+            var body = await request.Body.ReadFullyAsync(cancellationToken);
+            if (body.Length == 0)
+            {
+                body = Encoding.UTF8.GetBytes(HttpConstants
+                    .EmptyRequestJson); //HACK: we assume that an empty JSON request was signed
+            }
+
+            var signer = new HMACSigner(body, secret);
+            var verifier = new HMACVerifier(signer);
+
+            return verifier.Verify(signature);
+        }
+        finally
         {
             request.RewindBody();
         }
-
-        var body = await request.Body.ReadFullyAsync(cancellationToken);
-        request.RewindBody(); // HACK: need to do this for later middleware
-
-        if (body.Length == 0)
-        {
-            body = Encoding.UTF8.GetBytes(HttpConstants
-                .EmptyRequestJson); //HACK: we assume that an empty JSON request was signed
-        }
-
-        var signer = new HMACSigner(body, secret);
-        var verifier = new HMACVerifier(signer);
-
-        return verifier.Verify(signature);
     }
 }

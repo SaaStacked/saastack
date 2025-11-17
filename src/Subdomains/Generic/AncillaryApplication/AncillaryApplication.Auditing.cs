@@ -35,7 +35,7 @@ partial class AncillaryApplication
 #if TESTINGONLY
     public async Task<Result<Error>> DrainAllAuditsAsync(ICallerContext caller, CancellationToken cancellationToken)
     {
-        await _auditMessageQueueRepository.DrainAllQueuedMessagesAsync(
+        await _auditMessageQueueRepository.DrainAllQueuedMessagesAsync(_recorder,
             message => DeliverAuditInternalAsync(caller, message, cancellationToken), cancellationToken);
 
         _recorder.TraceInformation(caller.ToCall(), "Drained all audit messages");

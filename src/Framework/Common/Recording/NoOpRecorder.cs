@@ -15,6 +15,8 @@ public sealed class NoOpRecorder : IRecorder
     {
     }
 
+    public RecorderTraceLevel TraceLevel { get; } = RecorderTraceLevel.Information;
+
     public void Audit(ICallContext? call, string auditCode, [StructuredMessageTemplate] string messageTemplate,
         params object[] templateArgs)
     {
@@ -37,6 +39,11 @@ public sealed class NoOpRecorder : IRecorder
     }
 
     public void Measure(ICallContext? call, string eventName, Dictionary<string, object>? additional = null)
+    {
+    }
+
+    public void Trace(ICallContext? call, RecorderTraceLevel level, Exception? exception, string messageTemplate,
+        params object[] templateArgs)
     {
     }
 

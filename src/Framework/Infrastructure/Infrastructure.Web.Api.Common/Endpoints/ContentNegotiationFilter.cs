@@ -175,21 +175,23 @@ public class ContentNegotiationFilter : IEndpointFilter
     private static async Task<StringValues> GetFormatInJsonPayloadAsync(HttpRequest httpRequest,
         CancellationToken cancellationToken)
     {
-        if (httpRequest.Body.Position != 0)
-        {
-            httpRequest.RewindBody();
-        }
-
         try
         {
-            var requestWithFormat =
-                (RequestWithFormat?)await httpRequest.ReadFromJsonAsync(typeof(RequestWithFormat), cancellationToken);
-            if (requestWithFormat is not null && requestWithFormat.Format.HasValue())
+            try
             {
-                return new StringValues(requestWithFormat.Format);
+                httpRequest.RewindBody();
+                var requestWithFormat =
+                    (RequestWithFormat?)await httpRequest.ReadFromJsonAsync(typeof(RequestWithFormat),
+                        cancellationToken);
+                if (requestWithFormat is not null && requestWithFormat.Format.HasValue())
+                {
+                    return new StringValues(requestWithFormat.Format);
+                }
             }
-
-            httpRequest.RewindBody();
+            finally
+            {
+                httpRequest.RewindBody();
+            }
         }
         catch (JsonException)
         {

@@ -41,6 +41,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 #if TESTINGONLY
@@ -471,6 +472,17 @@ public static class HostExtensions
         void RegisterApplicationServices(bool isMultiTenanted, bool receivesWebhooks)
         {
             services.AddHttpClient();
+            services.ConfigureAll<HttpClientFactoryOptions>(options =>
+            {
+                options.HttpMessageHandlerBuilderActions.Add(builder =>
+                {
+                    var container = builder.Services;
+                    builder.AdditionalHandlers.Add(new HttpClientLoggingHandler(
+                        container.GetRequiredService<IRecorder>(),
+                        container.GetRequiredService<ICallerContextFactory>()));
+                });
+            });
+
             var prefixes = modules.EntityPrefixes;
             prefixes.Add(typeof(Checkpoint), CheckPointAggregatePrefix);
             services.AddSingleton<IIdentifierFactory>(_ => new HostIdentifierFactory(prefixes));

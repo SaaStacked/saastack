@@ -1,6 +1,5 @@
 using Application.Common.Extensions;
 using Application.Interfaces;
-using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 using Common.Recording;
@@ -73,28 +72,7 @@ public class RecordingApplication : IRecordingApplication
             : [];
 
         var call = caller.ToCall();
-        switch (level)
-        {
-            case RecorderTraceLevel.Debug:
-                _recorder.TraceDebug(call, messageTemplate, args!);
-                break;
-
-            case RecorderTraceLevel.Information:
-                _recorder.TraceInformation(call, messageTemplate, args!);
-                break;
-
-            case RecorderTraceLevel.Warning:
-                _recorder.TraceWarning(call, messageTemplate, args!);
-                break;
-
-            case RecorderTraceLevel.Error:
-                _recorder.TraceError(call, messageTemplate, args!);
-                break;
-
-            default:
-                _recorder.TraceInformation(call, messageTemplate, args!);
-                break;
-        }
+        _recorder.Trace(call, level, null, messageTemplate, args!);
 
         return Task.FromResult(Result.Ok);
     }

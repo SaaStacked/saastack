@@ -177,18 +177,14 @@ public class RequestTenantDetective : ITenantDetective
     private static async Task<(bool HasTenantId, string? tenantId)> ParseTenantIdFromRequestBodyAsync(
         HttpRequest request, RequestDtoType type, CancellationToken cancellationToken)
     {
-        if (request.Body.Position != 0)
-        {
-            request.RewindBody();
-        }
-
         if (request.IsContentType(HttpConstants.ContentTypes.Json))
         {
             try
             {
+                request.RewindBody();
                 var requestWithTenantId =
                     await request.ReadFromJsonAsync(typeof(RequestWithTenantIds), cancellationToken);
-                request.RewindBody();
+
                 if (requestWithTenantId is RequestWithTenantIds requestWithTenantIds)
                 {
                     if (type.IsTenanted)
@@ -224,6 +220,10 @@ public class RequestTenantDetective : ITenantDetective
             catch (JsonException)
             {
                 return (false, null);
+            }
+            finally
+            {
+                request.RewindBody();
             }
         }
 

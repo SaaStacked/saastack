@@ -1,20 +1,29 @@
 using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
+using Common.Recording;
 
 namespace Application.Persistence.Shared.Extensions;
 
 public static class QueueMessageHandlerExtensions
 {
     public static async Task DrainAllQueuedMessagesAsync<TQueuedMessage>(
-        this IMessageQueueStore<TQueuedMessage> repository,
+        this IMessageQueueStore<TQueuedMessage> repository, IRecorder recorder,
         Func<TQueuedMessage, Task<Result<bool, Error>>> handler, CancellationToken cancellationToken)
         where TQueuedMessage : IQueuedMessage, new()
     {
         var found = new Result<bool, Error>(true);
-        while (found.Value)
+        while (found is { HasValue: true, Value: true })
         {
-            found = await repository.PopSingleAsync(OnMessageReceivedAsync, cancellationToken);
+            try
+            {
+                found = await repository.PopSingleAsync(OnMessageReceivedAsync, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                recorder.TraceError(null, ex, "Failed to receive message from queue. Error was: {Error}", ex.Message);
+                throw;
+            }
             continue;
 
             async Task<Result<Error>> OnMessageReceivedAsync(TQueuedMessage message, CancellationToken _)
@@ -27,6 +36,12 @@ public static class QueueMessageHandlerExtensions
 
                 return Result.Ok;
             }
+        }
+
+        if (found.IsFailure)
+        {
+            recorder.Crash(null, CrashLevel.NonCritical, found.Error.ToException<InvalidOperationException>(),
+                "Failed to receive message from queue.");
         }
     }
 

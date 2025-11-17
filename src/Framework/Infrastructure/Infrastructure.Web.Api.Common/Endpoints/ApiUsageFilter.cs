@@ -109,15 +109,10 @@ public class ApiUsageFilter : IEndpointFilter
             { UsageConstants.Properties.HttpPath, path },
             { UsageConstants.Properties.HttpMethod, method }
         };
-        var requestAsProperties = request
-            .ToObjectDictionary()
-            .ToDictionary(pair => pair.Key, pair => pair.Value?.ToString());
-        if (requestAsProperties.TryGetValue(nameof(IIdentifiableResource.Id), out var id))
+        var requestId = GetResourceIdFromRequest(request);
+        if (requestId.Exists())
         {
-            if (id.Exists())
-            {
-                additional.Add(nameof(UsageConstants.Properties.ResourceId), id);
-            }
+            additional.Add(UsageConstants.Properties.ResourceId, requestId);
         }
 
         return additional;
@@ -140,5 +135,28 @@ public class ApiUsageFilter : IEndpointFilter
         return IgnoredTrackedRequestTypes.Contains(requestType)
             ? null
             : webRequest;
+    }
+
+    private static string? GetResourceIdFromRequest(IWebRequest request)
+    {
+        try
+        {
+            var requestAsProperties = request
+                .ToObjectDictionary()
+                .ToDictionary(pair => pair.Key, pair => pair.Value?.ToString());
+            if (requestAsProperties.TryGetValue(nameof(IIdentifiableResource.Id), out var id))
+            {
+                if (id.Exists())
+                {
+                    return id;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return null;
     }
 }

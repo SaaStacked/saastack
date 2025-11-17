@@ -132,7 +132,7 @@ namespace Infrastructure.Web.Api.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Non-standard error.
+        ///   Looks up a localized string similar to (unrecognized error response).
         /// </summary>
         internal static string JsonClient_TryParseNonStandardErrors_NonStandard {
             get {

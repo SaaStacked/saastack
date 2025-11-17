@@ -3,6 +3,7 @@ using Common;
 using Common.Extensions;
 using Common.Recording;
 using Domain.Interfaces;
+using Infrastructure.Hosting.Common.Extensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Colors = Infrastructure.Common.ConsoleConstants.Colors;
@@ -86,6 +87,20 @@ public class TracingOnlyRecorder : IRecorder
         TraceInformation(call, $"Measure: {eventName}, with context: {additional.DumpSafely()}");
     }
 
+    public void Trace(ICallContext? call, RecorderTraceLevel level, Exception? exception, string messageTemplate,
+        params object[] templateArgs)
+    {
+        if (messageTemplate.HasNoValue())
+        {
+            return;
+        }
+
+        var loggerLevel = level.ToLoggerLevel();
+        var (augmentedMessageTemplate, augmentedArguments) =
+            AugmentMessageTemplateAndArguments(call, messageTemplate, templateArgs);
+        _logger.Log(loggerLevel, augmentedMessageTemplate, augmentedArguments);
+    }
+
     public virtual void TraceDebug(ICallContext? call, [StructuredMessageTemplate] string messageTemplate,
         params object[] templateArgs)
     {
@@ -142,6 +157,8 @@ public class TracingOnlyRecorder : IRecorder
             AugmentMessageTemplateAndArguments(call, messageTemplate, templateArgs);
         _logger.LogInformation(augmentedMessageTemplate, augmentedArguments);
     }
+
+    public RecorderTraceLevel TraceLevel => _logger.GetTraceLevel();
 
     public virtual void TraceWarning(ICallContext? call, Exception exception,
         [StructuredMessageTemplate] string messageTemplate,

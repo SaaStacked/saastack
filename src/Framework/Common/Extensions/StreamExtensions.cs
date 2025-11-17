@@ -42,9 +42,16 @@ public static class StreamExtensions
     /// </summary>
     public static void Rewind(this Stream stream)
     {
-        if (stream.CanSeek)
+        if (!stream.CanSeek)
         {
-            stream.Seek(0, SeekOrigin.Begin);
+            return;
         }
+
+        if (stream.Position == 0)
+        {
+            return;
+        }
+
+        stream.Seek(0, SeekOrigin.Begin);
     }
 }

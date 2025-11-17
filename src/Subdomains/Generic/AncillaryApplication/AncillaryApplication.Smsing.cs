@@ -96,7 +96,7 @@ partial class AncillaryApplication
 #if TESTINGONLY
     public async Task<Result<Error>> DrainAllSmsesAsync(ICallerContext caller, CancellationToken cancellationToken)
     {
-        await _smsMessageQueue.DrainAllQueuedMessagesAsync(
+        await _smsMessageQueue.DrainAllQueuedMessagesAsync(_recorder,
             message => SendSmsInternalAsync(caller, message, cancellationToken), cancellationToken);
 
         _recorder.TraceInformation(caller.ToCall(), "Drained all sms messages");

@@ -260,18 +260,6 @@ public static class HttRequestExtensions
         message.Headers.Add(HttpConstants.Headers.RequestId, context.CallId);
     }
 
-    /// <summary>
-    ///     Returns a convenient representation of the request
-    /// </summary>
-    public static string ToDisplayName(this HttpRequest request)
-    {
-        var path = request.Path;
-        var method = request.Method;
-        var accept = request.Headers.Accept.ToString();
-
-        return $"{method} {path} ({accept})";
-    }
-
     private static bool IsMediaType(this string? source, string? target)
     {
         if (source.HasNoValue() || target.HasNoValue())

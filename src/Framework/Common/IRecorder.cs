@@ -8,6 +8,8 @@ namespace Common;
 /// </summary>
 public interface IRecorder
 {
+    RecorderTraceLevel TraceLevel { get; }
+
     void Audit(ICallContext? call, string auditCode, [StructuredMessageTemplate] string messageTemplate,
         params object[] templateArgs);
 
@@ -22,6 +24,10 @@ public interface IRecorder
         params object[] templateArgs);
 
     void Measure(ICallContext? call, string eventName, Dictionary<string, object>? additional = null);
+
+    void Trace(ICallContext? call, RecorderTraceLevel level, Exception? exception,
+        [StructuredMessageTemplate] string messageTemplate,
+        params object[] templateArgs);
 
     void TraceDebug(ICallContext? call, [StructuredMessageTemplate] string messageTemplate,
         params object[] templateArgs);
@@ -49,4 +55,15 @@ public interface IRecorder
 
     void TrackUsageFor(ICallContext? call, string forId, string eventName,
         Dictionary<string, object>? additional = null);
+}
+
+/// <summary>
+///     Trace level for all recording
+/// </summary>
+public enum RecorderTraceLevel
+{
+    Debug = 0,
+    Information = 1,
+    Warning = 2,
+    Error = 3
 }

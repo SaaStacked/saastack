@@ -1,5 +1,4 @@
 using Application.Interfaces;
-using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 using Common.Recording;
@@ -120,7 +119,7 @@ public class RecordingApplicationSpec
         _application.RecordTraceAsync(_caller.Object, RecorderTraceLevel.Information, "amessage", args,
             CancellationToken.None);
 
-        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext>(), "amessage",
+        _recorder.Verify(rec => rec.Trace(It.IsAny<ICallContext>(), RecorderTraceLevel.Information, null, "amessage",
             // ReSharper disable once StructuredMessageTemplateProblem
             It.Is<object[]>(a =>
                 a.Length == 1

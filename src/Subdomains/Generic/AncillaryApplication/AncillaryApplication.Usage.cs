@@ -31,7 +31,7 @@ partial class AncillaryApplication
 #if TESTINGONLY
     public async Task<Result<Error>> DrainAllUsagesAsync(ICallerContext caller, CancellationToken cancellationToken)
     {
-        await _usageMessageQueue.DrainAllQueuedMessagesAsync(
+        await _usageMessageQueue.DrainAllQueuedMessagesAsync(_recorder,
             message => DeliverUsageInternalAsync(caller, message, cancellationToken), cancellationToken);
 
         _recorder.TraceInformation(caller.ToCall(), "Drained all usage messages");

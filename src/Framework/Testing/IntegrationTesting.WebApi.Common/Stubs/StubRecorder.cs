@@ -24,7 +24,7 @@ public sealed class StubRecorder : IRecorder
 
     public object[]? LastTraceArguments { get; private set; }
 
-    public StubRecorderTraceLevel? LastTraceLevel { get; private set; }
+    public RecorderTraceLevel? LastTraceLevel { get; private set; }
 
     public List<TraceMessage> LastTraceMessages { get; } = new();
 
@@ -68,63 +68,74 @@ public sealed class StubRecorder : IRecorder
         LastMeasureAdditional = additional;
     }
 
-    public void TraceDebug(ICallContext? call, string messageTemplate, params object[] templateArgs)
+    public void Trace(ICallContext? call, RecorderTraceLevel level, Exception? exception, string messageTemplate,
+        params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Debug;
+        LastTraceLevel = level;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Debug, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(level, messageTemplate, templateArgs));
+    }
+
+    public void TraceDebug(ICallContext? call, string messageTemplate, params object[] templateArgs)
+    {
+        LastTraceLevel = RecorderTraceLevel.Debug;
+        LastTraceMessageTemplate = messageTemplate;
+        LastTraceArguments = templateArgs;
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Debug, messageTemplate, templateArgs));
     }
 
     public void TraceError(ICallContext? call, Exception exception, string messageTemplate,
         params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Error;
+        LastTraceLevel = RecorderTraceLevel.Error;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Error, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Error, messageTemplate, templateArgs));
     }
 
     public void TraceError(ICallContext? call, string messageTemplate, params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Error;
+        LastTraceLevel = RecorderTraceLevel.Error;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Error, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Error, messageTemplate, templateArgs));
     }
 
     public void TraceInformation(ICallContext? call, Exception exception, string messageTemplate,
         params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Information;
+        LastTraceLevel = RecorderTraceLevel.Information;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Information, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Information, messageTemplate, templateArgs));
     }
 
     public void TraceInformation(ICallContext? call, string messageTemplate, params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Information;
+        LastTraceLevel = RecorderTraceLevel.Information;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Information, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Information, messageTemplate, templateArgs));
     }
+
+    public RecorderTraceLevel TraceLevel { get; } = RecorderTraceLevel.Information;
 
     public void TraceWarning(ICallContext? call, Exception exception, string messageTemplate,
         params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Warning;
+        LastTraceLevel = RecorderTraceLevel.Warning;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Warning, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Warning, messageTemplate, templateArgs));
     }
 
     public void TraceWarning(ICallContext? call, string messageTemplate, params object[] templateArgs)
     {
-        LastTraceLevel = StubRecorderTraceLevel.Warning;
+        LastTraceLevel = RecorderTraceLevel.Warning;
         LastTraceMessageTemplate = messageTemplate;
         LastTraceArguments = templateArgs;
-        LastTraceMessages.Add(new TraceMessage(StubRecorderTraceLevel.Warning, messageTemplate, templateArgs));
+        LastTraceMessages.Add(new TraceMessage(RecorderTraceLevel.Warning, messageTemplate, templateArgs));
     }
 
     public void TrackUsage(ICallContext? call, string eventName, Dictionary<string, object>? additional = null)
@@ -159,17 +170,6 @@ public sealed class StubRecorder : IRecorder
 }
 
 /// <summary>
-///     A trace level
-/// </summary>
-public enum StubRecorderTraceLevel
-{
-    Debug = 0,
-    Information = 1,
-    Warning = 2,
-    Error = 3
-}
-
-/// <summary>
 ///     A trace
 /// </summary>
-public record TraceMessage(StubRecorderTraceLevel Level, string Message, object[]? Arguments = null);
+public record TraceMessage(RecorderTraceLevel Level, string Message, object[]? Arguments = null);

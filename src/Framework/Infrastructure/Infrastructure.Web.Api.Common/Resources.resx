@@ -34,7 +34,7 @@
         <value>An empty instance of '{0}' could not be created, likely due to the fact that it does not have a default parameterless constructor or it has properties that require initialization at construction time. More details: {1}</value>
     </data>
     <data name="JsonClient_TryParseNonStandardErrors_NonStandard" xml:space="preserve">
-        <value>Non-standard error</value>
+        <value>(unrecognized error response)</value>
     </data>
     <data name="FileUploadService_NoFiles" xml:space="preserve">
         <value>There are no files to upload</value>

@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Application.Interfaces;
-using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 using Common.Recording;
@@ -109,7 +108,7 @@ public class RecordingApiSpec : WebsiteSpec<Program, ApiHost1.Program>
 
         _recorder.LastTraceMessages.Should().Contain(msg =>
             msg.Message == "amessage {aparam}"
-            && msg.Level == StubRecorderTraceLevel.Warning
+            && msg.Level == RecorderTraceLevel.Warning
             && msg.Arguments!.Length == 1 && ((JsonElement)msg.Arguments[0]).GetString() == "avalue");
     }
 

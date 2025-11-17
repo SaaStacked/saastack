@@ -6,6 +6,7 @@ using Common.Recording;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
 using Infrastructure.Common.Recording;
+using Infrastructure.Hosting.Common.Extensions;
 using Microsoft.Extensions.Logging;
 using Colors = Infrastructure.Common.ConsoleConstants.Colors;
 
@@ -153,6 +154,20 @@ public sealed class HostRecorder : IRecorder, IDisposable
         _metricsReporter.Measure(call, eventName, additional ?? new Dictionary<string, object>());
     }
 
+    public void Trace(ICallContext? call, RecorderTraceLevel level, Exception? exception, string messageTemplate,
+        params object[] templateArgs)
+    {
+        if (messageTemplate.HasNoValue())
+        {
+            return;
+        }
+
+        var loggerLevel = level.ToLoggerLevel();
+        var (augmentedMessageTemplate, augmentedArguments) =
+            AugmentMessageTemplateAndArguments(call, messageTemplate, templateArgs);
+        _logger.Log(loggerLevel, augmentedMessageTemplate, augmentedArguments);
+    }
+
     public void TraceDebug(ICallContext? call, string messageTemplate, params object[] templateArgs)
     {
         if (messageTemplate.HasNoValue())
@@ -204,6 +219,8 @@ public sealed class HostRecorder : IRecorder, IDisposable
             AugmentMessageTemplateAndArguments(call, messageTemplate, templateArgs);
         _logger.LogInformation(augmentedMessageTemplate, augmentedArguments);
     }
+
+    public RecorderTraceLevel TraceLevel => _logger.GetTraceLevel();
 
     public void TraceWarning(ICallContext? call, Exception exception, string messageTemplate,
         params object[] templateArgs)

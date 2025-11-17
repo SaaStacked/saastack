@@ -1,4 +1,4 @@
-using Application.Resources.Shared;
+using Common;
 using FluentAssertions;
 using FluentValidation;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;

@@ -289,9 +289,11 @@ public static class WebApplicationExtensions
 
     /// <summary>
     ///     Enables request buffering, so that request bodies can be read in filters.
-    ///     Note: Required to read the request by <see cref="ContentNegotiationFilter" /> and by
-    ///     <see cref="HttpRequestExtensions.VerifyHMACSignatureAsync" /> during HMAC signature verification, and by
-    ///     <see cref="MultiTenancyMiddleware" />
+    ///     Note: Required to read the request by:
+    ///     <see cref="HttpRequestExtensions.VerifyHMACSignatureAsync" /> during HMAC signature verification,
+    ///     <see cref="ContentNegotiationFilter" />,
+    ///     <see cref="Infrastructure.Web.Api.Common.RequestTenantDetective" />,
+    ///     and by <see cref="HttpRecordingFilter"/>
     /// </summary>
     public static void EnableRequestRewind(this WebApplication builder,
         List<MiddlewareRegistration> middlewares)

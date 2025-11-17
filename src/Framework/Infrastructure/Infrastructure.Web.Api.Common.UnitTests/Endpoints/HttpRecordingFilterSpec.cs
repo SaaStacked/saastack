@@ -44,11 +44,10 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
     }
 
@@ -72,17 +71,16 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
         _recorder.Verify(
             rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: {Result}",
                 It.Is<object[]>(arr =>
                     arr.Length == 2
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "200 - OK"
                 )));
     }
@@ -107,17 +105,16 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
         _recorder.Verify(
             rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: {Result}",
                 It.Is<object[]>(arr =>
                     arr.Length == 2
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "204 - NoContent"
                 )));
     }
@@ -143,17 +140,16 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
         _recorder.Verify(
             rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: {Result}",
                 It.Is<object[]>(arr =>
                     arr.Length == 2
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "499 - 499"
                 )));
     }
@@ -183,17 +179,16 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
         _recorder.Verify(
             rec => rec.TraceError(It.IsAny<ICallContext?>(), @"{Request}: {Result}, problem: {Problem}",
                 It.Is<object[]>(arr =>
                     arr.Length == 3
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "500 - InternalServerError"
                     && arr[2].As<string>()
                     == "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"atitle\",\r\n  \"status\": 500\r\n}"
@@ -221,17 +216,16 @@ public class HttpRecordingFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}: Received",
+        _recorder.Verify(rec => rec.TraceInformation(It.IsAny<ICallContext?>(), @"{Request}",
                 It.Is<object[]>(arr =>
                     arr.Length == 1
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath Received, with [Accept=anaccept]"
                 )));
         _recorder.Verify(
             rec => rec.TraceError(It.IsAny<ICallContext?>(), @"{Request}: {Result}, problem: {Problem}",
                 It.Is<object[]>(arr =>
                     arr.Length == 3
-                    && arr[0].As<string>() == "amethod /apath (anaccept)"
+                    && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "500 - InternalServerError"
                     && arr[2].As<string>()
                     == "{\r\n  \"type\": \"atype\",\r\n  \"title\": \"atitle\",\r\n  \"status\": 500\r\n}"

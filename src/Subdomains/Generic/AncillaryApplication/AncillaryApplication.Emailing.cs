@@ -97,7 +97,7 @@ partial class AncillaryApplication
 #if TESTINGONLY
     public async Task<Result<Error>> DrainAllEmailsAsync(ICallerContext caller, CancellationToken cancellationToken)
     {
-        await _emailMessageQueue.DrainAllQueuedMessagesAsync(
+        await _emailMessageQueue.DrainAllQueuedMessagesAsync(_recorder,
             message => SendEmailInternalAsync(caller, message, cancellationToken), cancellationToken);
 
         _recorder.TraceInformation(caller.ToCall(), "Drained all email messages");

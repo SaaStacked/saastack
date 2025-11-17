@@ -1,4 +1,3 @@
-using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 using Infrastructure.Interfaces;
@@ -57,8 +56,8 @@ public sealed class RecordingApi : IWebApiService
         CancellationToken cancellationToken)
     {
         var result = await _recordingApplication.RecordTraceAsync(_callerFactory.Create(),
-            request.Level!.ToEnum<RecorderTraceLevel>(),
-            request.MessageTemplate!,
+            request.Level.ToEnumOrDefault(RecorderTraceLevel.Information),
+            request.MessageTemplate ?? string.Empty,
             request.Arguments,
             cancellationToken);
 
