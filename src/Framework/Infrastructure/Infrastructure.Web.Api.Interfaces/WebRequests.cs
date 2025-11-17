@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Infrastructure.Web.Api.Interfaces;
 
 /// <summary>
@@ -41,4 +43,75 @@ public abstract class WebRequestVoid<TRequest> : WebRequest<TRequest>, IWebReque
 public abstract class WebRequestStream<TRequest> : WebRequest<TRequest>, IWebRequestStream
     where TRequest : IWebRequest
 {
+}
+
+/// <summary>
+///     Defines an incoming REST request that is an array of <see cref="TItem" />
+/// </summary>
+public abstract class WebRequestArray<TRequest, TResponse, TItem> : WebRequest<TRequest>, IWebRequest<TResponse>,
+    IList<TItem>
+    where TResponse : IWebResponse
+    where TRequest : IWebRequest
+{
+    protected readonly List<TItem> Items = new();
+
+    public void Add(TItem item)
+    {
+        Items.Add(item);
+    }
+
+    public void Clear()
+    {
+        Items.Clear();
+    }
+
+    public bool Contains(TItem item)
+    {
+        return Items.Contains(item);
+    }
+
+    public void CopyTo(TItem[] array, int arrayIndex)
+    {
+        Items.CopyTo(array, arrayIndex);
+    }
+
+    public int Count => Items.Count;
+
+    public IEnumerator<TItem> GetEnumerator()
+    {
+        return Items.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)Items).GetEnumerator();
+    }
+
+    public int IndexOf(TItem item)
+    {
+        return Items.IndexOf(item);
+    }
+
+    public void Insert(int index, TItem item)
+    {
+        Items.Insert(index, item);
+    }
+
+    public bool IsReadOnly => false;
+
+    public TItem this[int index]
+    {
+        get => Items[index];
+        set => Items[index] = value;
+    }
+
+    public bool Remove(TItem item)
+    {
+        return Items.Remove(item);
+    }
+
+    public void RemoveAt(int index)
+    {
+        Items.RemoveAt(index);
+    }
 }

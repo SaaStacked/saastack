@@ -31,6 +31,7 @@
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
+
     <ItemGroup>
         <Compile Update="Resources.Designer.cs">
             <DesignTime>True</DesignTime>
@@ -38,6 +39,7 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
     <ItemGroup>
         <Compile Update="Resources.Designer.cs">
             <DesignTime>True</DesignTime>
@@ -45,9 +47,19 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.Development.json">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
     <ItemGroup>
         <None Include="ClientApp\.storybook\*.*" />
     </ItemGroup>
+
     <ItemGroup>
         <_ContentIncludedByDefault Remove="ClientApp\storybook-static\index.json" />
         <_ContentIncludedByDefault Remove="ClientApp\storybook-static\manifest.json" />
