@@ -562,7 +562,6 @@ public class JsonClient : IHttpJsonClient, IDisposable
         problem = new ResponseProblem();
         try
         {
-            
             var details = responseText.FromJson<OAuth2Rfc6749ProblemDetails>();
             if (details.NotExists() || details.Error.HasNoValue())
             {
@@ -637,6 +636,20 @@ public class JsonClient : IHttpJsonClient, IDisposable
                 return true;
             }
 
+            // SendGrid API formats
+            if (details.Errors.Exists() && details.Errors.HasAny())
+            {
+                var firstError = details.Errors.FirstOrDefault();
+                if (firstError.Exists())
+                {
+                    if (firstError.Message.HasValue())
+                    {
+                        problem = statusCode.ToResponseProblem(firstError.Message, firstError.Field, firstError.Help);
+                        return true;
+                    }
+                }
+            }
+
             problem = statusCode.ToResponseProblem(Resources.JsonClient_TryParseNonStandardErrors_NonStandard,
                 responseText);
             return true;
@@ -697,6 +710,8 @@ internal class NonStandardProblemDetails
 
     [JsonPropertyName("error")] public NonStandardProblemError? Error { get; set; }
 
+    [JsonPropertyName("errors")] public List<NonStandardProblemError>? Errors { get; set; }
+
     [JsonPropertyName("message")] public string? Message { get; set; }
 
     [JsonPropertyName("status")] public int? Status { get; set; }
@@ -712,6 +727,10 @@ internal class NonStandardProblemError
     [JsonPropertyName("code")] public string? Code { get; set; }
 
     [JsonPropertyName("description")] public string? Description { get; set; }
+
+    [JsonPropertyName("field")] public string? Field { get; set; }
+
+    [JsonPropertyName("help")] public string? Help { get; set; }
 
     [JsonPropertyName("message")] public string? Message { get; set; }
 
