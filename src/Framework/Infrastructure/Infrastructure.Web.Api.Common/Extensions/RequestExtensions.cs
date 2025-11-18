@@ -86,6 +86,16 @@ public static class RequestExtensions
     }
 
     /// <summary>
+    ///     Removes all authorization proofs from the specified <see cref="message" />
+    /// </summary>
+    public static void RemoveAuthorization(this HttpRequestMessage message)
+    {
+        message.Headers.Remove(HttpConstants.Headers.Authorization);
+        message.Headers.Remove(HttpConstants.Headers.HMACSignature);
+        message.Headers.Remove(HttpConstants.Headers.PrivateInterHostSignature);
+    }
+
+    /// <summary>
     ///     Returns the JSON representation of the specified <see cref="request" />
     /// </summary>
     public static string SerializeToJson(this IWebRequest? request)
@@ -96,16 +106,6 @@ public static class RequestExtensions
         }
 
         return request.ToJson()!;
-    }
-
-    /// <summary>
-    ///     Removes all authorization proofs from the specified <see cref="message" />
-    /// </summary>
-    public static void RemoveAuthorization(this HttpRequestMessage message)
-    {
-        message.Headers.Remove(HttpConstants.Headers.Authorization);
-        message.Headers.Remove(HttpConstants.Headers.HMACSignature);
-        message.Headers.Remove(HttpConstants.Headers.PrivateInterHostSignature);
     }
 
     /// <summary>
@@ -529,6 +529,7 @@ public static class RequestExtensions
     {
         return request.GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(propInfo => propInfo.GetIndexParameters().HasNone()) // exclude indexer properties
             .ToDictionary
             (
                 propInfo => GetPropertyName(propInfo, lowercaseNames),
@@ -557,8 +558,7 @@ public static class RequestExtensions
                         }
                     }
 
-                    return new RequestFieldDescriptor(propInfo.PropertyType, propInfo.GetValue(request, null),
-                        binding);
+                    return new RequestFieldDescriptor(propInfo.PropertyType, propInfo.GetValue(request, null), binding);
                 });
 
         static string GetPropertyName(PropertyInfo propInfo, bool lowercaseNames)
@@ -591,6 +591,7 @@ public static class RequestExtensions
     {
         return requestType
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(propInfo => propInfo.GetIndexParameters().HasNone()) // exclude indexer properties
             .ToDictionary
             (
                 propInfo => propInfo.Name,

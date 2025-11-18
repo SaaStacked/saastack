@@ -124,17 +124,29 @@ public sealed class DefaultBodyFilter : IOperationFilter
 
         if (!isMultiPartForm && !isFormUrlEncoded)
         {
-            content.Add(HttpConstants.ContentTypes.Json, new OpenApiMediaType
+            var schema = context.SchemaGenerator.GenerateSchema(requestDto, context.SchemaRepository);
+            var reference = schema.Reference;
+            if (reference.Exists())
             {
-                Schema = new OpenApiSchema
+                content.Add(HttpConstants.ContentTypes.Json, new OpenApiMediaType
                 {
-                    Reference = new OpenApiReference
+                    Schema = new OpenApiSchema
                     {
-                        Id = context.SchemaGenerator.GenerateSchema(requestDto, context.SchemaRepository).Reference.Id,
-                        Type = ReferenceType.Schema
+                        Reference = new OpenApiReference
+                        {
+                            Id = reference.Id,
+                            Type = ReferenceType.Schema
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                content.Add(HttpConstants.ContentTypes.Json, new OpenApiMediaType
+                {
+                    Schema = schema
+                });
+            }
         }
 
         operation.RequestBody = new OpenApiRequestBody
