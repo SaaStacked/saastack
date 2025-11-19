@@ -67,7 +67,7 @@ public class AuthenticationApplicationSpec
             });
 
         var result = await _application.AuthenticateAsync(_caller.Object, AuthenticationConstants.Providers.Credentials,
-            null, "ausername", "apassword", CancellationToken.None);
+            null, "ausername", "apassword", "acodeverifier", CancellationToken.None);
 
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -107,7 +107,8 @@ public class AuthenticationApplicationSpec
                 }
             });
 
-        var result = await _application.AuthenticateAsync(_caller.Object, "aprovider", "anauthcode", null, null,
+        var result = await _application.AuthenticateAsync(_caller.Object, "aprovider", "anauthcode",
+            null, null, "acodeverifier",
             CancellationToken.None);
 
         result.Value.UserId.Should().Be("auserid");
@@ -117,6 +118,10 @@ public class AuthenticationApplicationSpec
         result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateSingleSignOnRequest>(req =>
             req.AuthCode == "anauthcode"
+            && req.CodeVerifier == "acodeverifier"
+            && req.Provider == "aprovider"
+            && req.InvitationToken == null
+            && req.TermsAndConditionsAccepted == true
         ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
     }
 
@@ -168,9 +173,8 @@ public class AuthenticationApplicationSpec
         result.Value.AccessToken.ExpiresOn.Should().Be(accessTokenExpiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
         result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
-        _serviceClient.Verify(
-            sc => sc.PostAsync(_caller.Object, It.Is<RefreshTokenRequest>(req =>
-                req.RefreshToken == "arefreshtoken"
-            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+        _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<RefreshTokenRequest>(req =>
+            req.RefreshToken == "arefreshtoken"
+        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
     }
 }

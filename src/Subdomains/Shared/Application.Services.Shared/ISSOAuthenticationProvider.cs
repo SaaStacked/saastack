@@ -17,7 +17,6 @@ public interface ISSOAuthenticationProvider
     ///     <see cref="emailAddress" />
     /// </summary>
     Task<Result<SSOAuthUserInfo, Error>> AuthenticateAsync(ICallerContext caller, string authCode, string? codeVerifier,
-        string? emailAddress,
         CancellationToken cancellationToken);
 
     /// <summary>

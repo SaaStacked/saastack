@@ -71,6 +71,7 @@
       "home_anonymous": {
         "title": "Welcome back to SaaStack",
         "providers": {
+          "fakesso": "Sign in with Fake SSO Provider",
           "microsoft": "Sign in with Microsoft",
           "google": "Sign in with Google",
           "credentials": "Sign in with Email"
@@ -237,8 +238,22 @@
           "login": "Sign In"
         }
       },
-      "sso_microsoft": {
-        "title": "Sign In With Microsoft"
+      "sso_login": {
+        "title": "Sign In With {{provider}}",
+        "loaders": {
+          "authorizing": "Authorizing with {{provider}}",
+          "authenticating": "Signing in to SaaStack"
+        },
+        "errors": {
+          "account_locked": "Your account has been locked. Please contact support.",
+          "account_unverified": "Your account has not been verified yet. Please check your email for a verification link first.",
+          "invalid_credentials": "Invalid username or password",
+          "mfa_required": "You must complete multi-factor authentication to sign in.",
+          "oauth2": "You could not be authorized by {{provider}}, error was: {{error}}."
+        },
+        "links": {
+          "home": "Go Home"
+        }
       }
     },
     "bookings": {

@@ -96,18 +96,18 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     [Fact]
     public async Task WhenRegisterWithSameEmailAndEndUserAlreadyRegisteredWithSSO_ThenRegistersAndNoCourtesyEmail()
     {
-        const string emailAddress = "auser@company.com";
+#if TESTINGONLY
+        var authCode = FakeOAuth2Service.AuthCode1;
         var registered = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = emailAddress,
-#if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
-#endif
+            AuthCode = authCode
         });
 
-        registered.Content.Value.Tokens.UserId.Should().NotBeNull();
         var userId = registered.Content.Value.Tokens.UserId;
+        userId.Should().NotBeNull();
+
+        var emailAddress = FakeOAuth2Service.ValidAuthCodes[authCode];
 
         await PropagateDomainEventsAsync(PropagationRounds.Twice);
         var result = await Api.PostAsync(new RegisterPersonCredentialRequest
@@ -121,6 +121,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         result.Content.Value.Person.User.Id.Should().Be(userId);
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
+#endif
     }
 
     [Fact]

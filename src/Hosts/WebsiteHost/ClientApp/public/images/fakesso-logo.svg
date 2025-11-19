@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+    <rect width="48" height="48" rx="8" fill="#6366f1" />
+    <circle cx="24" cy="18" r="6" fill="white" />
+    <path d="M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12v2H12v-2z" fill="white" />
+    <text x="24" y="44" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle"
+          fill="#6366f1">FAKE
+    </text>
+</svg>

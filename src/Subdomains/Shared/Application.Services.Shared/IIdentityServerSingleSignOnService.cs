@@ -13,7 +13,7 @@ public interface IIdentityServerSingleSignOnService
     ///     Authenticates the user with the specified provider
     /// </summary>
     Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string? invitationToken,
-        string providerName, string authCode, string? codeVerifier, string? username, bool? termsAndConditionsAccepted,
+        string providerName, string authCode, string? codeVerifier, bool? termsAndConditionsAccepted,
         CancellationToken cancellationToken);
 
     /// <summary>

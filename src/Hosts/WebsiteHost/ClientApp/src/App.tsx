@@ -18,12 +18,11 @@ import { CredentialsLoginPage } from './subDomains/identity/pages/CredentialsLog
 import { CredentialsRegisterPage } from './subDomains/identity/pages/CredentialsRegister.tsx';
 import { CredentialsRegisterConfirm } from './subDomains/identity/pages/CredentialsRegisterConfirm.tsx';
 import { CredentialsRegisterRedirect } from './subDomains/identity/pages/CredentialsRegisterRedirect.tsx';
-import { SsoMicrosoftPage } from './subDomains/identity/pages/SsoMicrosoft.tsx';
+import { SsoLoginPage } from './subDomains/identity/pages/SsoLoginPage.tsx';
 import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEditPage.tsx';
 import { OrganizationNewPage } from './subDomains/organizations/pages/OrganizationNewPage.tsx';
 import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManagePage.tsx';
 import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
-
 
 const AuthenticatedOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) =>
   isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
@@ -61,7 +60,42 @@ const App: React.FC = () => {
 
           <Route element={<AnonymousOnlyRoutes isAuthenticated={isAuthenticated} />}>
             <Route path="/identity/credentials/login" element={<CredentialsLoginPage />} />
-            <Route path="/identity/sso/microsoft" element={<SsoMicrosoftPage />} />
+            {window.isTestingOnly && (
+              <Route
+                path="/identity/sso/fakeprovider"
+                element={
+                  <SsoLoginPage
+                    providerId="fakesso"
+                    providerName="Fake SSO Provider"
+                    authorizationServerBaseUrl={import.meta.env.VITE_FAKEPROVIDER_SSO_BASEURL}
+                  />
+                }
+              />
+            )}
+            <Route
+              path="/identity/sso/microsoft"
+              element={
+                <SsoLoginPage
+                  providerId="microsoft"
+                  providerName="Microsoft"
+                  pkce={true}
+                  authorizationServerBaseUrl={import.meta.env.VITE_MICROSOFT_SSO_BASEURL}
+                  clientId={import.meta.env.VITE_MICROSOFT_SSO_CLIENTID}
+                />
+              }
+            />
+            <Route
+              path="/identity/sso/google"
+              element={
+                <SsoLoginPage
+                  providerId="google"
+                  providerName="Google"
+                  pkce={true}
+                  authorizationServerBaseUrl={import.meta.env.VITE_GOOGLE_SSO_BASEURL}
+                  clientId={import.meta.env.VITE_GOOGLE_SSO_CLIENTID}
+                />
+              }
+            />
             <Route path="/identity/credentials/register" element={<CredentialsRegisterPage />} />
             <Route path="/identity/credentials/register-confirm" element={<CredentialsRegisterConfirm />} />
             <Route path="/identity/credentials/register-redirect" element={<CredentialsRegisterRedirect />} />

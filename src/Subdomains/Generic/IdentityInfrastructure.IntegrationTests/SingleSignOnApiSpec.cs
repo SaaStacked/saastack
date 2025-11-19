@@ -47,26 +47,10 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenAuthenticateAndNoUsername_ThenReturnsError()
-    {
-        var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
-        {
-            Username = null,
-#if TESTINGONLY
-            Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
-#endif
-        });
-
-        result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-    }
-
-    [Fact]
     public async Task WhenAuthenticateAndWrongAuthCode_ThenReturnsError()
     {
         var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = "auser@company.com",
 #if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
 #endif
@@ -77,31 +61,12 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenAuthenticateWithNewEmail_ThenRegistersNewUser()
-    {
-        var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
-        {
-            Username = "auser@company.com",
-#if TESTINGONLY
-            Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
-#endif
-        });
-
-        result.Content.Value.Tokens.UserId.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
-            .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
-        result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
-            .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
-    }
-
-    [Fact]
     public async Task
         WhenAuthenticateWithSameEmailAndEndUserAlreadyRegisteredWithPassword_ThenReturnsSameUserNewTokens()
     {
-        const string emailAddress = "auser@company.com";
+#if TESTINGONLY
+        var authCode = FakeOAuth2Service.AuthCode1;
+        var emailAddress = FakeOAuth2Service.ValidAuthCodes[authCode];
         var registered = await Api.PostAsync(new RegisterPersonCredentialRequest
         {
             EmailAddress = emailAddress,
@@ -123,11 +88,8 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
         await PropagateDomainEventsAsync();
         var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = emailAddress,
-#if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
-#endif
+            AuthCode = authCode
         });
 
         result.Content.Value.Tokens.UserId.Should().Be(userId);
@@ -138,15 +100,14 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
         result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
+#endif
     }
 
     [Fact]
     public async Task WhenAuthenticateWithSameEmailAndSSOUserAlreadyExists_ThenReturnsSameUserNewTokens()
     {
-        const string emailAddress = "auser@company.com";
         var authenticated = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = emailAddress,
 #if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
             AuthCode = FakeOAuth2Service.AuthCode1
@@ -159,7 +120,6 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
         await PropagateDomainEventsAsync();
         var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = emailAddress,
 #if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
             AuthCode = FakeOAuth2Service.AuthCode1
@@ -181,7 +141,6 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     {
         var authenticate = await Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
-            Username = "auser@company.com",
 #if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
             AuthCode = FakeOAuth2Service.AuthCode1

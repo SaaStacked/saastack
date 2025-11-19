@@ -44,16 +44,15 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.NotAuthenticated("amessage"));
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, null, CancellationToken.None);
+            "anauthcode", null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
-            sps.AuthenticateUserAsync(_caller.Object, "aprovidername", "anauthcode", null, null,
+            sps.AuthenticateUserAsync(_caller.Object, "aprovidername", "anauthcode", null,
                 It.IsAny<CancellationToken>()));
     }
 
@@ -64,7 +63,6 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             Timezones.Default, Locales.Default, CountryCodes.Default);
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(authUserInfo);
@@ -108,7 +106,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, null, CancellationToken.None);
+            "anauthcode", null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
@@ -137,7 +135,6 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             Timezones.Default, Locales.Default, CountryCodes.Default);
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<string>(),
                     It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(authUserInfo);
         var ssoUser = new SSOUser
@@ -180,7 +177,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, null, CancellationToken.None);
+            "anauthcode", null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityLocked, Resources.SingleSignOnApplication_AccountSuspended);
         _ssoProvidersService.Verify(sps =>
@@ -209,7 +206,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             Timezones.Sydney, Locales.Default, CountryCodes.Australia);
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(authUserInfo);
         _ssoProvidersService.Setup(sps =>
                 sps.FindUserByProviderAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<SSOAuthUserInfo>(),
@@ -264,7 +261,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, null, CancellationToken.None);
+            "anauthcode", null, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -293,7 +290,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             Timezones.Default, Locales.Default, CountryCodes.Default);
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(authUserInfo);
         var ssoUser = new SSOUser
         {
@@ -345,7 +342,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, null, CancellationToken.None);
+            "anauthcode", null, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -406,9 +403,8 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         result.Error.AdditionalData.Should().OnlyContain(x =>
             x.Key == NativeIdentityServerSingleSignOnService.AuthErrorProviderName
             && (string)x.Value == "aprovidername");
-        _endUsersService.Verify(
-            eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
+        _endUsersService.Verify(eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
         _ssoProvider.Verify(
             sop => sop.RefreshTokenAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()), Times.Never);
@@ -438,9 +434,8 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             "arefreshtoken", CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityExists, Resources.SingleSignOnApplication_AccountSuspended);
-        _endUsersService.Verify(
-            eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
+        _endUsersService.Verify(eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
         _ssoProvider.Verify(
             sop => sop.RefreshTokenAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()), Times.Never);
@@ -473,12 +468,10 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         result.Error.AdditionalData.Should().OnlyContain(x =>
             x.Key == NativeIdentityServerSingleSignOnService.AuthErrorProviderName
             && (string)x.Value == "aprovidername");
-        _endUsersService.Verify(
-            eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
-        _ssoProvider.Verify(
-            sop => sop.RefreshTokenAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
+        _endUsersService.Verify(eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
+        _ssoProvider.Verify(sop => sop.RefreshTokenAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
         _ssoProvidersService.Verify(
             sps => sps.SaveTokensOnBehalfOfUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProviderAuthenticationTokens>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -537,21 +530,19 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         result.Value.OtherTokens.Count.Should().Be(1);
         result.Value.OtherTokens[0].Type.Should().Be(TokenType.OtherToken);
         result.Value.OtherTokens[0].Value.Should().Be("anothertoken");
-        _endUsersService.Verify(
-            eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
-        _ssoProvider.Verify(
-            sop => sop.RefreshTokenAsync(_caller.Object, It.IsAny<string>(),
-                It.IsAny<CancellationToken>()));
-        _ssoProvidersService.Verify(
-            sps => sps.SaveTokensOnBehalfOfUserAsync(_caller.Object, "aprovidername", "auserid".ToId(),
-                It.Is<ProviderAuthenticationTokens>(token =>
-                    token.Provider == "aprovidername"
-                    && token.AccessToken.Value == "anaccesstoken"
-                    && token.RefreshToken!.Value == "arefreshtoken"
-                    && token.OtherTokens.Count == 1
-                    && token.OtherTokens[0].Value == "anothertoken"
-                ), It.IsAny<CancellationToken>()));
+        _endUsersService.Verify(eus => eus.GetUserPrivateAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
+        _ssoProvider.Verify(sop => sop.RefreshTokenAsync(_caller.Object, It.IsAny<string>(),
+            It.IsAny<CancellationToken>()));
+        _ssoProvidersService.Verify(sps => sps.SaveTokensOnBehalfOfUserAsync(_caller.Object, "aprovidername",
+            "auserid".ToId(),
+            It.Is<ProviderAuthenticationTokens>(token =>
+                token.Provider == "aprovidername"
+                && token.AccessToken.Value == "anaccesstoken"
+                && token.RefreshToken!.Value == "arefreshtoken"
+                && token.OtherTokens.Count == 1
+                && token.OtherTokens[0].Value == "anothertoken"
+            ), It.IsAny<CancellationToken>()));
     }
 
     [Fact]

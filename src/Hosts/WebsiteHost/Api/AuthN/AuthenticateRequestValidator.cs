@@ -35,6 +35,11 @@ public class AuthenticateRequestValidator : AbstractValidator<AuthenticateReques
                 .IsEmailAddress()
                 .When(req => req.Username.HasValue())
                 .WithMessage(Resources.AuthenticateRequestValidator_InvalidUsername);
+            RuleFor(req => req.CodeVerifier)
+                .NotEmpty()
+                .Matches(CommonValidations.OAuth2.CodeVerifier)
+                .When(req => req.CodeVerifier.HasValue())
+                .WithMessage(Resources.AuthenticateRequestValidator_InvalidCodeVerifier);
         });
     }
 }

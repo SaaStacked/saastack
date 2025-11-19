@@ -13,7 +13,7 @@ namespace Infrastructure.External.TestingOnly.ApplicationServices;
 /// </summary>
 public class FakeSSOAuthenticationProvider : ISSOAuthenticationProvider
 {
-    public const string SSOName = "testsso";
+    public const string SSOName = "fakesso";
     private const string ServiceName = "FakeOAuth2Service";
     private readonly IOAuth2Service _auth2Service;
 
@@ -27,19 +27,14 @@ public class FakeSSOAuthenticationProvider : ISSOAuthenticationProvider
     }
 
     public async Task<Result<SSOAuthUserInfo, Error>> AuthenticateAsync(ICallerContext caller, string authCode,
-        string? codeVerifier, string? emailAddress, CancellationToken cancellationToken)
+        string? codeVerifier, CancellationToken cancellationToken)
     {
         authCode.ThrowIfNotValuedParameter(nameof(authCode),
             Common.Resources.AnySSOAuthenticationProvider_MissingAuthCode);
 
-        if (emailAddress.HasNoValue())
-        {
-            return Error.RuleViolation(Resources.FakeSSOAuthenticationProvider_MissingUsername);
-        }
-
         var retrievedTokens =
             await _auth2Service.ExchangeCodeForTokensAsync(caller,
-                new OAuth2CodeTokenExchangeOptions(ServiceName, authCode, codeVerifier, emailAddress),
+                new OAuth2CodeTokenExchangeOptions(ServiceName, authCode, codeVerifier),
                 cancellationToken);
         if (retrievedTokens.IsFailure)
         {

@@ -2,6 +2,7 @@
 
 export type AuthenticateRequest = {
   authCode?: string | null;
+  code_verifier?: string | null;
   password?: string | null;
   provider: string;
   username?: string | null;

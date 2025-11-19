@@ -23,12 +23,6 @@ public class AuthenticateSingleSignOnRequestValidator : AbstractValidator<Authen
             .NotEmpty()
             .WithMessage(Resources.AuthenticateSingleSignOnRequestValidator_InvalidAuthCode);
 
-        RuleFor(req => req.Username)
-            .NotEmpty()
-            .IsEmailAddress()
-            .When(req => req.Username.HasValue())
-            .WithMessage(Resources.AuthenticateSingleSignOnRequestValidator_InvalidUsername);
-
         RuleFor(req => req.CodeVerifier)
             .Matches(Validations.OAuth2.CodeVerifier)
             .WithMessage(Resources.AuthenticateSingleSignOnRequestValidator_InvalidCodeVerifier)

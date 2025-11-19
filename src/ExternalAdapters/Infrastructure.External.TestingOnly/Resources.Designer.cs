@@ -58,14 +58,5 @@ namespace Infrastructure.External.TestingOnly {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;Username&apos; must be provided for this authentication attempt.
-        /// </summary>
-        internal static string FakeSSOAuthenticationProvider_MissingUsername {
-            get {
-                return ResourceManager.GetString("FakeSSOAuthenticationProvider_MissingUsername", resourceCulture);
-            }
-        }
     }
 }

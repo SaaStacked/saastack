@@ -29,11 +29,11 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
     }
 
     public async Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller,
-        string? invitationToken, string providerName, string authCode, string? codeVerifier, string? username,
+        string? invitationToken, string providerName, string authCode, string? codeVerifier,
         bool? termsAndConditionsAccepted, CancellationToken cancellationToken)
     {
         var authenticated =
-            await _ssoProvidersService.AuthenticateUserAsync(caller, providerName, authCode, codeVerifier, username,
+            await _ssoProvidersService.AuthenticateUserAsync(caller, providerName, authCode, codeVerifier,
                 cancellationToken);
         if (authenticated.IsFailure)
         {

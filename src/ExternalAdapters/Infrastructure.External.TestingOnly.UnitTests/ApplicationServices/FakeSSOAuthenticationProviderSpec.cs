@@ -27,30 +27,10 @@ public class FakeSSOAuthenticationProviderSpec
     public async Task WhenAuthenticateAsyncAndNoAuthCode_ThenReturnsError()
     {
         await _provider.Invoking(x =>
-                x.AuthenticateAsync(_caller.Object, string.Empty, "acodeverifier", "anemailaddress",
+                x.AuthenticateAsync(_caller.Object, string.Empty, "acodeverifier",
                     CancellationToken.None))
             .Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessageLike(Common.Resources.AnySSOAuthenticationProvider_MissingAuthCode);
-    }
-
-    [Fact]
-    public async Task WhenAuthenticateAsyncAndNoUsername_ThenReturnsError()
-    {
-        var result =
-            await _provider.AuthenticateAsync(_caller.Object, FakeOAuth2Service.AuthCode1, "acodeverifier", null,
-                CancellationToken.None);
-
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.FakeSSOAuthenticationProvider_MissingUsername);
-    }
-
-    [Fact]
-    public async Task WhenAuthenticateAsyncAndWrongAuthCode_ThenReturnsError()
-    {
-        var result =
-            await _provider.AuthenticateAsync(_caller.Object, "awrongcode", "acodeverifier", null,
-                CancellationToken.None);
-
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.FakeSSOAuthenticationProvider_MissingUsername);
     }
 
     [Fact]
@@ -58,7 +38,6 @@ public class FakeSSOAuthenticationProviderSpec
     {
         var result =
             await _provider.AuthenticateAsync(_caller.Object, FakeOAuth2Service.AuthCode1, "acodeverifier",
-                "anemailaddress",
                 CancellationToken.None);
 
         result.Should().BeSuccess();
@@ -69,8 +48,8 @@ public class FakeSSOAuthenticationProviderSpec
             .BeCloseTo(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry),
                 TimeSpan.FromMinutes(1));
         result.Value.UId.Should().Be("6Afx/PgtEy+bsBjKZzihnw==");
-        result.Value.EmailAddress.Should().Be("anemailaddress");
-        result.Value.FirstName.Should().Be("anemailaddress");
+        result.Value.EmailAddress.Should().Be("fakeuser1@company.com");
+        result.Value.FirstName.Should().Be("fakeuser1@company.com");
         result.Value.LastName.Should().Be("asurname");
         result.Value.Timezone.Should().Be(Timezones.Default);
         result.Value.Locale.Should().Be(Locales.Default);

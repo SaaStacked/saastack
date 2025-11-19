@@ -12,12 +12,8 @@ import { ConfirmRegisterErrors, CredentialsRegisterConfirmAction } from '../acti
 import { CredentialsRegisterConfirmationResendAction } from '../actions/credentialsRegisterConfirmationResend.ts';
 
 
-// Creates a confirmation page for the user to confirm their credentials registration
-// Accepts a "token" in the query string, from a user clicking on a link in an email.
-// Sends the token to the API to confirm the registration, and processes the response:
-// 1. If the token is valid, and the user has not yet registered, then the user is asked to sign in.
-// 2. If the token is valid, but the user has already registered, then the user is shown an error message.
-// 3. The token is invalid (perhaps expired, or unknown) then the user is shown an error message, and a link to resend the confirmation email.
+// Creates an "ephemeral" page to redirect the user to authorize against Microsoft OAuth2, and then Authenticates the user
+// Receives an authCode from Microsoft OAuth2, and forwards the authCode to the API to confirm the login.
 export const CredentialsRegisterConfirm: React.FC = () => {
   const { t: translate } = useTranslation();
   const [queryString] = useSearchParams();
@@ -73,7 +69,7 @@ export const CredentialsRegisterConfirm: React.FC = () => {
 };
 
 interface HandlerProps {
-  translate: (key: string) => string;
+  translate: (key: string, options?: any) => string;
   lastExpectedError?: ExpectedErrorDetails<any> | undefined;
   lastUnexpectedError?: AxiosError;
   isExecuting: boolean;

@@ -170,6 +170,60 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -276,6 +330,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -362,6 +425,15 @@
         "description": "(request type: RevokeAPIKeyRequest)",
         "operationId": "RevokeAPIKey",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -718,6 +790,67 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SinceUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -920,6 +1053,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "RefreshToken",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -998,6 +1140,51 @@
         "description": "(request type: ExportSubscriptionsToMigrateRequest)",
         "operationId": "ExportSubscriptionsToMigrate",
         "parameters": [
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Embed",
             "in": "query",
@@ -1145,6 +1332,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1247,6 +1443,15 @@
         "description": "(request type: MigrateSubscriptionRequest)",
         "operationId": "MigrateSubscription (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -1359,6 +1564,24 @@
         "description": "(request type: CancelBookingRequest)",
         "operationId": "CancelBooking",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -1633,6 +1856,76 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "FromUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1748,6 +2041,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1832,6 +2143,24 @@
         "description": "(request type: GetCarRequest)",
         "operationId": "GetCar",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -2102,6 +2431,60 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2200,6 +2583,15 @@
         "description": "(request type: ScheduleMaintenanceCarRequest)",
         "operationId": "ScheduleMaintenanceCar (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -2321,6 +2713,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -2428,6 +2829,76 @@
         "description": "(request type: SearchAllAvailableCarsRequest)",
         "operationId": "SearchAllAvailableCars",
         "parameters": [
+          {
+            "name": "FromUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "FromUtc",
             "in": "query",
@@ -2657,6 +3128,69 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2747,6 +3281,15 @@
         "description": "(request type: TakeOfflineCarRequest)",
         "operationId": "TakeOfflineCar (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -2860,6 +3403,15 @@
         "description": "(request type: TakeOfflineCarRequest)",
         "operationId": "TakeOfflineCar (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -2983,6 +3535,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -3088,6 +3649,15 @@
         "description": "(request type: GetOAuth2ClientConsentForCallerRequest)",
         "operationId": "GetOAuth2ClientConsentForCaller",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -3340,6 +3910,51 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3446,6 +4061,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3530,6 +4154,15 @@
         "description": "(request type: GetOAuth2ClientRequest)",
         "operationId": "GetOAuth2Client",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -3634,6 +4267,15 @@
         "description": "(request type: UpdateOAuth2ClientRequest)",
         "operationId": "UpdateOAuth2Client (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -3747,6 +4389,15 @@
         "description": "(request type: UpdateOAuth2ClientRequest)",
         "operationId": "UpdateOAuth2Client (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -3870,6 +4521,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -3977,6 +4637,15 @@
         "description": "(request type: RevokeOAuth2ClientConsentForCallerRequest)",
         "operationId": "RevokeOAuth2ClientConsentForCaller",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -4187,6 +4856,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Token",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -4380,6 +5058,15 @@
         "description": "(request type: GetPersonCredentialRegistrationConfirmationRequest)",
         "operationId": "GetPersonCredentialRegistrationConfirmation",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "query",
@@ -4774,6 +5461,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Token",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -4873,6 +5569,15 @@
         "description": "(request type: VerifyPasswordResetRequest)",
         "operationId": "VerifyPasswordReset",
         "parameters": [
+          {
+            "name": "Token",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Token",
             "in": "path",
@@ -5171,6 +5876,51 @@
         "description": "(request type: SearchAllEventNotificationsRequest)",
         "operationId": "SearchAllEventNotifications",
         "parameters": [
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Embed",
             "in": "query",
@@ -5666,6 +6416,75 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SinceUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Tags",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5873,6 +6692,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -5978,6 +6806,15 @@
         "description": "(request type: UnassignPlatformRolesRequest)",
         "operationId": "UnassignPlatformRoles (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -6099,6 +6936,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -6197,19 +7043,19 @@
         ]
       }
     },
-    "/webhooks/billingproviders/fake": {
+    "/webhooks/providers/billing/fake": {
       "post": {
         "tags": [
           "FakeBillingProviderApi"
         ],
-        "summary": "Notifies when a fake billing provider backend event has occurred",
-        "description": "(request type: FakeBillingProviderNotifyWebHookEventRequest)",
-        "operationId": "FakeBillingProviderNotifyWebHookEvent",
+        "summary": "Notifies when a fake billing provider backend event has occurred, and calls us to notify of it",
+        "description": "(request type: NotifyFakeBillingProviderWebHookEventRequest)",
+        "operationId": "NotifyFakeBillingProviderWebHookEvent",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FakeBillingProviderNotifyWebHookEventRequest"
+                "$ref": "#/components/schemas/NotifyFakeBillingProviderWebHookEventRequest"
               }
             }
           }
@@ -6302,6 +7148,32 @@
         "description": "(request type: GetFeatureFlagRequest)",
         "operationId": "GetFeatureFlag",
         "parameters": [
+          {
+            "name": "Name",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TenantId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Name",
             "in": "path",
@@ -6514,6 +7386,15 @@
         "description": "(request type: GetFeatureFlagForCallerRequest)",
         "operationId": "GetFeatureFlagForCaller",
         "parameters": [
+          {
+            "name": "Name",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Name",
             "in": "path",
@@ -6802,6 +7683,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -6886,6 +7776,15 @@
         "description": "(request type: GetImageRequest)",
         "operationId": "GetImage",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -6982,6 +7881,15 @@
         "description": "(request type: UpdateImageRequest)",
         "operationId": "UpdateImage (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -7103,6 +8011,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -7210,6 +8127,15 @@
         "description": "(request type: DownloadImageRequest)",
         "operationId": "DownloadImage",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -7553,6 +8479,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Token",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -7660,6 +8595,15 @@
         "description": "(request type: VerifyGuestInvitationRequest)",
         "operationId": "VerifyGuestInvitation",
         "parameters": [
+          {
+            "name": "Token",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Token",
             "in": "path",
@@ -8104,6 +9048,51 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -8303,6 +9292,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "MfaToken",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -8393,6 +9390,15 @@
         "description": "(request type: ChallengeCredentialMfaAuthenticatorForCallerRequest)",
         "operationId": "ChallengeCredentialMfaAuthenticatorForCaller (Put)",
         "parameters": [
+          {
+            "name": "AuthenticatorId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AuthenticatorId",
             "in": "path",
@@ -8498,6 +9504,15 @@
         "description": "(request type: ChallengeCredentialMfaAuthenticatorForCallerRequest)",
         "operationId": "ChallengeCredentialMfaAuthenticatorForCaller (Patch)",
         "parameters": [
+          {
+            "name": "AuthenticatorId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AuthenticatorId",
             "in": "path",
@@ -8819,6 +9834,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "AuthenticatorType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -8916,6 +9940,15 @@
         "description": "(request type: ConfirmCredentialMfaAuthenticatorForCallerRequest)",
         "operationId": "ConfirmCredentialMfaAuthenticatorForCaller (Patch)",
         "parameters": [
+          {
+            "name": "AuthenticatorType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AuthenticatorType",
             "in": "path",
@@ -9023,6 +10056,15 @@
         "description": "(request type: DisassociateCredentialMfaAuthenticatorForCallerRequest)",
         "operationId": "DisassociateCredentialMfaAuthenticatorForCaller",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -9331,6 +10373,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "AuthenticatorType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -9428,6 +10479,15 @@
         "description": "(request type: VerifyCredentialMfaAuthenticatorForCallerRequest)",
         "operationId": "VerifyCredentialMfaAuthenticatorForCaller (Patch)",
         "parameters": [
+          {
+            "name": "AuthenticatorType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AuthenticatorType",
             "in": "path",
@@ -9535,6 +10595,73 @@
         "description": "(request type: AuthorizeOAuth2GetRequest)",
         "operationId": "AuthorizeOAuth2Get",
         "parameters": [
+          {
+            "name": "ClientId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CodeChallenge",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CodeChallengeMethod",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nonce",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RedirectUri",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ResponseType",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Scope",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "State",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ClientId",
             "in": "query",
@@ -10221,6 +11348,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -10326,6 +11462,15 @@
         "description": "(request type: AssignRolesToOrganizationRequest)",
         "operationId": "AssignRolesToOrganization (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -10441,6 +11586,15 @@
         "description": "(request type: ChangeOrganizationAvatarRequest)",
         "operationId": "ChangeOrganizationAvatar (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -10574,6 +11728,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -10699,6 +11862,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -10797,6 +11969,15 @@
         "description": "(request type: ChangeOrganizationRequest)",
         "operationId": "ChangeOrganization (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -10918,6 +12099,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -11031,6 +12221,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -11115,6 +12314,15 @@
         "description": "(request type: GetOrganizationRequest)",
         "operationId": "GetOrganization",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -11333,6 +12541,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -11431,6 +12648,15 @@
         "description": "(request type: InviteMemberToOrganizationRequest)",
         "operationId": "InviteMemberToOrganization",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -11597,6 +12823,60 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -11695,6 +12975,15 @@
         "description": "(request type: UnassignRolesFromOrganizationRequest)",
         "operationId": "UnassignRolesFromOrganization (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -11816,6 +13105,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -11923,6 +13221,24 @@
         "description": "(request type: UnInviteMemberFromOrganizationRequest)",
         "operationId": "UnInviteMemberFromOrganization",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "path",
@@ -12986,6 +14302,75 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SinceUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Tags",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -13193,6 +14578,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -13289,6 +14683,15 @@
         "description": "(request type: GetSubscriptionRequest)",
         "operationId": "GetSubscription",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -13395,6 +14798,15 @@
         "description": "(request type: ChangeSubscriptionPlanRequest)",
         "operationId": "ChangeSubscriptionPlan (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -13516,6 +14928,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -13623,6 +15044,15 @@
         "description": "(request type: ForceCancelSubscriptionRequest)",
         "operationId": "ForceCancelSubscription",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -13798,6 +15228,76 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FromUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -13896,6 +15396,15 @@
         "description": "(request type: TransferSubscriptionRequest)",
         "operationId": "TransferSubscription (Put)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -14009,6 +15518,15 @@
         "description": "(request type: TransferSubscriptionRequest)",
         "operationId": "TransferSubscription (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -14595,6 +16113,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Format",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -15159,6 +16685,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "AnArray",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -15458,6 +16992,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "ANumberProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -15557,6 +17109,105 @@
         "description": "(request type: GetTestingOnlyRequest)",
         "operationId": "GetTestingOnly",
         "parameters": [
+          {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ACamelStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AnIntQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AStringQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AnEnumRouteProperty",
             "in": "path",
@@ -15771,6 +17422,33 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -15870,6 +17548,150 @@
         "description": "(request type: SearchTestingOnlyRequest)",
         "operationId": "SearchTestingOnly",
         "parameters": [
+          {
+            "name": "AnEnumRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringRouteProperty",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ACamelIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ACamelStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnEnumQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AnIntProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AnIntQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "AStringProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AStringQueryProperty",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "AnEnumRouteProperty",
             "in": "path",
@@ -16292,6 +18114,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -16430,6 +18261,35 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "anid",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OptionalField",
+            "in": "query",
+            "description": "anoptionalfield",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RequiredField",
+            "in": "query",
+            "description": "arequiredfield",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -16518,6 +18378,16 @@
         "description": "(request type: OpenApiPostTestingOnlyRequest)",
         "operationId": "OpenApiPostTestingOnly",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "anid",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -16636,6 +18506,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "anid",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -16736,6 +18616,16 @@
         "description": "(request type: OpenApiPutTestingOnlyRequest)",
         "operationId": "OpenApiPutTestingOnly (Patch)",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "anid",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -16847,6 +18737,15 @@
         "description": "(request type: OpenApiPostMultiPartFormDataTestingOnlyRequest)",
         "operationId": "OpenApiPostMultiPartFormDataTestingOnly",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -16973,6 +18872,14 @@
         "description": "(request type: GetWithRedirectTestingOnlyRequest)",
         "operationId": "GetWithRedirectTestingOnly",
         "parameters": [
+          {
+            "name": "Result",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Result",
             "in": "query",
@@ -17978,6 +19885,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -18093,6 +20008,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OptionalField",
+            "in": "query",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RequiredField",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -18181,6 +20122,15 @@
         "description": "(request type: ValidationsValidatedPostTestingOnlyRequest)",
         "operationId": "ValidationsValidatedPostTestingOnly",
         "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Id",
             "in": "path",
@@ -18498,6 +20448,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -18603,6 +20562,15 @@
         "description": "(request type: ChangeProfileContactAddressRequest)",
         "operationId": "ChangeProfileContactAddress (Patch)",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "path",
@@ -18726,6 +20694,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -18831,6 +20808,15 @@
         "description": "(request type: ChangeProfileRequest)",
         "operationId": "ChangeProfile (Patch)",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "path",
@@ -18946,6 +20932,15 @@
         "description": "(request type: ChangeProfileAvatarRequest)",
         "operationId": "ChangeProfileAvatar (Put)",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "path",
@@ -19079,6 +21074,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -19196,6 +21200,15 @@
         "description": "(request type: DeleteProfileAvatarRequest)",
         "operationId": "DeleteProfileAvatar",
         "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "UserId",
             "in": "path",
@@ -19584,10 +21597,6 @@
           },
           "termsAndConditionsAccepted": {
             "type": "boolean",
-            "nullable": true
-          },
-          "username": {
-            "type": "string",
             "nullable": true
           }
         },
@@ -20714,24 +22723,6 @@
         ],
         "type": "string"
       },
-      "FakeBillingProviderNotifyWebHookEventRequest": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "object",
-            "additionalProperties": { },
-            "nullable": true
-          },
-          "eventId": {
-            "type": "string",
-            "nullable": true
-          },
-          "eventType": {
-            "$ref": "#/components/schemas/FakeBillingProviderEventType"
-          }
-        },
-        "additionalProperties": false
-      },
       "FeatureFlag": {
         "required": [
           "isEnabled",
@@ -21696,6 +23687,23 @@
           "subscriptionName": {
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotifyFakeBillingProviderWebHookEventRequest": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventId": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/FakeBillingProviderEventType"
           }
         },
         "additionalProperties": false
@@ -23931,6 +25939,10 @@
             "$ref": "#/components/schemas/Invitation"
           }
         },
+        "additionalProperties": false
+      },
+      "Void": {
+        "type": "object",
         "additionalProperties": false
       }
     },

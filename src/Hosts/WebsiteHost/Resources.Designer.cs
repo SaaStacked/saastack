@@ -78,6 +78,15 @@ namespace WebsiteHost {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;CodeVerifier&apos; is invalid.
+        /// </summary>
+        internal static string AuthenticateRequestValidator_InvalidCodeVerifier {
+            get {
+                return ResourceManager.GetString("AuthenticateRequestValidator_InvalidCodeVerifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Password&apos; is either missing or invalid.
         /// </summary>
         internal static string AuthenticateRequestValidator_InvalidPassword {

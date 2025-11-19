@@ -296,4 +296,13 @@ public static class CommonValidations
             return roundedUpToNearestFour;
         }
     }
+
+    public static class OAuth2
+    {
+        public static readonly Validation
+            CodeChallenge =
+                new(@"^[A-Za-z0-9_\-\.\~\+\/\=]{1,500}$", 1,
+                    500); // Is either the same as the code verifier,or a base64 encoded hashed version of it
+        public static readonly Validation CodeVerifier = new(@"^[A-Za-z0-9_\-\.\~]{43,128}$", 43, 128);
+    }
 }

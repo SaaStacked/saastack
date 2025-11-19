@@ -11,18 +11,23 @@ using Common;
 namespace Infrastructure.External.TestingOnly.ApplicationServices;
 
 /// <summary>
-///     Provides a fake example OAuth2 service that returns a set of OAuth tokens
+///     Provides a fake example OAuth2 service that accepts a hard-coded set of auth codes,
+///     and returns a hard-coded set of tokens and user info.
 /// </summary>
 public class FakeOAuth2Service : IOAuth2Service
 {
     public const string AuthCode1 = "1234567890";
     public const string AuthCode2 = "2345678901";
-    private static readonly string[] ValidAuthCodes = [AuthCode1, AuthCode2];
+    public static readonly Dictionary<string, string> ValidAuthCodes = new()
+    {
+        { AuthCode1, "fakeuser1@company.com" },
+        { AuthCode2, "fakeuser2@company.com" }
+    };
 
     public Task<Result<List<AuthToken>, Error>> ExchangeCodeForTokensAsync(ICallerContext caller,
         OAuth2CodeTokenExchangeOptions options, CancellationToken cancellationToken)
     {
-        if (!ValidAuthCodes.Contains(options.Code))
+        if (!ValidAuthCodes.ContainsKey(options.Code))
         {
             return Task.FromResult<Result<List<AuthToken>, Error>>(Error.RuleViolation());
         }
@@ -76,12 +81,13 @@ public class FakeOAuth2Service : IOAuth2Service
 
     private static AuthToken CreateAccessToken(OAuth2CodeTokenExchangeOptions options)
     {
+        var emailAddress = ValidAuthCodes[options.Code];
         var expiresOn = DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
             claims:
             [
-                new Claim(ClaimTypes.Email, options.Scope!),
-                new Claim(ClaimTypes.GivenName, options.Scope!),
+                new Claim(ClaimTypes.Email, emailAddress),
+                new Claim(ClaimTypes.GivenName, emailAddress),
                 new Claim(ClaimTypes.Surname, "asurname"),
                 new Claim(AuthenticationConstants.Claims.ForTimezone, Timezones.Default.ToString()),
                 new Claim(AuthenticationConstants.Claims.ForLocale, Locales.Default.ToString()),

@@ -173,5 +173,37 @@ public class AuthenticateRequestValidatorSpec
 
             _validator.ValidateAndThrow(_dto);
         }
+
+        [Fact]
+        public void WhenCodeVerifierIsNotValid_ThenThrows()
+        {
+            _dto.Provider = "aprovider";
+            _dto.AuthCode = "anauthcode";
+            _dto.CodeVerifier = "^notavalidcodeverifier^";
+
+            _validator.Invoking(x => x.ValidateAndThrow(_dto))
+                .Should().Throw<ValidationException>()
+                .WithMessageLike(Resources.AuthenticateRequestValidator_InvalidCodeVerifier);
+        }
+
+        [Fact]
+        public void WhenCodeVerifierIsNull_ThenSucceeds()
+        {
+            _dto.Provider = "aprovider";
+            _dto.AuthCode = "anauthcode";
+            _dto.CodeVerifier = null;
+
+            _validator.ValidateAndThrow(_dto);
+        }
+
+        [Fact]
+        public void WhenCodeVerifierIsValid_ThenSucceeds()
+        {
+            _dto.Provider = "aprovider";
+            _dto.AuthCode = "anauthcode";
+            _dto.CodeVerifier = "acodeverifieracodeverifieracodeverifieracodeverifier";
+
+            _validator.ValidateAndThrow(_dto);
+        }
     }
 }

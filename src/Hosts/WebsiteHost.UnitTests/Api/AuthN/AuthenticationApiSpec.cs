@@ -64,7 +64,7 @@ public class AuthenticationApiSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _application.Setup(app => app.AuthenticateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateTokens
             {
@@ -87,10 +87,12 @@ public class AuthenticationApiSpec
         {
             Provider = "aprovider",
             Username = "ausername",
-            Password = "apassword"
+            Password = "apassword",
+            CodeVerifier = "acodeverifier"
         }, CancellationToken.None);
 
-        _application.Verify(app => app.AuthenticateAsync(_caller.Object, "aprovider", null, "ausername", "apassword",
+        _application.Verify(app => app.AuthenticateAsync(_caller.Object, "aprovider",
+            null, "ausername", "apassword", "acodeverifier",
             It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
             c.Append(AuthenticationConstants.Cookies.Token, It.Is<string>(s =>
@@ -118,8 +120,7 @@ public class AuthenticationApiSpec
 
         await _api.RefreshToken(new RefreshTokenRequest(), CancellationToken.None);
 
-        _application.Verify(
-            app => app.RefreshTokenAsync(_caller.Object, null, It.IsAny<CancellationToken>()));
+        _application.Verify(app => app.RefreshTokenAsync(_caller.Object, null, It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
             c.Append(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CookieOptions>()), Times.Never);
     }
@@ -160,8 +161,8 @@ public class AuthenticationApiSpec
 
         await _api.RefreshToken(new RefreshTokenRequest(), CancellationToken.None);
 
-        _application.Verify(
-            app => app.RefreshTokenAsync(_caller.Object, "arefreshtoken", It.IsAny<CancellationToken>()));
+        _application.Verify(app =>
+            app.RefreshTokenAsync(_caller.Object, "arefreshtoken", It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
             c.Append(AuthenticationConstants.Cookies.Token, It.Is<string>(s =>
                 s.FromJson<AuthNTokenCookieValue>()!.Token == "anaccesstoken"

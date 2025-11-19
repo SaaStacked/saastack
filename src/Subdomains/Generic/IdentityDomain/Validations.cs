@@ -35,9 +35,9 @@ public static class Validations
             public const int DefaultCooldownPeriodMinutes = 10;
 #endif
             public static readonly Validation<int> MaxFailedPasswordAttempts = new(x => x is > 0 and < 100);
-            public static readonly Validation<TimeSpan> CooldownPeriod = new(
-                x => x > TimeSpan.Zero && x <= TimeSpan.FromDays(1)
-            );
+            public static readonly Validation<TimeSpan> CooldownPeriod =
+                new(x => x > TimeSpan.Zero && x <= TimeSpan.FromDays(1)
+                );
         }
 
         public static class Password
@@ -78,11 +78,8 @@ public static class Validations
         public static readonly Validation ClientName = Domain.Shared.Validations.Names.Name;
         public static readonly Validation ClientSecret = CommonValidations.RandomToken();
         public static readonly Validation ClientSecretFirstFour = new(@"^[a-zA-Z0-9_\+\-]{4}$", 4, 4);
-        public static readonly Validation
-            CodeChallenge =
-                new(@"^[A-Za-z0-9_\-\.\~\+\/\=]{1,500}$", 1,
-                    500); // Is either the same as the codeverifier,or a base64 encoded hashed version of it
-        public static readonly Validation CodeVerifier = new(@"^[A-Za-z0-9_\-\.\~]{43,128}$", 43, 128);
+        public static readonly Validation CodeChallenge = CommonValidations.OAuth2.CodeChallenge;
+        public static readonly Validation CodeVerifier = CommonValidations.OAuth2.CodeVerifier;
         public static readonly Validation RefreshTokenScope = new(scope =>
         {
             if (scope.HasNoValue())

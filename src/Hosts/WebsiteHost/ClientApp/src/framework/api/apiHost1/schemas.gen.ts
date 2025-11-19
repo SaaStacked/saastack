@@ -174,10 +174,6 @@ export const AuthenticateSingleSignOnRequestSchema = {
     termsAndConditionsAccepted: {
       type: 'boolean',
       nullable: true
-    },
-    username: {
-      type: 'string',
-      nullable: true
     }
   },
   additionalProperties: false
@@ -1199,25 +1195,6 @@ export const FakeBillingProviderEventTypeSchema = {
   type: 'string'
 } as const;
 
-export const FakeBillingProviderNotifyWebHookEventRequestSchema = {
-  type: 'object',
-  properties: {
-    content: {
-      type: 'object',
-      additionalProperties: {},
-      nullable: true
-    },
-    eventId: {
-      type: 'string',
-      nullable: true
-    },
-    eventType: {
-      $ref: '#/components/schemas/FakeBillingProviderEventType'
-    }
-  },
-  additionalProperties: false
-} as const;
-
 export const FeatureFlagSchema = {
   required: ['isEnabled', 'name'],
   type: 'object',
@@ -2080,6 +2057,24 @@ export const NotifyDomainEventRequestSchema = {
     subscriptionName: {
       minLength: 1,
       type: 'string'
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const NotifyFakeBillingProviderWebHookEventRequestSchema = {
+  type: 'object',
+  properties: {
+    customerId: {
+      type: 'string',
+      nullable: true
+    },
+    eventId: {
+      type: 'string',
+      nullable: true
+    },
+    eventType: {
+      $ref: '#/components/schemas/FakeBillingProviderEventType'
     }
   },
   additionalProperties: false
@@ -4028,5 +4023,10 @@ export const VerifyGuestInvitationResponseSchema = {
       $ref: '#/components/schemas/Invitation'
     }
   },
+  additionalProperties: false
+} as const;
+
+export const VoidSchema = {
+  type: 'object',
   additionalProperties: false
 } as const;

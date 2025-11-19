@@ -52,7 +52,6 @@ export type AuthenticateSingleSignOnRequest = {
   invitationToken?: string | null;
   provider: string;
   termsAndConditionsAccepted?: boolean | null;
-  username?: string | null;
 };
 
 export type AuthenticateTokens = {
@@ -376,14 +375,6 @@ export type ExportSubscriptionsToMigrateResponse = {
 
 export type FakeBillingProviderEventType = 'paymentMethodCreated';
 
-export type FakeBillingProviderNotifyWebHookEventRequest = {
-  content?: {
-    [key: string]: unknown;
-  } | null;
-  eventId?: string | null;
-  eventType?: FakeBillingProviderEventType;
-};
-
 export type FeatureFlag = {
   isEnabled: boolean;
   name: string;
@@ -668,6 +659,12 @@ export type MigrateSubscriptionResponse = {
 export type NotifyDomainEventRequest = {
   message: string;
   subscriptionName: string;
+};
+
+export type NotifyFakeBillingProviderWebHookEventRequest = {
+  customerId?: string | null;
+  eventId?: string | null;
+  eventType?: FakeBillingProviderEventType;
 };
 
 export type NotifyProvisioningRequest = {
@@ -1308,6 +1305,10 @@ export type VerifyGuestInvitationResponse = {
   invitation: Invitation;
 };
 
+export type Void = {
+  [key: string]: unknown;
+};
+
 export type CreateApiKeyData = {
   body?: CreateAPIKeyRequest;
 };
@@ -1323,9 +1324,21 @@ export type SearchAllApiKeysForCallerData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
     /**
      * The maximum number of search results to return
      */
@@ -1335,9 +1348,21 @@ export type SearchAllApiKeysForCallerData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
     OrganizationId?: string;
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1352,6 +1377,7 @@ export type SearchAllApiKeysForCallerError = ProblemDetails | unknown;
 export type DeleteApiKeyData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1361,6 +1387,7 @@ export type DeleteApiKeyError = ProblemDetails | unknown;
 
 export type RevokeApiKeyData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1392,6 +1419,14 @@ export type SearchAllAuditsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -1400,11 +1435,25 @@ export type SearchAllAuditsData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
     OrganizationId?: string;
+    OrganizationId?: string;
     SinceUtc?: string;
+    SinceUtc?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1427,6 +1476,7 @@ export type RefreshTokenError = ProblemDetails | unknown;
 export type RevokeRefreshTokenData = {
   path: {
     RefreshToken: string;
+    RefreshToken: string;
   };
 };
 
@@ -1441,6 +1491,14 @@ export type ExportSubscriptionsToMigrateData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -1449,9 +1507,21 @@ export type ExportSubscriptionsToMigrateData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1467,6 +1537,7 @@ export type MigrateSubscriptionPutData = {
   body?: MigrateSubscriptionRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1478,6 +1549,7 @@ export type MigrateSubscriptionPatchData = {
   body?: MigrateSubscriptionRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1488,8 +1560,13 @@ export type MigrateSubscriptionPatchError = ProblemDetails | unknown;
 export type CancelBookingData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
     /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
@@ -1516,10 +1593,23 @@ export type SearchAllBookingsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
     FromUtc?: string;
+    FromUtc?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
     /**
      * The maximum number of search results to return
      */
@@ -1529,6 +1619,14 @@ export type SearchAllBookingsData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
+    /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
     OrganizationId?: string;
@@ -1536,6 +1634,11 @@ export type SearchAllBookingsData = {
      * List of fields to sort the results on
      */
     Sort?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+    ToUtc?: string;
     ToUtc?: string;
   };
 };
@@ -1547,8 +1650,13 @@ export type SearchAllBookingsError = ProblemDetails | unknown;
 export type DeleteCarData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
     /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
@@ -1563,8 +1671,13 @@ export type DeleteCarError = ProblemDetails | unknown;
 export type GetCarData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
     /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
@@ -1591,9 +1704,21 @@ export type SearchAllCarsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
     /**
      * The maximum number of search results to return
      */
@@ -1603,9 +1728,21 @@ export type SearchAllCarsData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
     OrganizationId?: string;
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1621,6 +1758,7 @@ export type ScheduleMaintenanceCarPutData = {
   body?: ScheduleMaintenanceCarRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1631,6 +1769,7 @@ export type ScheduleMaintenanceCarPutError = ProblemDetails | unknown;
 export type ScheduleMaintenanceCarPatchData = {
   body?: ScheduleMaintenanceCarRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1646,10 +1785,23 @@ export type SearchAllAvailableCarsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
     FromUtc?: string;
+    FromUtc?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
     /**
      * The maximum number of search results to return
      */
@@ -1659,6 +1811,14 @@ export type SearchAllAvailableCarsData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
+    /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
     OrganizationId?: string;
@@ -1666,6 +1826,11 @@ export type SearchAllAvailableCarsData = {
      * List of fields to sort the results on
      */
     Sort?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+    ToUtc?: string;
     ToUtc?: string;
   };
 };
@@ -1677,8 +1842,13 @@ export type SearchAllAvailableCarsError = ProblemDetails | unknown;
 export type SearchAllCarUnavailabilitiesData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
     /**
      * List of child resources to embed in the resource
      */
@@ -1688,6 +1858,14 @@ export type SearchAllCarUnavailabilitiesData = {
      */
     Filter?: string;
     /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The maximum number of search results to return
      */
     Limit?: number;
@@ -1696,9 +1874,21 @@ export type SearchAllCarUnavailabilitiesData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
      */
     OrganizationId?: string;
+    /**
+     * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+     */
+    OrganizationId?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1714,6 +1904,7 @@ export type TakeOfflineCarPutData = {
   body?: TakeOfflineCarRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1724,6 +1915,7 @@ export type TakeOfflineCarPutError = ProblemDetails | unknown;
 export type TakeOfflineCarPatchData = {
   body?: TakeOfflineCarRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1736,6 +1928,7 @@ export type ConsentOauth2ClientForCallerData = {
   body?: ConsentOAuth2ClientForCallerRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1745,6 +1938,7 @@ export type ConsentOauth2ClientForCallerError = ProblemDetails | unknown;
 
 export type GetOauth2ClientConsentForCallerData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1768,6 +1962,14 @@ export type SearchAllOauth2ClientsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -1776,9 +1978,21 @@ export type SearchAllOauth2ClientsData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -1793,6 +2007,7 @@ export type SearchAllOauth2ClientsError = ProblemDetails | unknown;
 export type DeleteOauth2ClientData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1802,6 +2017,7 @@ export type DeleteOauth2ClientError = ProblemDetails | unknown;
 
 export type GetOauth2ClientData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1814,6 +2030,7 @@ export type UpdateOauth2ClientPutData = {
   body?: UpdateOAuth2ClientRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1824,6 +2041,7 @@ export type UpdateOauth2ClientPutError = ProblemDetails | unknown;
 export type UpdateOauth2ClientPatchData = {
   body?: UpdateOAuth2ClientRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1836,6 +2054,7 @@ export type RegenerateOauth2ClientSecretData = {
   body?: RegenerateOAuth2ClientSecretRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -1845,6 +2064,7 @@ export type RegenerateOauth2ClientSecretError = ProblemDetails | unknown;
 
 export type RevokeOauth2ClientConsentForCallerData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -1865,6 +2085,7 @@ export type CompleteCredentialResetData = {
   body?: CompleteCredentialResetRequest;
   path: {
     Token: string;
+    Token: string;
   };
 };
 
@@ -1882,6 +2103,7 @@ export type ConfirmPersonCredentialRegistrationError = ProblemDetails | unknown;
 
 export type GetPersonCredentialRegistrationConfirmationData = {
   query: {
+    UserId: string;
     UserId: string;
   };
 };
@@ -1918,6 +2140,7 @@ export type ResendPasswordResetData = {
   body?: ResendPasswordResetRequest;
   path: {
     Token: string;
+    Token: string;
   };
 };
 
@@ -1927,6 +2150,7 @@ export type ResendPasswordResetError = ProblemDetails | unknown;
 
 export type VerifyPasswordResetData = {
   path: {
+    Token: string;
     Token: string;
   };
 };
@@ -1958,6 +2182,14 @@ export type SearchAllEventNotificationsData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -1966,9 +2198,21 @@ export type SearchAllEventNotificationsData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -2011,6 +2255,14 @@ export type SearchAllEmailDeliveriesData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -2019,15 +2271,30 @@ export type SearchAllEmailDeliveriesData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
     OrganizationId?: string;
+    OrganizationId?: string;
+    SinceUtc?: string;
     SinceUtc?: string;
     /**
      * List of fields to sort the results on
      */
     Sort?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+    Tags?: string;
     Tags?: string;
   };
 };
@@ -2048,6 +2315,7 @@ export type AssignPlatformRolesData = {
   body?: AssignPlatformRolesRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2058,6 +2326,7 @@ export type AssignPlatformRolesError = ProblemDetails | unknown;
 export type UnassignPlatformRolesPutData = {
   body?: UnassignPlatformRolesRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2070,6 +2339,7 @@ export type UnassignPlatformRolesPatchData = {
   body?: UnassignPlatformRolesRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2077,20 +2347,23 @@ export type UnassignPlatformRolesPatchResponse = UpdateUserResponse;
 
 export type UnassignPlatformRolesPatchError = ProblemDetails | unknown;
 
-export type FakeBillingProviderNotifyWebHookEventData = {
-  body?: FakeBillingProviderNotifyWebHookEventRequest;
+export type NotifyFakeBillingProviderWebHookEventData = {
+  body?: NotifyFakeBillingProviderWebHookEventRequest;
 };
 
-export type FakeBillingProviderNotifyWebHookEventResponse = EmptyResponse;
+export type NotifyFakeBillingProviderWebHookEventResponse = EmptyResponse;
 
-export type FakeBillingProviderNotifyWebHookEventError = ProblemDetails | unknown;
+export type NotifyFakeBillingProviderWebHookEventError = ProblemDetails | unknown;
 
 export type GetFeatureFlagData = {
   path: {
     Name: string;
+    Name: string;
+    UserId: string;
     UserId: string;
   };
   query?: {
+    TenantId?: string;
     TenantId?: string;
   };
 };
@@ -2105,6 +2378,7 @@ export type GetAllFeatureFlagsError = ProblemDetails | unknown;
 
 export type GetFeatureFlagForCallerData = {
   path: {
+    Name: string;
     Name: string;
   };
 };
@@ -2124,6 +2398,7 @@ export type GetIdentityForCallerError = ProblemDetails | unknown;
 export type DeleteImageData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2133,6 +2408,7 @@ export type DeleteImageError = ProblemDetails | unknown;
 
 export type GetImageData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2145,6 +2421,7 @@ export type UpdateImagePutData = {
   body?: UpdateImageRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2156,6 +2433,7 @@ export type UpdateImagePatchData = {
   body?: UpdateImageRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2165,6 +2443,7 @@ export type UpdateImagePatchError = ProblemDetails | unknown;
 
 export type DownloadImageData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2196,6 +2475,7 @@ export type ResendGuestInvitationData = {
   body?: ResendGuestInvitationRequest;
   path: {
     Token: string;
+    Token: string;
   };
 };
 
@@ -2205,6 +2485,7 @@ export type ResendGuestInvitationError = ProblemDetails | unknown;
 
 export type VerifyGuestInvitationData = {
   path: {
+    Token: string;
     Token: string;
   };
 };
@@ -2244,6 +2525,14 @@ export type ListMembershipsForCallerData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -2252,9 +2541,21 @@ export type ListMembershipsForCallerData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -2278,6 +2579,7 @@ export type AssociateCredentialMfaAuthenticatorForCallerError = ProblemDetails |
 export type ListCredentialMfaAuthenticatorsForCallerData = {
   query?: {
     MfaToken?: string;
+    MfaToken?: string;
   };
 };
 
@@ -2288,6 +2590,7 @@ export type ListCredentialMfaAuthenticatorsForCallerError = ProblemDetails | unk
 export type ChallengeCredentialMfaAuthenticatorForCallerPutData = {
   body?: ChallengeCredentialMfaAuthenticatorForCallerRequest;
   path: {
+    AuthenticatorId: string;
     AuthenticatorId: string;
   };
 };
@@ -2300,6 +2603,7 @@ export type ChallengeCredentialMfaAuthenticatorForCallerPutError = ProblemDetail
 export type ChallengeCredentialMfaAuthenticatorForCallerPatchData = {
   body?: ChallengeCredentialMfaAuthenticatorForCallerRequest;
   path: {
+    AuthenticatorId: string;
     AuthenticatorId: string;
   };
 };
@@ -2329,6 +2633,7 @@ export type ConfirmCredentialMfaAuthenticatorForCallerPutData = {
   body?: ConfirmCredentialMfaAuthenticatorForCallerRequest;
   path: {
     AuthenticatorType: string;
+    AuthenticatorType: string;
   };
 };
 
@@ -2340,6 +2645,7 @@ export type ConfirmCredentialMfaAuthenticatorForCallerPatchData = {
   body?: ConfirmCredentialMfaAuthenticatorForCallerRequest;
   path: {
     AuthenticatorType: string;
+    AuthenticatorType: string;
   };
 };
 
@@ -2350,6 +2656,7 @@ export type ConfirmCredentialMfaAuthenticatorForCallerPatchError = ProblemDetail
 
 export type DisassociateCredentialMfaAuthenticatorForCallerData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2378,6 +2685,7 @@ export type VerifyCredentialMfaAuthenticatorForCallerPutData = {
   body?: VerifyCredentialMfaAuthenticatorForCallerRequest;
   path: {
     AuthenticatorType: string;
+    AuthenticatorType: string;
   };
 };
 
@@ -2389,6 +2697,7 @@ export type VerifyCredentialMfaAuthenticatorForCallerPatchData = {
   body?: VerifyCredentialMfaAuthenticatorForCallerRequest;
   path: {
     AuthenticatorType: string;
+    AuthenticatorType: string;
   };
 };
 
@@ -2399,12 +2708,20 @@ export type VerifyCredentialMfaAuthenticatorForCallerPatchError = ProblemDetails
 export type AuthorizeOauth2GetData = {
   query: {
     ClientId?: string;
+    ClientId?: string;
+    CodeChallenge?: string;
     CodeChallenge?: string;
     CodeChallengeMethod?: string;
+    CodeChallengeMethod?: string;
+    Nonce?: string;
     Nonce?: string;
     RedirectUri: string;
+    RedirectUri: string;
+    ResponseType: string;
     ResponseType: string;
     Scope: string;
+    Scope: string;
+    State?: string;
     State?: string;
   };
 };
@@ -2463,6 +2780,7 @@ export type AssignRolesToOrganizationPutData = {
   body?: AssignRolesToOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2473,6 +2791,7 @@ export type AssignRolesToOrganizationPutError = ProblemDetails | unknown;
 export type AssignRolesToOrganizationPatchData = {
   body?: AssignRolesToOrganizationRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2487,6 +2806,7 @@ export type ChangeOrganizationAvatarPutData = {
   };
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2500,6 +2820,7 @@ export type ChangeOrganizationAvatarPatchData = {
   };
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2509,6 +2830,7 @@ export type ChangeOrganizationAvatarPatchError = ProblemDetails | unknown;
 
 export type DeleteOrganizationAvatarData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2521,6 +2843,7 @@ export type ChangeOrganizationPutData = {
   body?: ChangeOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2532,6 +2855,7 @@ export type ChangeOrganizationPatchData = {
   body?: ChangeOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2542,6 +2866,7 @@ export type ChangeOrganizationPatchError = ProblemDetails | unknown;
 export type DeleteOrganizationData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2551,6 +2876,7 @@ export type DeleteOrganizationError = ProblemDetails | unknown;
 
 export type GetOrganizationData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2570,6 +2896,7 @@ export type CreateOrganizationError = ProblemDetails | unknown;
 export type GetOrganizationSettingsData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2581,6 +2908,7 @@ export type InviteMemberToOrganizationData = {
   body?: InviteMemberToOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2591,8 +2919,13 @@ export type InviteMemberToOrganizationError = ProblemDetails | unknown;
 export type ListMembersForOrganizationData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
     /**
      * List of child resources to embed in the resource
      */
@@ -2602,6 +2935,14 @@ export type ListMembersForOrganizationData = {
      */
     Filter?: string;
     /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The maximum number of search results to return
      */
     Limit?: number;
@@ -2609,6 +2950,14 @@ export type ListMembersForOrganizationData = {
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -2624,6 +2973,7 @@ export type UnassignRolesFromOrganizationPutData = {
   body?: UnassignRolesFromOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2635,6 +2985,7 @@ export type UnassignRolesFromOrganizationPatchData = {
   body?: UnassignRolesFromOrganizationRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2645,6 +2996,8 @@ export type UnassignRolesFromOrganizationPatchError = ProblemDetails | unknown;
 export type UnInviteMemberFromOrganizationData = {
   path: {
     Id: string;
+    Id: string;
+    UserId: string;
     UserId: string;
   };
 };
@@ -2728,6 +3081,14 @@ export type SearchAllSmsDeliveriesData = {
      */
     Embed?: string;
     /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
@@ -2736,15 +3097,30 @@ export type SearchAllSmsDeliveriesData = {
      */
     Limit?: number;
     /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * The zero-based index of the first search result
      */
     Offset?: number;
     OrganizationId?: string;
+    OrganizationId?: string;
+    SinceUtc?: string;
     SinceUtc?: string;
     /**
      * List of fields to sort the results on
      */
     Sort?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+    Tags?: string;
     Tags?: string;
   };
 };
@@ -2764,6 +3140,7 @@ export type SendSmsError = ProblemDetails | unknown;
 export type CancelSubscriptionData = {
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2773,6 +3150,7 @@ export type CancelSubscriptionError = ProblemDetails | unknown;
 
 export type GetSubscriptionData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2785,6 +3163,7 @@ export type ChangeSubscriptionPlanPutData = {
   body?: ChangeSubscriptionPlanRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2796,6 +3175,7 @@ export type ChangeSubscriptionPlanPatchData = {
   body?: ChangeSubscriptionPlanRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2805,6 +3185,7 @@ export type ChangeSubscriptionPlanPatchError = ProblemDetails | unknown;
 
 export type ForceCancelSubscriptionData = {
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2816,8 +3197,13 @@ export type ForceCancelSubscriptionError = ProblemDetails | unknown;
 export type SearchSubscriptionHistoryData = {
   path: {
     Id: string;
+    Id: string;
   };
   query?: {
+    /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
     /**
      * List of child resources to embed in the resource
      */
@@ -2826,7 +3212,16 @@ export type SearchSubscriptionHistoryData = {
      * List of fields to include and exclude in the search result
      */
     Filter?: string;
+    /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
     FromUtc?: string;
+    FromUtc?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
     /**
      * The maximum number of search results to return
      */
@@ -2836,9 +3231,18 @@ export type SearchSubscriptionHistoryData = {
      */
     Offset?: number;
     /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
      * List of fields to sort the results on
      */
     Sort?: string;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
+    ToUtc?: string;
     ToUtc?: string;
   };
 };
@@ -2851,6 +3255,7 @@ export type TransferSubscriptionPutData = {
   body?: TransferSubscriptionRequest;
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -2861,6 +3266,7 @@ export type TransferSubscriptionPutError = ProblemDetails | unknown;
 export type TransferSubscriptionPatchData = {
   body?: TransferSubscriptionRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -2891,6 +3297,7 @@ export type AuthorizeByTokenWithRoleTestingOnlyError = ProblemDetails | unknown;
 
 export type ContentNegotiationsTestingOnlyData = {
   query?: {
+    Format?: string;
     Format?: string;
   };
 };
@@ -2930,6 +3337,7 @@ export type FormatsTestingOnlyError = ProblemDetails | unknown;
 export type GetWithSimpleArrayTestingOnlyData = {
   query?: {
     AnArray?: string;
+    AnArray?: string;
   };
 };
 
@@ -2957,6 +3365,8 @@ export type PostWithRouteParamsAndEmptyBodyTestingOnlyData = {
   body?: PostWithRouteParamsAndEmptyBodyTestingOnlyRequest;
   path: {
     ANumberProperty: number;
+    ANumberProperty: number;
+    AStringProperty: string;
     AStringProperty: string;
   };
 };
@@ -2968,18 +3378,30 @@ export type PostWithRouteParamsAndEmptyBodyTestingOnlyError = ProblemDetails | u
 export type GetTestingOnlyData = {
   path: {
     AnEnumRouteProperty: string;
+    AnEnumRouteProperty: string;
     AnIntRouteProperty: number;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
     AStringRouteProperty: string;
   };
   query?: {
     ACamelEnumProperty?: string;
+    ACamelEnumProperty?: string;
+    ACamelIntProperty?: number;
     ACamelIntProperty?: number;
     ACamelStringProperty?: string;
+    ACamelStringProperty?: string;
+    AnEnumProperty?: string;
     AnEnumProperty?: string;
     AnEnumQueryProperty?: string;
+    AnEnumQueryProperty?: string;
+    AnIntProperty?: number;
     AnIntProperty?: number;
     AnIntQueryProperty?: number;
+    AnIntQueryProperty?: number;
     AStringProperty?: string;
+    AStringProperty?: string;
+    AStringQueryProperty?: string;
     AStringQueryProperty?: string;
   };
 };
@@ -2992,7 +3414,10 @@ export type PostTestingOnlyData = {
   body?: PostTestingOnlyRequest;
   path: {
     AnEnumRouteProperty: string;
+    AnEnumRouteProperty: string;
     AnIntRouteProperty: number;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
     AStringRouteProperty: string;
   };
 };
@@ -3004,19 +3429,35 @@ export type PostTestingOnlyError = ProblemDetails | unknown;
 export type SearchTestingOnlyData = {
   path: {
     AnEnumRouteProperty: string;
+    AnEnumRouteProperty: string;
     AnIntRouteProperty: number;
+    AnIntRouteProperty: number;
+    AStringRouteProperty: string;
     AStringRouteProperty: string;
   };
   query?: {
     ACamelEnumProperty?: string;
+    ACamelEnumProperty?: string;
+    ACamelIntProperty?: number;
     ACamelIntProperty?: number;
     ACamelStringProperty?: string;
+    ACamelStringProperty?: string;
+    AnEnumProperty?: string;
     AnEnumProperty?: string;
     AnEnumQueryProperty?: string;
+    AnEnumQueryProperty?: string;
+    AnIntProperty?: number;
     AnIntProperty?: number;
     AnIntQueryProperty?: number;
+    AnIntQueryProperty?: number;
+    AStringProperty?: string;
     AStringProperty?: string;
     AStringQueryProperty?: string;
+    AStringQueryProperty?: string;
+    /**
+     * List of child resources to embed in the resource
+     */
+    Embed?: string;
     /**
      * List of child resources to embed in the resource
      */
@@ -3026,6 +3467,14 @@ export type SearchTestingOnlyData = {
      */
     Filter?: string;
     /**
+     * List of fields to include and exclude in the search result
+     */
+    Filter?: string;
+    /**
+     * The maximum number of search results to return
+     */
+    Limit?: number;
+    /**
      * The maximum number of search results to return
      */
     Limit?: number;
@@ -3033,6 +3482,14 @@ export type SearchTestingOnlyData = {
      * The zero-based index of the first search result
      */
     Offset?: number;
+    /**
+     * The zero-based index of the first search result
+     */
+    Offset?: number;
+    /**
+     * List of fields to sort the results on
+     */
+    Sort?: string;
     /**
      * List of fields to sort the results on
      */
@@ -3063,6 +3520,7 @@ export type OpenApiPostFormUrlEncodedTestingOnlyData = {
   };
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -3076,12 +3534,24 @@ export type OpenApiGetTestingOnlyData = {
      * anid
      */
     Id: string;
+    /**
+     * anid
+     */
+    Id: string;
   };
   query: {
     /**
      * anoptionalfield
      */
     OptionalField?: string;
+    /**
+     * anoptionalfield
+     */
+    OptionalField?: string;
+    /**
+     * arequiredfield
+     */
+    RequiredField: string;
     /**
      * arequiredfield
      */
@@ -3100,6 +3570,10 @@ export type OpenApiPostTestingOnlyData = {
      * anid
      */
     Id: string;
+    /**
+     * anid
+     */
+    Id: string;
   };
 };
 
@@ -3114,6 +3588,10 @@ export type OpenApiPutTestingOnlyPutData = {
      * anid
      */
     Id: string;
+    /**
+     * anid
+     */
+    Id: string;
   };
 };
 
@@ -3124,6 +3602,10 @@ export type OpenApiPutTestingOnlyPutError = ProblemDetails | unknown;
 export type OpenApiPutTestingOnlyPatchData = {
   body?: OpenApiPutTestingOnlyRequest;
   path: {
+    /**
+     * anid
+     */
+    Id: string;
     /**
      * anid
      */
@@ -3143,6 +3625,7 @@ export type OpenApiPostMultiPartFormDataTestingOnlyData = {
   };
   path: {
     Id: string;
+    Id: string;
   };
 };
 
@@ -3152,6 +3635,7 @@ export type OpenApiPostMultiPartFormDataTestingOnlyError = ProblemDetails | unkn
 
 export type GetWithRedirectTestingOnlyData = {
   query?: {
+    Result?: string;
     Result?: string;
   };
 };
@@ -3223,6 +3707,7 @@ export type StatusesSearchTestingOnlyError = ProblemDetails | unknown;
 export type ValidationsUnvalidatedTestingOnlyData = {
   query?: {
     Id?: string;
+    Id?: string;
   };
 };
 
@@ -3233,9 +3718,12 @@ export type ValidationsUnvalidatedTestingOnlyError = ProblemDetails | unknown;
 export type ValidationsValidatedGetTestingOnlyData = {
   path: {
     Id: string;
+    Id: string;
   };
   query: {
     OptionalField?: string;
+    OptionalField?: string;
+    RequiredField: string;
     RequiredField: string;
   };
 };
@@ -3247,6 +3735,7 @@ export type ValidationsValidatedGetTestingOnlyError = ProblemDetails | unknown;
 export type ValidationsValidatedPostTestingOnlyData = {
   body?: ValidationsValidatedPostTestingOnlyRequest;
   path: {
+    Id: string;
     Id: string;
   };
 };
@@ -3275,6 +3764,7 @@ export type ChangeProfileContactAddressPutData = {
   body?: ChangeProfileContactAddressRequest;
   path: {
     UserId: string;
+    UserId: string;
   };
 };
 
@@ -3285,6 +3775,7 @@ export type ChangeProfileContactAddressPutError = ProblemDetails | unknown;
 export type ChangeProfileContactAddressPatchData = {
   body?: ChangeProfileContactAddressRequest;
   path: {
+    UserId: string;
     UserId: string;
   };
 };
@@ -3297,6 +3788,7 @@ export type ChangeProfilePutData = {
   body?: ChangeProfileRequest;
   path: {
     UserId: string;
+    UserId: string;
   };
 };
 
@@ -3307,6 +3799,7 @@ export type ChangeProfilePutError = ProblemDetails | unknown;
 export type ChangeProfilePatchData = {
   body?: ChangeProfileRequest;
   path: {
+    UserId: string;
     UserId: string;
   };
 };
@@ -3321,6 +3814,7 @@ export type ChangeProfileAvatarPutData = {
   };
   path: {
     UserId: string;
+    UserId: string;
   };
 };
 
@@ -3334,6 +3828,7 @@ export type ChangeProfileAvatarPatchData = {
   };
   path: {
     UserId: string;
+    UserId: string;
   };
 };
 
@@ -3343,6 +3838,7 @@ export type ChangeProfileAvatarPatchError = ProblemDetails | unknown;
 
 export type DeleteProfileAvatarData = {
   path: {
+    UserId: string;
     UserId: string;
   };
 };

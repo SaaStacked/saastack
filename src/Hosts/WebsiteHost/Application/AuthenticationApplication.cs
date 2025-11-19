@@ -21,7 +21,7 @@ public class AuthenticationApplication : IAuthenticationApplication
     }
 
     public async Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string provider,
-        string? authCode, string? username, string? password, CancellationToken cancellationToken)
+        string? authCode, string? username, string? password, string? codeVerifier, CancellationToken cancellationToken)
     {
         Task<Result<AuthenticateResponse, ResponseProblem>> request;
         switch (provider)
@@ -29,16 +29,18 @@ public class AuthenticationApplication : IAuthenticationApplication
             case AuthenticationConstants.Providers.Credentials:
                 request = _serviceClient.PostAsync(caller, new AuthenticateCredentialRequest
                 {
-                    Username = username!,
-                    Password = password!
+                    Username = username,
+                    Password = password
                 }, req => req.RemoveAuthorization(), cancellationToken);
                 break;
 
             default:
                 request = _serviceClient.PostAsync(caller, new AuthenticateSingleSignOnRequest
                 {
-                    AuthCode = authCode!,
-                    Provider = provider
+                    AuthCode = authCode,
+                    Provider = provider,
+                    CodeVerifier = codeVerifier,
+                    TermsAndConditionsAccepted = true
                 }, req => req.RemoveAuthorization(), cancellationToken);
                 break;
         }

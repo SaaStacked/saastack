@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Infrastructure.Web.Api.Interfaces;
 
 namespace Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
@@ -17,6 +18,8 @@ namespace Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 public class AuthenticateRequest : UnTenantedRequest<AuthenticateRequest, AuthenticateResponse>
 {
     public string? AuthCode { get; set; }
+
+    [JsonPropertyName("code_verifier")] public string? CodeVerifier { get; set; }
 
     public string? Password { get; set; }
 

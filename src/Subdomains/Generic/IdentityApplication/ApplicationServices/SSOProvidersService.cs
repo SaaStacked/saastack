@@ -39,7 +39,7 @@ public class SSOProvidersService : ISSOProvidersService
     }
 
     public async Task<Result<SSOAuthUserInfo, Error>> AuthenticateUserAsync(ICallerContext caller, string providerName,
-        string authCode, string? codeVerifier, string? username, CancellationToken cancellationToken)
+        string authCode, string? codeVerifier, CancellationToken cancellationToken)
     {
         var retrievedProvider = FindProviderByNameInternal(providerName);
         if (retrievedProvider.IsFailure)
@@ -54,7 +54,7 @@ public class SSOProvidersService : ISSOProvidersService
 
         var provider = retrievedProvider.Value.Value;
         var authenticated =
-            await provider.AuthenticateAsync(caller, authCode, codeVerifier, username, cancellationToken);
+            await provider.AuthenticateAsync(caller, authCode, codeVerifier, cancellationToken);
         if (authenticated.IsFailure)
         {
             return Error.NotAuthenticated();
@@ -214,7 +214,7 @@ public class SSOProvidersService : ISSOProvidersService
         {
             return locale.Error;
         }
-        
+
         var address = Address.Create(authUserInfo.CountryCode);
         if (address.IsFailure)
         {

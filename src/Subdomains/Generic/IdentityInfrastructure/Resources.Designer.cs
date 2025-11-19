@@ -123,15 +123,6 @@ namespace IdentityInfrastructure {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;Username&apos; is invalid.
-        /// </summary>
-        internal static string AuthenticateSingleSignOnRequestValidator_InvalidUsername {
-            get {
-                return ResourceManager.GetString("AuthenticateSingleSignOnRequestValidator_InvalidUsername", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The &apos;ClientId&apos; is either missing or invalid.
         /// </summary>
         internal static string AuthorizeOAuth2RequestValidator_InvalidClientId {

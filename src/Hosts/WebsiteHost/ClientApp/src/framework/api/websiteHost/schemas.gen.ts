@@ -8,6 +8,10 @@ export const AuthenticateRequestSchema = {
       type: 'string',
       nullable: true
     },
+    code_verifier: {
+      type: 'string',
+      nullable: true
+    },
     password: {
       type: 'string',
       nullable: true

@@ -24,8 +24,7 @@ public class SingleSignOnApi : IWebApiService
     {
         var authenticated =
             await _singleSignOnApplication.AuthenticateAsync(_callerFactory.Create(), request.InvitationToken,
-                request.Provider!, request.AuthCode!, request.CodeVerifier, request.Username,
-                request.TermsAndConditionsAccepted,
+                request.Provider!, request.AuthCode!, request.CodeVerifier, request.TermsAndConditionsAccepted,
                 cancellationToken);
 
         return () => authenticated.HandleApplicationResult<AuthenticateTokens, AuthenticateResponse>(tok =>
