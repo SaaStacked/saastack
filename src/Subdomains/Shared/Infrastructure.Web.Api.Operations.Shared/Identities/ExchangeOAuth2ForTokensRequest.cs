@@ -20,9 +20,9 @@ public class ExchangeOAuth2ForTokensRequest :
     public string? ClientId { get; set; }
 
     [JsonPropertyName("client_secret")]
-    [Required]
     public string? ClientSecret { get; set; }
 
+    [Required]
     [JsonPropertyName("code")] public string? Code { get; set; }
 
     [JsonPropertyName("code_verifier")] public string? CodeVerifier { get; set; }
@@ -31,6 +31,7 @@ public class ExchangeOAuth2ForTokensRequest :
     [Required]
     public OAuth2GrantType? GrantType { get; set; }
 
+    [Required]
     [JsonPropertyName("redirect_uri")] public string? RedirectUri { get; set; }
 
     [JsonPropertyName("refresh_token")] public string? RefreshToken { get; set; }

@@ -8,7 +8,7 @@ export const AuthenticateRequestSchema = {
       type: 'string',
       nullable: true
     },
-    code_verifier: {
+    codeVerifier: {
       type: 'string',
       nullable: true
     },

@@ -1,6 +1,8 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../../framework/api/websiteHost';
+import { cleanupStoredPKCEParameters } from '../utils/OAuth2Security.ts';
 import { LoginErrors } from './credentialsLogin.ts';
+
 
 export const SsoLoginAction = () =>
   useActionCommand<AuthenticateRequest, AuthenticateResponse, LoginErrors>({
@@ -17,5 +19,8 @@ export const SsoLoginAction = () =>
       405: LoginErrors.account_unverified,
       423: LoginErrors.account_locked
     },
-    onSuccess: () => window.location.reload() //so that we pick up the changed auth cookies, and return to dashboard page
+    onSuccess: () => {
+      cleanupStoredPKCEParameters();
+      window.location.href = '/';
+    } //so that we pick up the changed auth cookies, and return to dashboard page
   });

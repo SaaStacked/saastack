@@ -2750,11 +2750,11 @@ export type AuthorizeOauth2PostError = unknown | ProblemDetails;
 export type ExchangeOauth2ForTokensData = {
   body?: {
     clientId: string;
-    clientSecret: string;
-    code?: string;
+    clientSecret?: string;
+    code: string;
     codeVerifier?: string;
     grantType: unknown;
-    redirectUri?: string;
+    redirectUri: string;
     refreshToken?: string;
     scope?: string;
   };

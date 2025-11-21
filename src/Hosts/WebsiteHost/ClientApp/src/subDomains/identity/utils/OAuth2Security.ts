@@ -53,7 +53,7 @@ export const storePKCEParameters = (state: string, codeVerifier: string): void =
  * @param returnedState State parameter returned from OAuth2 provider
  * @returns Object containing validation result and code verifier
  */
-export const validatePKCEParameters = (
+export const validatePKCEParametersFromStorage = (
   returnedState: string | null
 ): {
   isValid: boolean;
@@ -88,7 +88,7 @@ export const validatePKCEParameters = (
 /**
  * Cleans up PKCE parameters from session storage
  */
-export const cleanupPKCEParameters = (): void => {
+export const cleanupStoredPKCEParameters = (): void => {
   sessionStorage.removeItem('oauth_state');
   sessionStorage.removeItem('code_verifier');
 };

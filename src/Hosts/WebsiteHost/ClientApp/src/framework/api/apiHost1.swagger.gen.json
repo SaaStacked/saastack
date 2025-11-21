@@ -10951,8 +10951,9 @@
               "schema": {
                 "required": [
                   "clientId",
-                  "clientSecret",
-                  "grantType"
+                  "code",
+                  "grantType",
+                  "redirectUri"
                 ],
                 "type": "object",
                 "properties": {
