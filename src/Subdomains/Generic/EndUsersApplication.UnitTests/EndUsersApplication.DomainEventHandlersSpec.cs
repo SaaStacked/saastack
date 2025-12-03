@@ -36,6 +36,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
     private readonly Mock<IRecorder> _recorder;
     private readonly Mock<ISubscriptionsService> _subscriptionsService;
     private readonly Mock<IUserProfilesService> _userProfilesService;
+    private readonly Mock<IOrganizationsService> _organizationsService;
 
     public EndUsersApplicationDomainEventHandlersSpec()
     {
@@ -67,20 +68,27 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var invitationRepository = new Mock<IInvitationRepository>();
         _userProfilesService = new Mock<IUserProfilesService>();
         _subscriptionsService = new Mock<ISubscriptionsService>();
-
+        _organizationsService = new Mock<IOrganizationsService>();
+        _organizationsService.Setup(ups =>
+                ups.FindSharedOrganizationByEmailDomainPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<Organization>.None);
+        
         _application =
             new EndUsersApplication(_recorder.Object, _idFactory.Object, settings.Object,
-                _userProfilesService.Object, _subscriptionsService.Object, invitationRepository.Object,
+                _userProfilesService.Object, _subscriptionsService.Object, _organizationsService.Object,
+                invitationRepository.Object,
                 _endUserRepository.Object);
     }
 
     [Fact]
-    public async Task WhenHandleOrganizationCreatedAsyncAndUserNoExist_ThenReturnsError()
+    public async Task WhenHandleOrganizationCreatedAsyncAndUserNotExist_ThenReturnsError()
     {
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.EntityNotFound());
         var domainEvent = Events.Created("anorganizationid".ToId(), OrganizationOwnership.Shared,
-            "auserid".ToId(), DisplayName.Create("adisplayname").Value, DatacenterLocations.Local);
+            "auserid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("adisplayname").Value,
+            DatacenterLocations.Local);
 
         var result =
             await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -89,7 +97,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
     }
 
     [Fact]
-    public async Task HandleOrganizationCreatedAsyncForPerson_ThenAddsMembership()
+    public async Task HandleOrganizationCreatedAsyncForPersonAndSharedOrg_ThenAddsMembership()
     {
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
@@ -97,21 +105,9 @@ public class EndUsersApplicationDomainEventHandlersSpec
             EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
-        _userProfilesService.Setup(ups =>
-                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UserProfile
-            {
-                Id = "aprofileid",
-                UserId = "auserid",
-                DisplayName = "adisplayname",
-                Name = new PersonName
-                {
-                    FirstName = "afirstname"
-                }
-            });
         var domainEvent = Events.Created("anorganizationid".ToId(), OrganizationOwnership.Shared,
-            "auserid".ToId(), DisplayName.Create("adisplayname").Value, DatacenterLocations.Local);
+            "auserid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("adisplayname").Value,
+            DatacenterLocations.Local);
 
         var result =
             await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -121,16 +117,16 @@ public class EndUsersApplicationDomainEventHandlersSpec
             eu.Memberships.Count == 1
             && eu.Memberships[0].IsDefault
             && eu.Memberships[0].OrganizationId == "anorganizationid".ToId()
-            && eu.Memberships[0].Roles.HasRole(TenantRoles.Member)
-            && eu.Memberships[0].Features.HasFeature(TenantFeatures.Basic)
+            && eu.Memberships[0].Roles.HasRole(TenantRoles.BillingAdmin)
+            && eu.Memberships[0].Features.HasFeature(TenantFeatures.PaidTrial)
         ), It.IsAny<bool>(), It.IsAny<CancellationToken>()));
-        _userProfilesService.Verify(
-            ups => ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
-                It.IsAny<CancellationToken>()), Times.Never);
+        _organizationsService.Verify(ups =>
+            ups.FindSharedOrganizationByEmailDomainPrivateAsync(It.IsAny<ICallerContext>(),
+                It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public async Task HandleOrganizationCreatedAsyncForAnInvitedMachine_ThenAddsMemberships()
+    public async Task HandleOrganizationCreatedAsyncForInvitedMachineAndSharedOrg_ThenAddsMemberships()
     {
         _caller.Setup(cc => cc.CallId)
             .Returns("acallid");
@@ -156,7 +152,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
                 }
             });
         var domainEvent = Events.Created("anorganizationid1".ToId(), OrganizationOwnership.Shared,
-            "auserid".ToId(), DisplayName.Create("adisplayname").Value, DatacenterLocations.Local);
+            "auserid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("adisplayname").Value,
+            DatacenterLocations.Local);
 
         var result =
             await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -176,7 +173,88 @@ public class EndUsersApplicationDomainEventHandlersSpec
         _userProfilesService.Verify(ups =>
             ups.GetProfilePrivateAsync(It.Is<ICallerContext>(cc => cc.CallId == "acallid"), "anid",
                 It.IsAny<CancellationToken>()));
+        _organizationsService.Verify(ups =>
+            ups.FindSharedOrganizationByEmailDomainPrivateAsync(It.IsAny<ICallerContext>(),
+                It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [Fact]
+    public async Task
+        HandleOrganizationCreatedAsyncForPersonAndPersonalOrgWithoutMatchingEmailDomain_ThenAddsMembership()
+    {
+        var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
+            DatacenterLocations.Local).Value;
+        user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+        _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+        var domainEvent = Events.Created("anorganizationid1".ToId(), OrganizationOwnership.Personal,
+            "auserid".ToId(), EmailAddress.Create("auser@company.com").Value, DisplayName.Create("adisplayname").Value,
+            DatacenterLocations.Local);
+
+        var result =
+            await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _endUserRepository.Verify(rep => rep.SaveAsync(It.Is<EndUserRoot>(eu =>
+            eu.Memberships.Count == 1
+            && eu.Memberships[0].IsDefault
+            && eu.Memberships[0].OrganizationId == "anorganizationid1".ToId()
+            && eu.Memberships[0].Roles.HasRole(TenantRoles.BillingAdmin)
+            && eu.Memberships[0].Features.HasFeature(TenantFeatures.PaidTrial)
+        ), true, It.IsAny<CancellationToken>()));
+        _organizationsService.Verify(ups =>
+            ups.FindSharedOrganizationByEmailDomainPrivateAsync(_caller.Object,
+                "auser@company.com", It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task HandleOrganizationCreatedAsyncForPersonAndPersonalOrgWithMatchingEmailDomain_ThenAddsMemberships()
+    {
+        var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
+            DatacenterLocations.Local).Value;
+        user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+        _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+        var domainEvent = Events.Created("anorganizationid1".ToId(), OrganizationOwnership.Personal,
+            "auserid".ToId(), EmailAddress.Create("auser@company.com").Value, DisplayName.Create("adisplayname").Value,
+            DatacenterLocations.Local);
+        var org = new Organization
+        {
+            Id = "anorganizationid2",
+            Name = "anorganizationname",
+            CreatedById = "auserid",
+            Ownership = Application.Resources.Shared.OrganizationOwnership.Shared
+        };
+        _organizationsService.Setup(ups =>
+                ups.FindSharedOrganizationByEmailDomainPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org.ToOptional());
+
+        var result =
+            await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _endUserRepository.Verify(rep => rep.SaveAsync(It.Is<EndUserRoot>(eu =>
+            eu.Memberships.Count == 2
+            && !eu.Memberships[0].IsDefault
+            && eu.Memberships[0].OrganizationId == "anorganizationid1".ToId()
+            && eu.Memberships[0].Roles.HasRole(TenantRoles.BillingAdmin)
+            && eu.Memberships[0].Features.HasFeature(TenantFeatures.PaidTrial)
+            && eu.Memberships[1].IsDefault
+            && eu.Memberships[1].OrganizationId == "anorganizationid2".ToId()
+            && eu.Memberships[1].Roles.HasRole(TenantRoles.Member)
+            && eu.Memberships[1].Features.HasFeature(TenantFeatures.Basic)
+        ), false, It.IsAny<CancellationToken>()));
+        _organizationsService.Verify(ups =>
+            ups.FindSharedOrganizationByEmailDomainPrivateAsync(_caller.Object,
+                "auser@company.com", It.IsAny<CancellationToken>()));
+    }
+    
+    
+    
+    
 
     [Fact]
     public async Task WhenHandleOrganizationRoleAssignedAsync_ThenAssigns()

@@ -67,5 +67,14 @@ namespace OrganizationsApplication {
                 return ResourceManager.GetString("OrganizationApplication_InvitedNoUserNorEmail", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is not a person.
+        /// </summary>
+        internal static string OrganizationsApplication_CreateSharedOrganization_NotPerson {
+            get {
+                return ResourceManager.GetString("OrganizationsApplication_CreateSharedOrganization_NotPerson", resourceCulture);
+            }
+        }
     }
 }

@@ -68,8 +68,8 @@ public class OrganizationsApi : IWebApiService
                     { Organization = org });
     }
 
-    public async Task<ApiPostResult<Organization, GetOrganizationResponse>> Create(CreateOrganizationRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ApiPostResult<Organization, GetOrganizationResponse>> CreateSharedOrganization(
+        CreateOrganizationRequest request, CancellationToken cancellationToken)
     {
         var organization =
             await _organizationsApplication.CreateSharedOrganizationAsync(_callerFactory.Create(), request.Name!,

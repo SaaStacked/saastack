@@ -31,7 +31,7 @@ public class EmailAddressServiceSpec
         _repository = new Mock<IPersonCredentialRepository>();
         _recorder = new Mock<IRecorder>();
         _emailAddressService = new Mock<IEmailAddressService>();
-        _emailAddressService.Setup(es => es.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>()))
+        _emailAddressService.Setup(es => es.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         _tokensService = new Mock<ITokensService>();
         _encryptionService = new Mock<IEncryptionService>();
@@ -53,7 +53,7 @@ public class EmailAddressServiceSpec
             .ReturnsAsync(Optional<PersonCredentialRoot>
                 .None);
 
-        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId());
+        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId(), CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -65,7 +65,7 @@ public class EmailAddressServiceSpec
         _repository.Setup(s => s.FindCredentialByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(credential.ToOptional());
 
-        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId());
+        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId(), CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -77,7 +77,7 @@ public class EmailAddressServiceSpec
         _repository.Setup(s => s.FindCredentialByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(credential.ToOptional());
 
-        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId());
+        var result = await _service.EnsureUniqueAsync(EmailAddress.Create("auser@company.com").Value, "auserid".ToId(), CancellationToken.None);
 
         result.Should().BeFalse();
     }

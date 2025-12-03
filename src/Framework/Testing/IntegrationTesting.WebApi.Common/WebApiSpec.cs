@@ -282,6 +282,17 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     /// <summary>
     ///     Registers the user and authenticates them
     /// </summary>
+    protected async Task<LoginDetails> LoginUserAsync(string emailAddress, string firstName)
+    {
+        var person = await RegisterUserAsync(emailAddress, firstName);
+
+        var user = person.Person.User;
+        return await ReAuthenticateUserAsync(user, emailAddress);
+    }
+
+    /// <summary>
+    ///     Registers the user and authenticates them
+    /// </summary>
     protected async Task<LoginDetails> LoginUserAsync(LoginUser who = LoginUser.PersonA)
     {
         var emailAddress = GetEmailForPerson(who);
@@ -293,10 +304,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
             _ => throw new ArgumentOutOfRangeException(nameof(who), who, null)
         };
 
-        var person = await RegisterUserAsync(emailAddress, firstName);
-
-        var user = person.Person.User;
-        return await ReAuthenticateUserAsync(user, emailAddress);
+        return await LoginUserAsync(emailAddress, firstName);
     }
 
     /// <summary>

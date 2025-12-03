@@ -123,6 +123,15 @@ namespace OrganizationsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CreatorEmailAddress is required to register a shared organization.
+        /// </summary>
+        internal static string OrganizationRoot_MissingCreatorEmailAddress {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_MissingCreatorEmailAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This organization has no avatar to delete.
         /// </summary>
         internal static string OrganizationRoot_NoAvatar {
@@ -155,6 +164,42 @@ namespace OrganizationsDomain {
         internal static string OrganizationRoot_NotBillingSubscriberNorBillingAdmin {
             get {
                 return ResourceManager.GetString("OrganizationRoot_NotBillingSubscriberNorBillingAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This organization has already been registered.
+        /// </summary>
+        internal static string OrganizationRoot_RegisterShared_AlreadyRegistered {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_RegisterShared_AlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email address &apos;{0}&apos; is not allowed for a shared organization, as it represents a non-business email address.
+        /// </summary>
+        internal static string OrganizationRoot_RegisterShared_DisallowedEmailDomain {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_RegisterShared_DisallowedEmailDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This organization already has an email domain registered.
+        /// </summary>
+        internal static string OrganizationRoot_RegisterShared_EmailDomainAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_RegisterShared_EmailDomainAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email domain &apos;{0}&apos; is already registered by another organization.
+        /// </summary>
+        internal static string OrganizationRoot_RegisterShared_EmailDomainReserved {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_RegisterShared_EmailDomainReserved", resourceCulture);
             }
         }
         

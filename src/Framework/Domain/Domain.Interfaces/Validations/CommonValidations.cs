@@ -11,6 +11,8 @@ public static class CommonValidations
     public static readonly Validation CountryCode = new(CountryCodes.Exists);
     public static readonly Validation EmailAddress = new(
         @"^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$");
+    public static readonly Validation EmailDomain =
+        new(@"^(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$", 3, 253);
     public static readonly Validation FeatureLevel = new(@"^[\w\d]{4,60}$", 4, 60);
 
     public static readonly Validation GuidN = new(@"^[0-9a-f]{32}$", 32, 32);

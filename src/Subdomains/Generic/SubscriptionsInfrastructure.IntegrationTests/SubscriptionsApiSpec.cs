@@ -301,7 +301,7 @@ public class SubscriptionsApiSpec
         {
             var organization = await Api.PostAsync(new CreateOrganizationRequest
             {
-                Name = "aname"
+                Name = "aname",
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             var organizationId = organization.Content.Value.Organization.Id;
@@ -606,7 +606,7 @@ public class SubscriptionsApiSpec
         {
             var organization = await Api.PostAsync(new CreateOrganizationRequest
             {
-                Name = "aname"
+                Name = "aname",
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             var organizationId = organization.Content.Value.Organization.Id;

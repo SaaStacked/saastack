@@ -14,6 +14,7 @@ using Domain.Shared.EndUsers;
 using Domain.Shared.Organizations;
 using Domain.Shared.Subscriptions;
 using JetBrains.Annotations;
+using OrganizationsDomain.DomainServices;
 
 namespace OrganizationsDomain;
 
@@ -21,11 +22,65 @@ public delegate Task<Result<Error>> DeleteAction(Identifier deleterId);
 
 public sealed class OrganizationRoot : AggregateRootBase
 {
+    private static readonly IReadOnlySet<string> DisallowedEmailProviderDomains = new HashSet<string>
+    {
+        // Major free email services
+        "gmail.com",
+        "googlemail.com",
+        "outlook.com",
+        "hotmail.com",
+        "live.com",
+        "msn.com",
+        "yahoo.com",
+        "ymail.com",
+        "aol.com",
+        "icloud.com",
+        "me.com",
+        "mac.com",
+
+        // International free email services
+        "mail.com",
+        "gmx.com",
+        "gmx.net",
+        "web.de",
+        "mail.ru",
+        "yandex.com",
+        "yandex.ru",
+        "qq.com",
+        "163.com",
+        "126.com",
+        "sina.com",
+        "sohu.com",
+        "naver.com",
+        "daum.net",
+        "hanmail.net",
+        "rediffmail.com",
+        "protonmail.com",
+        "pm.me",
+        "tutanota.com",
+        "zoho.com",
+
+        // Temporary/disposable email services
+        "guerrillamail.com",
+        "mailinator.com",
+        "10minutemail.com",
+        "tempmail.com",
+        "throwaway.email",
+
+        // Other common personal email domains
+        "fastmail.com",
+        "hushmail.com",
+        "inbox.com",
+        "email.com"
+    };
+    private readonly IOrganizationEmailDomainService _emailDomainService;
     private readonly ITenantSettingService _tenantSettingService;
 
     public static Result<OrganizationRoot, Error> Create(IRecorder recorder, IIdentifierFactory idFactory,
-        ITenantSettingService tenantSettingService, OrganizationOwnership ownership, Identifier createdBy,
-        UserClassification classification, DisplayName name, DatacenterLocation hostRegion)
+        ITenantSettingService tenantSettingService, IOrganizationEmailDomainService emailDomainService,
+        OrganizationOwnership ownership, Identifier createdBy, Optional<EmailAddress> createdByEmailAddress,
+        UserClassification classification, DisplayName name,
+        DatacenterLocation hostRegion)
     {
         if (ownership == OrganizationOwnership.Shared
             && classification != UserClassification.Person)
@@ -33,24 +88,34 @@ public sealed class OrganizationRoot : AggregateRootBase
             return Error.RuleViolation(Resources.OrganizationRoot_Create_SharedRequiresPerson);
         }
 
-        var root = new OrganizationRoot(recorder, idFactory, tenantSettingService);
-        root.RaiseCreateEvent(OrganizationsDomain.Events.Created(root.Id, ownership, createdBy, name, hostRegion));
+        if (ownership == OrganizationOwnership.Personal
+            && classification == UserClassification.Person
+            && !createdByEmailAddress.HasValue)
+        {
+            return Error.RuleViolation(Resources.OrganizationRoot_MissingCreatorEmailAddress);
+        }
+
+        var root = new OrganizationRoot(recorder, idFactory, tenantSettingService, emailDomainService);
+        root.RaiseCreateEvent(OrganizationsDomain.Events.Created(root.Id, ownership, createdBy, createdByEmailAddress,
+            name, hostRegion));
         return root;
     }
 
     private OrganizationRoot(IRecorder recorder, IIdentifierFactory idFactory,
-        ITenantSettingService tenantSettingService) :
+        ITenantSettingService tenantSettingService, IOrganizationEmailDomainService emailDomainService) :
         base(recorder, idFactory)
     {
         _tenantSettingService = tenantSettingService;
+        _emailDomainService = emailDomainService;
     }
 
     private OrganizationRoot(IRecorder recorder, IIdentifierFactory idFactory,
-        ITenantSettingService tenantSettingService,
+        ITenantSettingService tenantSettingService, IOrganizationEmailDomainService emailDomainService,
         ISingleValueObject<string> identifier) : base(
         recorder, idFactory, identifier)
     {
         _tenantSettingService = tenantSettingService;
+        _emailDomainService = emailDomainService;
     }
 
     public Optional<Avatar> Avatar { get; private set; }
@@ -59,13 +124,26 @@ public sealed class OrganizationRoot : AggregateRootBase
 
     public Identifier CreatedById { get; private set; } = Identifier.Empty();
 
+    public Optional<string> EmailDomain
+    {
+        get
+        {
+            if (Settings.Properties.TryGetValue(nameof(EmailDomain), out var setting))
+            {
+                return ((string)setting.Value).ToOptional();
+            }
+
+            return Optional<string>.None;
+        }
+    }
+
+    public DatacenterLocation HostRegion { get; private set; } = DatacenterLocations.Unknown;
+
     public Memberships Memberships { get; private set; } = Memberships.Empty;
 
     public DisplayName Name { get; private set; } = DisplayName.Empty;
 
     public OrganizationOwnership Ownership { get; private set; }
-
-    public DatacenterLocation HostRegion { get; private set; } = DatacenterLocations.Unknown;
 
     public Settings Settings { get; private set; } = Settings.Empty;
 
@@ -74,6 +152,7 @@ public sealed class OrganizationRoot : AggregateRootBase
     {
         return (identifier, container, _) => new OrganizationRoot(container.GetRequiredService<IRecorder>(),
             container.GetRequiredService<IIdentifierFactory>(), container.GetRequiredService<ITenantSettingService>(),
+            container.GetRequiredService<IOrganizationEmailDomainService>(),
             identifier);
     }
 
@@ -489,6 +568,51 @@ public sealed class OrganizationRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(OrganizationsDomain.Events.MemberInvited(Id, inviterId, userId, emailAddress));
+    }
+
+    public async Task<Result<Error>> RegisterSharedAsync(Optional<EmailAddress> creatorEmailAddress,
+        CancellationToken cancellationToken)
+    {
+        if (!creatorEmailAddress.HasValue)
+        {
+            return Error.Validation(Resources.OrganizationRoot_MissingCreatorEmailAddress);
+        }
+
+        var emailDomain = creatorEmailAddress.Value.GetEmailDomain();
+        if (DisallowedEmailProviderDomains.ContainsIgnoreCase(emailDomain))
+        {
+            return Error.PreconditionViolation(
+                Resources.OrganizationRoot_RegisterShared_DisallowedEmailDomain.Format(emailDomain));
+        }
+
+        var isUnique = await _emailDomainService.EnsureUniqueAsync(emailDomain, Id, cancellationToken);
+        if (!isUnique)
+        {
+            return Error.EntityExists(
+                Resources.OrganizationRoot_RegisterShared_EmailDomainReserved.Format(emailDomain));
+        }
+
+        if (EmailDomain.HasValue)
+        {
+            return Error.EntityExists(Resources.OrganizationRoot_RegisterShared_EmailDomainAlreadyRegistered);
+        }
+
+        var emailDomainSetting = Setting.Create(emailDomain, false);
+        if (emailDomainSetting.IsFailure)
+        {
+            return emailDomainSetting.Error;
+        }
+
+        var settings = Settings.Create(new Dictionary<string, Setting>
+        {
+            { nameof(EmailDomain), emailDomainSetting.Value }
+        });
+        if (settings.IsFailure)
+        {
+            return settings.Error;
+        }
+
+        return UpdateSettings(settings.Value);
     }
 
     public async Task<Result<Error>> RemoveAvatarAsync(Identifier deleterId, Roles deleterRoles,

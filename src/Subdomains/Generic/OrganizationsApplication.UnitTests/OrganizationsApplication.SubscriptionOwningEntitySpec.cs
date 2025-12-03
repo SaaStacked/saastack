@@ -8,11 +8,13 @@ using Domain.Common.ValueObjects;
 using Domain.Interfaces.Authorization;
 using Domain.Interfaces.Entities;
 using Domain.Interfaces.Services;
+using Domain.Shared;
 using Domain.Shared.EndUsers;
 using FluentAssertions;
 using Moq;
 using OrganizationsApplication.Persistence;
 using OrganizationsDomain;
+using OrganizationsDomain.DomainServices;
 using UnitTesting.Common;
 using Xunit;
 using Membership = Application.Resources.Shared.Membership;
@@ -25,6 +27,7 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
 {
     private readonly OrganizationsApplication _application;
     private readonly Mock<ICallerContext> _caller;
+    private readonly Mock<IOrganizationEmailDomainService> _emailDomainService;
     private readonly Mock<IEndUsersService> _endUsersService;
     private readonly Mock<IIdentifierFactory> _identifierFactory;
     private readonly Mock<IRecorder> _recorder;
@@ -52,6 +55,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
             .Returns((string value) => value);
         _endUsersService = new Mock<IEndUsersService>();
         var imagesService = new Mock<IImagesService>();
+        var userProfilesService = new Mock<IUserProfilesService>();
+        _emailDomainService = new Mock<IOrganizationEmailDomainService>();
         _repository = new Mock<IOrganizationRepository>();
         _repository.Setup(ar => ar.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()))
             .Returns((OrganizationRoot root, CancellationToken _) =>
@@ -60,7 +65,7 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
 
         _application = new OrganizationsApplication(_recorder.Object, _identifierFactory.Object,
             tenantSettingsService.Object, _tenantSettingService.Object, _endUsersService.Object, imagesService.Object,
-            subscriptionService.Object, _repository.Object);
+            subscriptionService.Object, userProfilesService.Object, _emailDomainService.Object, _repository.Object);
     }
 
     [Fact]
@@ -80,7 +85,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanCancelSubscriptionAsyncAndCancellerNotAMember_ThenReturnsError()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local);
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
@@ -104,8 +110,9 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanCancelSubscriptionAsync_ThenReturnsPermission()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
-            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value,
+            UserClassification.Person, DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         organization.SubscribeBilling("asubscriptionid".ToId(), "acancellerid".ToId());
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
@@ -153,7 +160,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanChangeSubscriptionPlanAsyncAndModifierNotAMember_ThenReturnsError()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local);
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
@@ -177,7 +185,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanChangeSubscriptionPlanAsync_ThenReturnsPermission()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         organization.SubscribeBilling("asubscriptionid".ToId(), "amodifierid".ToId());
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -227,7 +236,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanTransferSubscriptionAsyncAndTransfereeNotAMember_ThenReturnsError()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local);
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
@@ -252,7 +262,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanTransferSubscriptionAsync_ThenReturnsPermission()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         organization.SubscribeBilling("asubscriptionid".ToId(), "atransfererid".ToId());
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -303,7 +314,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanUnsubscribeAsync_ThenReturnsPermission()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         organization.SubscribeBilling("asubscriptionid".ToId(), "anunsubsciberid".ToId());
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -334,7 +346,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanViewSubscriptionAsyncAndViewerNotAMember_ThenReturnsError()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local);
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
@@ -358,7 +371,8 @@ public class OrganizationsApplicationSubscriptionOwningEntitySpec
     public async Task WhenCanViewSubscriptionAsync_ThenReturnsPermission()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "auserid".ToId(), UserClassification.Person,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         organization.SubscribeBilling("asubscriptionid".ToId(), "aviewerid".ToId());
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))

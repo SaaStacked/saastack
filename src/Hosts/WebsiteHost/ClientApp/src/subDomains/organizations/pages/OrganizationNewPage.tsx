@@ -7,8 +7,7 @@ import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
-import { CreateOrganizationAction } from '../actions/createOrganization.ts';
-
+import { CreateOrganizationAction, CreateOrganizationErrors } from '../actions/createOrganization.ts';
 
 export const OrganizationNewPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -33,6 +32,10 @@ export const OrganizationNewPage: React.FC = () => {
             .min(1, translate('pages.organizations.edit.form.fields.name.validation'))
             .max(100, translate('pages.organizations.edit.form.fields.name.validation'))
         })}
+        expectedErrorMessages={{
+          [CreateOrganizationErrors.invalid_domain]: translate('pages.organizations.new.errors.invalid_domain'),
+          [CreateOrganizationErrors.duplicate_domain]: translate('pages.organizations.new.errors.duplicate_domain')
+        }}
         onSuccess={() => setCompleted(true)}
       >
         <FormInput

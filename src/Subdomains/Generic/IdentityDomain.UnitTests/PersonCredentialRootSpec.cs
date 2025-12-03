@@ -82,7 +82,7 @@ public class PersonCredentialRootSpec
         _settings.Setup(s => s.Platform.GetNumber(It.IsAny<string>(), It.IsAny<double>()))
             .Returns(5);
         _emailAddressService = new Mock<IEmailAddressService>();
-        _emailAddressService.Setup(eas => eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>()))
+        _emailAddressService.Setup(eas => eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         _personCredential = PersonCredentialRoot.Create(_recorder.Object, _idFactory.Object,
@@ -466,7 +466,7 @@ public class PersonCredentialRootSpec
     {
         _personCredential.SetRegistrationDetails(EmailAddress.Create("auser@company.com").Value,
             PersonDisplayName.Create("adisplayname").Value);
-        _emailAddressService.Setup(eas => eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>()))
+        _emailAddressService.Setup(eas => eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = _personCredential.EnsureInvariants();

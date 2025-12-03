@@ -13,6 +13,7 @@ using Domain.Shared.Organizations;
 using Domain.Shared.Subscriptions;
 using FluentAssertions;
 using Moq;
+using OrganizationsDomain.DomainServices;
 using UnitTesting.Common;
 using Xunit;
 
@@ -21,6 +22,7 @@ namespace OrganizationsDomain.UnitTests;
 [Trait("Category", "Unit")]
 public class OrganizationRootSpec
 {
+    private readonly Mock<IOrganizationEmailDomainService> _emailDomainService;
     private readonly Mock<IIdentifierFactory> _identifierFactory;
     private readonly OrganizationRoot _org;
     private readonly Mock<IRecorder> _recorder;
@@ -37,24 +39,30 @@ public class OrganizationRootSpec
             .Returns((string value) => value);
         _tenantSettingService.Setup(tss => tss.Decrypt(It.IsAny<string>()))
             .Returns((string value) => value);
+        _emailDomainService = new Mock<IOrganizationEmailDomainService>();
+        _emailDomainService.Setup(eds =>
+                eds.EnsureUniqueAsync(It.IsAny<string>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         _org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
-            OrganizationOwnership.Shared, "acreatorid".ToId(), UserClassification.Person,
+            _emailDomainService.Object, OrganizationOwnership.Shared, "acreatorid".ToId(), Optional<EmailAddress>.None,
+            UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
     }
 
     [Fact]
-    public void WhenCreateWithMachineUser_ThenReturnsError()
+    public void WhenCreateForMachineUser_ThenReturnsError()
     {
-        var result = OrganizationRoot.Create(new Mock<IRecorder>().Object, new Mock<IIdentifierFactory>().Object,
-            new Mock<ITenantSettingService>().Object, OrganizationOwnership.Shared, "acreatorid".ToId(),
-            UserClassification.Machine, DisplayName.Create("aname").Value, DatacenterLocations.Local);
+        var result = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Shared, "acreatorid".ToId(),
+            Optional<EmailAddress>.None, UserClassification.Machine, DisplayName.Create("aname").Value,
+            DatacenterLocations.Local);
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.OrganizationRoot_Create_SharedRequiresPerson);
     }
 
     [Fact]
-    public void WhenCreate_ThenAssigns()
+    public void WhenCreateForPersonUser_ThenAssigns()
     {
         _org.Name.Name.Should().Be("aname");
         _org.CreatedById.Should().Be("acreatorid".ToId());
@@ -62,6 +70,17 @@ public class OrganizationRootSpec
         _org.Ownership.Should().Be(OrganizationOwnership.Shared);
         _org.Settings.Should().Be(Settings.Empty);
         _org.HostRegion.Should().Be(DatacenterLocations.Local);
+    }
+
+    [Fact]
+    public void WhenCreateForPersonWithPersonalAndNoEmail_ThenReturnsError()
+    {
+        var result = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object, OrganizationOwnership.Personal, "acreatorid".ToId(),
+            Optional<EmailAddress>.None,
+            UserClassification.Person, DisplayName.Create("aname").Value, DatacenterLocations.Local);
+
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.OrganizationRoot_MissingCreatorEmailAddress);
     }
 
     [Fact]
@@ -176,7 +195,8 @@ public class OrganizationRootSpec
     public void WhenUnInviteMemberAndPersonalOrg_ThenReturnsError()
     {
         var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingService.Object, OrganizationOwnership.Personal, "acreatorid".ToId(),
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value,
             UserClassification.Person, DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
 
         var result = org.UnInviteMember("aremoverid".ToId(), Roles.Create(TenantRoles.Owner).Value, "auserid".ToId());
@@ -649,5 +669,50 @@ public class OrganizationRootSpec
             _org.CanViewBillingSubscription("aviewerid".ToId(), Roles.Create(TenantRoles.BillingAdmin).Value);
 
         result.Value.IsAllowed.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task WhenRegisterSharedAsyncAndNoEmail_ThenReturnsError()
+    {
+        var result = await _org.RegisterSharedAsync(Optional<EmailAddress>.None, CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.Validation,
+            Resources.OrganizationRoot_MissingCreatorEmailAddress);
+    }
+
+    [Fact]
+    public async Task WhenRegisterSharedAsyncAndDisallowedEmailDomain_ThenReturnsError()
+    {
+        var result =
+            await _org.RegisterSharedAsync(EmailAddress.Create("auser@gmail.com").Value, CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.PreconditionViolation,
+            Resources.OrganizationRoot_RegisterShared_DisallowedEmailDomain.Format("gmail.com"));
+    }
+
+    [Fact]
+    public async Task WhenRegisterSharedAsyncAndDuplicateEmailDomain_ThenReturnsError()
+    {
+        _emailDomainService.Setup(eds =>
+                eds.EnsureUniqueAsync(It.IsAny<string>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var result =
+            await _org.RegisterSharedAsync(EmailAddress.Create("auser@company.com").Value, CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityExists,
+            Resources.OrganizationRoot_RegisterShared_EmailDomainReserved.Format("company.com"));
+    }
+
+    [Fact]
+    public async Task WhenRegisterSharedAsync_ThenAssigns()
+    {
+        var result =
+            await _org.RegisterSharedAsync(EmailAddress.Create("auser@company.com").Value, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _org.EmailDomain.Should().Be("company.com");
+        _org.Events.Count.Should().Be(2);
+        _org.Events.Last().Should().BeOfType<SettingCreated>();
     }
 }

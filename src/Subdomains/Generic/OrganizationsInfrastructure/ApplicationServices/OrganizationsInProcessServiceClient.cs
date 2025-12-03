@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Interfaces.Services;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 using Common.Extensions;
@@ -28,6 +29,14 @@ public class OrganizationsInProcessServiceClient : IOrganizationsService, ISubsc
         CancellationToken cancellationToken)
     {
         return await GetApplication().ChangeSettingsAsync(caller, id, settings, cancellationToken);
+    }
+
+    public async Task<Result<Optional<Organization>, Error>> FindSharedOrganizationByEmailDomainPrivateAsync(
+        ICallerContext caller, string emailAddress,
+        CancellationToken cancellationToken)
+    {
+        return await GetApplication().FindSharedOrganizationByEmailDomainAsync(caller, emailAddress,
+            cancellationToken);
     }
 
     public async Task<Result<TenantSettings, Error>> GetSettingsPrivateAsync(ICallerContext caller, string id,

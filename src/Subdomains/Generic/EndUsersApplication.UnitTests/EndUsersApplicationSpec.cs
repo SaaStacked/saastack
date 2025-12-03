@@ -65,12 +65,13 @@ public class EndUsersApplicationSpec
             .ReturnsAsync((EndUserRoot root, bool _, CancellationToken _) => root);
         _invitationRepository = new Mock<IInvitationRepository>();
         _userProfilesService = new Mock<IUserProfilesService>();
+        var organizationsService = new Mock<IOrganizationsService>();
         var subscriptionsService = new Mock<ISubscriptionsService>();
 
         _application =
             new EndUsersApplication(_recorder.Object, _idFactory.Object, settings.Object, _userProfilesService.Object,
-                subscriptionsService.Object,
-                _invitationRepository.Object, _endUserRepository.Object);
+                subscriptionsService.Object, organizationsService.Object, _invitationRepository.Object,
+                _endUserRepository.Object);
     }
 
     [Fact]

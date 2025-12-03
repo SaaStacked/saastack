@@ -29,6 +29,7 @@ public partial class EndUsersApplication : IEndUsersApplication
     private readonly IEndUserRepository _endUserRepository;
     private readonly IIdentifierFactory _idFactory;
     private readonly IInvitationRepository _invitationRepository;
+    private readonly IOrganizationsService _organizationsService;
     private readonly IRecorder _recorder;
     private readonly IConfigurationSettings _settings;
     private readonly ISubscriptionsService _subscriptionsService;
@@ -36,7 +37,8 @@ public partial class EndUsersApplication : IEndUsersApplication
 
     public EndUsersApplication(IRecorder recorder, IIdentifierFactory idFactory, IConfigurationSettings settings,
         IUserProfilesService userProfilesService, ISubscriptionsService subscriptionsService,
-        IInvitationRepository invitationRepository, IEndUserRepository endUserRepository)
+        IOrganizationsService organizationsService, IInvitationRepository invitationRepository,
+        IEndUserRepository endUserRepository)
     {
         _recorder = recorder;
         _idFactory = idFactory;
@@ -44,6 +46,7 @@ public partial class EndUsersApplication : IEndUsersApplication
         _userProfilesService = userProfilesService;
         _subscriptionsService = subscriptionsService;
         _invitationRepository = invitationRepository;
+        _organizationsService = organizationsService;
         _endUserRepository = endUserRepository;
     }
 

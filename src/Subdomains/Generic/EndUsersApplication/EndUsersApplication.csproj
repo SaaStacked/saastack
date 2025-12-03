@@ -19,6 +19,7 @@
         <ProjectReference Include="..\..\..\Framework\Domain\Domain.Common\Domain.Common.csproj" />
         <ProjectReference Include="..\..\Shared\Domain.Services.Shared\Domain.Services.Shared.csproj" />
         <ProjectReference Include="..\EndUsersDomain\EndUsersDomain.csproj" />
+        <ProjectReference Include="..\OrganizationsApplication\OrganizationsApplication.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

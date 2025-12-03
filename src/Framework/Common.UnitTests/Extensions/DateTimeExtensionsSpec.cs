@@ -194,6 +194,14 @@ public class DateTimeExtensionsSpec
         var expected = new DateTime(2023, 09, 24, 23, 0, 0, DateTimeKind.Utc);
         result.Should().Be(expected);
     }
+    [Fact]
+    public void WhenFromIso8601AndOnlyDate_ThenReturnsUtcDate()
+    {
+        var result = "2023-09-25".FromIso8601();
+
+        var expected = new DateTime(2023, 09, 25, 0, 0, 0, DateTimeKind.Utc);
+        result.Should().Be(expected);
+    }
 
     [Fact]
     public void WhenFromUnixTimestampWithNull_ThenReturnsMinDate()

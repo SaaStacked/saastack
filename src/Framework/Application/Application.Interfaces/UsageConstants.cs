@@ -73,6 +73,7 @@ public static class UsageConstants
                 public const string MachineRegistered = "Machine Registered";
                 public const string Measurement = "Measured";
                 public const string MembershipAdded = "Membership Added";
+                public const string MembershipAutoAdded = "Membership Auto Added";
                 public const string MembershipChanged = "Membership Changed";
                 public const string OrganizationChanged = "Organization Updated";
                 public const string OrganizationCreated = "Organization Created";

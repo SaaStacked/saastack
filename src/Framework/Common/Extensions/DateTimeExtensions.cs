@@ -18,7 +18,7 @@ public static class DateTimeExtensions
             return default;
         }
 
-        var supportedIsoFormats = new[]
+        var supportedDateAndTimeFormats = new[]
         {
             "yyyyMMddTHHmmssZ", "yyyyMMddTHHmmsszz", "yyyyMMddTHHmmsszzz",
             "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:sszz", "yyyy-MM-ddTHH:mm:sszzz",
@@ -26,12 +26,31 @@ public static class DateTimeExtensions
             "yyyy-MM-ddTHH:mm:ss.FFFFZ", "yyyy-MM-ddTHH:mm:ss.FFFFFZ", "yyyy-MM-ddTHH:mm:ss.FFFFFFZ",
             "yyyy-MM-ddTHH:mm:ss.FFFFFFFZ"
         };
-        if (DateTime.TryParseExact(value, supportedIsoFormats, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None,
+        var supportedDateOnlyFormats = new[]
+        {
+            "yyyyMMdd", "yyyy-MM-dd"
+        };
+
+        var longestDateOnlyFormat = supportedDateOnlyFormats.Max(x => x.Length);
+        if (value.Length > longestDateOnlyFormat)
+        {
+            if (DateTime.TryParseExact(value, supportedDateAndTimeFormats, DateTimeFormatInfo.InvariantInfo,
+                    DateTimeStyles.None,
                 out var date))
         {
             return date.Kind == DateTimeKind.Utc
                 ? date
                 : date.ToUniversalTime();
+        }
+        }
+        else
+        {
+            if (DateOnly.TryParseExact(value, supportedDateOnlyFormats, DateTimeFormatInfo.InvariantInfo,
+                    DateTimeStyles.None,
+                    out var date))
+            {
+                return date.ToDateTime(TimeOnly.MinValue);
+            }
         }
 
         return default;

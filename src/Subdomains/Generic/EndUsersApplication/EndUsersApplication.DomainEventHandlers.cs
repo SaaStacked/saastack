@@ -21,7 +21,7 @@ partial class EndUsersApplication
     {
         var ownership = domainEvent.Ownership.ToEnumOrDefault(OrganizationOwnership.Shared);
         return await AddMembershipAsync(caller, domainEvent.CreatedById.ToId(), domainEvent.RootId.ToId(),
-            ownership, domainEvent.Name, cancellationToken);
+            ownership, domainEvent.Name, domainEvent.CreatedByEmailAddress, cancellationToken);
     }
 
     public async Task<Result<Error>> HandleOrganizationDeletedAsync(ICallerContext caller,
@@ -94,7 +94,7 @@ partial class EndUsersApplication
 
     private async Task<Result<Error>> AddMembershipAsync(ICallerContext caller,
         Identifier createdById, Identifier organizationId, OrganizationOwnership ownership,
-        string organizationName, CancellationToken cancellationToken)
+        string organizationName, Optional<string> createdByEmailAddress, CancellationToken cancellationToken)
     {
         var retrievedOwner = await _endUserRepository.LoadAsync(createdById, cancellationToken);
         if (retrievedOwner.IsFailure)
@@ -163,6 +163,13 @@ partial class EndUsersApplication
                 _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.MembershipChanged,
                     owner.ToMembershipChangeUsageEvent(previousMembership, profile));
             }
+        }
+
+        if (owner.IsPerson
+            && ownership == OrganizationOwnership.Personal)
+        {
+            return await AddMembershipIfMatchingEmailDomainAsync(caller, owner, createdByEmailAddress,
+                cancellationToken);
         }
 
         return Result.Ok;
@@ -276,6 +283,54 @@ partial class EndUsersApplication
                 membershipId);
             return Result.Ok;
         }
+    }
+
+    private async Task<Result<Error>> AddMembershipIfMatchingEmailDomainAsync(ICallerContext caller,
+        EndUserRoot user, Optional<string> creatorEmailAddress, CancellationToken cancellationToken)
+    {
+        if (!creatorEmailAddress.HasValue)
+        {
+            return Result.Ok;
+        }
+
+        var retrievedOrganization =
+            await _organizationsService.FindSharedOrganizationByEmailDomainPrivateAsync(caller, creatorEmailAddress,
+                cancellationToken);
+        if (retrievedOrganization.IsFailure)
+        {
+            return retrievedOrganization.Error;
+        }
+
+        if (!retrievedOrganization.Value.HasValue)
+        {
+            return Result.Ok;
+        }
+
+        var organization = retrievedOrganization.Value.Value;
+        var (_, _, tenantRoles, tenantFeatures) =
+            EndUserRoot.GetInitialRolesAndFeatures(RolesAndFeaturesUseCase.InvitingMemberToOrg, caller.IsAuthenticated);
+        var membered = user.AddMembership(user, OrganizationOwnership.Shared, organization.Id.ToId(), tenantRoles,
+            tenantFeatures);
+        if (membered.IsFailure)
+        {
+            return membered.Error;
+        }
+
+        var saved = await _endUserRepository.SaveAsync(user, false, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        user = saved.Value;
+        _recorder.TraceInformation(caller.ToCall(),
+            "EndUser {Id} has been auto-joined to shared organization {Organization} by email domain",
+            user.Id, organization.Id);
+        var membership = user.DefaultMembership;
+        _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.MembershipAutoAdded,
+            user.ToMembershipAddedUsageEvent(membership, organization.Name));
+
+        return Result.Ok;
     }
 
     private async Task<Result<Error>> HandleChangeSubscriptionPlanAsync(ICallerContext caller,

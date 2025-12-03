@@ -13,6 +13,7 @@ using Domain.Shared;
 using Domain.Shared.EndUsers;
 using OrganizationsApplication.Persistence;
 using OrganizationsDomain;
+using OrganizationsDomain.DomainServices;
 using OrganizationOwnership = Domain.Shared.Organizations.OrganizationOwnership;
 using PersonName = Application.Resources.Shared.PersonName;
 
@@ -28,11 +29,13 @@ public partial class OrganizationsApplication : IOrganizationsApplication
     private readonly ISubscriptionsService _subscriptionService;
     private readonly ITenantSettingService _tenantSettingService;
     private readonly ITenantSettingsService _tenantSettingsService;
+    private readonly IUserProfilesService _userProfilesService;
+    private readonly IOrganizationEmailDomainService _emailDomainService;
 
     public OrganizationsApplication(IRecorder recorder, IIdentifierFactory identifierFactory,
         ITenantSettingsService tenantSettingsService, ITenantSettingService tenantSettingService,
         IEndUsersService endUsersService, IImagesService imagesService, ISubscriptionsService subscriptionService,
-        IOrganizationRepository repository)
+        IUserProfilesService userProfilesService, IOrganizationEmailDomainService emailDomainService, IOrganizationRepository repository)
     {
         _recorder = recorder;
         _identifierFactory = identifierFactory;
@@ -41,6 +44,8 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         _imagesService = imagesService;
         _subscriptionService = subscriptionService;
         _tenantSettingsService = tenantSettingsService;
+        _userProfilesService = userProfilesService;
+        _emailDomainService = emailDomainService;
         _repository = repository;
     }
 
@@ -211,8 +216,20 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         }
 
         var user = retrieved.Value;
+        if (user.Classification != EndUserClassification.Person)
+        {
+            return Error.PreconditionViolation(Resources.OrganizationsApplication_CreateSharedOrganization_NotPerson);
+        }
+
+        var retrievedProfile = await _userProfilesService.GetProfilePrivateAsync(caller, userId, cancellationToken);
+        if (retrievedProfile.IsFailure)
+        {
+            return retrievedProfile.Error;
+        }
+
+        var profile = retrievedProfile.Value;
         var created = await CreateOrganizationInternalAsync(caller, user.Id,
-            user.Classification.ToEnumOrDefault(UserClassification.Person), name,
+            user.Classification.ToEnumOrDefault(UserClassification.Person), name, profile.EmailAddress,
             OrganizationOwnership.Shared, cancellationToken);
         if (created.IsFailure)
         {
@@ -315,6 +332,31 @@ public partial class OrganizationsApplication : IOrganizationsApplication
                 "Organization {Id} was permanently deleted by {DeleterId}", org.Id, deleterId);
             return Task.FromResult(Result.Ok);
         }
+    }
+
+    public async Task<Result<Optional<Organization>, Error>> FindSharedOrganizationByEmailDomainAsync(
+        ICallerContext caller, string emailAddress, CancellationToken cancellationToken)
+    {
+        var email = EmailAddress.Create(emailAddress);
+        if (email.IsFailure)
+        {
+            return email.Error;
+        }
+
+        var emailDomain = email.Value.GetEmailDomain();
+        var retrieved = await _repository.FindByEmailDomainAsync(emailDomain, cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        if (!retrieved.Value.HasValue)
+        {
+            return Optional<Organization>.None;
+        }
+
+        var org = retrieved.Value.Value;
+        return org.ToOrganization().ToOptional();
     }
 
     public async Task<Result<Organization, Error>> GetOrganizationAsync(ICallerContext caller, string id,
@@ -543,8 +585,8 @@ public partial class OrganizationsApplication : IOrganizationsApplication
     }
 
     private async Task<Result<Organization, Error>> CreateOrganizationInternalAsync(ICallerContext caller,
-        string creatorId, UserClassification classification, string name, OrganizationOwnership ownership,
-        CancellationToken cancellationToken)
+        string creatorId, UserClassification classification, string name, Optional<string> creatorEmailAddress,
+        OrganizationOwnership ownership, CancellationToken cancellationToken)
     {
         var displayName = DisplayName.Create(name);
         if (displayName.IsFailure)
@@ -552,8 +594,20 @@ public partial class OrganizationsApplication : IOrganizationsApplication
             return displayName.Error;
         }
 
-        var created = OrganizationRoot.Create(_recorder, _identifierFactory, _tenantSettingService,
-            ownership, creatorId.ToId(), classification, displayName.Value, DatacenterLocations.Local);
+        var emailAddress = Optional<EmailAddress>.None;
+        if (creatorEmailAddress.HasValue)
+        {
+            var email = EmailAddress.Create(creatorEmailAddress.Value);
+            if (email.IsFailure)
+            {
+                return email.Error;
+            }
+
+            emailAddress = email.Value;
+        }
+
+        var created = OrganizationRoot.Create(_recorder, _identifierFactory,_tenantSettingService, _emailDomainService,
+            ownership, creatorId.ToId(), emailAddress, classification, displayName.Value, DatacenterLocations.Local);
         if (created.IsFailure)
         {
             return created.Error;
@@ -576,6 +630,15 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         if (configured.IsFailure)
         {
             return configured.Error;
+        }
+
+        if (ownership == OrganizationOwnership.Shared)
+        {
+            var emailDomainRegistered = await org.RegisterSharedAsync(emailAddress.Value, cancellationToken);
+            if (emailDomainRegistered.IsFailure)
+            {
+                return emailDomainRegistered.Error;
+            }
         }
 
         var saved = await _repository.SaveAsync(org, cancellationToken);
@@ -601,8 +664,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
     }
 
     private async Task<Result<Error>> ChangeAvatarInternalAsync(ICallerContext caller, Identifier modifierId,
-        Roles modifierRoles,
-        OrganizationRoot organization, FileUpload upload, CancellationToken cancellationToken)
+        Roles modifierRoles, OrganizationRoot organization, FileUpload upload, CancellationToken cancellationToken)
     {
         return await organization.ChangeAvatarAsync(modifierId, modifierRoles, async name =>
         {
@@ -660,7 +722,7 @@ internal static class OrganizationConversionExtensions
             CreatedById = organization.CreatedById,
             Ownership = organization.Ownership.ToEnumOrDefault(
                 Application.Resources.Shared.OrganizationOwnership.Shared),
-            AvatarUrl = organization.Avatar.ToNullable(org => org.Url)
+            AvatarUrl = organization.Avatar.ToNullable(org => org.Url),
         };
     }
 

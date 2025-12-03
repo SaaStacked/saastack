@@ -27,6 +27,9 @@ public partial interface IOrganizationsApplication
 
     Task<Result<Error>> DeleteOrganizationAsync(ICallerContext caller, string? id, CancellationToken cancellationToken);
 
+    Task<Result<Optional<Organization>, Error>> FindSharedOrganizationByEmailDomainAsync(ICallerContext caller,
+        string emailAddress, CancellationToken cancellationToken);
+
     Task<Result<Organization, Error>> GetOrganizationAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 
@@ -45,8 +48,7 @@ public partial interface IOrganizationsApplication
         string? id, SearchOptions searchOptions, GetOptions getOptions, CancellationToken cancellationToken);
 
     Task<Result<Organization, Error>> UnassignRolesFromOrganizationAsync(ICallerContext caller, string id,
-        string userId,
-        List<string> roles, CancellationToken cancellationToken);
+        string userId, List<string> roles, CancellationToken cancellationToken);
 
     Task<Result<Organization, Error>> UnInviteMemberFromOrganizationAsync(ICallerContext caller, string id,
         string userId, CancellationToken cancellationToken);

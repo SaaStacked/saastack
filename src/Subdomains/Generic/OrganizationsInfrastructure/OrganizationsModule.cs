@@ -20,7 +20,9 @@ using Microsoft.Extensions.DependencyInjection;
 using OrganizationsApplication;
 using OrganizationsApplication.Persistence;
 using OrganizationsDomain;
+using OrganizationsDomain.DomainServices;
 using OrganizationsInfrastructure.ApplicationServices;
+using OrganizationsInfrastructure.DomainServices;
 using OrganizationsInfrastructure.Notifications;
 using OrganizationsInfrastructure.Persistence;
 using OrganizationsInfrastructure.Persistence.ReadModels;
@@ -54,6 +56,7 @@ public class OrganizationsModule : ISubdomainModule
                     new TenantSettingService(new AesEncryptionService(c
                         .GetRequiredServiceForPlatform<IConfigurationSettings>()
                         .GetString(TenantSettingService.EncryptionServiceSecretSettingName))));
+                services.AddPerHttpRequest<IOrganizationEmailDomainService, OrganizationEmailDomainService>();
                 services.AddPerHttpRequest<IOrganizationsApplication>(c =>
                     new OrganizationsApplication.OrganizationsApplication(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IIdentifierFactory>(),
@@ -62,6 +65,8 @@ public class OrganizationsModule : ISubdomainModule
                         c.GetRequiredService<IEndUsersService>(),
                         c.GetRequiredService<IImagesService>(),
                         c.GetRequiredService<ISubscriptionsService>(),
+                        c.GetRequiredService<IUserProfilesService>(),
+                        c.GetRequiredService<IOrganizationEmailDomainService>(),
                         c.GetRequiredService<IOrganizationRepository>()));
                 services.AddPerHttpRequest<IOrganizationRepository>(c =>
                     new OrganizationRepository(c.GetRequiredService<IRecorder>(),

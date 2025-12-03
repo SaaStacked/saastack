@@ -17,6 +17,8 @@ public sealed class Created : DomainEvent
     {
     }
 
+    public string? CreatedByEmailAddress { get; set; }
+
     public required string CreatedById { get; set; }
 
     public required string HostRegion { get; set; } = DatacenterLocations.Unknown.Code;

@@ -1,6 +1,7 @@
 using Application.Persistence.Common.Extensions;
 using Application.Persistence.Interfaces;
 using Common;
+using Common.Extensions;
 using Domain.Events.Shared.Organizations;
 using Domain.Interfaces;
 using Domain.Interfaces.Entities;
@@ -36,9 +37,25 @@ public class OrganizationProjection : IReadModelProjection
                     },
                     cancellationToken);
 
-            case SettingCreated _:
-            case SettingUpdated _:
-                return true;
+            case SettingCreated e:
+                return await _organizations.HandleUpdateAsync(e.RootId, dto =>
+                    {
+                        if (e.Name.EqualsIgnoreCase(nameof(OrganizationRoot.EmailDomain)))
+                        {
+                            dto.EmailDomain = e.StringValue;
+                        }
+                    },
+                    cancellationToken);
+
+            case SettingUpdated e:
+                return await _organizations.HandleUpdateAsync(e.RootId, dto =>
+                    {
+                        if (e.Name.EqualsIgnoreCase(nameof(OrganizationRoot.EmailDomain)))
+                        {
+                            dto.EmailDomain = e.To;
+                        }
+                    },
+                    cancellationToken);
 
             case MembershipAdded _:
             case MembershipRemoved _:

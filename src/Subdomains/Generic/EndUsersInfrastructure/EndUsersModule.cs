@@ -54,6 +54,7 @@ public class EndUsersModule : ISubdomainModule
                         c.GetRequiredServiceForPlatform<IConfigurationSettings>(),
                         c.GetRequiredService<IUserProfilesService>(),
                         c.GetRequiredService<ISubscriptionsService>(),
+                        c.GetRequiredService<IOrganizationsService>(),
                         c.GetRequiredService<IInvitationRepository>(),
                         c.GetRequiredService<IEndUserRepository>()));
                 services.AddPerHttpRequest<IInvitationsApplication>(c =>

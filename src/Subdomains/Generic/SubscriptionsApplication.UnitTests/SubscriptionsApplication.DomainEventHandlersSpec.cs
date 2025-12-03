@@ -6,6 +6,7 @@ using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 using Domain.Services.Shared;
+using Domain.Shared;
 using Domain.Shared.Subscriptions;
 using Moq;
 using OrganizationsDomain;
@@ -16,6 +17,7 @@ using UserProfilesDomain;
 using Xunit;
 using OrganizationOwnership = Domain.Shared.Organizations.OrganizationOwnership;
 using OrganizationsDomainEvents = OrganizationsDomain.Events;
+using PersonName = Application.Resources.Shared.PersonName;
 using UserProfileEvents = Domain.Events.Shared.UserProfiles;
 
 namespace SubscriptionsApplication.UnitTests;
@@ -78,7 +80,8 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             });
 
         var domainEvent = OrganizationsDomainEvents.Created("anowningentityid".ToId(), OrganizationOwnership.Personal,
-            "abuyerid".ToId(), DisplayName.Create("aname").Value, DatacenterLocations.Local);
+            "abuyerid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("aname").Value,
+            DatacenterLocations.Local);
 
         var result =
             await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -132,7 +135,8 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             });
 
         var domainEvent = OrganizationsDomainEvents.Created("anowningentityid".ToId(), OrganizationOwnership.Personal,
-            "abuyerid".ToId(), DisplayName.Create("aname").Value, DatacenterLocations.Local);
+            "abuyerid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("aname").Value,
+            DatacenterLocations.Local);
 
         var result =
             await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);

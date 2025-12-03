@@ -84,5 +84,19 @@
     <data name="OrganizationRoot_NoSubscriber" xml:space="preserve">
         <value>This organization has no billing subscriber</value>
     </data>
-
+    <data name="OrganizationRoot_RegisterShared_AlreadyRegistered" xml:space="preserve">
+        <value>This organization has already been registered</value>
+    </data>
+    <data name="OrganizationRoot_RegisterShared_EmailDomainAlreadyRegistered" xml:space="preserve">
+        <value>This organization already has an email domain registered</value>
+    </data>
+    <data name="OrganizationRoot_MissingCreatorEmailAddress" xml:space="preserve">
+        <value>CreatorEmailAddress is required to register a shared organization</value>
+    </data>
+    <data name="OrganizationRoot_RegisterShared_DisallowedEmailDomain" xml:space="preserve">
+        <value>The email address '{0}' is not allowed for a shared organization, as it represents a non-business email address</value>
+    </data>
+    <data name="OrganizationRoot_RegisterShared_EmailDomainReserved" xml:space="preserve">
+        <value>The email domain '{0}' is already registered by another organization</value>
+    </data>
 </root>

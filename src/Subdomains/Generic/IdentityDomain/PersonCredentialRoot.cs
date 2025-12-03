@@ -140,7 +140,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
         if (Registration.HasValue)
         {
-            var isEmailUnique = _emailAddressService.EnsureUniqueAsync(Registration.Value.EmailAddress, UserId)
+            var isEmailUnique = _emailAddressService.EnsureUniqueAsync(Registration.Value.EmailAddress, UserId, CancellationToken.None)
                 .GetAwaiter().GetResult();
             if (!isEmailUnique)
             {

@@ -27,4 +27,7 @@
     <data name="OrganizationApplication_InvitedNoUserNorEmail" xml:space="preserve">
         <value>There is no 'UserId' nor 'Email'</value>
     </data>
+    <data name="OrganizationsApplication_CreateSharedOrganization_NotPerson" xml:space="preserve">
+        <value>User is not a person</value>
+    </data>
 </root>

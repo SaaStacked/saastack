@@ -12,6 +12,7 @@ using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using Infrastructure.Web.Common.Extensions;
 using Infrastructure.Web.Interfaces;
 using IntegrationTesting.WebApi.Common;
+using OrganizationsDomain;
 using Xunit;
 
 namespace OrganizationsInfrastructure.IntegrationTests;
@@ -43,7 +44,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenCreateOrganization_ThenReturnsOrganization()
+    public async Task WhenCreateSharedOrganization_ThenReturnsSharedOrganization()
     {
         var login = await LoginUserAsync();
 
@@ -76,6 +77,17 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
         members.Content.Value.Members[0].Roles.Should().ContainInOrder(TenantRoles.BillingAdmin.Name,
             TenantRoles.Owner.Name, TenantRoles.Member.Name);
+
+#if TESTINGONLY
+        var settings = await Api.GetAsync(new GetOrganizationSettingsRequest
+            {
+                Id = organizationId
+            },
+            req => req.SetJWTBearerToken(login.AccessToken));
+
+        settings.Content.Value.Settings.Count.Should().Be(1);
+        settings.Content.Value.Settings[nameof(OrganizationRoot.EmailDomain)].Should().Be("company.com");
+#endif
     }
 
     [Fact]
@@ -676,6 +688,92 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
         result.Content.Value.Organization.AvatarUrl.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WhenRegisterUserWithMatchingEmailDomain_ThenOnboardedToSharedOrganization()
+    {
+        var loginA = await LoginUserAsync();
+        var organization = await Api.PostAsync(new CreateOrganizationRequest
+        {
+            Name = "aname"
+        }, req => req.SetJWTBearerToken(loginA.AccessToken));
+
+        var organizationId = organization.Content.Value.Organization.Id;
+        loginA = await ReAuthenticateUserAsync(loginA);
+
+        var loginB = await LoginUserAsync(LoginUser.PersonB); // registers userB
+        await PropagateDomainEventsAsync();
+
+        loginB = await ReAuthenticateUserAsync(loginB);
+        loginB.DefaultOrganizationId.Should().Be(organizationId);
+
+        var membershipsB = await Api.GetAsync(new ListMembershipsForCallerRequest(),
+            req => req.SetJWTBearerToken(loginB.AccessToken));
+
+        membershipsB.Content.Value.Memberships.Count.Should().Be(2);
+        membershipsB.Content.Value.Memberships[0].OrganizationId.Should().NotBe(organizationId);
+        membershipsB.Content.Value.Memberships[0].Ownership.Should().Be(OrganizationOwnership.Personal);
+        membershipsB.Content.Value.Memberships[0].IsDefault.Should().BeFalse();
+        membershipsB.Content.Value.Memberships[0].Roles.Should().ContainInOrder(TenantRoles.Owner.Name);
+        membershipsB.Content.Value.Memberships[1].OrganizationId.Should().Be(organizationId);
+        membershipsB.Content.Value.Memberships[1].Ownership.Should().Be(OrganizationOwnership.Shared);
+        membershipsB.Content.Value.Memberships[1].IsDefault.Should().BeTrue();
+        membershipsB.Content.Value.Memberships[1].Roles.Should().ContainInOrder(TenantRoles.Member.Name);
+
+        var members2 = await Api.GetAsync(new ListMembersForOrganizationRequest
+        {
+            Id = organizationId
+        }, req => req.SetJWTBearerToken(loginA.AccessToken));
+
+        members2.Content.Value.Members.Count.Should().Be(2);
+        members2.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
+        members2.Content.Value.Members[0].IsOwner.Should().BeTrue();
+        members2.Content.Value.Members[0].Roles.Should().ContainInOrder(TenantRoles.BillingAdmin.Name,
+            TenantRoles.Owner.Name, TenantRoles.Member.Name);
+        members2.Content.Value.Members[1].UserId.Should().Be(loginB.User.Id);
+        members2.Content.Value.Members[1].IsOwner.Should().BeFalse();
+        members2.Content.Value.Members[1].EmailAddress.Should().Be(loginB.Profile!.EmailAddress);
+        members2.Content.Value.Members[1].Roles.Should().ContainInOrder(TenantRoles.Member.Name);
+    }
+
+    [Fact]
+    public async Task WhenRegisterUserWithNonMatchingEmailDomain_ThenNotOnboardedToSharedOrganization()
+    {
+        var loginA = await LoginUserAsync();
+        var organization = await Api.PostAsync(new CreateOrganizationRequest
+        {
+            Name = "aname"
+        }, req => req.SetJWTBearerToken(loginA.AccessToken));
+
+        var organizationId2 = organization.Content.Value.Organization.Id;
+        loginA = await ReAuthenticateUserAsync(loginA);
+
+        var loginB = await LoginUserAsync("person.b@anothercompany.com", "afirstname"); // registers userB
+        await PropagateDomainEventsAsync();
+
+        loginB = await ReAuthenticateUserAsync(loginB);
+        loginB.DefaultOrganizationId.Should().NotBe(organizationId2);
+
+        var membershipsB = await Api.GetAsync(new ListMembershipsForCallerRequest(),
+            req => req.SetJWTBearerToken(loginB.AccessToken));
+
+        membershipsB.Content.Value.Memberships.Count.Should().Be(1);
+        membershipsB.Content.Value.Memberships[0].OrganizationId.Should().NotBe(organizationId2);
+        membershipsB.Content.Value.Memberships[0].Ownership.Should().Be(OrganizationOwnership.Personal);
+        membershipsB.Content.Value.Memberships[0].IsDefault.Should().BeTrue();
+        membershipsB.Content.Value.Memberships[0].Roles.Should().ContainInOrder(TenantRoles.Owner.Name);
+
+        var members2 = await Api.GetAsync(new ListMembersForOrganizationRequest
+        {
+            Id = organizationId2
+        }, req => req.SetJWTBearerToken(loginA.AccessToken));
+
+        members2.Content.Value.Members.Count.Should().Be(1);
+        members2.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
+        members2.Content.Value.Members[0].IsOwner.Should().BeTrue();
+        members2.Content.Value.Members[0].Roles.Should().ContainInOrder(TenantRoles.BillingAdmin.Name,
+            TenantRoles.Owner.Name, TenantRoles.Member.Name);
     }
 
     private static string CreateRandomEmailAddress()

@@ -18,6 +18,8 @@ public class Organization : ReadModelEntity
 
     public Optional<string> CreatedById { get; set; }
 
+    public Optional<string> EmailDomain { get; set; }
+
     public Optional<string> Name { get; set; }
 
     public Optional<OrganizationOwnership> Ownership { get; set; }

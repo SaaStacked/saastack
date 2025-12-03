@@ -47,14 +47,17 @@ public static class Events
         };
     }
 
-    public static Created Created(Identifier id, OrganizationOwnership ownership, Identifier createdBy,
-        DisplayName name, DatacenterLocation hostRegion)
+    public static Created Created(Identifier id, OrganizationOwnership ownership, Identifier createdById,
+        Optional<EmailAddress> createdByEmailAddress, DisplayName name, DatacenterLocation hostRegion)
     {
         return new Created(id)
         {
             Name = name,
             Ownership = ownership,
-            CreatedById = createdBy,
+            CreatedById = createdById,
+            CreatedByEmailAddress = createdByEmailAddress.HasValue
+                ? createdByEmailAddress.Value.Address
+                : null,
             HostRegion = hostRegion.Code
         };
     }

@@ -41,6 +41,14 @@ public class OrganizationRepository : IOrganizationRepository
         return await FindFirstByQueryAsync(query, cancellationToken);
     }
 
+    public async Task<Result<Optional<OrganizationRoot>, Error>> FindByEmailDomainAsync(string emailDomain,
+        CancellationToken cancellationToken)
+    {
+        var query = Query.From<Organization>()
+            .Where<string>(at => at.EmailDomain, ConditionOperator.EqualTo, emailDomain);
+        return await FindFirstByQueryAsync(query, cancellationToken);
+    }
+
     public async Task<Result<OrganizationRoot, Error>> LoadAsync(Identifier id, CancellationToken cancellationToken)
     {
         var organization = await _organizations.LoadAsync(id, cancellationToken);

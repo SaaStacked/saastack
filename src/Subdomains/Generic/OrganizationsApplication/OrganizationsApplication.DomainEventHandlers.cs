@@ -31,10 +31,9 @@ partial class OrganizationsApplication
     public async Task<Result<Error>> HandleEndUserRegisteredAsync(ICallerContext caller, Registered domainEvent,
         CancellationToken cancellationToken)
     {
-        var name =
-            $"{domainEvent.UserProfile.FirstName}{(domainEvent.UserProfile.LastName.HasValue() ? " " + domainEvent.UserProfile.LastName : string.Empty)}";
+        var name = GetPersonalOrganizationName(domainEvent);
         var organization = await CreateOrganizationInternalAsync(caller, domainEvent.RootId.ToId(),
-            domainEvent.Classification, name, OrganizationOwnership.Personal, cancellationToken);
+            domainEvent.Classification, name, domainEvent.Username, OrganizationOwnership.Personal, cancellationToken);
         if (organization.IsFailure)
         {
             return organization.Error;
@@ -62,6 +61,16 @@ partial class OrganizationsApplication
     {
         return await HandleTransferSubscriptionAsync(caller, domainEvent.OwningEntityId.ToId(),
             domainEvent.FromBuyerId.ToId(), domainEvent.ToBuyerId.ToId(), cancellationToken);
+    }
+
+    private static string GetPersonalOrganizationName(Registered domainEvent)
+    {
+        if (domainEvent.UserProfile.LastName.HasValue())
+        {
+            return $"{domainEvent.UserProfile.FirstName} {domainEvent.UserProfile.LastName}";
+        }
+
+        return $"{domainEvent.UserProfile.FirstName}";
     }
 
     private async Task<Result<Error>> HandleCreatedSubscriptionAsync(ICallerContext caller, Identifier subscriptionId,

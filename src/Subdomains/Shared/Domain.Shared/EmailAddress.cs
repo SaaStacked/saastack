@@ -39,6 +39,15 @@ public sealed class EmailAddress : SingleValueObjectBase<EmailAddress, string>
         return (property, _) => new EmailAddress(property);
     }
 
+    /// <summary>
+    ///     Returns the email domain of the specified <see cref="emailAddress" />.
+    /// </summary>
+    [SkipImmutabilityCheck]
+    public string GetEmailDomain()
+    {
+        return Value.Split('@')[1];
+    }
+
     [SkipImmutabilityCheck]
     public PersonName GuessPersonFullName()
     {
