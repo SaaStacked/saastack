@@ -23,7 +23,7 @@ public class AuthTokenSpec
     }
 
     [Fact]
-    public void WhenCreateWithPlainValue_ThenReturns()
+    public void WhenCreateWithAccessTokenAndJwtValue_ThenReturns()
     {
         var encryptionService = new Mock<IEncryptionService>();
         encryptionService.Setup(es => es.Encrypt(It.IsAny<string>()))
@@ -39,11 +39,44 @@ public class AuthTokenSpec
     }
 
     [Fact]
-    public void WhenCreateAndPlainValueButNotValid_ThenReturnsError()
+    public void WhenCreateWithAccessTokenAndOpaqueValue_ThenReturns()
+    {
+        var encryptionService = new Mock<IEncryptionService>();
+        encryptionService.Setup(es => es.Encrypt(It.IsAny<string>()))
+            .Returns((string _) => "anencryptedvalue");
+        var expiresOn = DateTime.UtcNow;
+        var result = AuthToken.Create(AuthTokenType.AccessToken, "anencryptedvalue", expiresOn,
+            encryptionService.Object);
+
+        result.Should().BeSuccess();
+        result.Value.Type.Should().Be(AuthTokenType.AccessToken);
+        result.Value.EncryptedValue.Should().Be("anencryptedvalue");
+        result.Value.ExpiresOn.Should().Be(expiresOn);
+        encryptionService.Verify(es => es.Encrypt("anencryptedvalue"));
+    }
+
+    [Fact]
+    public void WhenCreateWithIdTokenAndJwtValue_ThenReturns()
+    {
+        var encryptionService = new Mock<IEncryptionService>();
+        encryptionService.Setup(es => es.Encrypt(It.IsAny<string>()))
+            .Returns((string _) => "anencryptedvalue");
+        var expiresOn = DateTime.UtcNow;
+        var result = AuthToken.Create(AuthTokenType.OtherToken, "eyJtoken", expiresOn, encryptionService.Object);
+
+        result.Should().BeSuccess();
+        result.Value.Type.Should().Be(AuthTokenType.OtherToken);
+        result.Value.EncryptedValue.Should().Be("anencryptedvalue");
+        result.Value.ExpiresOn.Should().Be(expiresOn);
+        encryptionService.Verify(es => es.Encrypt("eyJtoken"));
+    }
+
+    [Fact]
+    public void WhenCreateWithIdTokenAndOpaqueValue_ThenReturnsError()
     {
         var encryptionService = new Mock<IEncryptionService>();
         var expiresOn = DateTime.UtcNow;
-        var result = AuthToken.Create(AuthTokenType.AccessToken, "anencryptedvalue", expiresOn,
+        var result = AuthToken.Create(AuthTokenType.OtherToken, "anencryptedvalue", expiresOn,
             encryptionService.Object);
 
         result.Should().BeError(ErrorCode.Validation, Resources.AuthToken_InvalidPlainValue);

@@ -19,11 +19,13 @@ public sealed class AuthToken : ValueObjectBase<AuthToken>
             return error1;
         }
 
-        //Ignore refresh tokens, they are not base64encoded tokens
-        if (type != AuthTokenType.RefreshToken)
+        // Ignore access_token and refresh_token, they are often opaque tokens.
+        // access_token are likely to be encrypted, refresh_tokens are never JWTs. 
+        if (type == AuthTokenType.OtherToken)
         {
             if (plainValue.IsInvalidParameter(IsValidPlainTokenValue, nameof(plainValue), out _))
             {
+                
                 return Error.Validation(Resources.AuthToken_InvalidPlainValue);
             }
         }

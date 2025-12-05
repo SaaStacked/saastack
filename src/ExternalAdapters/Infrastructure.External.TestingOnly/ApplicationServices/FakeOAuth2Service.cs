@@ -18,6 +18,7 @@ public class FakeOAuth2Service : IOAuth2Service
 {
     public const string AuthCode1 = "1234567890";
     public const string AuthCode2 = "2345678901";
+    public const string RefreshToken = "fakerefreshtoken";
     public static readonly Dictionary<string, string> ValidAuthCodes = new()
     {
         { AuthCode1, "fakeuser1@company.com" },
@@ -34,7 +35,9 @@ public class FakeOAuth2Service : IOAuth2Service
 
         return Task.FromResult<Result<List<AuthToken>, Error>>(new List<AuthToken>
         {
-            CreateAccessToken(options)
+            CreateAccessToken(options),
+            new(TokenType.RefreshToken, RefreshToken, DateTime.UtcNow.AddDays(14)),
+            CreateIdToken(options)
         });
     }
 
@@ -97,6 +100,26 @@ public class FakeOAuth2Service : IOAuth2Service
         ));
 
         return new AuthToken(TokenType.AccessToken, accessToken, expiresOn);
+    }
+
+    private static AuthToken CreateIdToken(OAuth2CodeTokenExchangeOptions options)
+    {
+        var emailAddress = ValidAuthCodes[options.Code];
+        var expiresOn = DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry);
+        var idToken = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
+            claims:
+            [
+                new Claim(ClaimTypes.Email, emailAddress),
+                new Claim(ClaimTypes.GivenName, emailAddress),
+                new Claim(ClaimTypes.Surname, "asurname"),
+                new Claim(AuthenticationConstants.Claims.ForTimezone, Timezones.Default.ToString()),
+                new Claim(AuthenticationConstants.Claims.ForLocale, Locales.Default.ToString()),
+                new Claim(ClaimTypes.Country, CountryCodes.Default.ToString())
+            ], expires: expiresOn,
+            issuer: options.ServiceName
+        ));
+
+        return new AuthToken(TokenType.OtherToken, idToken, expiresOn);
     }
 }
 #endif
