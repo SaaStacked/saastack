@@ -13,7 +13,7 @@ public sealed class WebsiteUiService : IWebsiteUiService
     public const string OAuth2ConsentPageRoute = "/identity/oauth2/authorize/consent";
     public const string PasswordMfaOobConfirmationPageRoute = "/identity/credentials/2fa/mfaoob-confirm";
     public const string PasswordRegistrationConfirmationPageRoute = "/identity/credentials/register-confirm";
-    public const string PasswordResetConfirmationPageRoute = "/identity/credentials/reset-confirm";
+    public const string PasswordResetConfirmationPageRoute = "/identity/credentials/password-reset-confirm";
     public const string RegistrationPageRoute = "/identity/credentials/register";
 
     public string ConstructLoginPageUrl()

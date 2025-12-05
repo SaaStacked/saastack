@@ -8,8 +8,7 @@ import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Loader from '../../../framework/components/loader/Loader.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import { recorder } from '../../../framework/recorder.ts';
-import { LoginErrors } from '../actions/credentialsLogin.ts';
-import { SsoLoginAction } from '../actions/ssoLogin.ts';
+import { LoginSsoAction, LoginSsoErrors } from '../actions/loginSso.ts';
 import {
   generateCodeChallenge,
   generateCodeVerifier,
@@ -53,7 +52,7 @@ export const SsoLoginPage: React.FC<SsoLoginPageProps> = ({
   const { t: translate } = useTranslation();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const login = SsoLoginAction();
+  const login = LoginSsoAction();
 
   const oAuth2AuthCode = searchParams.get('code');
   const oAuth2State = searchParams.get('state');
@@ -147,7 +146,7 @@ interface AuthenticateHandlerProps {
   oAuth2AuthCode: string;
   oAuth2State: string | null;
   pkce: boolean;
-  loginAction: ActionResult<AuthenticateRequest, LoginErrors, AuthenticateResponse>;
+  loginAction: ActionResult<AuthenticateRequest, LoginSsoErrors, AuthenticateResponse>;
   authenticateTrigger: React.RefObject<PageActionRef<AuthenticateRequest> | null>;
 }
 
@@ -236,10 +235,9 @@ function HandleAuthentication({
         id="sso_login"
         action={loginAction}
         expectedErrorMessages={{
-          [LoginErrors.account_locked]: translate('pages.identity.sso_login.errors.account_locked'),
-          [LoginErrors.account_unverified]: translate('pages.identity.sso_login.errors.account_unverified'),
-          [LoginErrors.invalid_credentials]: translate('pages.identity.sso_login.errors.invalid_credentials'),
-          [LoginErrors.mfa_required]: translate('pages.identity.sso_login.errors.mfa_required')
+          [LoginSsoErrors.unauthorized]: translate('pages.identity.sso_login.errors.unauthorized', {
+            provider: providerName
+          })
         }}
         loadingMessage={translate('pages.identity.sso_login.loaders.authenticating')}
         ref={authenticateTrigger}

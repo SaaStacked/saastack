@@ -4845,8 +4845,8 @@
           "CredentialsApi"
         ],
         "summary": "Completes a password reset attempt",
-        "description": "(request type: CompleteCredentialResetRequest)",
-        "operationId": "CompleteCredentialReset",
+        "description": "(request type: CompletePasswordResetRequest)",
+        "operationId": "CompletePasswordReset",
         "parameters": [
           {
             "name": "Token",
@@ -4871,7 +4871,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompleteCredentialResetRequest"
+                "$ref": "#/components/schemas/CompletePasswordResetRequest"
               }
             }
           }
@@ -4924,13 +4924,13 @@
             "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
           },
           "404": {
-            "description": "Not Found: The server cannot find the requested resource"
+            "description": "The token is invalid or already used"
           },
           "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+            "description": "The user is not yet registered, or the password reset attempt has expired"
           },
           "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
+            "description": "The password is the same as the last password"
           },
           "423": {
             "description": "Locked: The current resource is locked and cannot be accessed"
@@ -5416,7 +5416,7 @@
             "description": "Not Found: The server cannot find the requested resource"
           },
           "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+            "description": "The user is not yet registered"
           },
           "409": {
             "description": "Conflict: The request conflicts with the current state of the resource"
@@ -5529,10 +5529,10 @@
             "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
           },
           "404": {
-            "description": "Not Found: The server cannot find the requested resource"
+            "description": "The token is invalid or already used"
           },
           "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+            "description": "The user is not yet registered"
           },
           "409": {
             "description": "Conflict: The request conflicts with the current state of the resource"
@@ -5636,10 +5636,10 @@
             "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
           },
           "404": {
-            "description": "Not Found: The server cannot find the requested resource"
+            "description": "The token is invalid or already used"
           },
           "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+            "description": "The password reset attempt has expired"
           },
           "409": {
             "description": "Conflict: The request conflicts with the current state of the resource"
@@ -12489,10 +12489,10 @@
             "description": "Not Found: The server cannot find the requested resource"
           },
           "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+            "description": "This user's email address is not allowed to create a shared organization, it may be a personal email address. It must be a company email address"
           },
           "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
+            "description": "Another user has already claimed an organization with the same company email address as yours"
           },
           "423": {
             "description": "Locked: The current resource is locked and cannot be accessed"
@@ -21940,7 +21940,7 @@
         },
         "additionalProperties": false
       },
-      "CompleteCredentialResetRequest": {
+      "CompletePasswordResetRequest": {
         "required": [
           "password",
           "token"

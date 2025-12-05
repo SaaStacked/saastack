@@ -8,12 +8,12 @@ import FormInput from '../../../framework/components/form/formInput/FormInput.ts
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import { getBrowserCountry, getBrowserLocale, getBrowserTimezone } from '../../../framework/utils/browser.ts';
-import { CredentialsRegisterAction } from '../actions/credentialsRegister.ts';
+import { RegisterCredentialsAction } from '../actions/registerCredentials.ts';
 
 
 export const CredentialsRegisterPage: React.FC = () => {
   const { t: translate } = useTranslation();
-  const register = CredentialsRegisterAction();
+  const register = RegisterCredentialsAction();
   return (
     <FormPage title={translate('pages.identity.credentials_register.title')}>
       <FormAction

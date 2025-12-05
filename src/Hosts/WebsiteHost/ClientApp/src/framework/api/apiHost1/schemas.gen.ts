@@ -485,7 +485,7 @@ export const ChangeSubscriptionPlanRequestSchema = {
   additionalProperties: false
 } as const;
 
-export const CompleteCredentialResetRequestSchema = {
+export const CompletePasswordResetRequestSchema = {
   required: ['password', 'token'],
   type: 'object',
   properties: {

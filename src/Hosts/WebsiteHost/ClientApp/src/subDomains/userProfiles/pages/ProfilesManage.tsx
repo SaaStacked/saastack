@@ -2,7 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import z from 'zod';
-import { ChangeProfileAvatarResponse, ChangeProfileRequest, DeleteProfileAvatarResponse, GetProfileResponse, UserProfileForCaller } from '../../../framework/api/apiHost1';
+import {
+  ChangeProfileAvatarResponse,
+  ChangeProfileRequest,
+  DeleteProfileAvatarResponse,
+  GetProfileResponse,
+  UserProfileForCaller
+} from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import ButtonUpload from '../../../framework/components/button/ButtonUpload.tsx';
@@ -174,7 +180,7 @@ const ProfileTab: React.FC<{
               id="upload_avatar"
               onFileChange={(file) => {
                 if (file) {
-                  changeAvatarTrigger.current?.execute({ file } as ChangeProfileAvatarRequest);
+                  changeAvatarTrigger.current?.execute({ file });
                 }
               }}
               disabled={changeAvatar.isExecuting}

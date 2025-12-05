@@ -130,7 +130,8 @@
           "register": {
             "question": "Don't have an account?",
             "text": "Create one"
-          }
+          },
+          "forgot_password": "Forgot your password?"
         }
       },
       "credentials_register": {
@@ -182,22 +183,22 @@
         }
       },
       "credentials_register_redirect": {
-        "title": "Registration Successful!",
+        "title": "Next Step",
         "confirmation_message": {
           "title": "Check Your Email",
-          "message": "We've sent a confirmation email to your inbox. Please check your email and click the confirmation link to activate your account."
+          "message": "We've sent you an email with a confirmation link to activate your account."
         },
         "instructions": {
           "title": "What to do next",
           "steps": {
-            "step1": "Check your email inbox (and spam folder)",
+            "step1": "Check your email inbox (and spam or junk folder)",
             "step2": "Look for an email from SaaStack",
             "step3": "Click the confirmation link in the email"
           }
         },
         "troubleshoot": {
           "question": "Didn't receive the email?",
-          "answer": "It may take a few minutes to arrive. If you still don't see it, check your spam folder or contact support."
+          "answer": "It may take a few minutes to arrive. If you still don't see it, check your spam and junk folders or contact support."
         },
         "links": {
           "home": "Back to Home"
@@ -206,36 +207,137 @@
       "credentials_register_confirm": {
         "title": "Confirm Your Registration",
         "states": {
+          "invalid": {
+            "title": "Invalid Request",
+            "message": "No token was provided. Please use the link from your email."
+          },
           "confirming": {
             "title": "Confirming Registration",
-            "message": "One moment please...",
-            "errors": {
-              "token_missing": "This registration link is invalid. Please check your email."
-            }
-          },
-          "success": {
-            "title": "Registration Confirmed!",
-            "message": "Your account has been successfully registered, please sign in."
-          },
-          "failed": {
-            "title": "Confirmation Failed",
-            "message": "Please contact support.",
+            "loader": "Please wait while we confirm your registration",
             "errors": {
               "token_expired": "Your registration link has expired. Please request to send a new one.",
               "token_used": "You are already registered. Please sign in."
             }
           },
-          "resend": {
+          "registered": {
+            "title": "Registration Complete!",
+            "message": "Your account has been successfully registered, please sign in."
+          },
+          "resending": {
             "title": "Resend Confirmation",
-            "success": "We have sent you a new confirmation email. Please check your email.",
+            "loader": "Sending...",
             "errors": {
+              "token_expired": "Your registration link has expired. Please request to send a new one.",
               "token_used": "This registration link is invalid, and cannot be used to resend a confirmation email. Please check your email."
             }
+          },
+          "resent": {
+            "message": "We have sent you a new confirmation email. Please check your email."
           }
         },
         "links": {
           "home": "Back to Home",
           "login": "Sign In"
+        }
+      },
+      "credentials_password_reset_initiate": {
+        "title": "Reset Password",
+        "description": "Enter your email address and we'll send you a link to reset your password.",
+        "form": {
+          "fields": {
+            "email": {
+              "label": "Email Address",
+              "placeholder": "Enter your email address",
+              "validation": "Please enter a valid email address"
+            }
+          },
+          "submit": {
+            "label": "Send Reset Link"
+          }
+        },
+        "errors": {
+          "user_not_registered": "This email address is not yet registered."
+        },
+        "links": {
+          "login": {
+            "question": "Remembered your password?",
+            "text": "Sign in"
+          },
+          "home": "Back to Home"
+        }
+      },
+      "credentials_password_reset_redirect": {
+        "title": "Next Step",
+        "confirmation_message": {
+          "title": "Check Your Email",
+          "message": "We've sent you an email with a link to reset your password."
+        },
+        "instructions": {
+          "title": "What to do next",
+          "steps": {
+            "step1": "Check your email inbox (and spam or junk folder)",
+            "step2": "Look for an email from SaaStack",
+            "step3": "Click the password reset link in the email"
+          }
+        },
+        "troubleshoot": {
+          "question": "Didn't receive the email?",
+          "answer": "It may take a few minutes to arrive. If you still don't see it, check your spam and junk folders or contact support."
+        },
+        "links": {
+          "home": "Back to Home"
+        }
+      },
+      "credentials_password_reset_complete": {
+        "title": "New Password",
+        "description": "Enter your new password below.",
+        "form": {
+          "fields": {
+            "password": {
+              "label": "New Password",
+              "placeholder": "Enter your new password",
+              "validation": "Password must be between 8 and 200 characters"
+            },
+            "confirm_password": {
+              "label": "Confirm Password",
+              "placeholder": "Confirm your new password",
+              "validation": "Passwords do not match"
+            }
+          },
+          "submit": {
+            "label": "Reset Password"
+          }
+        },
+        "states": {
+          "invalid": {
+            "title": "Invalid Request",
+            "message": "No token was provided. Please use the link from your email."
+          },
+          "verifying": {
+            "title": "Verifying Reset Link",
+            "loader": "Please wait while we verify your password reset link",
+            "errors": {
+              "token_expired": "This password reset link has expired. Please start again.",
+              "token_invalid": "This password reset link is invalid. Please start again."
+            }
+          },
+          "completing": {
+            "errors": {
+              "token_expired": "This password reset link has expired. Please start again.",
+              "token_invalid": "This password reset link is invalid. Please start again.",
+              "invalid_password": "The password you entered is not a valid password.",
+              "duplicate_password": "You cannot use the same password as your current password, please use a different password."
+            }
+          },
+          "completed": {
+            "title": "Password Reset Successfully!",
+            "message": "Your password has been successfully reset, please sign in with your new password."
+          }
+        },
+        "links": {
+          "request_reset": "Start Again",
+          "login": "Back to Sign In",
+          "home": "Back to Home"
         }
       },
       "sso_login": {
@@ -245,10 +347,7 @@
           "authenticating": "Signing in to SaaStack"
         },
         "errors": {
-          "account_locked": "Your account has been locked. Please contact support.",
-          "account_unverified": "Your account has not been verified yet. Please check your email for a verification link first.",
-          "invalid_credentials": "Invalid username or password",
-          "mfa_required": "You must complete multi-factor authentication to sign in.",
+          "unauthorized": "{{provider}} denied access",
           "oauth2": "You could not be authorized by {{provider}}, error was: {{error}}."
         },
         "links": {

@@ -398,7 +398,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     public async Task WhenCompletePasswordResetWithUnknownToken_ThenReturnsError()
     {
         var token = new TokensService().CreatePasswordResetToken();
-        var result = await Api.PostAsync(new CompleteCredentialResetRequest
+        var result = await Api.PostAsync(new CompletePasswordResetRequest
         {
             Token = token,
             Password = "a1Password!"
@@ -420,7 +420,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         var token = _userNotificationsService.LastPasswordResetToken!;
-        await Api.PostAsync(new CompleteCredentialResetRequest
+        await Api.PostAsync(new CompletePasswordResetRequest
         {
             Token = token,
             Password = "2Password!"
@@ -443,7 +443,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         var token = _userNotificationsService.LastPasswordResetToken!;
-        await Api.PostAsync(new CompleteCredentialResetRequest
+        await Api.PostAsync(new CompletePasswordResetRequest
         {
             Token = token,
             Password = "2Password!"

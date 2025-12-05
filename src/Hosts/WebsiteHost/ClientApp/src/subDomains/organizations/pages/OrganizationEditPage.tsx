@@ -14,12 +14,14 @@ import FormSubmitButton from '../../../framework/components/form/formSubmitButto
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
-import { ChangeProfileAvatarRequest, UploadAvatarErrors } from '../../userProfiles/actions/changeProfileAvatar.ts';
+import { UploadAvatarErrors } from '../../userProfiles/actions/changeProfileAvatar.ts';
 import { ChangeOrganizationAction } from '../actions/changeOrganization.ts';
-import { ChangeOrganizationAvatarAction, ChangeOrganizationAvatarRequest } from '../actions/changeOrganizationAvatar.ts';
+import {
+  ChangeOrganizationAvatarAction,
+  ChangeOrganizationAvatarRequest
+} from '../actions/changeOrganizationAvatar.ts';
 import { DeleteOrganizationAvatarAction } from '../actions/deleteOrganizationAvatar.ts';
 import { GetOrganizationAction } from '../actions/getOrganization.ts';
-
 
 export const OrganizationEditPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -65,19 +67,17 @@ export const OrganizationEditPage: React.FC = () => {
                   <Icon symbol="company" size={100} color="gray-400" />
                 </div>
               )}
-              {
-                organization?.ownership === 'personal' && (
-                  <div
-                    className="absolute -bottom-1 -right-1 w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
-                    title={translate('pages.organizations.manage.hints.ownership')}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="6" y="10" width="12" height="8" rx="2" fill="white" />
-                      <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                )
-              }
+              {organization?.ownership === 'personal' && (
+                <div
+                  className="absolute -bottom-1 -right-1 w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
+                  title={translate('pages.organizations.manage.hints.ownership')}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="10" width="12" height="8" rx="2" fill="white" />
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-row mt-2 space-x-2 items-center">
@@ -86,7 +86,7 @@ export const OrganizationEditPage: React.FC = () => {
                 id="upload_avatar"
                 onFileChange={(file) => {
                   if (file) {
-                    changeOrganizationAvatarTrigger.current?.execute({ file } as ChangeProfileAvatarRequest);
+                    changeOrganizationAvatarTrigger.current?.execute({ file });
                   }
                 }}
                 disabled={changeOrganizationAvatar.isExecuting}

@@ -11,13 +11,13 @@ namespace IdentityInfrastructure.UnitTests.Api.PersonCredentials;
 [Trait("Category", "Unit")]
 public class CompletePasswordResetRequestValidatorSpec
 {
-    private readonly CompleteCredentialResetRequest _dto;
+    private readonly CompletePasswordResetRequest _dto;
     private readonly CompletePasswordResetRequestValidator _validator;
 
     public CompletePasswordResetRequestValidatorSpec()
     {
         _validator = new CompletePasswordResetRequestValidator();
-        _dto = new CompleteCredentialResetRequest
+        _dto = new CompletePasswordResetRequest
         {
             Password = "1Password!",
             Token = new TokensService().CreatePasswordResetToken()

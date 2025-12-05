@@ -386,7 +386,7 @@ public class PersonCredentialRootSpec
 
         var result = _personCredential.CompletePasswordReset(Token, "apassword");
 
-        result.Should().BeError(ErrorCode.Validation, Resources.PersonCredentialRoot_DuplicatePassword);
+        result.Should().BeError(ErrorCode.EntityExists, Resources.PersonCredentialRoot_DuplicatePassword);
 
         _passwordHasherService.Verify(ph => ph.VerifyPassword("apassword", "apasswordhash"));
     }

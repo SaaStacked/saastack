@@ -18,6 +18,9 @@ import { CredentialsLoginPage } from './subDomains/identity/pages/CredentialsLog
 import { CredentialsRegisterPage } from './subDomains/identity/pages/CredentialsRegister.tsx';
 import { CredentialsRegisterConfirm } from './subDomains/identity/pages/CredentialsRegisterConfirm.tsx';
 import { CredentialsRegisterRedirect } from './subDomains/identity/pages/CredentialsRegisterRedirect.tsx';
+import { PasswordResetCompletePage } from './subDomains/identity/pages/PasswordResetComplete.tsx';
+import { PasswordResetRequestPage } from './subDomains/identity/pages/PasswordResetInitiate.tsx';
+import { PasswordResetRedirectPage } from './subDomains/identity/pages/PasswordResetRedirect.tsx';
 import { SsoLoginPage } from './subDomains/identity/pages/SsoLoginPage.tsx';
 import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEditPage.tsx';
 import { OrganizationNewPage } from './subDomains/organizations/pages/OrganizationNewPage.tsx';
@@ -99,6 +102,9 @@ const App: React.FC = () => {
             <Route path="/identity/credentials/register" element={<CredentialsRegisterPage />} />
             <Route path="/identity/credentials/register-confirm" element={<CredentialsRegisterConfirm />} />
             <Route path="/identity/credentials/register-redirect" element={<CredentialsRegisterRedirect />} />
+            <Route path="/identity/credentials/password-reset" element={<PasswordResetRequestPage />} />
+            <Route path="/identity/credentials/password-reset-redirect" element={<PasswordResetRedirectPage />} />
+            <Route path="/identity/credentials/password-reset-confirm" element={<PasswordResetCompletePage />} />
           </Route>
 
           <Route path="/about" element={<AboutPage />} />

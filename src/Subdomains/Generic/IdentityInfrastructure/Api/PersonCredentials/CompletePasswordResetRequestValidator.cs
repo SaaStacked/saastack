@@ -6,7 +6,7 @@ using Infrastructure.Web.Api.Operations.Shared.Identities;
 
 namespace IdentityInfrastructure.Api.PersonCredentials;
 
-public class CompletePasswordResetRequestValidator : AbstractValidator<CompleteCredentialResetRequest>
+public class CompletePasswordResetRequestValidator : AbstractValidator<CompletePasswordResetRequest>
 {
     public CompletePasswordResetRequestValidator()
     {

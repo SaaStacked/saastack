@@ -35,7 +35,7 @@ public class CredentialsApi : IWebApiService
             }));
     }
 
-    public async Task<ApiEmptyResult> CompletePasswordReset(CompleteCredentialResetRequest request,
+    public async Task<ApiEmptyResult> CompletePasswordReset(CompletePasswordResetRequest request,
         CancellationToken cancellationToken)
     {
         var completion = await _personCredentialsApplication.CompletePasswordResetAsync(_callerFactory.Create(),

@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
+import Icon from '../../../framework/components/icon/Icon.tsx';
 
 
 export const CredentialsRegisterRedirect: React.FC = () => {
@@ -13,15 +14,12 @@ export const CredentialsRegisterRedirect: React.FC = () => {
       </h2>
       <p>{translate('pages.identity.credentials_register_redirect.confirmation_message.message')}</p>
       <div className="flex justify-center">
-        <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" stroke="#28a745" strokeWidth="2" fill="none" />
-          <path d="m9 12 2 2 4-4" stroke="#28a745" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon symbol="email" size={96} color="accent" />
       </div>
-      <h3 className="text-2xl font-bold text-center mt-8">
+      <h3 className="text-2xl font-bold text-center mt-4">
         {translate('pages.identity.credentials_register_redirect.instructions.title')}:
       </h3>
-      <div className="prose text-sm text-center">
+      <div className="prose text-sm text-left">
         <ul>
           <li>{translate('pages.identity.credentials_register_redirect.instructions.steps.step1')}</li>
           <li>{translate('pages.identity.credentials_register_redirect.instructions.steps.step2')}</li>

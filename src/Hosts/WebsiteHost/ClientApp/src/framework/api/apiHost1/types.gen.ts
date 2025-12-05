@@ -154,7 +154,7 @@ export type ChangeSubscriptionPlanRequest = {
   planId?: string | null;
 };
 
-export type CompleteCredentialResetRequest = {
+export type CompletePasswordResetRequest = {
   password: string;
 };
 
@@ -2081,17 +2081,17 @@ export type AuthenticateCredentialResponse = AuthenticateResponse;
 
 export type AuthenticateCredentialError = ProblemDetails | unknown;
 
-export type CompleteCredentialResetData = {
-  body?: CompleteCredentialResetRequest;
+export type CompletePasswordResetData = {
+  body?: CompletePasswordResetRequest;
   path: {
     Token: string;
     Token: string;
   };
 };
 
-export type CompleteCredentialResetResponse = EmptyResponse;
+export type CompletePasswordResetResponse = EmptyResponse;
 
-export type CompleteCredentialResetError = ProblemDetails | unknown;
+export type CompletePasswordResetError = ProblemDetails | unknown;
 
 export type ConfirmPersonCredentialRegistrationData = {
   body?: ConfirmPersonCredentialRegistrationRequest;

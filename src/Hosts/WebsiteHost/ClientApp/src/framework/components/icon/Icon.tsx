@@ -1,8 +1,39 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
-import { faAdd, faArrowRightFromBracket, faBars, faBuilding, faCalendar, faCamera, faCarAlt, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleArrowLeft, faEdit, faExclamationTriangle, faEye, faEyeSlash, faInfoCircle, faMoon, faPencil, faPeopleRoof, faRepeat, faShuffle, faTrash, faUser, faUserCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faArrowRightFromBracket,
+  faBars,
+  faBuilding,
+  faCalendar,
+  faCamera,
+  faCarAlt,
+  faCheck,
+  faCheckCircle,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faChevronUp,
+  faCircleArrowLeft,
+  faEdit,
+  faEnvelope,
+  faExclamationTriangle,
+  faEye,
+  faEyeSlash,
+  faInfoCircle,
+  faMoon,
+  faPencil,
+  faPeopleRoof,
+  faRepeat,
+  faShuffle,
+  faTrash,
+  faUser,
+  faUserCircle,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
 import { createComponentId, toClasses } from '../Components.ts';
 import { TailwindColor } from '../typography/Tailwind.ts';
+
 
 interface IconProps {
   className?: string;
@@ -31,6 +62,7 @@ const fontAwesomeSymbols = {
   company: faPeopleRoof,
   cross: faXmark,
   edit: faEdit,
+  email: faEnvelope,
   'exclamation-triangle-fill': faExclamationTriangle,
   'hide-password': faEye,
   'info-circle-fill': faInfoCircle,

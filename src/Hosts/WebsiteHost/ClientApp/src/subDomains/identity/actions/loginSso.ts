@@ -1,11 +1,12 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../../framework/api/websiteHost';
 import { cleanupStoredPKCEParameters } from '../utils/OAuth2Security.ts';
-import { LoginErrors } from './credentialsLogin.ts';
 
-
-export const SsoLoginAction = () =>
-  useActionCommand<AuthenticateRequest, AuthenticateResponse, LoginErrors>({
+export enum LoginSsoErrors {
+  unauthorized = 'unauthorized'
+}
+export const LoginSsoAction = () =>
+  useActionCommand<AuthenticateRequest, AuthenticateResponse, LoginSsoErrors>({
     request: (request) =>
       authenticate({
         body: {
@@ -13,11 +14,9 @@ export const SsoLoginAction = () =>
         }
       }),
     passThroughErrors: {
-      400: LoginErrors.invalid_credentials,
-      401: LoginErrors.invalid_credentials,
-      403: LoginErrors.mfa_required,
-      405: LoginErrors.account_unverified,
-      423: LoginErrors.account_locked
+      400: LoginSsoErrors.unauthorized,
+      401: LoginSsoErrors.unauthorized,
+      405: LoginSsoErrors.unauthorized
     },
     onSuccess: () => {
       cleanupStoredPKCEParameters();
