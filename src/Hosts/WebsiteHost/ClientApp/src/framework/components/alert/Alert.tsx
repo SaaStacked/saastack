@@ -79,7 +79,7 @@ export default function Alert({ id, children, type = 'info', title, message }: A
             <Icon size={30} color={iconColor} symbol={iconType} />
           </div>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 mb-3">
           {title ? (
             <h3 className={`text-base font-semibold mb-2 text-${titleColor}`} data-testid={`${componentId}_title`}>
               {title}

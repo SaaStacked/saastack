@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
-import axios, { AxiosError } from 'axios';
 import { recorder } from '../recorder';
-
+import { ErrorResponse } from './Actions.ts';
 
 export interface ExpectedErrorDetails<TExpectedErrorCode extends string = ''> {
   code: TExpectedErrorCode;
@@ -17,15 +16,19 @@ function hasKey<TObject extends Record<Key, any>, Key extends string | number | 
 
 const getExpectedError = <ExpectedErrorCode extends string = ''>(
   errorCodes: Record<number, ExpectedErrorCode>,
-  error?: AxiosError
+  error?: any,
+  response?: Response
 ) => {
   if (error == undefined) {
     return undefined;
   }
 
-  const statusCode = error?.response?.status;
-  if (!statusCode) {
-    return undefined;
+  // Best guess at extracting the status code
+  let statusCode = 0;
+  if (response) {
+    statusCode = response.status;
+  } else if (error?.status) {
+    statusCode = error.status;
   }
 
   if (!hasKey(errorCodes, statusCode)) {
@@ -34,7 +37,7 @@ const getExpectedError = <ExpectedErrorCode extends string = ''>(
 
   return {
     code: errorCodes[statusCode],
-    response: error?.response?.data
+    response: error
   } as ExpectedErrorDetails<ExpectedErrorCode>;
 };
 
@@ -42,21 +45,25 @@ function useApiErrorState<ExpectedErrorCode extends string = ''>(
   expectedErrorStatusCodes: Record<number, ExpectedErrorCode> = {}
 ) {
   const [expectedError, setExpectedError] = useState<ExpectedErrorDetails<ExpectedErrorCode> | undefined>();
-  const [unexpectedError, setUnexpectedError] = useState<AxiosError | undefined>();
+  const [unexpectedError, setUnexpectedError] = useState<ErrorResponse | undefined>();
 
   const clearErrors = useCallback(() => {
     setExpectedError(undefined);
     setUnexpectedError(undefined);
   }, [setExpectedError, setUnexpectedError]);
 
-  const onError = (error: Error) => {
-    if (axios.isAxiosError(error)) {
-      const handledError = getExpectedError(expectedErrorStatusCodes, error);
-      setExpectedError(handledError);
+  const onError = (error: any, response?: Response) => {
+    const handledError = getExpectedError(expectedErrorStatusCodes, error, response);
+    setExpectedError(handledError);
 
-      if (handledError === undefined) {
-        setUnexpectedError(error);
+    if (handledError === undefined) {
+      setUnexpectedError(
+        response ? createErrorResponseWithResponse(error, response) : createErrorResponseWithSyntheticResponse(error)
+      );
+      if (error instanceof Error) {
         recorder.crash(error);
+      } else {
+        recorder.crash(new Error(`Unexpected error from API: ${error}`));
       }
     }
   };
@@ -67,6 +74,20 @@ function useApiErrorState<ExpectedErrorCode extends string = ''>(
     expectedError,
     unexpectedError
   };
+}
+
+function createErrorResponseWithSyntheticResponse(error: unknown): ErrorResponse {
+  return {
+    data: error,
+    response: { ok: false, status: 0, statusText: 'Internal Client Error' } as Response
+  } as ErrorResponse;
+}
+
+function createErrorResponseWithResponse(error: unknown, response: Response): ErrorResponse {
+  return {
+    data: error,
+    response
+  } as ErrorResponse;
 }
 
 export default useApiErrorState;

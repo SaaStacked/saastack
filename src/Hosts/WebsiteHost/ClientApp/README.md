@@ -33,9 +33,9 @@ This data is then injected into the `Index.html` page.
 
 ## API Definitions
 
-We use AXIOS to call the APIs in the BEFFE.
+We use Fetch to call the APIs in the BEFFE.
 
-We generate all AXIOS services automatically for you by examining the BEFFE API and the BACKEND APIs, and then generate the services for you.
+We generate all Fetch services automatically for you (using @hey-api/openapi-ts) by examining the BEFFE API and the BACKEND APIs, and then generate the services for you.
 
 You can update those definitions at any time by running `npm run update:apis` to keep the backend and frontend in sync.
 
@@ -43,7 +43,7 @@ You can update those definitions at any time by running `npm run update:apis` to
 
 ### Actions
 
-Generally speaking, we do not call the generated AXIOS services directly, but instead we wrap them in a `useQuery` or `useMutation` hook, that provides additional functionality, such as error handling, loading states, caching etc.
+Generally speaking, we do not call the generated Fetch services directly, but instead we wrap them in a `useQuery` or `useMutation` hook, that provides additional functionality, such as error handling, loading states, caching etc.
 
 These actions can be use directly in code anywhere. But they can also be attached to forms using 'Action-enabled' components, such as (using the `<FormAction/>` component), behind buttons (using the `<ButtonAction/>`), and anywhere on pages (using the `<PageAction/>` component).
 

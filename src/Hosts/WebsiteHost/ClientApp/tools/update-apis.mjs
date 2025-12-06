@@ -56,12 +56,27 @@ function formatLog() {
 
 function generateApiServices(definitionsFile, targetFolder) {
   createClient({
-    client: '@hey-api/client-axios',
     input: definitionsFile,
     output: {
       path: targetFolder,
-      format: 'prettier'
-    }
+      format: 'prettier',
+      lint: 'eslint'
+    },
+    plugins: [
+      '@hey-api/schemas',
+      {
+        dates: true,
+        name: '@hey-api/transformers',
+      },
+      {
+        enums: 'javascript',
+        name: '@hey-api/typescript',
+      },
+      {
+        name: '@hey-api/sdk',
+        transformer: true,
+      },
+    ],
   });
 }
 

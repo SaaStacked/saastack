@@ -1,204 +1,191 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import axios from 'axios';
-import { client as apiHost1 } from './apiHost1';
+import { EmptyResponse, ProblemDetails } from './apiHost1';
+import { client as apiHost1 } from './apiHost1/client.gen';
 import { homePath, initializeApiClient } from './index';
-import { client as websiteHost } from './websiteHost';
+import { logout, refreshToken } from './websiteHost';
 
 
-interface FulfilledHandler<T> {
-  (value: T): T | Promise<T>;
-}
+type ResInterceptor<Res, Req, Options> = (response: Res, request: Req, options: Options) => Res | Promise<Res>;
 
-interface RejectedHandler {
-  (error: any): any;
-}
-
-interface AxiosInterceptorHandleItem<V> {
-  fulfilled: FulfilledHandler<V>;
-  rejected: RejectedHandler;
-  synchronous: boolean;
-}
+vi.mock('../api/websiteHost/sdk.gen', async (importActual) => {
+  const actualImpl = await importActual<typeof import('../api/websiteHost/sdk.gen')>();
+  return {
+    ...actualImpl,
+    refreshToken: vi.fn(() =>
+      Promise.resolve({
+        data: {} as EmptyResponse,
+        request: {} as Request,
+        response: { ok: true, status: 200 } as Response
+      })
+    ),
+    logout: vi.fn(() =>
+      Promise.resolve({
+        data: {} as EmptyResponse,
+        request: {} as Request,
+        response: { ok: true, status: 200 } as Response
+      })
+    )
+  };
+});
 
 describe('Handle 403 Forbidden', () => {
-  let handler: AxiosInterceptorHandleItem<any>;
+  let handler: ResInterceptor<any, any, any>;
 
   beforeEach(() => {
     initializeApiClient();
-    // @ts-ignore
-    handler = apiHost1.instance.interceptors.response.handlers[0];
+    handler = apiHost1.interceptors.response.fns[0];
   });
 
-  it('when request succeeds, then ignore', async () =>
-    expect(handler.fulfilled({ data: 'adata' })).toStrictEqual({
-      data: 'adata'
-    }));
+  it('when request fails with no response, then resolve', async () =>
+    await expect(handler(undefined as Response, {} as any, {} as any)).resolves.toMatchObject(undefined));
 
-  it('when request fails with ordinary error, then reject', async () =>
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 404
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    }));
+  it('when request fails with ok response, then resolve', async () => {
+    const response = { ok: true, status: 200 } as Response;
 
-  it('when request fails with 403 that is not CSRF, then reject', async () => {
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {
-          data: {
-            title: 'atitle'
-          }
-        },
-        status: 403
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    });
+    await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
+  });
+
+  it('when request fails with 403 that is not CSRF, then resolve', async () => {
+    const error = {
+      title: 'atitle'
+    } as ProblemDetails;
+    const response = { ok: false, status: 403, text: () => JSON.stringify(error) } as unknown as Response;
+
+    await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 
   it('when a forbidden request that is CSRF, redirect to home', async () => {
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {
-          data: {
-            title: 'csrf_violation'
-          }
-        },
-        status: 403
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    });
+    const error = {
+      title: 'csrf_violation'
+    } as ProblemDetails;
+    const response = { ok: false, status: 403, text: () => JSON.stringify(error) } as unknown as Response;
+
+    await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
     expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 });
 
 describe('Handle 401 Unauthorized', () => {
-  let handler: AxiosInterceptorHandleItem<any>;
+  let handler: ResInterceptor<any, any, any>;
 
   beforeEach(() => {
     initializeApiClient();
-    // @ts-ignore
-    handler = apiHost1.instance.interceptors.response.handlers[0];
+    handler = apiHost1.interceptors.response.fns[0];
   });
 
-  it('when request succeeds, then ignore', async () =>
-    expect(handler.fulfilled({ data: 'adata' })).toStrictEqual({
-      data: 'adata'
-    }));
+  it('when request fails with no response, then resolve', async () =>
+    await expect(handler(undefined as Response, {} as any, {} as any)).resolves.toMatchObject(undefined));
 
-  it('when request fails with ordinary error, then reject', async () =>
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 404
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    }));
+  it('when request fails with ok response, then resolve', async () => {
+    const response = { ok: true, status: 200 } as Response;
 
-  it('when ignored request URL, then reject', async () =>
-    await expect(
-      handler.rejected({
-        config: { url: '/api/auth/refresh' },
-        response: {},
-        status: 404
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    }));
-
-  it('when unauthorized request,  call refreshToken() and retry original API', async () => {
-    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 200, isAxiosError: false });
-
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 401
-      })
-    ).resolves.toMatchObject({
-      status: 200
-    });
-    expect(websiteHost.post).toHaveBeenCalledWith({ url: '/api/auth/refresh' });
-    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
-    expect(window.location.assign).not.toHaveBeenCalled();
+    await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
   });
 
-  it('when refreshToken() fails with 423 error, redirect to home', async () => {
-    vi.mocked(websiteHost.post).mockImplementationOnce((config) =>
-      Promise.resolve({ config, status: 423, isAxiosError: true } as any)
+  it('when request fails with other error response, then resolve', async () => {
+    const response = { ok: false, status: 429, text: () => '{}' } as unknown as Response;
+
+    await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
+  });
+
+  it('when non-retryable URL, then resolve', async () => {
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const request = { url: 'https://localhost/api/auth/refresh' } as Request;
+
+    return await expect(handler(response, request, {} as any)).resolves.toMatchObject(response);
+  });
+
+  it('when refreshing token fails with 423 error, then logout and redirect to home', async () => {
+    vi.mocked(refreshToken).mockImplementationOnce((config) =>
+      Promise.resolve({
+        data: {} as EmptyResponse,
+        request: {} as Request,
+        response: { ok: false, status: 423 } as Response
+      })
     );
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
 
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 401
-      })
-    ).rejects.toMatchObject({
-      config: { url: '/api/auth/refresh' },
-      status: 423,
-      isAxiosError: true
-    });
+    await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
+      response
+    );
+    expect(refreshToken).toHaveBeenCalled();
+    expect(logout).toHaveBeenCalled();
     expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 
-  it('when refreshToken() fails with other error, reject with other error', async () => {
-    vi.mocked(websiteHost.post).mockImplementationOnce((config) =>
-      Promise.resolve({ config, status: 400, isAxiosError: true } as any)
+  it('when refreshing token fails with 401 error, then logout and redirect to home', async () => {
+    vi.mocked(refreshToken).mockImplementationOnce(config =>
+      Promise.resolve({
+        data: {} as EmptyResponse,
+        request: {} as Request,
+        response: { ok: false, status: 401 } as Response
+      })
     );
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
 
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 401
-      })
-    ).rejects.toMatchObject({
-      config: { url: '/api/auth/refresh' },
-      status: 400,
-      isAxiosError: true
-    });
-    expect(window.location.assign).not.toHaveBeenCalled();
-  });
-
-  it('when retried original API fails with unauthorized, logout and redirect to home', async () => {
-    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 401, isAxiosError: true });
-
-    await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 401
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    });
-    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
+    await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
+      response
+    );
+    expect(refreshToken).toHaveBeenCalled();
+    expect(logout).toHaveBeenCalled();
     expect(window.location.assign).toHaveBeenCalledWith(homePath);
   });
 
-  it('when retried original API fails with other error, return error', async () => {
-    vi.spyOn(axios, 'request').mockResolvedValue({ response: {}, status: 400, isAxiosError: true });
+  it('when refreshing token fails with another error, then resolve with refresh error', async () => {
+    const refreshResponse = { ok: false, status: 400 } as Response;
+    vi.mocked(refreshToken).mockImplementationOnce((config) =>
+      Promise.resolve({
+        data: {} as EmptyResponse,
+        request: {} as Request,
+        response: refreshResponse
+      })
+    );
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
 
     await expect(
-      handler.rejected({
-        config: { url: 'aurl' },
-        response: {},
-        status: 401
-      })
-    ).rejects.toMatchObject({
-      response: {}
-    });
-    expect(axios.request).toHaveBeenCalledWith({ url: 'aurl' });
+      handler(response as Response, { url: 'https://localhost/aurl' } as Request, {} as any)
+    ).resolves.toMatchObject(refreshResponse);
+    expect(refreshToken).toHaveBeenCalled();
+    expect(window.location.assign).not.toHaveBeenCalled();
+  });
+
+  it('when refreshes token and retries original request, then resolve retry response', async () => {
+    const retryResponse = { ok: true, status: 200 } as Response;
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+
+    await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
+      retryResponse
+    );
+    expect(refreshToken).toHaveBeenCalled();
+    expect(fetch).toHaveBeenCalledWith('https://localhost/aurl', expect.anything());
+    expect(window.location.assign).not.toHaveBeenCalled();
+  });
+
+  it('when retried request fails with unauthorized, then logout and redirect to home', async () => {
+    const retryResponse = { ok: false, status: 401 } as Response;
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+
+    await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
+      response
+    );
+    expect(fetch).toHaveBeenCalledWith('https://localhost/aurl', expect.anything());
+    expect(logout).toHaveBeenCalled();
+    expect(window.location.assign).toHaveBeenCalledWith(homePath);
+  });
+
+  it('when retried request fails with another error, then resolve retry response', async () => {
+    const anotherError = { title: 'another' } as ProblemDetails;
+    const retryResponse = { ok: false, status: 400, text: () => JSON.stringify(anotherError) } as unknown as Response;
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
+    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+
+    await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
+      retryResponse
+    );
+    expect(fetch).toHaveBeenCalledWith('https://localhost/aurl', expect.anything());
     expect(window.location.assign).not.toHaveBeenCalled();
   });
 });

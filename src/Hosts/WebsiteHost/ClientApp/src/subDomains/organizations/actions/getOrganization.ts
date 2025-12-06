@@ -1,6 +1,6 @@
 import { useActionQuery } from '../../../framework/actions/ActionQuery';
 import { getOrganization, GetOrganizationResponse, Organization } from '../../../framework/api/apiHost1';
-import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
+import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import organizationCacheKeys from './responseCache';
 
 

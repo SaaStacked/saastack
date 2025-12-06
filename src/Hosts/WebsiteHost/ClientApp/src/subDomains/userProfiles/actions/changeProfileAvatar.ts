@@ -19,9 +19,6 @@ export const ChangeProfileAvatarAction = (userId: string) =>
           files: [request.file]
         },
         path: { UserId: userId },
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
       }),
     passThroughErrors: {
       400: UploadAvatarErrors.invalid_image

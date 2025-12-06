@@ -2,21 +2,27 @@ import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError, AxiosResponse } from 'axios';
-import { getOrganization, GetOrganizationResponse, getProfileForCaller, GetProfileForCallerResponse, UserProfileClassification, UserProfileForCaller } from '../api/apiHost1';
+import { ApiResponse } from '../actions/Actions.ts';
+import {
+  getOrganization,
+  GetOrganizationResponse,
+  getProfileForCaller,
+  GetProfileForCallerResponse,
+  UserProfileClassification,
+  UserProfileForCaller
+} from '../api/apiHost1';
 import { logout } from '../api/websiteHost';
 import { anonymousUser } from '../constants';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
 import { useCurrentUser } from './CurrentUserContext.tsx';
 
-
-vi.mock('../api/apiHost1/services.gen', () => ({
+vi.mock('../api/apiHost1/sdk.gen', () => ({
   getProfileForCaller: vi.fn(),
   getOrganization: vi.fn()
 }));
 
-vi.mock('../api/websiteHost/services.gen', () => ({
+vi.mock('../api/websiteHost/sdk.gen', () => ({
   logout: vi.fn()
 }));
 
@@ -54,13 +60,10 @@ describe('CurrentUserContext', () => {
   it('when anonymous user, should return user', async () => {
     mockGetProfileForCaller.mockResolvedValueOnce({
       data: { profile: anonymousUser },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<GetProfileForCallerResponse>);
+      error: undefined,
+      request: {} as Request,
+      response: { ok: true, status: 200 } as Response
+    } as ApiResponse<GetProfileForCallerResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })
@@ -97,16 +100,11 @@ describe('CurrentUserContext', () => {
     } as unknown as UserProfileForCaller;
 
     mockGetProfileForCaller.mockResolvedValueOnce({
-      data: {
-        profile: authenticatedUser
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<GetProfileForCallerResponse>);
+      data: { profile: authenticatedUser },
+      error: undefined,
+      request: {} as Request,
+      response: { ok: true, status: 200 } as Response
+    } as ApiResponse<GetProfileForCallerResponse>);
     const organization = {
       id: 'anorganizationid',
       name: 'anorganizationname',
@@ -114,16 +112,11 @@ describe('CurrentUserContext', () => {
       ownership: 'Shared'
     };
     mockGetOrganization.mockResolvedValueOnce({
-      data: {
-        organization
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<GetOrganizationResponse>);
+      data: { organization },
+      error: undefined,
+      request: {} as Request,
+      response: { ok: true, status: 200 } as Response
+    } as ApiResponse<GetOrganizationResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })
@@ -144,13 +137,10 @@ describe('CurrentUserContext', () => {
   it('when no profile in response, should return anonymous user', async () => {
     mockGetProfileForCaller.mockResolvedValueOnce({
       data: undefined as any,
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<GetProfileForCallerResponse>);
+      error: undefined,
+      request: {} as Request,
+      response: { ok: true, status: 200 } as Response
+    } as ApiResponse<GetProfileForCallerResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })
@@ -166,19 +156,14 @@ describe('CurrentUserContext', () => {
 
   it('when XHR fails, should return anonymous user', async () => {
     mockGetProfileForCaller.mockRejectedValueOnce({
-      isAxiosError: true,
-      message: 'anerror',
-      response: {
-        status: 500,
-        statusText: 'anerror',
-        data: {
-          title: 'atitle',
-          details: 'adetails'
-        },
-        headers: {},
-        config: {} as any
-      }
-    } as AxiosError as Error);
+      data: undefined,
+      error: {
+        title: 'atitle',
+        details: 'adetails'
+      },
+      request: {} as Request,
+      response: { ok: false, status: 500 } as Response
+    } as ApiResponse<GetProfileForCallerResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })
@@ -194,19 +179,14 @@ describe('CurrentUserContext', () => {
 
   it('when XHR fails, should logout', async () => {
     mockGetProfileForCaller.mockRejectedValue({
-      isAxiosError: true,
-      message: 'anerror',
-      response: {
-        status: 500,
-        statusText: 'anerror',
-        data: {
-          title: 'atitle',
-          details: 'adetails'
-        },
-        headers: {},
-        config: {} as any
-      }
-    } as AxiosError);
+      data: undefined,
+      error: {
+        title: 'atitle',
+        details: 'adetails'
+      },
+      request: {} as Request,
+      response: { ok: false, status: 500 } as Response
+    } as ApiResponse<GetProfileForCallerResponse>);
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: ({ children }) => createWrapper({ children, offlineService })

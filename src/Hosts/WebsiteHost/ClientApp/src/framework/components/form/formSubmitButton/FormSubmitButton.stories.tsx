@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AxiosError } from 'axios';
 import { z } from 'zod';
-import { ActionRequestData, ActionResult } from '../../../actions/Actions.ts';
+import { ActionResult, ErrorResponse } from '../../../actions/Actions.ts';
 import { ExpectedErrorDetails } from '../../../actions/ApiErrorState.ts';
 import { OfflineServiceContext } from '../../../providers/OfflineServiceContext.tsx';
 import { IOfflineService } from '../../../services/IOfflineService.ts';
@@ -12,7 +11,6 @@ import { OfflineBanner } from '../../offline/OfflineBanner.tsx';
 import FormAction from '../FormAction.tsx';
 import FormInput from '../formInput/FormInput.tsx';
 import FormSubmitButton from './FormSubmitButton';
-
 
 const meta: Meta<typeof FormSubmitButton> = {
   title: 'Components/Form/FormSubmitButton',
@@ -41,17 +39,13 @@ const mockOfflineService = {
   }
 } as IOfflineService;
 
-const createMockAction = <
-  TRequestData extends ActionRequestData,
-  TResponse = any,
-  ExpectedErrorCode extends string = any
->(
+const createMockAction = <TRequestData extends any, TResponse = any, ExpectedErrorCode extends string = any>(
   initial: { isReady: boolean; isExecuting: boolean } = { isReady: true, isExecuting: false },
   final: {
     isSuccess?: boolean;
     lastSuccessResponse?: TResponse;
     lastExpectedError?: ExpectedErrorDetails<ExpectedErrorCode>;
-    lastUnexpectedError?: AxiosError;
+    lastUnexpectedError?: ErrorResponse;
   } = {
     isSuccess: true,
     lastSuccessResponse: { data: {} } as TResponse,

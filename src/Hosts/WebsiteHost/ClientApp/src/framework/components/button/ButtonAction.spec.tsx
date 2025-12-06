@@ -1,13 +1,12 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { ActionRequestData, ActionResult } from '../../actions/Actions';
+import { ActionResult } from '../../actions/Actions';
 import { renderWithTestingProviders } from '../../testing/TestingProviders';
 import { BusyLabelRevertAfterMs } from '../form/formSubmitButton/FormSubmitButton';
 import ButtonAction from './ButtonAction';
 
-
-interface TestRequestData extends ActionRequestData {
+interface TestRequestData {
   atext: string;
 }
 

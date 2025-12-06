@@ -3,13 +3,13 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
-import { ActionRequestData, ActionResult } from '../../actions/Actions.ts';
+import { ActionResult } from '../../actions/Actions.ts';
 import FormAction, { getRequiredFields } from './FormAction.tsx';
 import FormInput from './formInput/FormInput.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton.tsx';
 
 
-interface TestRequestData extends ActionRequestData {
+interface TestRequestData {
   atext: string;
   anemailaddress: string;
 }

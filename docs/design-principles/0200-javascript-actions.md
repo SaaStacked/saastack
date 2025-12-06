@@ -31,7 +31,7 @@ The action is a simple 'class' derived from a base implementation, either wired 
 The action is bound to:
 
 1. An `IOfflineService`, that monitors the 'online' status of the browser/device
-2. An XHR API call (e.g., an Axios generated client)
+2. An XHR API call (e.g., an Fetch/Axios generated client)
 3. A defined set of end-user expected errors (i.e. HTTP status codes) with end-user specific messages.
 4. Optionally, bound to a UI form, that is pre-populated with a set of Action aware components. These components respond to the state of the action.
 

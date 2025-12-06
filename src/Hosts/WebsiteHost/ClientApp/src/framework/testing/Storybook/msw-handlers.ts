@@ -1,50 +1,20 @@
-import { AxiosResponse } from 'axios';
 import { http, HttpResponse } from 'msw';
-import { GetProfileForCallerResponse } from '../../../api/apiHost1';
-import { HealthCheckResponse, LogoutResponse } from '../../../api/websiteHost';
+import { GetProfileForCallerResponse } from '../../api/apiHost1';
+import { HealthCheckResponse, LogoutResponse } from '../../api/websiteHost';
 import { anonymousUser } from '../../constants';
-
 
 // Mocked API calls executed during Storybook stories
 export const handlers = [
   http.get('/api/health', () =>
     HttpResponse.json({
-      data: {
-        name: 'WebsiteHost',
-        status: 'OK'
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<HealthCheckResponse>)
+      name: 'WebsiteHost',
+      status: 'OK'
+    } as HealthCheckResponse)
   ),
   http.get('/profiles/me', () =>
     HttpResponse.json({
-      data: {
-        profile: anonymousUser
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<GetProfileForCallerResponse>)
+      profile: anonymousUser
+    } as GetProfileForCallerResponse)
   ),
-  http.post('/api/auth/logout', async ({}) =>
-    HttpResponse.json({
-      data: {
-        profile: anonymousUser
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-      request: {},
-      error: undefined
-    } as AxiosResponse<LogoutResponse>)
-  )
+  http.post('/api/auth/logout', () => HttpResponse.json({} as LogoutResponse))
 ];

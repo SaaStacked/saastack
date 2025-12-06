@@ -5,6 +5,11 @@
       "fr": "French"
     }
   },
+  "actions": {
+    "errors": {
+      "offline": "Cannot execute command action when browser is offline"
+    }
+  },
   "components": {
     "button": {
       "button_action": {

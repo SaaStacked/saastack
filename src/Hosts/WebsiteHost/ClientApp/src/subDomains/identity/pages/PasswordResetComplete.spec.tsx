@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError } from 'axios';
-import { ActionResult } from '../../../framework/actions/Actions.ts';
+import { ActionResult, ErrorResponse } from '../../../framework/actions/Actions.ts';
 import {
   CompletePasswordResetRequest,
   CompletePasswordResetResponse,
@@ -157,9 +156,12 @@ describe('PasswordResetCompletePage', () => {
 
       it('when unexpected error, displays error', () => {
         mockVerifyAction.lastUnexpectedError = {
-          response: { status: 500, statusText: 'Internal Server Error' },
-          message: 'anerror'
-        } as AxiosError;
+          data: {},
+          response: {
+            status: 500,
+            statusText: 'Internal Server Error'
+          } as Response
+        } as ErrorResponse;
         renderWithRouter(['/aroute?token=atoken']);
 
         expect(screen.getByTestId('password_reset_verify_page_action_unexpected_error_unhandled_error')).toBeDefined();
@@ -266,9 +268,12 @@ describe('PasswordResetCompletePage', () => {
 
       it('when unexpected error, displays error', () => {
         mockCompleteAction.lastUnexpectedError = {
-          response: { status: 500, statusText: 'Internal Server Error' },
-          message: 'anerror'
-        } as AxiosError;
+          data: {},
+          response: {
+            status: 500,
+            statusText: 'Internal Server Error'
+          } as Response
+        } as ErrorResponse;
         renderWithRouter(['/aroute?token=atoken']);
 
         expect(

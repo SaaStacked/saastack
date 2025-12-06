@@ -1,16 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError } from 'axios';
-import { ActionResult } from '../../../framework/actions/Actions.ts';
-import {
-  ConfirmPersonCredentialRegistrationRequest,
-  ConfirmPersonCredentialRegistrationResponse,
-  ResendPersonCredentialRegistrationConfirmationRequest,
-  ResendPersonCredentialRegistrationConfirmationResponse
-} from '../../../framework/api/apiHost1';
+import { ActionResult, ErrorResponse } from '../../../framework/actions/Actions.ts';
+import { ConfirmPersonCredentialRegistrationRequest, ConfirmPersonCredentialRegistrationResponse, ResendPersonCredentialRegistrationConfirmationRequest, ResendPersonCredentialRegistrationConfirmationResponse } from '../../../framework/api/apiHost1';
 import { ConfirmPersonCredentialRegistrationErrors } from '../actions/confirmPersonCredentialRegistration.ts';
 import { CredentialsRegisterConfirm } from './CredentialsRegisterConfirm';
+
 
 const mockConfirmAction: ActionResult<
   ConfirmPersonCredentialRegistrationRequest,
@@ -144,9 +139,12 @@ describe('CredentialsRegisterConfirm', () => {
 
       it('when unexpected error, displays error', () => {
         mockConfirmAction.lastUnexpectedError = {
-          response: { status: 500, statusText: 'Internal Server Error' },
-          message: 'anerror'
-        } as AxiosError;
+          data: {},
+          response: {
+            status: 500,
+            statusText: 'Internal Server Error'
+          } as Response
+        } as ErrorResponse;
         renderWithRouter(['/aroute?token=atoken']);
 
         expect(screen.getByTestId('error_unexpected_unhandled_error')).toBeDefined();
@@ -208,9 +206,12 @@ describe('CredentialsRegisterConfirm', () => {
 
       it('when unexpected error, displays error', () => {
         mockResendAction.lastUnexpectedError = {
-          response: { status: 500, statusText: 'Internal Server Error' },
-          message: 'anerror'
-        } as AxiosError;
+          data: {},
+          response: {
+            status: 500,
+            statusText: 'Internal Server Error'
+          } as Response
+        } as ErrorResponse;
         renderWithRouter(['/aroute?token=atoken']);
 
         expect(screen.getByTestId('resend_button_action_unexpected_error_unhandled_error')).toBeDefined();

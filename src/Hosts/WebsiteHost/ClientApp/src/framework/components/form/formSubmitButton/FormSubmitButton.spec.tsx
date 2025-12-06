@@ -5,10 +5,9 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ActionRequestData, ActionResult } from '../../../actions/Actions.ts';
+import { ActionResult } from '../../../actions/Actions.ts';
 import { FormActionContext } from '../FormActionContexts.tsx';
 import FormSubmitButton, { BusyLabelRevertAfterMs } from './FormSubmitButton';
-
 
 vi.mock('../../Button', () => ({
   default: ({ id, label, busy, disabled, type, ...props }: any) => (
@@ -18,7 +17,7 @@ vi.mock('../../Button', () => ({
   )
 }));
 
-interface TestRequestData extends ActionRequestData {
+interface TestRequestData {
   atext: string;
   anemailaddress: string;
 }

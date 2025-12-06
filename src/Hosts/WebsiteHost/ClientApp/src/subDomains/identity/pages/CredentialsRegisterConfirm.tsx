@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AxiosError } from 'axios';
+import { ErrorResponse } from '../../../framework/actions/Actions.ts';
 import { ExpectedErrorDetails } from '../../../framework/actions/ApiErrorState.ts';
 import { ConfirmPersonCredentialRegistrationRequest } from '../../../framework/api/apiHost1';
 import Alert from '../../../framework/components/alert/Alert.tsx';
@@ -15,7 +15,6 @@ import {
   ConfirmPersonCredentialRegistrationErrors
 } from '../actions/confirmPersonCredentialRegistration.ts';
 import { ResendPersonCredentialRegistrationConfirmationAction } from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
-
 
 export const CredentialsRegisterConfirm: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -73,7 +72,7 @@ export const CredentialsRegisterConfirm: React.FC = () => {
 interface HandlerProps {
   translate: (key: string, options?: any) => string;
   lastExpectedError?: ExpectedErrorDetails<any> | undefined;
-  lastUnexpectedError?: AxiosError;
+  lastUnexpectedError?: ErrorResponse;
   success?: boolean;
   token: string;
 }

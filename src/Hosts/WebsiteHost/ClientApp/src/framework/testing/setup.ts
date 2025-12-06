@@ -1,33 +1,6 @@
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
 
-vi.mock('axios', async (importActual) => {
-  const actualImpl = await importActual<typeof import('@hey-api/client-axios')>();
-
-  return {
-    ...actualImpl,
-    request: vi.fn((config) => Promise.resolve({ config, data: {}, status: 200 }))
-  };
-});
-
-vi.mock('@hey-api/client-axios', async (importActual) => {
-  const actualImpl = await importActual<typeof import('@hey-api/client-axios')>();
-
-  return {
-    ...actualImpl,
-    createClient: vi.fn().mockImplementation((config) => {
-      const clientImpl = actualImpl.createClient(config);
-      return {
-        ...clientImpl,
-        get: vi.fn((config) => Promise.resolve({ config, data: {}, status: 200 })),
-        post: vi.fn((config) => Promise.resolve({ config, data: {}, status: 201 })),
-        put: vi.fn((config) => Promise.resolve({ config, data: {}, status: 202 })),
-        delete: vi.fn((config) => Promise.resolve({ config, data: {}, status: 204 }))
-      };
-    })
-  };
-});
-
 vi.mock('../recorder.ts', async (importActual) => {
   const actualImpl = await importActual<typeof import('../recorder.ts')>();
 
@@ -57,7 +30,7 @@ const ogLocation = global.window.location;
 const ogNavigator = global.window.navigator;
 
 beforeAll(() => {
-  process.env.VITE_WEBSITEHOSTBASEURL = 'abaseurl';
+  process.env.VITE_WEBSITEHOSTBASEURL = 'https://abaseurl';
   vi.spyOn(document, 'querySelector').mockImplementation((selector) => {
     if (selector == "meta[name='csrf-token']") {
       return {
@@ -88,6 +61,7 @@ beforeAll(() => {
 beforeEach(() => vi.clearAllMocks());
 
 afterAll(() => {
+  // @ts-ignore
   global.window.location = ogLocation;
   // noinspection JSConstantReassignment
   global.window.navigator = ogNavigator;

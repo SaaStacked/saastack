@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AxiosError } from 'axios';
+import { ErrorResponse } from '../../actions/Actions.ts';
+import { ProblemDetails } from '../../api/apiHost1';
 import { createComponentId } from '../Components.ts';
 import Tag from '../tag/Tag.tsx';
 
-
 interface UnhandledErrorProps {
   id?: string;
-  error?: AxiosError;
+  error?: ErrorResponse;
 }
 
 // Creates an inline error message to display an unexpected error, and its technical details
@@ -18,18 +18,25 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
   const { t: translate } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStackTraceExpanded, setIsStackTraceExpanded] = useState(false);
-  const responseData = error.response?.data as any;
-  const statusCode = error.response ? error.response?.status : error.status;
-  const errorCode = error.response ? error.response.statusText : error.code;
-  const errorMessage = error.response && responseData ? responseData.detail : error.message;
-  const moreDetails =
-    error.response && responseData
-      ? responseData.errors
-        ? (responseData.errors as any[]).map((error: any) => error.reason)
-        : []
-      : [];
-  const clientStackTrace = error.stack;
-  const serverStackTrace = error.response && responseData ? responseData.exception : undefined;
+  const errorAsAny = error.data as any;
+  const errorAsJavaScriptError = error.data instanceof Error ? error.data : undefined;
+  const errorAsProblemDetails = error.data as ProblemDetails;
+  const statusCode = error.response
+    ? error.response.status
+    : (errorAsProblemDetails?.status ?? errorAsAny?.status ?? 'unknown');
+  const errorCode = errorAsJavaScriptError
+    ? undefined
+    : (error.response?.statusText ?? errorAsProblemDetails?.title ?? errorAsAny?.error);
+  const errorMessage =
+    errorAsJavaScriptError?.message ?? errorAsProblemDetails?.detail ?? errorAsAny?.message ?? 'unknown';
+  const moreDetails = errorAsProblemDetails
+    ? errorAsProblemDetails.errors
+      ? (errorAsProblemDetails.errors as any[]).map((error: any) => error.reason)
+      : []
+    : [];
+  const clientStackTrace = errorAsJavaScriptError ? errorAsJavaScriptError.stack : undefined;
+  const serverStackTrace =
+    errorAsProblemDetails && errorAsProblemDetails.exception ? (errorAsProblemDetails.exception as string) : undefined;
 
   const componentId = createComponentId('unhandled_error', id);
   return (
@@ -81,9 +88,8 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
               <span className="text-xs text-gray-700 dark:text-gray-300">
                 {translate('components.unhandled_error.status')}:
               </span>
-              <Tag className="text-xs" label={translate('pages.organizations.manage.labels.roles.empty')} color="rose">
-                HTTP{' '}
-                <span className="ml-1" data-testid={`${componentId}_details_statusCode`}>
+              <Tag className="text-sm" label="HTTP" color="rose">
+                <span className="ml-1 mr-1" data-testid={`${componentId}_details_statusCode`}>
                   {statusCode}
                 </span>
               </Tag>

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AxiosError } from 'axios';
 import z from 'zod';
+import { ErrorResponse } from '../../../framework/actions/Actions.ts';
 import { ExpectedErrorDetails } from '../../../framework/actions/ApiErrorState.ts';
 import { VerifyPasswordResetData } from '../../../framework/api/apiHost1';
 import Alert from '../../../framework/components/alert/Alert.tsx';
@@ -14,6 +14,7 @@ import PageAction, { PageActionRef } from '../../../framework/components/page/Pa
 import { CompletePasswordResetAction, CompletePasswordResetErrors } from '../actions/completePasswordReset.ts';
 import { VerifyPasswordResetAction, VerifyPasswordResetErrors } from '../actions/verifyPasswordReset.ts';
 
+
 export const PasswordResetCompletePage: React.FC = () => {
   const { t: translate } = useTranslation();
   const [queryString] = useSearchParams();
@@ -23,7 +24,7 @@ export const PasswordResetCompletePage: React.FC = () => {
 
   useEffect(() => {
     if (token) {
-      verifyPasswordResetTrigger.current?.execute({ path: { Token: token } });
+      verifyPasswordResetTrigger.current?.execute({ path: { Token: token } } as VerifyPasswordResetData);
     }
   }, [token]);
 
@@ -68,7 +69,7 @@ export const PasswordResetCompletePage: React.FC = () => {
 interface HandlerProps {
   translate: (key: string, options?: any) => string;
   lastExpectedError?: ExpectedErrorDetails<any> | undefined;
-  lastUnexpectedError?: AxiosError;
+  lastUnexpectedError?: ErrorResponse;
   token: string;
 }
 
