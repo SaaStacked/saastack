@@ -61,6 +61,12 @@ function generateApiServices(definitionsFile, targetFolder) {
     output: {
       path: targetFolder,
       format: 'prettier'
+    },
+    types: {
+      enums: 'javascript'
+    },
+    services: {
+      asClass: false
     }
   });
 }

@@ -30,6 +30,7 @@ public sealed class ParameterFilter : IOperationFilter
         }
 
         var requestType = type.Value;
+        operation.Parameters.Clear();
         AddParameters(requestType, operation.Parameters);
     }
 

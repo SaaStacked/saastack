@@ -1,6 +1,6 @@
 import { useActionQuery } from '../../../framework/actions/ActionQuery.ts';
 import { getProfileForCaller, GetProfileForCallerResponse, UserProfileForCaller } from '../../../framework/api/apiHost1';
-import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
+import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import userProfileCacheKeys from './responseCache.ts';
 
 

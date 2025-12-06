@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
-
 
 export interface ActionQueryConfiguration<
   TRequestData = any,
@@ -14,11 +13,20 @@ export interface ActionQueryConfiguration<
   TTransformedResponse = any
 > {
   // The generated AXIOS endpoint we need to call
-  request: (
-    requestData: TRequestData
-  ) => Promise<
-    | (AxiosResponse<TResponse, any> & { error: undefined })
-    | (AxiosError<unknown, any> & { data: undefined; error: unknown })
+  request: (requestData: TRequestData) => Promise<
+    (
+      | {
+          data: TResponse;
+          error: undefined;
+        }
+      | {
+          data: undefined;
+          error: unknown;
+        }
+    ) & {
+      request: Request;
+      response: Response;
+    }
   >;
   // Whether the request is tenanted or not
   isTenanted?: boolean;
@@ -72,14 +80,16 @@ export function useActionQuery<
           const requestData = currentRequestDataRef.current ?? ({} as TRequestData);
           let res = await request(requestData);
 
-          /* @hey-api/client-axios may return an AxiosError instead of throw the error
+          /* @hey-api/client-axios may return an AxiosError, instead of throwing the error
           See: https://github.com/hey-api/openapi-ts/blob/main/examples/openapi-ts-axios/src/client/client/client.gen.ts#L94-L106
            */
-          if (res.status === undefined || res.status >= 400) {
-            if (axios.isAxiosError(res)) {
+          if (res.error) {
+            if (axios.isAxiosError(res.error)) {
               // noinspection ExceptionCaughtLocallyJS
-              throw res as AxiosError<unknown, any> & { error: undefined };
+              throw res.error as AxiosError<unknown, any> & { error: undefined };
             }
+            // noinspection ExceptionCaughtLocallyJS
+            throw res.error;
           }
 
           return await (res?.data ?? ({} as TResponse));

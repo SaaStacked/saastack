@@ -1,10 +1,9 @@
 import axios, { AxiosError, HttpStatusCode } from 'axios';
 import { UsageConstants } from '../constants';
 import { recorder } from '../recorder';
-import { client as apiHost1 } from './apiHost1/services.gen';
-import { logout, ProblemDetails } from './websiteHost';
-import { refreshToken, client as websiteHost } from './websiteHost/services.gen';
-
+import { client as apiHost1 } from './apiHost1/client.gen';
+import { logout, ProblemDetails, refreshToken } from './websiteHost';
+import { client as websiteHost } from './websiteHost/client.gen';
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
 export const homePath = '/';
@@ -13,63 +12,82 @@ export const homePath = '/';
 // as detailed in docs/design-principles/0110-back-end-for-front-end.md
 function initializeApiClient() {
   const csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute('content');
+
+  const noIndexedArraysQuerySerializer = (params: Record<string, unknown>) => {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+
+      if (Array.isArray(value)) {
+        // No indexes - just repeat the key for each value
+        value.forEach((v) => searchParams.append(key, String(v)));
+      } else {
+        searchParams.append(key, String(value));
+      }
+    });
+
+    return searchParams.toString();
+  };
+
   apiHost1.setConfig({
-    baseURL: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}/api`,
+    baseUrl: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}/api`,
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
       'anti-csrf-tok': csrfToken
     },
-    paramsSerializer: {
-      indexes: null // To prevent axios from encoding array indexes in the query string
-    }
+    querySerializer: noIndexedArraysQuerySerializer
   });
   websiteHost.setConfig({
-    baseURL: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}`,
+    baseUrl: `${import.meta.env.VITE_WEBSITEHOSTBASEURL}`,
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
       'anti-csrf-tok': csrfToken
     },
-    paramsSerializer: {
-      indexes: null // To prevent axios from encoding array indexes in the query string
-    }
+    querySerializer: noIndexedArraysQuerySerializer
   });
 
-  apiHost1.instance.interceptors.response.use((res) => res, handleUnauthorizedResponse);
-  websiteHost.instance.interceptors.response.use((res) => res, handleUnauthorizedResponse);
+  apiHost1.interceptors.error.use((error) => handleUnauthorizedResponse(error));
+  websiteHost.interceptors.error.use((error) => handleUnauthorizedResponse(error));
 }
 
 // This handles refreshing access tokens when any request returns a 401,
 // as detailed in docs/design-principles/0110-back-end-for-front-end.md
-async function handleUnauthorizedResponse(error: AxiosError) {
-  const requestConfig = error.config;
+async function handleUnauthorizedResponse(error: unknown) {
+  if (!axios.isAxiosError(error)) {
+    return Promise.reject(error);
+  }
+
+  const axiosError = error as AxiosError;
+  const requestConfig = axiosError.config;
 
   //Handle 403's for CSRF
-  const problem = error as AxiosError<ProblemDetails>;
+  const problem = axiosError as AxiosError<ProblemDetails>;
   if (
-    error.status === HttpStatusCode.Forbidden &&
+    axiosError.status === HttpStatusCode.Forbidden &&
     problem != undefined &&
     problem.response?.data.title === 'csrf_violation'
   ) {
     recorder.traceDebug('UnAuthorizedHandler: CSRF violation detected, reloading home page');
     forceReloadHome();
-    return Promise.reject(error);
+    return Promise.reject(axiosError);
   }
 
   // Only handle 401s
-  if (error.status !== HttpStatusCode.Unauthorized) {
-    return Promise.reject(error);
+  if (axiosError.status !== HttpStatusCode.Unauthorized) {
+    return Promise.reject(axiosError);
   }
 
   // Check it is an axios response (i.e. has config)
   if (!requestConfig) {
-    return Promise.reject(error);
+    return Promise.reject(axiosError);
   }
 
   // We don't want to retry any of these API calls
   if (unRetryableRequestUrls.includes(requestConfig.url!)) {
-    return Promise.reject(error);
+    return Promise.reject(axiosError);
   }
 
   try {

@@ -9,7 +9,7 @@ import {
   GetProfileResponse,
   UserProfileForCaller
 } from '../../../framework/api/apiHost1';
-import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
+import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import ButtonUpload from '../../../framework/components/button/ButtonUpload.tsx';
 import FormAction from '../../../framework/components/form/FormAction.tsx';

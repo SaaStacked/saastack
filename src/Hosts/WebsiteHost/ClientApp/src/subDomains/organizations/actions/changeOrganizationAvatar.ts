@@ -2,7 +2,6 @@ import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { changeOrganizationAvatarPatch, ChangeOrganizationAvatarPatchResponse } from '../../../framework/api/apiHost1';
 import organizationCacheKeys from './responseCache.ts';
 
-
 export interface ChangeOrganizationAvatarRequest {
   file: File;
 }
@@ -18,10 +17,7 @@ export const ChangeOrganizationAvatarAction = (id: string) =>
         body: {
           files: [request.file]
         },
-        path: { Id: id },
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        path: { Id: id }
       }),
     passThroughErrors: {
       400: UploadAvatarErrors.invalid_image

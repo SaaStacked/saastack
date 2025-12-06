@@ -5,7 +5,7 @@
 /storybook-static
 
 # Ignore generated API files
-/src/api/**/*.gen.ts
+/src/framework/api/**/*.gen.ts
 
 # Ignore files
 **/*.html

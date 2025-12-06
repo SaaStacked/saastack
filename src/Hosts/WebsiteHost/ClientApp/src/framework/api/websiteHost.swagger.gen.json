@@ -1608,6 +1608,10 @@
       "RefreshTokenRequest": {
         "type": "object",
         "additionalProperties": false
+      },
+      "Void": {
+        "type": "object",
+        "additionalProperties": false
       }
     }
   }

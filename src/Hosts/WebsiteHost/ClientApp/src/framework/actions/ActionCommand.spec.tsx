@@ -2,11 +2,10 @@ import { QueryClient } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
 import { useActionCommand } from './ActionCommand';
-
 
 interface UntenantedRequestData {
   name?: string;
@@ -69,24 +68,26 @@ describe('useActionCommand', () => {
       }
     });
     const mockSuccessfulRequest = vi.fn(
-      async (_requestData: UntenantedRequestData): Promise<AxiosResponse<TestResponse>> => {
+      async (
+        _requestData: UntenantedRequestData
+      ): Promise<
+        {
+          data: TestResponse;
+          error: undefined;
+        } & {
+          request: Request;
+          response: Response;
+        }
+      > => {
         // Add a small delay to test loading states
         await new Promise((resolve) => setTimeout(resolve, 50));
-        return {
-          data: { message: 'amessage' },
-          status: 200,
-          statusText: 'OK',
-          headers: {},
-          config: {} as any,
-          request: {},
-          error: undefined
-        } as AxiosResponse<TestResponse>;
+        return { data: { message: 'amessage' }, error: undefined, request: {} as Request, response: {} as Response };
       }
     );
 
     const unTenantedAction = () =>
       useActionCommand({
-        request: mockSuccessfulRequest as any,
+        request: mockSuccessfulRequest,
         isTenanted: false,
         onSuccess: () => vi.fn(),
         passThroughErrors: {
@@ -161,24 +162,26 @@ describe('useActionCommand', () => {
       }
     });
     const mockSuccessfulRequest = vi.fn(
-      async (_requestData: TenantedRequestData): Promise<AxiosResponse<TestResponse>> => {
+      async (
+        _requestData: UntenantedRequestData
+      ): Promise<
+        {
+          data: TestResponse;
+          error: undefined;
+        } & {
+          request: Request;
+          response: Response;
+        }
+      > => {
         // Add a small delay to test loading states
         await new Promise((resolve) => setTimeout(resolve, 50));
-        return {
-          data: { message: 'amessage' },
-          status: 200,
-          statusText: 'OK',
-          headers: {},
-          config: {} as any,
-          request: {},
-          error: undefined
-        } as AxiosResponse<TestResponse>;
+        return { data: { message: 'amessage' }, error: undefined, request: {} as Request, response: {} as Response };
       }
     );
 
     const tenantedAction = () =>
       useActionCommand({
-        request: mockSuccessfulRequest as any,
+        request: mockSuccessfulRequest,
         isTenanted: true,
         onSuccess: () => vi.fn(),
         passThroughErrors: {
@@ -250,27 +253,42 @@ describe('useActionCommand', () => {
     });
 
     it('when throws error, return expected error', async () => {
-      const mockRequest = vi.fn(() =>
-        Promise.reject({
-          isAxiosError: true,
-          message: 'anerror',
-          response: {
-            status: 400,
-            statusText: 'anerror',
-            data: {
-              title: 'atitle',
-              details: 'adetails',
-              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-            },
-            headers: {},
-            config: {} as any
-          }
-        } as AxiosError)
+      const mockFailedRequest = vi.fn(
+        async (
+          _requestData: UntenantedRequestData
+        ): Promise<
+          {
+            data: undefined;
+            error: unknown;
+          } & {
+          request: Request;
+          response: Response;
+        }
+        > => ({
+          data: undefined,
+          error: {
+            isAxiosError: true,
+            message: 'anerror',
+            response: {
+              status: 400,
+              statusText: 'anerror',
+              data: {
+                title: 'atitle',
+                details: 'adetails',
+                errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+              },
+              headers: {},
+              config: {} as any
+            }
+          } as AxiosError,
+          request: {} as Request,
+          response: {} as Response
+        })
       );
-
+      
       const action = () =>
         useActionCommand({
-          request: mockRequest as any,
+          request: mockFailedRequest,
           onSuccess: () => vi.fn(),
           passThroughErrors: {
             400: 'BadRequest'
@@ -297,31 +315,46 @@ describe('useActionCommand', () => {
       expect(result.current.lastUnexpectedError).toBeUndefined();
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockFailedRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
 
     it('when returns error, return expected error', async () => {
-      const mockRequest = vi.fn(() =>
-        Promise.resolve({
-          isAxiosError: true,
-          message: 'anerror',
-          response: {
-            status: 400,
-            statusText: 'anerror',
-            data: {
-              title: 'atitle',
-              details: 'adetails',
-              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-            },
-            headers: {},
-            config: {} as any
+      const mockFailedRequest = vi.fn(
+        async (
+          _requestData: UntenantedRequestData
+        ): Promise<
+          {
+            data: undefined;
+            error: unknown;
+          } & {
+            request: Request;
+            response: Response;
           }
-        } as AxiosError)
+        > => ({
+          data: undefined,
+          error: {
+            isAxiosError: true,
+            message: 'anerror',
+            response: {
+              status: 400,
+              statusText: 'anerror',
+              data: {
+                title: 'atitle',
+                details: 'adetails',
+                errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+              },
+              headers: {},
+              config: {} as any
+            }
+          } as AxiosError,
+          request: {} as Request,
+          response: {} as Response
+        })
       );
 
       const action = () =>
         useActionCommand({
-          request: mockRequest as any,
+          request: mockFailedRequest,
           onSuccess: () => vi.fn(),
           passThroughErrors: {
             400: 'BadRequest'
@@ -347,7 +380,7 @@ describe('useActionCommand', () => {
       expect(result.current.lastUnexpectedError).toBeUndefined();
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockFailedRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
   });
 
@@ -365,27 +398,42 @@ describe('useActionCommand', () => {
     });
 
     it('when throws error, return unexpected error', async () => {
-      const mockRequest = vi.fn(() =>
-        Promise.reject({
-          isAxiosError: true,
-          message: 'anerror',
-          response: {
-            status: 500,
-            statusText: 'anerror',
-            data: {
-              title: 'atitle',
-              details: 'adetails',
-              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-            },
-            headers: {},
-            config: {} as any
+      const mockFailedRequest = vi.fn(
+        async (
+          _requestData: UntenantedRequestData
+        ): Promise<
+          {
+            data: undefined;
+            error: unknown;
+          } & {
+            request: Request;
+            response: Response;
           }
-        } as AxiosError)
+        > => ({
+          data: undefined,
+          error: {
+            isAxiosError: true,
+            message: 'anerror',
+            response: {
+              status: 500,
+              statusText: 'anerror',
+              data: {
+                title: 'atitle',
+                details: 'adetails',
+                errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+              },
+              headers: {},
+              config: {} as any
+            }
+          } as AxiosError,
+          request: {} as Request,
+          response: {} as Response
+        })
       );
 
       const action = () =>
         useActionCommand({
-          request: mockRequest as any,
+          request: mockFailedRequest,
           onSuccess: () => vi.fn(),
           passThroughErrors: {
             400: 'BadRequest'
@@ -413,31 +461,46 @@ describe('useActionCommand', () => {
       });
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockFailedRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
 
     it('when returns error, return unexpected error', async () => {
-      const mockRequest = vi.fn(() =>
-        Promise.resolve({
-          isAxiosError: true,
-          message: 'anerror',
-          response: {
-            status: 500,
-            statusText: 'anerror',
-            data: {
-              title: 'atitle',
-              details: 'adetails',
-              errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
-            },
-            headers: {},
-            config: {} as any
+      const mockFailedRequest = vi.fn(
+        async (
+          _requestData: UntenantedRequestData
+        ): Promise<
+          {
+            data: undefined;
+            error: unknown;
+          } & {
+            request: Request;
+            response: Response;
           }
-        } as AxiosError)
+        > => ({
+          data: undefined,
+          error: {
+            isAxiosError: true,
+            message: 'anerror',
+            response: {
+              status: 500,
+              statusText: 'anerror',
+              data: {
+                title: 'atitle',
+                details: 'adetails',
+                errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
+              },
+              headers: {},
+              config: {} as any
+            }
+          } as AxiosError,
+          request: {} as Request,
+          response: {} as Response
+        })
       );
 
       const action = () =>
         useActionCommand({
-          request: mockRequest as any,
+          request: mockFailedRequest,
           onSuccess: () => vi.fn(),
           passThroughErrors: {
             400: 'BadRequest'
@@ -465,7 +528,7 @@ describe('useActionCommand', () => {
       });
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
-      expect(mockRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+      expect(mockFailedRequest).toHaveBeenCalledWith({ aname: 'avalue' });
     });
   });
 });

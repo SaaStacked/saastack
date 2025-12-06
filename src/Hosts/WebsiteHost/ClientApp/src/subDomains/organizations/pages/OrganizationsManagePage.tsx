@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ChangeDefaultOrganizationRequest, Organization, UpdateUserResponse } from '../../../framework/api/apiHost1';
-import { EmptyRequest } from '../../../framework/api/apiHost1/emptyRequest.ts';
+import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
