@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
+using Infrastructure.Web.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Web.Hosting.Common.Extensions;
@@ -13,6 +14,19 @@ public static class RequestExtensions
 {
     private const int MaxCookiePayloadSizeInBytes = 4096;
 
+    /// <summary>
+    ///     Whether any authorization method has been provided in the request
+    /// </summary>
+    public static bool IsAnyAuthorizationProvided(this HttpRequest request)
+    {
+        return request.GetTokenAuth().HasValue
+               || request.GetAPIKeyAuth().HasValue
+               || request.GetBasicAuth().Username.HasValue
+               || request.GetHMACAuth().HasValue
+               || request.GetPrivateInterHostAuth().HasValue
+               || request.GetTokenFromAuthNCookies().HasValue;
+    }
+    
     /// <summary>
     ///     Deletes the authentication cookies from the response
     /// </summary>

@@ -276,6 +276,16 @@ public sealed class TestingWebApi : IWebApiService
         return () => new Result<EmptyResponse, Error>();
     }
 
+    public async Task<ApiGetResult<string, GetTenantedTestingOnlyResponse>> MultiTenancy(
+        GetTenantedTestingOnlyRequest request, CancellationToken cancellationToken)
+    {
+        await Task.CompletedTask;
+        var caller = _callerFactory.Create();
+        var orgId = caller.TenantId;
+
+        return () => new GetTenantedTestingOnlyResponse { OrganizationId = orgId };
+    }
+
     public async Task<ApiPostResult<string, OpenApiTestingOnlyResponse>> OpenApiFormUrlEncoded(
         OpenApiPostFormUrlEncodedTestingOnlyRequest request, CancellationToken cancellationToken)
     {

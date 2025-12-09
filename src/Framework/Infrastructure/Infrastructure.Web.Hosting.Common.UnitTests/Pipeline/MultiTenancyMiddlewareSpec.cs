@@ -25,7 +25,7 @@ namespace Infrastructure.Web.Hosting.Common.UnitTests.Pipeline;
 public class MultiTenancyMiddlewareSpec
 {
     private static HttpContext SetupContext(ICallerContextFactory callerContextFactory,
-        ITenancyContext tenancyContext)
+        ITenancyContext tenancyContext, string? authorizationHeader = null)
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton<ILoggerFactory>(new LoggerFactory());
@@ -40,6 +40,10 @@ public class MultiTenancyMiddlewareSpec
             {
                 StatusCode = 200,
                 Body = new MemoryStream()
+            },
+            Request =
+            {
+                Headers = { Authorization = authorizationHeader }
             }
         };
 
@@ -189,6 +193,7 @@ public class MultiTenancyMiddlewareSpec
     [Trait("Category", "Unit")]
     public class GivenAnAnonymousUser
     {
+        private readonly Mock<ICallerContext> _caller;
         private readonly Mock<ICallerContextFactory> _callerContextFactory;
         private readonly Mock<IEndUsersService> _endUsersService;
         private readonly Mock<IIdentifierFactory> _identifierFactory;
@@ -197,7 +202,6 @@ public class MultiTenancyMiddlewareSpec
         private readonly Mock<IOrganizationsService> _organizationsService;
         private readonly Mock<ITenancyContext> _tenancyContext;
         private readonly Mock<ITenantDetective> _tenantDetective;
-        private readonly Mock<ICallerContext> _caller;
 
         public GivenAnAnonymousUser()
         {
@@ -269,6 +273,28 @@ public class MultiTenancyMiddlewareSpec
                     eus.GetMembershipsPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                         It.IsAny<CancellationToken>()),
                 Times.Never);
+        }
+
+        [Fact]
+        public async Task WhenInvokeAndMissingRequiredTenantIdWithInvalidAuthorization_ThenRespondsWithAProblem()
+        {
+            _tenantDetective.Setup(td =>
+                    td.DetectTenantAsync(It.IsAny<HttpContext>(), It.IsAny<Optional<Type>>(),
+                        It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TenantDetectionResult(true, Optional<string>.None));
+            var context = SetupContext(_callerContextFactory.Object, _tenancyContext.Object, "Bearer aninvalidtoken");
+
+            await _middleware.InvokeAsync(context, _tenancyContext.Object, _callerContextFactory.Object,
+                _tenantDetective.Object, _endUsersService.Object, _organizationsService.Object);
+
+            context.Response.Should().BeAProblem(HttpStatusCode.Unauthorized, null);
+            _tenantDetective.Verify(td =>
+                td.DetectTenantAsync(context, Optional<Type>.None, CancellationToken.None));
+            _next.Verify(n => n.Invoke(It.IsAny<HttpContext>()), Times.Never);
+            _tenancyContext.Verify(t => t.Set(It.IsAny<string>(), It.IsAny<TenantSettings>()), Times.Never);
+            _endUsersService.Verify(eus =>
+                eus.GetMembershipsPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -446,7 +472,7 @@ public class MultiTenancyMiddlewareSpec
             _organizationsService.Verify(os =>
                 os.GetSettingsPrivateAsync(_caller.Object, "atenantid", It.IsAny<CancellationToken>()));
         }
-        
+
         [Fact]
         public async Task WhenInvokeAndRequiredTenantIdButIsAnOperatorButNotAMember_ThenRespondsWithAProblem()
         {
@@ -560,7 +586,7 @@ public class MultiTenancyMiddlewareSpec
             await _middleware.InvokeAsync(context, _tenancyContext.Object, _callerContextFactory.Object,
                 _tenantDetective.Object, _endUsersService.Object, _organizationsService.Object);
 
-            context.Response.Should().BeAProblem(HttpStatusCode.BadRequest,
+            context.Response.Should().BeAProblem(HttpStatusCode.MethodNotAllowed,
                 Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
             _tenantDetective.Verify(td =>
                 td.DetectTenantAsync(context, Optional<Type>.None, CancellationToken.None));
@@ -598,7 +624,7 @@ public class MultiTenancyMiddlewareSpec
             await _middleware.InvokeAsync(context, _tenancyContext.Object, _callerContextFactory.Object,
                 _tenantDetective.Object, _endUsersService.Object, _organizationsService.Object);
 
-            context.Response.Should().BeAProblem(HttpStatusCode.BadRequest,
+            context.Response.Should().BeAProblem(HttpStatusCode.MethodNotAllowed,
                 Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
             _tenantDetective.Verify(td =>
                 td.DetectTenantAsync(context, Optional<Type>.None, CancellationToken.None));
@@ -691,7 +717,7 @@ public class MultiTenancyMiddlewareSpec
             _endUsersService.Verify(eus =>
                 eus.GetMembershipsPrivateAsync(_caller.Object, "acallerid", It.IsAny<CancellationToken>()));
         }
-        
+
         [Fact]
         public async Task WhenInvokeAndRequiredTenantIdButNotAMember_ThenRespondsWithAProblem()
         {

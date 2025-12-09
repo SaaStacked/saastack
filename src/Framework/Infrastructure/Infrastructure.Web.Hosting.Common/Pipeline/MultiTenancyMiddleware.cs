@@ -10,18 +10,27 @@ using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Common.Endpoints;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Interfaces;
+using Infrastructure.Web.Hosting.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Web.Hosting.Common.Pipeline;
 
 /// <summary>
 ///     This middleware is responsible for verifying that a tenant ID is set in the request context,
-///     and that the caller is a member of that specific Organization.
-///     Detects the current tenant using the <see cref="ITenantDetective" />,
+///     and that the caller is a member of that specific Organization, AND it provides the missing tenant ID if able to.
+///     Which is why it needs to run after ASPNET authentication and before ASPNET authorization.
+///     Detects the current tenant of the HTTP request using the <see cref="ITenantDetective" />,
 ///     and if the request type is deemed "tenanted", but the tenant ID is missing,
 ///     then this middleware extracts the "DefaultOrganizationId" from the authenticated user
 ///     and sets the value or <see cref="ITenancyContext.Current" /> to that tenant.
 ///     Note: Downstream, another minimal endpoint filter will rewrite the missing tenant ID into the request DTO
+///     Caveat: By the time this middleware is run, Authentication has been performed by ASPNET,
+///     but Authorization by ASPNET has NOT yet been performed. Since Authorization has not yet run,
+///     the token/apikey/HMAC etc., that would normally authorize the authenticated user will not have evaluated
+///     whether the token/apikey/HMAC is valid or not (present but expired or present but invalid or not present at all).
+///     This middleware needs to distinguish the difference between an anonymous user, and an authenticated user, and
+///     an authenticated user with an invalid authorization method, so we can return the appropriate error
+///     when the tenantId is not explicitly present in the request.
 /// </summary>
 public class MultiTenancyMiddleware
 {
@@ -73,7 +82,7 @@ public class MultiTenancyMiddleware
         if (MissingRequiredTenantIdFromRequest(detectedResult))
         {
             var defaultOrganizationId =
-                await VerifyDefaultOrganizationIdForCallerAsync(caller, endUsersService, memberships,
+                await VerifyDefaultOrganizationIdForCallerAsync(caller, httpContext, endUsersService, memberships,
                     cancellationToken);
             if (defaultOrganizationId.IsFailure)
             {
@@ -115,10 +124,19 @@ public class MultiTenancyMiddleware
     }
 
     private static async Task<Result<string?, Error>> VerifyDefaultOrganizationIdForCallerAsync(ICallerContext caller,
-        IEndUsersService endUsersService, List<Membership>? memberships, CancellationToken cancellationToken)
+        HttpContext httpContext, IEndUsersService endUsersService, List<Membership>? memberships,
+        CancellationToken cancellationToken)
     {
         if (!caller.IsAuthenticated)
         {
+            var authZProvided = httpContext.Request.IsAnyAuthorizationProvided();
+            if (authZProvided)
+            {
+                //Condition: Authenticated user, but authorization may be invalid
+                return Error.NotAuthenticated();
+            }
+
+            // Condition: Anonymous user is not going to have a default organization
             return Error.Validation(Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
         }
 
@@ -134,17 +152,23 @@ public class MultiTenancyMiddleware
         }
 
         var defaultOrganizationId = GetDefaultOrganizationId(memberships);
-        if (defaultOrganizationId.HasValue())
+        if (!defaultOrganizationId.HasValue())
         {
-            return defaultOrganizationId;
+            if (caller.IsServiceAccount)
+            {
+                return Error.Validation(Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
+            }
+
+            //Condition: User is authenticated, but has no memberships, which is very unlikely for a regular user
+            return Error.PreconditionViolation(Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
         }
 
-        return Error.Validation(Resources.MultiTenancyMiddleware_MissingDefaultOrganization);
+        return defaultOrganizationId;
     }
 
     private static async Task<Result<Error>> VerifyCallerMembershipAsync(ICallerContext caller,
-        IEndUsersService endUsersService, List<Membership>? memberships,
-        string tenantId, CancellationToken cancellationToken)
+        IEndUsersService endUsersService, List<Membership>? memberships, string tenantId,
+        CancellationToken cancellationToken)
     {
         if (!IsTenantedUser(caller))
         {

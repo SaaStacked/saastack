@@ -76,7 +76,7 @@ async function handleUnauthorizedResponse(response: Response, request: Request):
     return Promise.resolve(response);
   }
 
-  const error = await getResponseError(response);
+  const error = await getResponseBody(response);
 
   //Handle 403's for CSRF
   const problem = error as ProblemDetails;
@@ -121,7 +121,7 @@ async function handleUnauthorizedResponse(response: Response, request: Request):
           logout().then(() => forceReloadHome());
           return Promise.resolve(response); // should never get here, this should bypass this error altogether
         } else {
-          recorder.traceDebug('UnAuthorizedHandler: Original request failed with: {Error}', { error });
+          recorder.traceDebug('UnAuthorizedHandler: Original request failed with: {Error}', { error: retry.status });
           return Promise.resolve(retry); // This response will be different from the one passed into this interceptor.
         }
       }
@@ -134,7 +134,9 @@ async function handleUnauthorizedResponse(response: Response, request: Request):
         logout().then(() => forceReloadHome());
         return Promise.resolve(response); // should never get here, this should bypass this error altogether
       } else {
-        recorder.traceDebug("UnAuthorizedHandler: Refreshing user's token failed with: {Error}", { error });
+        recorder.traceDebug("UnAuthorizedHandler: Refreshing user's token failed with: {Error}", {
+          error: res.response.status
+        });
         return Promise.resolve(res.response); // This response will be different from the one passed into this interceptor.
       }
     }
@@ -146,15 +148,16 @@ function forceReloadHome() {
   window.location.assign(homePath);
 }
 
-async function getResponseError(response: Response) {
-  const textError = await response.text();
-  let jsonError: unknown = undefined;
+async function getResponseBody(response: Response) {
+  const responseClone = response.clone();
+  const textBody = await responseClone.text();
+  let jsonBody: unknown = undefined;
   try {
-    jsonError = JSON.parse(textError);
+    jsonBody = JSON.parse(textBody);
   } catch {
     //noop
   }
-  return jsonError ?? textError;
+  return jsonBody ?? textBody;
 }
 
 export { initializeApiClient };

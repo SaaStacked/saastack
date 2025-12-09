@@ -49,7 +49,12 @@ describe('Handle 403 Forbidden', () => {
     const error = {
       title: 'atitle'
     } as ProblemDetails;
-    const response = { ok: false, status: 403, text: () => JSON.stringify(error) } as unknown as Response;
+    const response = {
+      ok: false,
+      status: 403,
+      text: () => JSON.stringify(error),
+      clone: () => response
+    } as unknown as Response;
 
     await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
     expect(window.location.assign).not.toHaveBeenCalled();
@@ -59,7 +64,12 @@ describe('Handle 403 Forbidden', () => {
     const error = {
       title: 'csrf_violation'
     } as ProblemDetails;
-    const response = { ok: false, status: 403, text: () => JSON.stringify(error) } as unknown as Response;
+    const response = {
+      ok: false,
+      status: 403,
+      text: () => JSON.stringify(error),
+      clone: () => response
+    } as unknown as Response;
 
     await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
     expect(window.location.assign).toHaveBeenCalledWith(homePath);
@@ -84,13 +94,13 @@ describe('Handle 401 Unauthorized', () => {
   });
 
   it('when request fails with other error response, then resolve', async () => {
-    const response = { ok: false, status: 429, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 429, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, {} as any, {} as any)).resolves.toMatchObject(response);
   });
 
   it('when non-retryable URL, then resolve', async () => {
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
     const request = { url: 'https://localhost/api/auth/refresh' } as Request;
 
     return await expect(handler(response, request, {} as any)).resolves.toMatchObject(response);
@@ -104,7 +114,7 @@ describe('Handle 401 Unauthorized', () => {
         response: { ok: false, status: 423 } as Response
       })
     );
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
       response
@@ -122,7 +132,7 @@ describe('Handle 401 Unauthorized', () => {
         response: { ok: false, status: 401 } as Response
       })
     );
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
       response
@@ -141,7 +151,7 @@ describe('Handle 401 Unauthorized', () => {
         response: refreshResponse
       })
     );
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(
       handler(response as Response, { url: 'https://localhost/aurl' } as Request, {} as any)
@@ -153,7 +163,7 @@ describe('Handle 401 Unauthorized', () => {
   it('when refreshes token and retries original request, then resolve retry response', async () => {
     const retryResponse = { ok: true, status: 200 } as Response;
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
       retryResponse
@@ -166,7 +176,7 @@ describe('Handle 401 Unauthorized', () => {
   it('when retried request fails with unauthorized, then logout and redirect to home', async () => {
     const retryResponse = { ok: false, status: 401 } as Response;
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
       response
@@ -180,7 +190,7 @@ describe('Handle 401 Unauthorized', () => {
     const anotherError = { title: 'another' } as ProblemDetails;
     const retryResponse = { ok: false, status: 400, text: () => JSON.stringify(anotherError) } as unknown as Response;
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(retryResponse);
-    const response = { ok: false, status: 401, text: () => '{}' } as unknown as Response;
+    const response = { ok: false, status: 401, text: () => '{}', clone: () => response } as unknown as Response;
 
     await expect(handler(response, { url: 'https://localhost/aurl' } as Request, {} as any)).resolves.toMatchObject(
       retryResponse

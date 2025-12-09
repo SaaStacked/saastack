@@ -7,6 +7,7 @@ using FluentAssertions;
 using Infrastructure.Web.Api.IntegrationTests.Stubs;
 using Infrastructure.Web.Api.Operations.Shared.Cars;
 using Infrastructure.Web.Api.Operations.Shared.Organizations;
+using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Infrastructure.Web.Common.Extensions;
 using Infrastructure.Web.Hosting.Common;
 using IntegrationTesting.WebApi.Common;
@@ -29,6 +30,143 @@ namespace Infrastructure.Web.Api.IntegrationTests;
 [UsedImplicitly]
 public class MultiTenancySpec
 {
+    [Trait("Category", "Integration.API")]
+    [Collection("API")]
+    public class GivenAnAnonymousUser : WebApiSpec<Program>
+    {
+        public GivenAnAnonymousUser(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
+        {
+            EmptyAllRepositories();
+        }
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithNoOrganizationId_ThenBadRequest()
+        {
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest());
+
+            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+#endif
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithOrganizationId_ThenReturnsResponse()
+        {
+            var login = await LoginUserAsync();
+            var organization = await Api.PostAsync(new CreateOrganizationRequest
+            {
+                Name = "anorganizationname"
+            }, req => req.SetJWTBearerToken(login.AccessToken));
+
+            var organizationId = organization.Content.Value.Organization.Id;
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest
+            {
+                OrganizationId = organizationId
+            });
+
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Content.Value.OrganizationId.Should().Be(organizationId);
+        }
+#endif
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithOrganizationIdButInvalidAuthorization_ThenUnauthorized()
+        {
+            var login = await LoginUserAsync();
+            var organization = await Api.PostAsync(new CreateOrganizationRequest
+            {
+                Name = "anorganizationname"
+            }, req => req.SetJWTBearerToken(login.AccessToken));
+
+            var organizationId = organization.Content.Value.Organization.Id;
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest
+            {
+                OrganizationId = organizationId
+            }, req => req.SetJWTBearerToken("aninvalidtoken"));
+
+            result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+#endif
+
+        private static void OverrideDependencies(IServiceCollection services)
+        {
+            // nothing here
+        }
+    }
+
+    [Trait("Category", "Integration.API")]
+    [Collection("API")]
+    public class GivenAnAuthenticatedUser : WebApiSpec<Program>
+    {
+        public GivenAnAuthenticatedUser(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
+        {
+            EmptyAllRepositories();
+        }
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithNoOrganizationId_ThenReturnsResponse()
+        {
+            var login = await LoginUserAsync();
+            var defaultOrganizationId = login.DefaultOrganizationId;
+
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest(),
+                req => req.SetJWTBearerToken(login.AccessToken));
+
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Content.Value.OrganizationId.Should().Be(defaultOrganizationId);
+        }
+#endif
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithOtherOrganizationId_ThenReturnsForbidden()
+        {
+            var loginA = await LoginUserAsync();
+            var loginB = await LoginUserAsync(LoginUser.PersonB);
+
+            var organizationId = loginB.DefaultOrganizationId;
+
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest
+            {
+                OrganizationId = organizationId
+            }, req => req.SetJWTBearerToken(loginA.AccessToken));
+
+            result.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        }
+#endif
+
+#if TESTINGONLY
+        [Fact]
+        public async Task WhenTenantedApiWithOrganizationId_ThenReturnsResponse()
+        {
+            var login = await LoginUserAsync();
+            var organization = await Api.PostAsync(new CreateOrganizationRequest
+            {
+                Name = "anorganizationname"
+            }, req => req.SetJWTBearerToken(login.AccessToken));
+
+            var organizationId = organization.Content.Value.Organization.Id;
+
+            await ReAuthenticateUserAsync(login);
+            var result = await Api.GetAsync(new GetTenantedTestingOnlyRequest
+            {
+                OrganizationId = organizationId
+            }, req => req.SetJWTBearerToken(login.AccessToken));
+
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Content.Value.OrganizationId.Should().Be(organizationId);
+        }
+#endif
+
+        private static void OverrideDependencies(IServiceCollection services)
+        {
+            // nothing here
+        }
+    }
+
     [Trait("Category", "Integration.API")]
     [Collection("API")]
     public class GivenSamePhysicalStorage : WebApiSpec<Program>
