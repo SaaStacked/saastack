@@ -6,7 +6,6 @@ import { Organization, UserProfileForCaller } from '../../api/apiHost1';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import Icon from '../icon/Icon.tsx';
 
-
 interface NavigationProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (value: boolean) => void;
@@ -19,11 +18,11 @@ interface NavigationProps {
   logout: () => void;
 }
 
-// Creates a main navigation bar for the website, for authenticated users
+// Creates a main navigation menu for the website, for authenticated users
 // Displays a logo, navigation links
 // Displays a user menu with a logout button
 // Displays a mobile menu for small screens
-export const MainNavigation: React.FC = () => {
+export const MainMenu: React.FC = () => {
   const { t: translate } = useTranslation();
   const { profile, organization } = useCurrentUser();
   const { execute: logout } = LogoutAction();
@@ -32,8 +31,8 @@ export const MainNavigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: '/cars/search', label: translate('components.layout.main_navigation.links.search_cars') },
-    { path: '/bookings/reserve', label: translate('components.layout.main_navigation.links.reserve_car') }
+    { path: '/cars/search', label: translate('components.navigation.main_menu.links.search_cars') },
+    { path: '/bookings/reserve', label: translate('components.navigation.main_menu.links.reserve_car') }
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -150,15 +149,15 @@ function BrandText({ translate }: NavigationProps) {
   return (
     <>
       <Link to="/" className="hidden md:flex items-center space-x-2 no-underline hover:no-underline">
-        <img src="/images/logo.png" alt={translate('components.layout.main_navigation.logo')} className="w-8 h-8" />
+        <img src="/images/logo.png" alt={translate('components.navigation.main_menu.logo')} className="w-8 h-8" />
         <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
-          {translate('components.layout.main_navigation.logo')}
+          {translate('components.navigation.main_menu.logo')}
         </span>
       </Link>
 
       <Link to="/" className="md:hidden no-underline hover:no-underline">
         <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
-          {translate('components.layout.main_navigation.logo')}
+          {translate('components.navigation.main_menu.logo')}
         </span>
       </Link>
     </>
@@ -227,14 +226,14 @@ function UserAvatar({
                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
-                {translate('components.layout.main_navigation.links.profile')}
+                {translate('components.navigation.main_menu.links.profile')}
               </Link>
               <Link
                 to="/organizations"
                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
-                {translate('components.layout.main_navigation.links.organizations')}
+                {translate('components.navigation.main_menu.links.organizations')}
               </Link>
               <button
                 onClick={() => {
@@ -243,7 +242,7 @@ function UserAvatar({
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                {translate('components.layout.main_navigation.links.logout')}
+                {translate('components.navigation.main_menu.links.logout')}
               </button>
             </div>
           </div>

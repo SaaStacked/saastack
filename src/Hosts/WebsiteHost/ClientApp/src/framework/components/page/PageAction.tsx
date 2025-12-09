@@ -70,6 +70,7 @@ const PageAction = forwardRef<PageActionRef<any>, PageActionProps<any, any, any>
       {isExecuting && (
         <Loader
           id={`${componentId}_loader`}
+          type="inline"
           message={loadingMessage ? loadingMessage : translate('components.page.page_action.loader.title')}
         />
       )}

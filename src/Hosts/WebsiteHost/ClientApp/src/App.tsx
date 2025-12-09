@@ -44,7 +44,7 @@ const App: React.FC = () => {
   }, [location, ready]);
 
   if (isExecuting || ready === false) {
-    return <Loader message="Loading" />;
+    return <Loader type="page" message="Loading" />;
   }
 
   return (

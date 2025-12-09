@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import { Footer } from './Footer.tsx';
-import { MainNavigation } from './MainNavigation';
+import { MainMenu } from '../navigation/MainMenu.tsx';
 
 
 interface LayoutProps {
@@ -49,7 +49,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen font-sans bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      {shouldShowNavigation && <MainNavigation />}
+      {shouldShowNavigation && <MainMenu />}
       <main
         ref={mainRef}
         className={`container mx-auto px-4 py-8 max-w-4xl ${shouldShowNavigation ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`}

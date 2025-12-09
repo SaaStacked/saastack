@@ -1,20 +1,35 @@
 import React from 'react';
-import { createComponentId } from '../Components';
+import { createComponentId, toClasses } from '../Components';
 
 export interface LoaderProps {
   id?: string;
   message: string;
+  type: 'inline' | 'page';
+  className?: string;
 }
 
-// Creates a spinning loader in the middle of the screen
-const Loader: React.FC<LoaderProps> = ({ id, message }) => {
+// Creates a spinning loader in the middle of the screen, or inline
+const Loader: React.FC<LoaderProps> = ({ id, message, type, className }) => {
+  const isInline = type === 'inline';
+
+  const baseClasses = 'flex items-center justify-center';
+  const layoutClasses = isInline ? 'flex-row space-x-2 h-full w-full' : 'flex-col space-y-4 h-screen';
+  const classes = toClasses([baseClasses, layoutClasses, className]);
+
+  const spinnerClasses = isInline
+    ? 'rounded-full h-[1em] w-[1em] border-[0.15em] border-gray-300 border-t-accent animate-spin flex-shrink-0'
+    : 'rounded-full h-12 w-12 border-4 border-gray-300 border-t-accent animate-spin';
+
+  const textClasses = isInline ? 'text-gray-600 text-[1em] whitespace-nowrap' : 'text-gray-600';
+  const loadingText = `${message.replace(/\.+$/, '')}`;
   const componentId = createComponentId('loader', id);
+
   return (
-    <div className="flex flex-col items-center space-y-4 justify-center h-screen">
-      <div className="rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-500 animate-spin"></div>
-      <p data-testid={componentId} className="text-gray-600">
-        {message}
-        <span>...</span>
+    <div className={classes}>
+      <div className={spinnerClasses}></div>
+      <p data-testid={componentId} className={textClasses}>
+        {loadingText}
+        <span>...</span> {/*needed for unit testing*/}
       </p>
     </div>
   );

@@ -33,16 +33,6 @@
       }
     },
     "layout": {
-      "main_navigation": {
-        "logo": "SaaStack",
-        "links": {
-          "logout": "Logout",
-          "profile": "Settings...",
-          "organizations": "Organizations...",
-          "search_cars": "Search Cars",
-          "reserve_car": "Reserve Car"
-        }
-      },
       "footer": {
         "copyright": "© {{currentYear}} SaaStack. All rights reserved.",
         "links": {
@@ -50,6 +40,18 @@
           "about": "About",
           "terms": "Terms",
           "privacy": "Privacy"
+        }
+      }
+    },
+    "navigation": {
+      "main_menu": {
+        "logo": "SaaStack",
+        "links": {
+          "logout": "Logout",
+          "profile": "Settings...",
+          "organizations": "Organizations...",
+          "search_cars": "Search Cars",
+          "reserve_car": "Reserve Car"
         }
       }
     },

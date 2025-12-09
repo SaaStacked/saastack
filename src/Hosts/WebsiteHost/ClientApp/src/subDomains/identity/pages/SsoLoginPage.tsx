@@ -151,7 +151,7 @@ interface AuthenticateHandlerProps {
 }
 
 function HandleProviderAuthorizationBusy({ translate, providerName }: HandlerProps) {
-  return <Loader message={translate('pages.identity.sso_login.loaders.authorizing', { provider: providerName })} />;
+  return <Loader type="page" message={translate('pages.identity.sso_login.loaders.authorizing', { provider: providerName })} />;
 }
 
 function HandleAuthorizationError({ translate, providerName, oAuth2Error, oAuth2ErrorDescription }: HandlerProps) {
