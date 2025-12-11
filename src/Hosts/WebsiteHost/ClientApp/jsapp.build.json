@@ -1,6 +1,7 @@
 {
+  "version": "lAYre6ua",
   "main": {
-    "js": "vite-inject-mocker-entry.js",
-    "css": "assets/iframe-BQy1kr_V.css"
+    "js": "lAYre6ua.bundle.js",
+    "css": "TwrgtJHM.bundle.css"
   }
 }

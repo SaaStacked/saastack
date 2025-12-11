@@ -2,7 +2,7 @@ import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
-
+import manifestData from '../../../jsapp.build.json';
 
 i18n
   .use(Backend)
@@ -15,7 +15,10 @@ i18n
       escapeValue: false
     },
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      queryStringParams: {
+        v: manifestData.version ?? '00000000'
+      }
     },
     saveMissing: false,
     react: {

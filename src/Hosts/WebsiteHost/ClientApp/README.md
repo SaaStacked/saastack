@@ -11,10 +11,13 @@ We use [Vite](https://vitejs.dev/) for fast development and building, which outp
 ### Bundling
 
 Vite treats 'development' builds and 'production' builds very differently. It also supports a hot-loading dev server.
-We support a mixed mode environment, where you can use the dev server (without hot-loading), or not use the dev server. It is your choice.
+
+We support a mixed mode environment, where you can use the dev server (with hot-loading), or just use the compiled JavaScript bundle. It is your choice.
 
 * When you use `npm run dev` it starts a Vite dev server on port 5173, which serves the JavaScript files from the `src` folder.
 * When you use `npm run build` it compiles and bundles the JavaScript files from the `src` folder into a single bundle in the `wwwroot` folder.
+* 
+> Note: some changes to some files (particularly those outside the `src` folder, like `translation.json` and any images), will require  you to run `npm run build` if running the dev server
 
 We are deliberately rendering the `Index.html` page server-side (see: `HomeController.cs`) for security purposes, thus we need to load the correct JavaScript and CSS files into `Index.html` at runtime both locally and in production.
 
@@ -22,7 +25,7 @@ We are deliberately rendering the `Index.html` page server-side (see: `HomeContr
 * In 'production' mode, we need to reference the vite compiled JavaScript bundle from the `https://app.saastack.com/BSaMLVRv.bundle.js` folder (which is located in the `wwwroot` folder).
 
 
-> Everytime the `npm run build` command is run (as is expected in CI/CD for 'production' builds), the `jsapp.build.json` file is updated with the latest bundle file names.
+> Everytime the `npm run build` command is run (as is expected in CI/CD for 'production' builds), the `jsapp.build.json` file is updated with the latest bundle file names, and version.
 
 > However, when `npm run dev` is executed this file is not updated!
 

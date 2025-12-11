@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 
+
 function generateBundledFiles(): Plugin {
   return {
     name: 'bundle-file-generator',
@@ -30,8 +31,12 @@ function generateBundledFiles(): Plugin {
         const mainJs = jsFiles.find((f) => f.includes('.bundle.js')) || jsFiles[0];
         const mainCss = cssFiles.find((f) => f.includes('.bundle.css')) || cssFiles[0];
 
+        // Extract hash from bundle filename
+        const bundleHash = mainJs?.match(/([\w-_]+)\.bundle\.js/)?.[1] || '00000000';
+
         if (mainJs || mainCss) {
           const manifest = {
+            version: bundleHash,
             main: {
               js: mainJs || '',
               css: mainCss || ''
