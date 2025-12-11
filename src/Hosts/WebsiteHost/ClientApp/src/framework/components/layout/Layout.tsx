@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import { Footer } from './Footer.tsx';
 import { MainMenu } from '../navigation/MainMenu.tsx';
+import { toClasses } from '../Components.ts';
 
 
 interface LayoutProps {
@@ -47,12 +48,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     return () => window.removeEventListener('resize', checkContentHeight);
   }, [children]);
 
+  const baseClasses = `px-4 py-8 ${shouldShowNavigation ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`;
+  const widthClasses = 'container mx-auto max-w-4xl lg:max-w-none';
+  const classes = toClasses([baseClasses, widthClasses]);
+
   return (
     <div className="min-h-screen font-sans bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {shouldShowNavigation && <MainMenu />}
       <main
         ref={mainRef}
-        className={`container mx-auto px-4 py-8 max-w-4xl ${shouldShowNavigation ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`}
+        className={classes}
       >
         {children}
       </main>
