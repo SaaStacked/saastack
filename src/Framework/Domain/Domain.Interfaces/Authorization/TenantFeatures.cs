@@ -9,13 +9,13 @@ namespace Domain.Interfaces.Authorization;
 public static class TenantFeatures
 {
     public static readonly FeatureLevel
-        Basic = new("tenant_basic_features"); // Free/Basic limited features, everyone can use
+        Basic = new("tnt_basic"); // Free/Basic limited features, everyone can use
     public static readonly FeatureLevel
-        PaidTrial = new("tenant_paidtrial_features", Basic); // a.k.a Standard plan features
+        PaidTrial = new("tnt_paidtrial", Basic); // a.k.a Standard plan features
     public static readonly FeatureLevel
-        Paid2 = new("tenant_paid2_features", PaidTrial); // a.k.a Professional plan features
-    public static readonly FeatureLevel Paid3 = new("tenant_paid3_features", Paid2); // a.k.a Enterprise plan features
-    public static readonly FeatureLevel TestingOnly = new("tenant_testingonly_platform");
+        Paid2 = new("tnt_paid2", PaidTrial); // a.k.a Professional plan features
+    public static readonly FeatureLevel Paid3 = new("tnt_paid3", Paid2); // a.k.a Enterprise plan features
+    public static readonly FeatureLevel TestingOnly = new("tnt_testingonly_platform");
     public static readonly Dictionary<string, FeatureLevel> AllFeatures = new()
     {
         { Basic.Name, Basic },

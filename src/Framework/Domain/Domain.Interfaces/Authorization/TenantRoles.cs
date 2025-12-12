@@ -8,12 +8,13 @@ namespace Domain.Interfaces.Authorization;
 /// </summary>
 public static class TenantRoles
 {
-    public static readonly RoleLevel Member = new("tenant_member");
-    public static readonly RoleLevel Owner = new("tenant_owner", Member);
-    public static readonly RoleLevel BillingAdmin = new("tenant_billing_admin", Owner);
-    public static readonly RoleLevel TestingOnly = new("tenant_testingonly");
+    public static readonly RoleLevel Member = new("tnt_mem");
+    public static readonly RoleLevel Owner = new("tnt_own", Member);
+    public static readonly RoleLevel BillingAdmin = new("tnt_bill_adm", Owner);
+    public static readonly RoleLevel TestingOnly = new("tnt_testingonly");
     public static readonly Dictionary<string, RoleLevel> AllRoles = new()
     {
+        // EXTEND: Add all new roles here
         { Member.Name, Member },
         { Owner.Name, Owner },
         { BillingAdmin.Name, BillingAdmin },
@@ -21,8 +22,6 @@ public static class TenantRoles
         { TestingOnly.Name, TestingOnly },
 #endif
     };
-
-    // EXTEND: Add other roles that end-users can be assigned to control access to tenanted resources (e.g. tenanted APIs)
 
     private static readonly IReadOnlyList<RoleLevel> TenantAssignableRoles = new List<RoleLevel>
     {

@@ -8,15 +8,13 @@ namespace Domain.Interfaces.Authorization;
 /// </summary>
 public static class PlatformRoles
 {
-    public static readonly RoleLevel ExternalWebhookService = new("platform_external_webhook_service");
-    public static readonly RoleLevel Standard = new("platform_standard");
-    public static readonly RoleLevel
-        Operations =
-            new("platform_operations",
+    public static readonly RoleLevel ExternalWebhookService = new("plt_external_webhook_service");
+    public static readonly RoleLevel Standard = new("plt_std");
+    public static readonly RoleLevel Operations = new("plt_ops",
                 Standard); // a privileged user that performs various operations across the platform 
-    public static readonly RoleLevel ServiceAccount = new("platform_internal_service");
-    public static readonly RoleLevel TestingOnly = new("platform_testingonly");
-    public static readonly RoleLevel TestingOnlySuperUser = new("platform_super_testingonly", TestingOnly);
+    public static readonly RoleLevel ServiceAccount = new("plt_internal_svc");
+    public static readonly RoleLevel TestingOnly = new("plt_testingonly");
+    public static readonly RoleLevel TestingOnlySuperUser = new("plt_super_testingonly", TestingOnly);
     public static readonly Dictionary<string, RoleLevel> AllRoles = new()
     {
         { Standard.Name, Standard },

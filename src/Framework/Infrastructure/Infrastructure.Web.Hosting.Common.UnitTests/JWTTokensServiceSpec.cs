@@ -98,18 +98,20 @@ public class JWTTokensServiceSpec
         token.Claims.Should()
             .Contain(
                 claim => claim.Type == AuthenticationConstants.Claims.ForRole
-                         && claim.Value == $"Platform_{PlatformRoles.Standard.Name}");
+                         && claim.Value
+                         == $"{AuthenticationConstants.Claims.PlatformPrefix}_{PlatformRoles.Standard.Name}");
         token.Claims.Should()
             .Contain(claim => claim.Type == AuthenticationConstants.Claims.ForRole
                               && claim.Value
-                              == $"Tenant_{TenantRoles.Member.Name}{ClaimExtensions.TenantIdDelimiter}anorganizationid");
-        token.Claims.Should()
-            .Contain(claim => claim.Type == AuthenticationConstants.Claims.ForFeature
-                              && claim.Value == $"Platform_{PlatformFeatures.Basic.Name}");
+                              == $"{AuthenticationConstants.Claims.TenantPrefix}_{TenantRoles.Member.Name}{ClaimExtensions.TenantIdDelimiter}anorganizationid");
         token.Claims.Should()
             .Contain(claim => claim.Type == AuthenticationConstants.Claims.ForFeature
                               && claim.Value
-                              == $"Tenant_{TenantFeatures.Basic.Name}{ClaimExtensions.TenantIdDelimiter}anorganizationid");
+                              == $"{AuthenticationConstants.Claims.PlatformPrefix}_{PlatformFeatures.Basic.Name}");
+        token.Claims.Should()
+            .Contain(claim => claim.Type == AuthenticationConstants.Claims.ForFeature
+                              && claim.Value
+                              == $"{AuthenticationConstants.Claims.TenantPrefix}_{TenantFeatures.Basic.Name}{ClaimExtensions.TenantIdDelimiter}anorganizationid");
         _tokensService.Verify(ts => ts.CreateJWTRefreshToken());
     }
 

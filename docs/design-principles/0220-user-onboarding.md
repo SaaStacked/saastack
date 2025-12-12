@@ -81,7 +81,7 @@ It is worth noting here that the roles of the user in any specific tenant/organi
 * **Platform roles/features** - apply to individual users, and the scope are all the shared services of the platform. In other words, any "untenanted" resources. Untenanted resources represent those resources that have no constraints around tenancy. They are shared across all tenancies. Resources such as `EndUsers` themselves, `Organizations`, `Subscriptions`, and `Images`, are all examples of "untenanted" resources.
 * **Tenanted roles/features** - apply to all members of any specific tenant/organization. Each organization has its own set of these roles/features. 
 
-By default any `tenant_owner`, can promote/demote other `tenant_owner` users in that specific organization. They can also assign other other predefined custom role to members of that tenancy.
+By default, any `tenant_owner`, can promote/demote other `tenant_owner` users in that specific organization. They can also assign other other predefined custom role to members of that tenancy.
 
 >  These roles are customizable to every product
 

@@ -75,7 +75,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("HMAC")
-                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_internal_service|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|plt_basic|]},|Roles|:{|Platform|:[|plt_internal_svc|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithHMACTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -122,7 +122,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|plt_basic|]},|Roles|:{|Platform|:[|plt_std|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.GetCallerWithTokenOrAPIKeyTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -175,7 +175,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_paidtrial_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|plt_paidtrial|]},|Roles|:{|Platform|:[|plt_std|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByFeatureTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
@@ -202,7 +202,7 @@ namespace ApiHost1
                     }
                 })
                 .RequireAuthorization("Token")
-                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|platform_basic_features|]},|Roles|:{|Platform|:[|platform_standard|]}}")
+                .RequireAuthorization("RolesAndFeatures:{|Features|:{|Platform|:[|plt_basic|]},|Roles|:{|Platform|:[|plt_std|]}}")
                 .AddEndpointFilter<global::Infrastructure.Web.Api.Common.Endpoints.ValidationFilter<global::Infrastructure.Web.Api.Operations.Shared.TestingOnly.AuthorizeByTokenWithRoleTestingOnlyRequest>>()
                 .WithOpenApi(op =>
                     {
