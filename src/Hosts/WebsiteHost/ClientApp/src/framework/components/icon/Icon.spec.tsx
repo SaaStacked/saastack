@@ -2,11 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Icon from './Icon';
 
+
 describe('Icon', () => {
   it('renders FontAwesome icon with default props', () => {
     render(<Icon id="anid" symbol="camera" />);
 
-    const fontAwesomeIcon = screen.getByTestId('anid_icon_symbol');
+    const fontAwesomeIcon = screen.getByTestId('anid_icon_symbol_camera');
     expect(fontAwesomeIcon).toBeDefined();
   });
 
@@ -75,7 +76,7 @@ describe('Icon', () => {
   it('renders FontAwesome icon with correct attributes', () => {
     render(<Icon id="anid" symbol="camera" size={40} />);
 
-    const svgIcon = screen.getByTestId('anid_icon_symbol');
+    const svgIcon = screen.getByTestId('anid_icon_symbol_camera');
     expect(svgIcon?.getAttribute('width')).toBe('40');
     expect(svgIcon?.getAttribute('height')).toBe('40');
     expect(svgIcon?.style.height).toBe('40px');

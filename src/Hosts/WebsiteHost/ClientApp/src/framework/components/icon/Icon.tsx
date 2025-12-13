@@ -21,19 +21,21 @@ import {
   faEye,
   faEyeSlash,
   faInfoCircle,
+  faLock,
   faMoon,
   faPencil,
   faPeopleRoof,
   faRepeat,
+  faRobot,
   faShuffle,
   faTrash,
   faUser,
   faUserCircle,
   faXmark
 } from '@fortawesome/free-solid-svg-icons';
+import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons/faPeopleGroup';
 import { createComponentId, toClasses } from '../Components.ts';
 import { TailwindColor } from '../typography/Tailwind.ts';
-
 
 interface IconProps {
   className?: string;
@@ -64,14 +66,17 @@ const fontAwesomeSymbols = {
   edit: faEdit,
   email: faEnvelope,
   'exclamation-triangle-fill': faExclamationTriangle,
+  group: faPeopleGroup,
   'hide-password': faEye,
   'info-circle-fill': faInfoCircle,
+  lock: faLock,
   logout: faArrowRightFromBracket,
   moon: faMoon,
   pencil: faPencil,
   user: faUser,
   plus: faAdd,
   repeat: faRepeat,
+  robot: faRobot,
   'show-password': faEyeSlash,
   shuffle: faShuffle,
   trash: faTrash
@@ -92,7 +97,7 @@ export default function Icon({ className, id, symbol, size = 20, color = 'primar
       <IconBox size={size}>
         <FontAwesomeIcon
           className={className}
-          data-testid={`${componentId}_symbol`}
+          data-testid={`${componentId}_symbol_${symbol}`}
           style={{ display: 'block', height: `${size}px`, width: `${size}px` }}
           icon={fontAwesomeSymbols[symbol as keyof typeof fontAwesomeSymbols]}
           width={size}

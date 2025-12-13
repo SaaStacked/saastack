@@ -2,17 +2,17 @@ import React from 'react';
 import { createComponentId, toClasses } from '../Components.ts';
 import Icon from '../icon/Icon.tsx';
 
-
 export interface UploadButtonProps {
   className?: string;
   id?: string;
+  title?: string;
   onFileChange?: (file: File | undefined) => void;
   disabled?: boolean;
 }
 
 // Creates a button that allows the user to upload a file
 // Accepts a callback that is invoked when the user selects a file
-export default function ButtonUpload({ className, id, onFileChange, disabled }: UploadButtonProps) {
+export default function ButtonUpload({ className, id, title, onFileChange, disabled }: UploadButtonProps) {
   const baseClasses = 'p-2 rounded-full flex items-center justify-center';
   const disabledClasses = disabled
     ? 'cursor-not-allowed bg-gray-400 text-gray-600  opacity-50'
@@ -28,15 +28,15 @@ export default function ButtonUpload({ className, id, onFileChange, disabled }: 
 
   return (
     <>
-      <label className={classes} data-testid={componentId}>
+      <label className={classes} data-testid={componentId} title={title}>
         <Icon symbol="edit" size={14} color={disabled ? 'gray-600' : 'white'} />
         <input
+          className="hidden"
           data-testid={`${componentId}_file_input`}
           type="file"
           accept="image/jpeg,image/png,image/gif"
           onChange={async (event: React.ChangeEvent<HTMLInputElement>) => handleFileChange(event.target.files?.[0])}
           disabled={disabled}
-          className="hidden"
         />
       </label>
     </>

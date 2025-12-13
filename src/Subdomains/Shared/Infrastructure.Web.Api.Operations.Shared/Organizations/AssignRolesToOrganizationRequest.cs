@@ -6,6 +6,8 @@ namespace Infrastructure.Web.Api.Operations.Shared.Organizations;
 /// <summary>
 ///     Assigns a list of roles to a member of an organization
 /// </summary>
+/// <response code="400">The assigned is a member of the organization, or the role is unknown</response>
+/// <response code="403">The assigner is not an owner of the organization</response>
 [Route("/organizations/{Id}/roles/assign", OperationMethod.PutPatch, AccessType.Token)]
 [Authorize(Interfaces.Roles.Tenant_Owner, Features.Tenant_PaidTrial)]
 public class AssignRolesToOrganizationRequest :
