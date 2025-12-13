@@ -27,6 +27,7 @@ import { OrganizationNewPage } from './subDomains/organizations/pages/Organizati
 import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManagePage.tsx';
 import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
 
+
 const AuthenticatedOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) =>
   isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 const AnonymousOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) =>
@@ -58,7 +59,7 @@ const App: React.FC = () => {
             <Route path="/profile" element={<ProfilesManagePage />} />
             <Route path="/organizations" element={<OrganizationsManagePage />} />
             <Route path="/organizations/new" element={<OrganizationNewPage />} />
-            <Route path="/organizations/:id/edit" element={<OrganizationEditPage />} />
+            <Route path="/organizations/:id" element={<OrganizationEditPage />} />
           </Route>
 
           <Route element={<AnonymousOnlyRoutes isAuthenticated={isAuthenticated} />}>

@@ -696,10 +696,10 @@ public sealed class OrganizationRoot : AggregateRootBase
                 return Error.RuleViolation(Resources.OrganizationRoot_RoleNotAssignable.Format(role));
             }
 
-            var assigned = RaiseChangeEvent(OrganizationsDomain.Events.RoleUnassigned(Id, assignerId, userId, role));
-            if (assigned.IsFailure)
+            var unassigned = RaiseChangeEvent(OrganizationsDomain.Events.RoleUnassigned(Id, assignerId, userId, role));
+            if (unassigned.IsFailure)
             {
-                return assigned.Error;
+                return unassigned.Error;
             }
         }
 

@@ -232,7 +232,7 @@
           },
           "resending": {
             "title": "Resend Confirmation",
-            "loader": "Sending...",
+            "loader": "Sending",
             "errors": {
               "token_expired": "Your registration link has expired. Please request to send a new one.",
               "token_used": "This registration link is invalid, and cannot be used to resend a confirmation email. Please check your email."
@@ -373,6 +373,19 @@
       }
     },
     "organizations": {
+      "labels": {
+        "roles": {
+          "tnt_own": "Org Owner",
+          "tnt_mem": "Member",
+          "tnt_bill_adm": "Billing Admin"
+        },
+        "features": {
+          "tnt_basic": "Free",
+          "tnt_paidtrial": "Trial",
+          "tnt_paid2": "Paid 2",
+          "tnt_paid3": "Paid 3"
+        }
+      },
       "manage": {
         "title": "Organizations",
         "loader": {
@@ -394,34 +407,105 @@
           "ownership": "This is your (one and only) personal organization. You cannot delete it, you cannot leave it, and you cannot invite others into it",
           "current": "This as your current organization",
           "switch_default": "Switch to this as your current organization",
-          "edit": "Switch to this as your current organization"
+          "edit": "View details",
+          "members": "Manage members"
         },
         "errors": {
           "forbidden": "The current user may not have access to this organization at this time, please reauthenticate"
         },
         "links": {
           "new": "Create New Organization"
-        }
+        },
+        "empty": "No organizations found"
       },
       "edit": {
-        "title": "Edit Organization",
+        "title": "Organization Details",
         "loader": {
           "title": "Loading organization"
         },
-        "form": {
-          "fields": {
-            "name": {
-              "label": "Name",
-              "placeholder": "Your organization name",
-              "validation": "Must be between 1 and 100 characters"
+        "errors": {
+          "forbidden": "The current user may not have access to this organization at this time, please reauthenticate"
+        },
+        "tabs": {
+          "details": {
+            "title": "Details",
+            "form": {
+              "fields": {
+                "name": {
+                  "label": "Name",
+                  "placeholder": "Your organization name",
+                  "validation": "Must be between 1 and 100 characters"
+                }
+              },
+              "submit": {
+                "label": "Save Changes"
+              }
+            },
+            "errors": {
+              "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
             }
           },
-          "submit": {
-            "label": "Save Changes"
+          "members": {
+            "title": "Members",
+            "loader": "Loading members",
+            "labels": {
+              "self": "You",
+              "unregistered": "Invitation Pending",
+              "email_address": "Email Address",
+              "roles": "Roles"
+            },
+            "hints": {
+              "refresh": "Refresh the list of members",
+              "uninvite": "Remove this member from the organization"
+            },
+            "errors": {
+              "list": {
+                "not_member": "You are not a member of this organization",
+                "not_owner": "You must be an owner of this organization to view and manage members."
+              },
+              "invite": {
+                "personal_organization": "You cannot invite members to a personal organization",
+                "not_owner": "You must be an owner of this organization to invite other members."
+              },
+              "uninvite": {
+                "personal_organization": "You cannot remove members from a personal organization",
+                "not_owner": "You must be an owner of this organization to remove members."
+              },
+              "assign_roles": {
+                "not_owner": "You must be an owner of this organization to assign roles.",
+                "not_member": "This user is not a member of this organization."
+              },
+              "unassign_roles": {
+                "not_owner": "You must be an owner of this organization to unassign roles.",
+                "not_member": "This user is not a member of this organization."
+              }
+            },
+            "invite_form": {
+              "toggle": {
+                "show": "Invite Member",
+                "cancel": "Cancel"
+              },
+              "fields": {
+                "email": {
+                  "label": "Invitee's Email Address",
+                  "placeholder": "Enter email address",
+                  "validation": "Must be a valid email address"
+                }
+              },
+              "submit": {
+                "label": "Invite"
+              }
+            },
+            "role_form": {
+              "fields": {
+                "role": {
+                  "label": "Change Role",
+                  "placeholder": "Select new role"
+                }
+              }
+            },
+            "empty": "No members found"
           }
-        },
-        "errors": {
-          "invalid_image": "The image can only be a jpeg, png, or gif, and no larger than 100MB"
         },
         "links": {
           "organizations": "Back to Organizations"
@@ -445,6 +529,18 @@
       }
     },
     "profiles": {
+      "labels": {
+        "roles": {
+          "plt_std": "Ordinary",
+          "plt_ops": "Operator"
+        },
+        "features": {
+          "plt_basic": "Free",
+          "plt_paidtrial": "Trial",
+          "plt_paid2": "Paid 2",
+          "plt_paid3": "Paid 3"
+        }
+      },
       "manage": {
         "title": "Settings",
         "loader": {
@@ -453,6 +549,9 @@
         "tabs": {
           "profile": {
             "title": "Profile",
+            "hints": {
+              "upload": "Change"
+            },
             "form": {
               "fields": {
                 "display_name": {
@@ -483,8 +582,8 @@
             "title": "Account",
             "form": {
               "fields": {
-                "name": {
-                  "label": "Name"
+                "display_name": {
+                  "label": "Preferred Name"
                 },
                 "email_address": {
                   "label": "Email Address"

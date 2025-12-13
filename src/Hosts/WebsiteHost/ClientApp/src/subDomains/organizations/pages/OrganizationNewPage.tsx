@@ -29,8 +29,8 @@ export const OrganizationNewPage: React.FC = () => {
         validationSchema={z.object({
           name: z
             .string()
-            .min(1, translate('pages.organizations.edit.form.fields.name.validation'))
-            .max(100, translate('pages.organizations.edit.form.fields.name.validation'))
+            .min(1, translate('pages.organizations.edit.tabs.details.form.fields.name.validation'))
+            .max(100, translate('pages.organizations.edit.tabs.details.form.fields.name.validation'))
         })}
         expectedErrorMessages={{
           [CreateOrganizationErrors.invalid_domain]: translate('pages.organizations.new.errors.invalid_domain'),
@@ -41,10 +41,10 @@ export const OrganizationNewPage: React.FC = () => {
         <FormInput
           id="name"
           name="name"
-          label={translate('pages.organizations.edit.form.fields.name.label')}
-          placeholder={translate('pages.organizations.edit.form.fields.name.placeholder')}
+          label={translate('pages.organizations.edit.tabs.details.form.fields.name.label')}
+          placeholder={translate('pages.organizations.edit.tabs.details.form.fields.name.placeholder')}
         />
-        <FormSubmitButton label={translate('pages.organizations.edit.form.submit.label')} />
+        <FormSubmitButton label={translate('pages.organizations.edit.tabs.details.form.submit.label')} />
       </FormAction>
       <div className="text-center">
         <Link to="/organizations">{translate('pages.organizations.new.links.organizations')}</Link>
