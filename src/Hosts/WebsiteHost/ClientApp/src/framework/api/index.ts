@@ -3,7 +3,7 @@ import { recorder } from '../recorder';
 import { client as apiHost1 } from './apiHost1/client.gen';
 import { logout, ProblemDetails, refreshToken } from './websiteHost';
 import { client as websiteHost } from './websiteHost/client.gen';
-
+import { ResolvedRequestOptions } from './apiHost1/client';
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
 export const homePath = '/';
@@ -51,8 +51,35 @@ function initializeApiClient() {
     querySerializer: noIndexedArraysQuerySerializer
   });
 
-  apiHost1.interceptors.response.use((response, request) => handleUnauthorizedResponse(response, request));
-  websiteHost.interceptors.response.use((response, request) => handleUnauthorizedResponse(response, request));
+  apiHost1.interceptors.request.use((request, options) => cacheRequestBody(request, options));
+  websiteHost.interceptors.request.use((request, options) => cacheRequestBody(request, options));
+  apiHost1.interceptors.response.use((response, request, options) => handleUnauthorizedResponse(response, request, options));
+  websiteHost.interceptors.response.use((response, request,options) => handleUnauthorizedResponse(response, request, options));
+}
+
+// This interceptor clones and saves the request, so that it can be later re-sent after a retry in the response interceptor.
+async function cacheRequestBody(request: Request, options: ResolvedRequestOptions<'fields', boolean, string>): Promise<Request> {
+  // @ts-ignore
+  options._bufferedBody = undefined;
+  
+  if (request.method === 'GET' || request.method === 'HEAD') {
+    return request;
+  }
+
+  if (request.body) {
+    const cloned = request.clone();
+    let body = cloned.body;
+    if (body instanceof ReadableStream){
+      const temp = new Response(body);
+      // @ts-ignore
+      body = await temp.arrayBuffer();
+    }
+    
+    // @ts-ignore
+    options._bufferedBody = body;
+  }
+
+  return request;
 }
 
 // This handles refreshing access tokens when any request returns a 401,
@@ -67,7 +94,7 @@ function initializeApiClient() {
 // will call this interceptor a second time around with a 401,
 // and we are intentionally ignoring that error (as an unRetryableRequestUrls),
 // so that we can handle the response fully in the then() clause (below) of the first interceptor call.
-async function handleUnauthorizedResponse(response: Response, request: Request): Promise<Response> {
+async function handleUnauthorizedResponse(response: Response, request: Request, options: ResolvedRequestOptions<'fields', boolean, string>): Promise<Response> {
   if (!response) {
     return Promise.resolve(response);
   }
@@ -105,12 +132,19 @@ async function handleUnauthorizedResponse(response: Response, request: Request):
       recorder.traceDebug("UnAuthorizedHandler: Refreshed user's token, retrying original request");
       recorder.trackUsage(UsageConstants.UsageScenarios.BrowserAuthRefresh);
       // Retry the original request (using fetch directly, not client)
+      // @ts-ignore
+      const body = options._bufferedBody;
       const retry = await fetch(request.url, {
         method: request.method,
         headers: request.headers,
-        body: request.method === 'GET' || request.method === 'HEAD' ? undefined : request.body,
+          body,
         credentials: 'include'
       });
+      // @ts-ignore
+      if (options._bufferedBody){
+        // @ts-ignore
+        options._bufferedBody = undefined;
+      }
       if (retry.ok) {
         // Retrying original request now succeeds
         return Promise.resolve(retry);
