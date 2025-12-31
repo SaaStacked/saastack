@@ -1,6 +1,5 @@
 ﻿using Application.Persistence.Interfaces;
 using Common;
-using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Common.Notifications;
 using Infrastructure.Eventing.Interfaces.Notifications;
 
@@ -15,13 +14,13 @@ public sealed class InProcessEventNotifyingStoreNotificationRelay : EventStreamH
 {
     private readonly IEventNotificationNotifier _notifier;
 
-    public InProcessEventNotifyingStoreNotificationRelay(IRecorder recorder, IEventSourcedChangeEventMigrator migrator,
+    public InProcessEventNotifyingStoreNotificationRelay(IRecorder recorder,
         IDomainEventConsumerRelay consumerRelay,
         IEventNotificationMessageBroker messageBroker,
         IEnumerable<IEventNotificationRegistration> registrations,
         params IEventNotifyingStore[] eventingStores) : base(recorder, eventingStores)
     {
-        _notifier = new EventNotificationNotifier(recorder, migrator, registrations.ToList(), consumerRelay,
+        _notifier = new EventNotificationNotifier(recorder, registrations.ToList(), consumerRelay,
             messageBroker);
     }
 

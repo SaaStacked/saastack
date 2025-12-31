@@ -1,4 +1,5 @@
 using Common;
+using Domain.Common.Extensions;
 using Domain.Interfaces.Entities;
 using Infrastructure.Persistence.Common.ApplicationServices;
 
@@ -7,11 +8,27 @@ namespace Infrastructure.External.Persistence.Common.Extensions;
 public static class EventSourcedChangeEventExtensions
 {
     /// <summary>
-    ///     Converts the specified <see cref="@event" /> to an
-    ///     <see cref="Infrastructure.Persistence.Common.ApplicationServices.EventStoreEntity" />
+    ///     Uses the specified <see cref="migrator" /> to convert the specified <see cref="eventJson" /> to an
+    ///     <see cref="EventSourcedChangeEvent" />
     /// </summary>
-    public static EventStoreEntity ToTabulated(this EventSourcedChangeEvent @event, string entityName,
+    public static EventSourcedChangeEvent FromEventStoreJson<TAggregateRoot>(
+        this IEventSourcedChangeEventMigrator migrator, string eventId, int eventVersion, string eventJson,
+        string eventTypeAssemblyQualifiedName, DateTime lastPersistedAtUtc)
+        where TAggregateRoot : class, IEventingAggregateRoot
+    {
+        var @event = migrator.Rehydrate(eventId, eventJson, eventTypeAssemblyQualifiedName).Value;
+        var aggregateType = typeof(TAggregateRoot);
+
+        return EventSourcedChangeEvent.Create(eventId, aggregateType, @event, eventVersion, lastPersistedAtUtc);
+    }
+
+    /// <summary>
+    ///     Converts the specified <see cref="EventSourcedChangeEvent" /> to an
+    ///     <see cref="EventStoreEntity" /> that persists the event as JSON data
+    /// </summary>
+    public static EventStoreEntity ToEventStoreEntity<TAggregateRoot>(this EventSourcedChangeEvent @event,
         string streamName)
+        where TAggregateRoot : class, IEventingAggregateRoot
     {
         var dto = new EventStoreEntity
         {
@@ -20,11 +37,9 @@ public static class EventSourcedChangeEventExtensions
             IsDeleted = Optional<bool>.None,
             StreamName = streamName,
             Version = @event.Version,
-            EventType = @event.EventType,
-            EntityType = @event.EntityType,
-            EntityName = entityName,
-            Data = @event.Data,
-            Metadata = @event.Metadata
+            EventTypeFullName = @event.EventType.AssemblyQualifiedName,
+            AggregateTypeFullName = typeof(TAggregateRoot).AssemblyQualifiedName,
+            EventJsonData = @event.OriginalEvent.ToEventJson()
         };
 
         return dto;

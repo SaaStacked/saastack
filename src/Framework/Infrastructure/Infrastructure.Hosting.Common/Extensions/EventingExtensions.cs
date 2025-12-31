@@ -37,7 +37,7 @@ public static class EventingExtensions
     public static IServiceCollection RegisterEventing<TAggregateRoot, TProjection, TNotificationRegistration>(
         this IServiceCollection services, Func<IServiceProvider, TProjection> projectionFactory,
         Func<IServiceProvider, TNotificationRegistration> notificationFactory)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
         where TProjection : class, IReadModelProjection
         where TNotificationRegistration : class, IEventNotificationRegistration
     {
@@ -54,7 +54,7 @@ public static class EventingExtensions
     /// </summary>
     public static IServiceCollection RegisterEventing<TAggregateRoot, TProjection>(
         this IServiceCollection services, Func<IServiceProvider, TProjection> projectionFactory)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
         where TProjection : class, IReadModelProjection
     {
         return AddEventing<TAggregateRoot, TProjection>(services, projectionFactory);
@@ -68,7 +68,7 @@ public static class EventingExtensions
     /// </summary>
     public static IServiceCollection RegisterEventing<TAggregateRoot>(
         this IServiceCollection services)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
     {
         return AddEventing<TAggregateRoot>(services);
     }
@@ -77,7 +77,7 @@ public static class EventingExtensions
         this IServiceCollection services,
         Func<IServiceProvider, TProjection> projectionFactory,
         Func<IServiceProvider, TNotificationRegistration> notificationFactory)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
         where TProjection : class, IReadModelProjection
         where TNotificationRegistration : class, IEventNotificationRegistration
     {
@@ -90,7 +90,7 @@ public static class EventingExtensions
     private static IServiceCollection AddEventing<TAggregateRoot, TProjection>(
         this IServiceCollection services,
         Func<IServiceProvider, TProjection> projectionFactory)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
         where TProjection : class, IReadModelProjection
     {
         AddEventing<TAggregateRoot>(services);
@@ -101,7 +101,7 @@ public static class EventingExtensions
 
     private static IServiceCollection AddEventing<TAggregateRoot>(
         this IServiceCollection services)
-        where TAggregateRoot : IEventingAggregateRoot, IDehydratableAggregateRoot
+        where TAggregateRoot : class, IEventingAggregateRoot, IDehydratableAggregateRoot
     {
         if (!services.IsRegistered<IProjectionCheckpointRepository>())
         {
@@ -131,14 +131,12 @@ public static class EventingExtensions
         services.AddPerHttpRequest<IEventNotifyingStoreProjectionRelay>(c =>
             new InProcessEventNotifyingStoreProjectionRelay(
                 c.GetRequiredService<IRecorder>(),
-                c.GetRequiredService<IEventSourcedChangeEventMigrator>(),
                 c.GetRequiredService<IProjectionCheckpointRepository>(),
                 Eventing.ResolveProjections(c),
                 Eventing.ResolveProjectionStores(c).ToArray()));
         services.AddPerHttpRequest<IEventNotifyingStoreNotificationRelay>(c =>
             new InProcessEventNotifyingStoreNotificationRelay(
                 c.GetRequiredService<IRecorder>(),
-                c.GetRequiredService<IEventSourcedChangeEventMigrator>(),
                 c.GetRequiredService<IDomainEventConsumerRelay>(),
                 c.GetRequiredService<IEventNotificationMessageBroker>(),
                 Eventing.ResolveNotificationRegistrations(c),
@@ -226,8 +224,8 @@ public static class EventingExtensions
         public IEnumerable<IReadModelProjection> ResolveProjections(IServiceProvider container)
         {
             var projections = _projectionFactories
-                .SelectMany(
-                    pair => pair.Value.Select(type => container.GetRequiredService(type) as IReadModelProjection))
+                .SelectMany(pair =>
+                    pair.Value.Select(type => container.GetRequiredService(type) as IReadModelProjection))
                 .ToList();
             return projections!;
         }

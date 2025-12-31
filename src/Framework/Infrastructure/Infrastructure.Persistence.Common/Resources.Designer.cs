@@ -87,6 +87,15 @@ namespace Infrastructure.Persistence.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Events store &apos;{0}&apos; cannot return events with missing identifiable data. For example: &apos;{1}&apos;.
+        /// </summary>
+        internal static string EventSourcingDddCommandStore_LoadWithEventDataMissing {
+            get {
+                return ResourceManager.GetString("EventSourcingDddCommandStore_LoadWithEventDataMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publishing of changed events for {0} failed..
         /// </summary>
         internal static string EventSourcingDddCommandStore_PublishFailed {
@@ -98,18 +107,18 @@ namespace Infrastructure.Persistence.Common {
         /// <summary>
         ///   Looks up a localized string similar to The aggregate does not have an Identifier.
         /// </summary>
-        internal static string IEventSourcingDddCommandStore_SaveWithAggregateIdMissing {
+        internal static string EventSourcingDddCommandStore_SaveWithAggregateIdMissing {
             get {
-                return ResourceManager.GetString("IEventSourcingDddCommandStore_SaveWithAggregateIdMissing", resourceCulture);
+                return ResourceManager.GetString("EventSourcingDddCommandStore_SaveWithAggregateIdMissing", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to This stream has been previously deleted and cannot be revived.
         /// </summary>
-        internal static string IEventSourcingDddCommandStore_StreamTombstoned {
+        internal static string EventSourcingDddCommandStore_StreamTombstoned {
             get {
-                return ResourceManager.GetString("IEventSourcingDddCommandStore_StreamTombstoned", resourceCulture);
+                return ResourceManager.GetString("EventSourcingDddCommandStore_StreamTombstoned", resourceCulture);
             }
         }
         

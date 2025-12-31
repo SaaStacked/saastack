@@ -10,6 +10,7 @@
         <ProjectReference Include="..\..\..\Subdomains\Shared\Application.Services.Shared\Application.Services.Shared.csproj" />
         <ProjectReference Include="..\Infrastructure.Eventing.Interfaces\Infrastructure.Eventing.Interfaces.csproj" />
         <ProjectReference Include="..\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
+        <ProjectReference Include="..\..\..\Subdomains\Shared\Domain.Events.Shared\Domain.Events.Shared.csproj" />
         <ProjectReference Include="..\..\..\Subdomains\Shared\Infrastructure.Persistence.Shared\Infrastructure.Persistence.Shared.csproj" />
     </ItemGroup>
 

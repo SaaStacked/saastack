@@ -1,8 +1,8 @@
-using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
 using Common;
 using Common.Extensions;
 using Common.Recording;
-using Domain.Common.ValueObjects;
+using Domain.Common.Extensions;
 using Domain.Interfaces.Entities;
 using EventNotificationsInfrastructure.ApplicationServices;
 using FluentAssertions;
@@ -17,18 +17,16 @@ namespace EventNotificationsInfrastructure.UnitTests.ApplicationServices;
 public class ApiHostDomainEventingSubscribingConsumerSpec
 {
     private readonly ApiHostDomainEventingConsumerService.ApiHostDomainEventingSubscribingConsumer _consumer;
-    private readonly Mock<IEventSourcedChangeEventMigrator> _migrator;
     private readonly Mock<IDomainEventNotificationConsumer> _notificationConsumer;
     private readonly Mock<IRecorder> _recorder;
 
     public ApiHostDomainEventingSubscribingConsumerSpec()
     {
         _recorder = new Mock<IRecorder>();
-        _migrator = new Mock<IEventSourcedChangeEventMigrator>();
         _notificationConsumer = new Mock<IDomainEventNotificationConsumer>();
 
         _consumer = new ApiHostDomainEventingConsumerService.ApiHostDomainEventingSubscribingConsumer(_recorder.Object,
-            "asubscriptionname", _migrator.Object, _notificationConsumer.Object);
+            "asubscriptionname", _notificationConsumer.Object);
     }
 
     [Fact]
@@ -42,29 +40,27 @@ public class ApiHostDomainEventingSubscribingConsumerSpec
     [Fact]
     public async Task WhenNotifyAsyncAndConsumerReturnsError_ThenReturnsError()
     {
-        _migrator.Setup(m => m.Rehydrate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(new TestDomainEvent());
+        var domainEvent = new TestDomainEvent();
         _notificationConsumer.Setup(c => c.NotifyAsync(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.RuleViolation("amessage"));
-        var changeEvent = new EventStreamChangeEvent
+        var eventJson = domainEvent.ToEventJson();
+        var eventNotification = new DomainEventNotification
         {
-            Data = "{}",
-            RootAggregateType = "atype",
-            EventType = "aneventtype",
             Id = "anid",
-            LastPersistedAtUtc = default,
-            Metadata = new EventMetadata("anfqn"),
+            LastPersistedAtUtc = null,
             StreamName = "astreamname",
-            Version = 1
+            Version = 1,
+            AggregateTypeFullName = "anaggregatetypefullname",
+            EventJsonData = eventJson,
+            EventTypeFullName = typeof(TestDomainEvent).AssemblyQualifiedName!
         };
 
-        var result = await _consumer.NotifyAsync(changeEvent, CancellationToken.None);
+        var result = await _consumer.NotifyAsync(eventNotification, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.Unexpected, Error.RuleViolation("amessage")
             .Wrap(Resources.DomainEventingSubscriber_ConsumerFailed.Format(
                 "IDomainEventNotificationConsumerProxy",
-                "arootid", "anfqn")).ToString());
-        _migrator.Verify(m => m.Rehydrate("anid", "{}", "anfqn"));
+                "arootid", typeof(TestDomainEvent).AssemblyQualifiedName!)).ToString());
         _recorder.Verify(rec =>
             rec.Crash(null, CrashLevel.Critical, It.Is<Exception>(ex =>
                 ex.Message.Contains("amessage")
@@ -80,27 +76,23 @@ public class ApiHostDomainEventingSubscribingConsumerSpec
             AProperty = "avalue",
             OccurredUtc = DateTime.UtcNow
         };
-        _migrator.Setup(m => m.Rehydrate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(domainEvent);
         _notificationConsumer.Setup(c => c.NotifyAsync(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok);
-        var eventJson = domainEvent.ToJson()!;
-        var changeEvent = new EventStreamChangeEvent
+        var eventJson = domainEvent.ToEventJson();
+        var eventNotification = new DomainEventNotification
         {
-            Data = eventJson,
-            RootAggregateType = "atype",
-            EventType = "aneventtype",
             Id = "anid",
             LastPersistedAtUtc = null,
-            Metadata = new EventMetadata("anfqn"),
             StreamName = "astreamname",
-            Version = 1
+            Version = 1,
+            AggregateTypeFullName = "anaggregatetypefullname",
+            EventJsonData = eventJson,
+            EventTypeFullName = typeof(TestDomainEvent).AssemblyQualifiedName!
         };
 
-        var result = await _consumer.NotifyAsync(changeEvent, CancellationToken.None);
+        var result = await _consumer.NotifyAsync(eventNotification, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _migrator.Verify(m => m.Rehydrate("anid", eventJson, "anfqn"));
         _notificationConsumer.Verify(c => c.NotifyAsync(It.Is<TestDomainEvent>(evt =>
             evt.RootId == "arootid"
             && evt.OccurredUtc.HasValue()

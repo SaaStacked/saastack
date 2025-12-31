@@ -60,6 +60,15 @@ namespace Infrastructure.External.Persistence.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AggregateRootId cannot be empty.
+        /// </summary>
+        public static string AnyStore_MissingAggregateRootId {
+            get {
+                return ResourceManager.GetString("AnyStore_MissingAggregateRootId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BlobName cannot be empty.
         /// </summary>
         public static string AnyStore_MissingBlobName {
@@ -87,24 +96,6 @@ namespace Infrastructure.External.Persistence.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EntityId cannot be empty.
-        /// </summary>
-        public static string AnyStore_MissingEntityId {
-            get {
-                return ResourceManager.GetString("AnyStore_MissingEntityId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to EntityName cannot be empty.
-        /// </summary>
-        public static string AnyStore_MissingEntityName {
-            get {
-                return ResourceManager.GetString("AnyStore_MissingEntityName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Id cannot be empty.
         /// </summary>
         public static string AnyStore_MissingId {
@@ -116,9 +107,9 @@ namespace Infrastructure.External.Persistence.Common {
         /// <summary>
         ///   Looks up a localized string similar to Message cannot be empty.
         /// </summary>
-        public static string AnyStore_MissingMessage {
+        public static string AnyStore_MissingQueueMessage {
             get {
-                return ResourceManager.GetString("AnyStore_MissingMessage", resourceCulture);
+                return ResourceManager.GetString("AnyStore_MissingQueueMessage", resourceCulture);
             }
         }
         

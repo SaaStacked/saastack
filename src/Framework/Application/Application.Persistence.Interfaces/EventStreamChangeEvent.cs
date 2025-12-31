@@ -1,4 +1,4 @@
-﻿using Domain.Common.ValueObjects;
+﻿using Domain.Interfaces.Entities;
 
 namespace Application.Persistence.Interfaces;
 
@@ -7,17 +7,15 @@ namespace Application.Persistence.Interfaces;
 /// </summary>
 public class EventStreamChangeEvent
 {
-    public required string Data { get; set; }
-
-    public required string EventType { get; set; }
+    public required Type EventType { get; set; }
 
     public required string Id { get; set; }
 
     public DateTime? LastPersistedAtUtc { get; set; }
 
-    public required EventMetadata Metadata { get; set; }
+    public required IDomainEvent OriginalEvent { get; set; }
 
-    public required string RootAggregateType { get; set; }
+    public required Type RootAggregateType { get; set; }
 
     public required string StreamName { get; set; }
 

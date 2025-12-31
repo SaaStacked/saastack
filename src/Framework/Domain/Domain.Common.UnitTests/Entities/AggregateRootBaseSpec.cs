@@ -1,6 +1,5 @@
 ﻿using Common;
 using Common.Recording;
-using Domain.Common.Entities;
 using Domain.Common.Extensions;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
@@ -22,7 +21,6 @@ public class AggregateRootBaseSpec
     private readonly Mock<IDependencyContainer> _dependencyContainer;
     private readonly Mock<IIdentifierFactory> _idFactory;
     private readonly Mock<IRecorder> _recorder;
-    private readonly ChangeEventTypeMigrator _typeMigrator;
 
     public AggregateRootBaseSpec()
     {
@@ -35,7 +33,6 @@ public class AggregateRootBaseSpec
             .Returns(_recorder.Object);
         _dependencyContainer.Setup(dc => dc.GetRequiredService<IIdentifierFactory>())
             .Returns(_idFactory.Object);
-        _typeMigrator = new ChangeEventTypeMigrator();
 
         _aggregate = TestAggregateRoot.Create(_recorder.Object, _idFactory.Object);
     }
@@ -174,12 +171,10 @@ public class AggregateRootBaseSpec
         var result = _aggregate.GetChanges().Value;
 
         result.Count.Should().Be(2);
-        result[0].EventType.Should().Be(nameof(TestAggregateRoot.CreateEvent));
+        result[0].EventType.Should().Be(typeof(TestAggregateRoot.CreateEvent));
         result[0].Version.Should().Be(1);
-        result[0].Metadata.Should().Be(typeof(TestAggregateRoot.CreateEvent).AssemblyQualifiedName);
-        result[1].EventType.Should().Be(nameof(TestAggregateRoot.ChangeEvent));
+        result[1].EventType.Should().Be(typeof(TestAggregateRoot.ChangeEvent));
         result[1].Version.Should().Be(2);
-        result[1].Metadata.Should().Be(typeof(TestAggregateRoot.ChangeEvent).AssemblyQualifiedName);
     }
 
     [Fact]
@@ -188,12 +183,12 @@ public class AggregateRootBaseSpec
         ((IEventingAggregateRoot)_aggregate).LoadChanges(new List<EventSourcedChangeEvent>
         {
             CreateEventEntity("aneventid1", 1)
-        }, _typeMigrator);
+        });
 
         var result = ((IEventingAggregateRoot)_aggregate).LoadChanges(new List<EventSourcedChangeEvent>
         {
             CreateEventEntity("aneventid2", 2)
-        }, _typeMigrator);
+        });
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.EventingAggregateRootBase_ChangesAlreadyLoaded);
     }
@@ -206,7 +201,7 @@ public class AggregateRootBaseSpec
             CreateEventEntity("aneventid1", 1),
             CreateEventEntity("aneventid2", 2),
             CreateEventEntity("aneventid3", 3)
-        }, _typeMigrator);
+        });
 
         _aggregate.EventStream.FirstEventVersion.Should().Be(1);
         _aggregate.EventStream.LastEventVersion.Should().Be(3);
@@ -220,28 +215,10 @@ public class AggregateRootBaseSpec
             CreateEventEntity("aneventid1", 3),
             CreateEventEntity("aneventid2", 4),
             CreateEventEntity("aneventid3", 5)
-        }, _typeMigrator);
+        });
 
         _aggregate.EventStream.FirstEventVersion.Should().Be(3);
         _aggregate.EventStream.LastEventVersion.Should().Be(5);
-    }
-
-    [Fact]
-    public void WhenToEventAfterGetChanges_ThenReturnsOriginalEvent()
-    {
-        _aggregate.ChangeProperty("avalue");
-
-        var entities = _aggregate.GetChanges().Value;
-
-        var created = entities[0].ToEvent(_typeMigrator).Value;
-
-        created.Should().BeOfType<TestAggregateRoot.CreateEvent>();
-        created.As<TestAggregateRoot.CreateEvent>().RootId.Should().Be("anid");
-
-        var changed = entities[1].ToEvent(_typeMigrator).Value;
-
-        changed.Should().BeOfType<TestAggregateRoot.ChangeEvent>();
-        changed.As<TestAggregateRoot.ChangeEvent>().APropertyName.Should().Be("avalue");
     }
 
     [Fact]
@@ -255,6 +232,6 @@ public class AggregateRootBaseSpec
     private static EventSourcedChangeEvent CreateEventEntity(string id, int version)
     {
         return new TestEvent { APropertyValue = "avalue" }
-            .ToVersioned(new FixedIdentifierFactory(id), "anentitytype", version).Value;
+            .ToVersioned(new FixedIdentifierFactory(id), typeof(TestEntity), version).Value;
     }
 }

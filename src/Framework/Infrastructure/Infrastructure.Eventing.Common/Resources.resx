@@ -51,4 +51,16 @@
     <data name="AsynchronousConsumerRelay_RelayFailed" xml:space="preserve">
         <value>The relay '{0}' failed to handle the domain event '{1}' with event type '{2}'</value>
     </data>
+    <data name="EventingExtensions_ToDomainEvent_UnknownType" xml:space="preserve">
+        <value>Failed to convert event json to domain event. Event type: '{0}' cannot be found in the current AppDomain. Perhaps the type '{0}' has been renamed or no longer exists in the codebase?</value>
+    </data>
+    <data name="EventingExtensions_ToDomainEvent_FailedToDeserialize" xml:space="preserve">
+        <value>Failed to deserialize event json to domain event. Event type: '{0}' cannot be deserialized with the current json. Error: {1}</value>
+    </data>
+    <data name="ChangeEventMigrator_UnknownType" xml:space="preserve">
+        <value>Failed to convert event '{0}' with json to domain event. Event type: '{1}' cannot be found in the current AppDomain. Perhaps the type '{1}' has been renamed or no longer exists in the codebase?</value>
+    </data>
+    <data name="ChangeEventMigrator_FailedToDeserialize" xml:space="preserve">
+        <value>Failed to deserialize event '{0}'. Event type: '{1}' cannot be deserialized with the current json. Error: {2}</value>
+    </data>
 </root>

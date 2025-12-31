@@ -3,6 +3,7 @@ using Common;
 using Common.Extensions;
 using Domain.Interfaces;
 using Domain.Interfaces.Entities;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.External.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Common.ApplicationServices;
 using Infrastructure.Persistence.Interfaces;
@@ -15,15 +16,16 @@ partial class LocalMachineJsonFileStore : IEventStore
 {
     private static string? _cachedContainerName;
 
-    public async Task<Result<string, Error>> AddEventsAsync(string entityName, string entityId,
+    public async Task<Result<string, Error>> AddEventsAsync<TAggregateRoot>(string aggregateRootId,
         List<EventSourcedChangeEvent> events, CancellationToken cancellationToken)
+        where TAggregateRoot : class, IEventingAggregateRoot
     {
-        entityName.ThrowIfNotValuedParameter(nameof(entityName), Resources.InProcessInMemDataStore_MissingEntityName);
-        entityId.ThrowIfNotValuedParameter(nameof(entityId), Resources.InProcessInMemDataStore_MissingEntityId);
+        aggregateRootId.ThrowIfNotValuedParameter(nameof(aggregateRootId), Resources.AnyStore_MissingAggregateRootId);
 
-        var streamName = GetEventStreamName(entityName, entityId);
+        var streamName = aggregateRootId.GetEventStreamName<TAggregateRoot>();
 
-        var latestStoredEvent = await GetLatestEventAsync(entityName, entityId, streamName, cancellationToken);
+        var latestStoredEvent =
+            await GetLatestEventAsync<TAggregateRoot>(aggregateRootId, streamName, cancellationToken);
         var latestStoredEventVersion = latestStoredEvent.HasValue
             ? latestStoredEvent.Value.Version.ToOptional()
             : Optional<int>.None;
@@ -36,9 +38,9 @@ partial class LocalMachineJsonFileStore : IEventStore
 
         foreach (var @event in events)
         {
-            var entity = CommandEntity.FromDto(@event.ToTabulated(entityName, streamName));
+            var entity = @event.ToJsonRecord<TAggregateRoot>(streamName);
 
-            var container = EnsureContainer(GetEventStoreContainerPath(entityName, entityId));
+            var container = EnsureContainer(GetEventStoreContainerPath<TAggregateRoot>(aggregateRootId));
             var version = @event.Version;
             var filename = $"version_{version:D3}";
             var added = await container.WriteExclusiveAsync(filename, entity.ToFileProperties(), cancellationToken);
@@ -48,7 +50,7 @@ partial class LocalMachineJsonFileStore : IEventStore
                 {
                     var storeType = GetType().Name;
                     return Error.EntityExists(
-                        Common.Resources
+                        Resources
                             .EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated
                             .Format(storeType, streamName, version));
                 }
@@ -61,39 +63,40 @@ partial class LocalMachineJsonFileStore : IEventStore
     }
 
 #if TESTINGONLY
-    Task<Result<Error>> IEventStore.DestroyAllAsync(string entityName, CancellationToken cancellationToken)
+    Task<Result<Error>> IEventStore.DestroyAllAsync<TAggregateRoot>(CancellationToken cancellationToken)
     {
-        entityName.ThrowIfNotValuedParameter(nameof(entityName), Resources.InProcessInMemDataStore_MissingEntityName);
-
-        var eventStore = EnsureContainer(GetEventStoreContainerPath(entityName));
+        var eventStore = EnsureContainer(GetEventStoreContainerPath<TAggregateRoot>());
         eventStore.Erase();
 
         return Task.FromResult(Result.Ok);
     }
 #endif
 
-    public async Task<Result<IReadOnlyList<EventSourcedChangeEvent>, Error>> GetEventStreamAsync(string entityName,
-        string entityId, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<EventSourcedChangeEvent>, Error>> GetEventStreamAsync<TAggregateRoot>(
+        string aggregateRootId, IEventSourcedChangeEventMigrator eventMigrator,
+        CancellationToken cancellationToken)
+        where TAggregateRoot : class, IEventingAggregateRoot
     {
-        entityName.ThrowIfNotValuedParameter(nameof(entityName), Resources.InProcessInMemDataStore_MissingEntityName);
-        entityId.ThrowIfNotValuedParameter(nameof(entityId), Resources.InProcessInMemDataStore_MissingEntityId);
+        aggregateRootId.ThrowIfNotValuedParameter(nameof(aggregateRootId), Resources.AnyStore_MissingAggregateRootId);
 
-        var streamName = GetEventStreamName(entityName, entityId);
+        var streamName = aggregateRootId.GetEventStreamName<TAggregateRoot>();
 
         var query = Query.From<EventStoreEntity>()
             .Where<string>(ee => ee.StreamName, ConditionOperator.EqualTo, streamName)
             .OrderBy(ee => ee.Version);
 
         //HACK: we use QueryEntity.ToDto() here, since EventSourcedChangeEvent can be rehydrated without a IDomainFactory 
-        var queries = await QueryEventStoresAsync(entityName, entityId, query, cancellationToken);
+        var queries =
+            await QueryEventStoresAsync<TAggregateRoot, EventStoreEntity>(aggregateRootId, query, cancellationToken);
         var events = queries
-            .ConvertAll(entity => entity.ToDto<EventSourcedChangeEvent>());
+            .ConvertAll(entity => entity.FromJsonRecord<TAggregateRoot>(eventMigrator));
 
         return events;
     }
 
-    private static string GetEventStoreContainerPath(string containerName, string? entityId = null)
+    private static string GetEventStoreContainerPath<TAggregateRoot>(string? entityId = null)
     {
+        var containerName = EventStoreExtensions.GetAggregateName<TAggregateRoot>();
         if (entityId.HasValue())
         {
             return $"{DetermineEventStoreContainerName()}/{containerName}/{entityId}";
@@ -102,7 +105,7 @@ partial class LocalMachineJsonFileStore : IEventStore
         return $"{DetermineEventStoreContainerName()}/{containerName}";
     }
 
-    private async Task<Optional<EventStoreEntity>> GetLatestEventAsync(string entityName, string entityId,
+    private async Task<Optional<EventStoreEntity>> GetLatestEventAsync<TAggregateRoot>(string entityId,
         string streamName, CancellationToken cancellationToken)
     {
         entityId.ThrowIfNotValuedParameter(nameof(entityId));
@@ -113,7 +116,7 @@ partial class LocalMachineJsonFileStore : IEventStore
             .OrderBy(ee => ee.Version, OrderDirection.Descending)
             .Take(1);
 
-        var queries = await QueryEventStoresAsync(entityName, entityId, query, cancellationToken);
+        var queries = await QueryEventStoresAsync<TAggregateRoot, EventStoreEntity>(entityId, query, cancellationToken);
         var latest = queries
             .FirstOrDefault();
 
@@ -122,7 +125,7 @@ partial class LocalMachineJsonFileStore : IEventStore
             : Optional<EventStoreEntity>.None;
     }
 
-    private async Task<List<QueryEntity>> QueryEventStoresAsync<TQueryableEntity>(string entityName, string entityId,
+    private async Task<List<QueryEntity>> QueryEventStoresAsync<TAggregateRoot, TQueryableEntity>(string entityId,
         QueryClause<TQueryableEntity> query, CancellationToken cancellationToken)
         where TQueryableEntity : IQueryableEntity
     {
@@ -131,7 +134,7 @@ partial class LocalMachineJsonFileStore : IEventStore
             return new List<QueryEntity>();
         }
 
-        var container = EnsureContainer(GetEventStoreContainerPath(entityName, entityId));
+        var container = EnsureContainer(GetEventStoreContainerPath<TAggregateRoot>(entityId));
         if (container.IsEmpty())
         {
             return new List<QueryEntity>();
@@ -145,11 +148,6 @@ partial class LocalMachineJsonFileStore : IEventStore
         return results.Results;
     }
 
-    private static string GetEventStreamName(string entityName, string entityId)
-    {
-        return $"{entityName}_{entityId}";
-    }
-
     private static string DetermineEventStoreContainerName()
     {
         if (_cachedContainerName.HasNoValue())
@@ -158,6 +156,35 @@ partial class LocalMachineJsonFileStore : IEventStore
         }
 
         return _cachedContainerName;
+    }
+}
+
+internal static class LocalMachineJsonFileEventStoreConversionExtensions
+{
+    public static string GetEventStreamName<TAggregateRoot>(this string aggregateRootId)
+    {
+        var aggregateName = EventStoreExtensions.GetAggregateName<TAggregateRoot>();
+        return $"{aggregateName}_{aggregateRootId}";
+    }
+    
+    public static EventSourcedChangeEvent FromJsonRecord<TAggregateRoot>(this QueryEntity entity,
+        IEventSourcedChangeEventMigrator migrator)
+        where TAggregateRoot : class, IEventingAggregateRoot
+    {
+        var eventId = entity.Id;
+        var eventTypeFullName = entity.GetValueOrDefault(nameof(EventStoreEntity.EventTypeFullName), string.Empty)!;
+        var eventJson = entity.GetValueOrDefault(nameof(EventStoreEntity.EventJsonData), string.Empty)!;
+        var eventVersion = entity.GetValueOrDefault(nameof(EventStoreEntity.Version), 1);
+        var lastPersistedAtUtc = entity.GetValueOrDefault(nameof(EventStoreEntity.LastPersistedAtUtc), DateTime.UtcNow);
+
+        return migrator.FromEventStoreJson<TAggregateRoot>(eventId, eventVersion, eventJson, eventTypeFullName,
+            lastPersistedAtUtc);
+    }
+
+    public static CommandEntity ToJsonRecord<TAggregateRoot>(this EventSourcedChangeEvent @event, string streamName)
+        where TAggregateRoot : class, IEventingAggregateRoot
+    {
+        return CommandEntity.FromDto(@event.ToEventStoreEntity<TAggregateRoot>(streamName));
     }
 }
 #endif

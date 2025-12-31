@@ -1,7 +1,6 @@
 using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
-using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Interfaces.Notifications;
 
 namespace Infrastructure.Eventing.Common.Notifications;
@@ -19,8 +18,8 @@ internal class InProcessSynchronousConsumerRelay : IDomainEventConsumerRelay
         _consumers = consumers;
     }
 
-    public async Task<Result<Error>> RelayDomainEventAsync(IDomainEvent @event,
-        EventStreamChangeEvent changeEvent, CancellationToken cancellationToken)
+    public async Task<Result<Error>> RelayDomainEventAsync(EventStreamChangeEvent changeEvent,
+        CancellationToken cancellationToken)
     {
         if (_consumers.HasNone())
         {
@@ -29,13 +28,14 @@ internal class InProcessSynchronousConsumerRelay : IDomainEventConsumerRelay
 
         foreach (var consumer in _consumers)
         {
+            var @event = changeEvent.OriginalEvent;
             var result = await consumer.NotifyAsync(@event, cancellationToken);
             if (result.IsFailure)
             {
                 return result.Error
                     .Wrap(ErrorCode.Unexpected,
                         Resources.InProcessSynchronousConsumerRelay_ConsumerFailed.Format(consumer.GetType().Name,
-                            @event.RootId, changeEvent.Metadata.Fqn));
+                            @event.RootId, changeEvent.EventType.AssemblyQualifiedName!));
             }
         }
 

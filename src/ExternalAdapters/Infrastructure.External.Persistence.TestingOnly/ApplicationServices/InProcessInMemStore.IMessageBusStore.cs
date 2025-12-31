@@ -2,6 +2,7 @@
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Interfaces.ApplicationServices;
 using Task = System.Threading.Tasks.Task;
@@ -17,9 +18,9 @@ partial class InProcessInMemStore : IMessageBusStore, IMessageBusStoreTrigger
     Task<Result<long, Error>> IMessageBusStore.CountAsync(string topicName, string subscriptionName,
         CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter(nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
 
         if (!_topics.TryGetValue(topicName, out _))
         {
@@ -41,7 +42,7 @@ partial class InProcessInMemStore : IMessageBusStore, IMessageBusStoreTrigger
 #if TESTINGONLY
     Task<Result<Error>> IMessageBusStore.DestroyAllAsync(string topicName, CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
 
         if (_topics.ContainsKey(topicName))
         {
@@ -65,9 +66,9 @@ partial class InProcessInMemStore : IMessageBusStore, IMessageBusStoreTrigger
         Func<string, CancellationToken, Task<Result<Error>>> messageHandlerAsync,
         CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter(nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
         ArgumentNullException.ThrowIfNull(messageHandlerAsync);
 
         if (!_topics.TryGetValue(topicName, out _))
@@ -121,8 +122,8 @@ partial class InProcessInMemStore : IMessageBusStore, IMessageBusStoreTrigger
 
     public Task<Result<Error>> SendAsync(string topicName, string message, CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
-        message.ThrowIfNotValuedParameter(nameof(message), Resources.InProcessInMemDataStore_MissingQueueMessage);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
+        message.ThrowIfNotValuedParameter(nameof(message), Resources.AnyStore_MissingQueueMessage);
 
         if (!_topics.TryGetValue(topicName, out _))
         {
@@ -146,9 +147,9 @@ partial class InProcessInMemStore : IMessageBusStore, IMessageBusStoreTrigger
     public Task<Result<Error>> SubscribeAsync(string topicName, string subscriptionName,
         CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter(nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
 
         if (!_topics.TryGetValue(topicName, out _))
         {

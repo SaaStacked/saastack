@@ -1,4 +1,4 @@
-using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 
@@ -10,11 +10,12 @@ public class StubDomainEventingConsumerService : IDomainEventingConsumerService
 
     public string? LastEventSubscriptionName { get; private set; }
 
-    public async Task<Result<Error>> NotifySubscriberAsync(string subscriptionName, EventStreamChangeEvent changeEvent,
+    public async Task<Result<Error>> NotifySubscriberAsync(string subscriptionName,
+        DomainEventNotification domainEventNotification,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-        LastEventId = changeEvent.Id;
+        LastEventId = domainEventNotification.Id;
         LastEventSubscriptionName = subscriptionName;
         return Result.Ok;
     }

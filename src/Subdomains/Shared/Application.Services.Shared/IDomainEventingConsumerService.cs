@@ -1,4 +1,4 @@
-using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
 using Common;
 
 namespace Application.Services.Shared;
@@ -15,8 +15,8 @@ public interface IDomainEventingConsumerService
 
     /// <summary>
     ///     Notifies the subscriber for the specified <see cref="subscriptionName" /> with the specified
-    ///     <see cref="changeEvent" />
+    ///     <see cref="DomainEventNotification" />
     /// </summary>
-    Task<Result<Error>> NotifySubscriberAsync(string subscriptionName, EventStreamChangeEvent changeEvent,
+    Task<Result<Error>> NotifySubscriberAsync(string subscriptionName, DomainEventNotification domainEventNotification,
         CancellationToken cancellationToken);
 }

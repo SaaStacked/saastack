@@ -1,16 +1,21 @@
-using Application.Persistence.Common.Extensions;
-using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 using Common.Extensions;
 using Common.Recording;
-using Domain.Interfaces.Entities;
+using Infrastructure.Eventing.Common.Extensions;
 using Infrastructure.Eventing.Interfaces.Notifications;
 
 namespace EventNotificationsInfrastructure.ApplicationServices;
 
 /// <summary>
-///     Provides a service that notified consumers of domain events notifications
+///     Provides a service that notified consumers of domain events notifications.
+///     Note: This service receives domain event notifications from the message bus, and notifies the registered consumers
+///     of them in this AppDomain.
+///     Warning: These notification messages, may have been on the message bus already, before this AppDomain was started.
+///     It is possible that when this AppDomain starts, the original event classes may have changed, and so, there is a
+///     remote chance that when the notification message is deserialized back into the original event class, that class no
+///     longer exists, or has breaking changes in it.
 /// </summary>
 public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerService
 {
@@ -18,9 +23,9 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
     private readonly IDomainEventingSubscriberService _subscriberService;
 
     public ApiHostDomainEventingConsumerService(IRecorder recorder,
-        IEnumerable<IDomainEventNotificationConsumer> consumers, IEventSourcedChangeEventMigrator migrator,
+        IEnumerable<IDomainEventNotificationConsumer> consumers,
         IDomainEventingSubscriberService subscriberService) : this(subscriberService,
-        WrapConsumers(recorder, subscriberService, consumers, migrator))
+        WrapConsumers(recorder, subscriberService, consumers))
     {
     }
 
@@ -31,7 +36,8 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
         _consumers = consumers;
     }
 
-    public async Task<Result<Error>> NotifySubscriberAsync(string subscriptionName, EventStreamChangeEvent changeEvent,
+    public async Task<Result<Error>> NotifySubscriberAsync(string subscriptionName,
+        DomainEventNotification domainEventNotification,
         CancellationToken cancellationToken)
     {
         var consumer =
@@ -43,14 +49,13 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
                 .Format(subscriptionName));
         }
 
-        return await consumer.NotifyAsync(changeEvent, cancellationToken);
+        return await consumer.NotifyAsync(domainEventNotification, cancellationToken);
     }
 
     public IReadOnlyList<string> SubscriptionNames => _subscriberService.SubscriptionNames;
 
     private static List<IDomainEventingSubscribingConsumer> WrapConsumers(IRecorder recorder,
-        IDomainEventingSubscriberService subscriberService, IEnumerable<IDomainEventNotificationConsumer> consumers,
-        IEventSourcedChangeEventMigrator migrator)
+        IDomainEventingSubscriberService subscriberService, IEnumerable<IDomainEventNotificationConsumer> consumers)
     {
         var injectedConsumers = consumers.ToList();
         var registeredConsumers = subscriberService.Consumers;
@@ -77,7 +82,7 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
             .Select(consumer =>
             {
                 var registeredConsumer = registeredConsumers.Single(rc => rc.Key == consumer.GetType());
-                return new ApiHostDomainEventingSubscribingConsumer(recorder, registeredConsumer.Value, migrator,
+                return new ApiHostDomainEventingSubscribingConsumer(recorder, registeredConsumer.Value,
                     consumer);
             })
             .ToList<IDomainEventingSubscribingConsumer>();
@@ -87,7 +92,7 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
     {
         string SubscriptionName { get; }
 
-        Task<Result<Error>> NotifyAsync(EventStreamChangeEvent changeEvent,
+        Task<Result<Error>> NotifyAsync(DomainEventNotification domainEventNotification,
             CancellationToken cancellationToken);
     }
 
@@ -97,34 +102,32 @@ public class ApiHostDomainEventingConsumerService : IDomainEventingConsumerServi
     internal class ApiHostDomainEventingSubscribingConsumer : IDomainEventingSubscribingConsumer
     {
         private readonly IDomainEventNotificationConsumer _consumer;
-        private readonly IEventSourcedChangeEventMigrator _migrator;
         private readonly IRecorder _recorder;
 
         public ApiHostDomainEventingSubscribingConsumer(IRecorder recorder, string subscriptionName,
-            IEventSourcedChangeEventMigrator migrator, IDomainEventNotificationConsumer consumer)
+            IDomainEventNotificationConsumer consumer)
         {
             _recorder = recorder;
             SubscriptionName = subscriptionName;
-            _migrator = migrator;
             _consumer = consumer;
         }
 
-        public async Task<Result<Error>> NotifyAsync(EventStreamChangeEvent changeEvent,
+        public async Task<Result<Error>> NotifyAsync(DomainEventNotification domainEventNotification,
             CancellationToken cancellationToken)
         {
-            var converted = changeEvent.ToDomainEvent(_migrator);
+            var converted = domainEventNotification.ToDomainEvent();
             if (converted.IsFailure)
             {
                 return converted.Error;
             }
 
-            var domainEvent = converted.Value;
-            var notified = await _consumer.NotifyAsync(domainEvent, cancellationToken);
+            var @event = converted.Value;
+            var notified = await _consumer.NotifyAsync(@event, cancellationToken);
             if (notified.IsFailure)
             {
                 var consumerName = _consumer.GetType().Name;
-                var eventId = domainEvent.RootId;
-                var eventName = changeEvent.Metadata.Fqn;
+                var eventId = @event.RootId;
+                var eventName = domainEventNotification.EventTypeFullName;
                 var ex = notified.Error.ToException<InvalidOperationException>();
                 _recorder.Crash(null, CrashLevel.Critical, ex,
                     "Consumer {Consumer} failed to process event {EventId} ({EventType})",

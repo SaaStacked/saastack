@@ -1,6 +1,5 @@
 ﻿using Application.Persistence.Interfaces;
 using Common;
-using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Common.Projections;
 using Infrastructure.Eventing.Interfaces.Projections;
 
@@ -15,12 +14,12 @@ public sealed class InProcessEventNotifyingStoreProjectionRelay : EventStreamHan
 {
     private readonly IReadModelProjector _projector;
 
-    public InProcessEventNotifyingStoreProjectionRelay(IRecorder recorder, IEventSourcedChangeEventMigrator migrator,
+    public InProcessEventNotifyingStoreProjectionRelay(IRecorder recorder,
         IProjectionCheckpointRepository checkpointStore, IEnumerable<IReadModelProjection> projections,
         params IEventNotifyingStore[] eventingStores) : base(recorder, eventingStores)
     {
         _projector =
-            new InProcessSynchronousReadModelProjector(recorder, checkpointStore, migrator, projections.ToArray());
+            new InProcessSynchronousReadModelProjector(recorder, checkpointStore, projections.ToArray());
     }
 
     protected override void Dispose(bool disposing)

@@ -19,6 +19,7 @@ public class EventSourcingDddCommandStoreSpec
 {
     private readonly Mock<IDomainFactory> _domainFactory;
     private readonly Mock<IEventStore> _eventStore;
+    private readonly Mock<IEventSourcedChangeEventMigrator> _migrator;
     private readonly EventSourcingDddCommandStore<TestEventingAggregateRoot> _store;
     private EventStreamChangedArgs? _eventStreamChangedArgs;
 
@@ -26,11 +27,11 @@ public class EventSourcingDddCommandStoreSpec
     {
         var recorder = new Mock<IRecorder>();
         _domainFactory = new Mock<IDomainFactory>();
-        var migrator = new Mock<IEventSourcedChangeEventMigrator>();
+        _migrator = new Mock<IEventSourcedChangeEventMigrator>();
         _eventStore = new Mock<IEventStore>();
         _store =
             new EventSourcingDddCommandStore<TestEventingAggregateRoot>(recorder.Object, _domainFactory.Object,
-                migrator.Object, _eventStore.Object);
+                _migrator.Object, _eventStore.Object);
 
         _eventStreamChangedArgs = null;
         _store.OnEventStreamChanged += (_, args, _) => { _eventStreamChangedArgs = args; };
@@ -42,7 +43,8 @@ public class EventSourcingDddCommandStoreSpec
     {
         await _store.DestroyAllAsync(CancellationToken.None);
 
-        _eventStore.Verify(store => store.DestroyAllAsync("acontainername", CancellationToken.None));
+        _eventStore.Verify(store =>
+            store.DestroyAllAsync<TestEventingAggregateRoot>(CancellationToken.None));
     }
 #endif
 
@@ -51,7 +53,8 @@ public class EventSourcingDddCommandStoreSpec
     {
         var aggregate = new TestEventingAggregateRoot("anid".ToId());
         _eventStore.Setup(store =>
-                store.GetEventStreamAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                store.GetEventStreamAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
+                    It.IsAny<IEventSourcedChangeEventMigrator>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<EventSourcedChangeEvent>());
         _domainFactory.Setup(df =>
                 df.RehydrateAggregateRoot(It.IsAny<Type>(), It.IsAny<HydrationProperties>()))
@@ -61,7 +64,8 @@ public class EventSourcingDddCommandStoreSpec
 
         result.Should().BeError(ErrorCode.EntityNotFound);
         _eventStore.Verify(store =>
-            store.GetEventStreamAsync("acontainername", "anid", CancellationToken.None));
+            store.GetEventStreamAsync<TestEventingAggregateRoot>("anid",
+                It.IsAny<IEventSourcedChangeEventMigrator>(), CancellationToken.None));
         _domainFactory.Verify(df => df.RehydrateAggregateRoot(typeof(TestEventingAggregateRoot),
             It.IsAny<HydrationProperties>()), Times.Never);
     }
@@ -78,22 +82,22 @@ public class EventSourcingDddCommandStoreSpec
             CreateEventEntity("aneventid3", 3, lastPersisted)
         };
         _eventStore.Setup(store =>
-                store.GetEventStreamAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                store.GetEventStreamAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
+                    It.IsAny<IEventSourcedChangeEventMigrator>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(events);
         _domainFactory.Setup(df =>
                 df.RehydrateAggregateRoot(It.IsAny<Type>(), It.IsAny<HydrationProperties>()))
             .Returns(aggregate);
         _domainFactory.Setup(df => df.RehydrateValueObject(typeof(Identifier), It.IsAny<string>()))
             .Returns((Type _, string value) => value.ToId());
-        _domainFactory.Setup(df => df.RehydrateValueObject(typeof(EventMetadata), It.IsAny<string>()))
-            .Returns((Type _, string value) => new EventMetadata(value));
 
         var result = await _store.LoadAsync("anid".ToId(), CancellationToken.None);
 
         result.Value.Should().Be(aggregate);
         result.Value.LoadedChangeEvents.Should().BeEquivalentTo(events);
         _eventStore.Verify(store =>
-            store.GetEventStreamAsync("acontainername", "anid", CancellationToken.None));
+            store.GetEventStreamAsync<TestEventingAggregateRoot>("anid", _migrator.Object,
+                CancellationToken.None));
         _domainFactory.Verify(df => df.RehydrateAggregateRoot(typeof(TestEventingAggregateRoot),
             It.Is<HydrationProperties>(dic =>
                 dic.Count == 2
@@ -113,12 +117,13 @@ public class EventSourcingDddCommandStoreSpec
             CreateTombstoneEntity("aneventid4", 4)
         };
         _eventStore.Setup(store =>
-                store.GetEventStreamAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                store.GetEventStreamAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
+                    It.IsAny<IEventSourcedChangeEventMigrator>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(events);
 
         var result = await _store.LoadAsync("anid".ToId(), CancellationToken.None);
 
-        result.Should().BeError(ErrorCode.EntityDeleted, Resources.IEventSourcingDddCommandStore_StreamTombstoned);
+        result.Should().BeError(ErrorCode.EntityDeleted, Resources.EventSourcingDddCommandStore_StreamTombstoned);
     }
 
     [Fact]
@@ -128,7 +133,7 @@ public class EventSourcingDddCommandStoreSpec
             await _store.SaveAsync(new TestEventingAggregateRoot(Identifier.Empty()), CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityExists,
-            Resources.IEventSourcingDddCommandStore_SaveWithAggregateIdMissing);
+            Resources.EventSourcingDddCommandStore_SaveWithAggregateIdMissing);
     }
 
     [Fact]
@@ -158,14 +163,14 @@ public class EventSourcingDddCommandStoreSpec
                 event1
             }
         };
-        _eventStore.Setup(store => store.AddEventsAsync(It.IsAny<string>(), It.IsAny<string>(),
+        _eventStore.Setup(store => store.AddEventsAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
                 It.IsAny<List<EventSourcedChangeEvent>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync("astreamname");
 
         await _store.SaveAsync(aggregate, CancellationToken.None);
 
-        _eventStore.Verify(
-            store => store.AddEventsAsync("acontainername", "anid", It.Is<List<EventSourcedChangeEvent>>(vce =>
+        _eventStore.Verify(store => store.AddEventsAsync<TestEventingAggregateRoot>("anid",
+            It.Is<List<EventSourcedChangeEvent>>(vce =>
                 vce.Count == 2
                 && vce[0].Id == "aneventid2"
                 && vce[1].Id == "aneventid3"
@@ -178,7 +183,7 @@ public class EventSourcingDddCommandStoreSpec
     private static EventSourcedChangeEvent CreateEventEntity(string id, int version, DateTime lastPersisted)
     {
         var versioned = new TestEvent()
-            .ToVersioned(new FixedIdentifierFactory(id), "anentitytype", version);
+            .ToVersioned(new FixedIdentifierFactory(id), typeof(TestEventingAggregateRoot), version);
         var eventSourcedChangeEvent = versioned.Value;
         eventSourcedChangeEvent.LastPersistedAtUtc = lastPersisted;
 
@@ -188,7 +193,7 @@ public class EventSourcingDddCommandStoreSpec
     private static EventSourcedChangeEvent CreateTombstoneEntity(string id, int version)
     {
         var versioned = new TestTombstoneEvent(id.ToId())
-            .ToVersioned(new FixedIdentifierFactory(id), "anentitytype", version);
+            .ToVersioned(new FixedIdentifierFactory(id), typeof(TestEventingAggregateRoot), version);
         var eventSourcedChangeEvent = versioned.Value;
         eventSourcedChangeEvent.LastPersistedAtUtc = DateTime.UtcNow;
 

@@ -14,8 +14,9 @@ public static class EventStreamChangeEventExtensions
         IEventSourcedChangeEventMigrator migrator)
     {
         var eventId = changeEvent.Id;
-        var eventJson = changeEvent.Data;
+        var eventJson = changeEvent.OriginalEvent.ToEventJson();
+        var eventTypeFullName = changeEvent.EventType.AssemblyQualifiedName!;
 
-        return changeEvent.Metadata.CreateEventFromJson(eventId, eventJson, migrator);
+        return migrator.Rehydrate(eventId, eventJson, eventTypeFullName);
     }
 }

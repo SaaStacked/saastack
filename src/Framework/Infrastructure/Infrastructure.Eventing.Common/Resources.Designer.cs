@@ -69,6 +69,42 @@ namespace Infrastructure.Eventing.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to deserialize event &apos;{0}&apos;. Event type: &apos;{1}&apos; cannot be deserialized with the current json. Error: {2}.
+        /// </summary>
+        internal static string ChangeEventMigrator_FailedToDeserialize {
+            get {
+                return ResourceManager.GetString("ChangeEventMigrator_FailedToDeserialize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to convert event &apos;{0}&apos; with json to domain event. Event type: &apos;{1}&apos; cannot be found in the current AppDomain. Perhaps the type &apos;{1}&apos; has been renamed or no longer exists in the codebase?.
+        /// </summary>
+        internal static string ChangeEventMigrator_UnknownType {
+            get {
+                return ResourceManager.GetString("ChangeEventMigrator_UnknownType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to deserialize event json to domain event. Event type: &apos;{0}&apos; cannot be deserialized with the current json. Error: {1}.
+        /// </summary>
+        internal static string EventingExtensions_ToDomainEvent_FailedToDeserialize {
+            get {
+                return ResourceManager.GetString("EventingExtensions_ToDomainEvent_FailedToDeserialize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to convert event json to domain event. Event type: &apos;{0}&apos; cannot be found in the current AppDomain. Perhaps the type &apos;{0}&apos; has been renamed or no longer exists in the codebase?.
+        /// </summary>
+        internal static string EventingExtensions_ToDomainEvent_UnknownType {
+            get {
+                return ResourceManager.GetString("EventingExtensions_ToDomainEvent_UnknownType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The consumer relay &apos;{0}&apos; failed to handle the domain event &apos;{1}&apos; with event type &apos;{2}&apos;. Aborting domain notifications.
         /// </summary>
         internal static string EventNotificationNotifier_ConsumerError {

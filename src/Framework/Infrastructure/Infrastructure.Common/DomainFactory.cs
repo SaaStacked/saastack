@@ -97,8 +97,11 @@ public class DomainFactory : IDomainFactory
         {
             if (methodInfo.NotExists())
             {
+                var genericType = typeof(AggregateRootFactory<>).Name;
+                genericType = genericType.Substring(0, genericType.IndexOf('`'));
+                var factoryType = $"{genericType}<{type.Name}>";
                 throw new InvalidOperationException(
-                    Resources.DomainFactory_AggregateRootFactoryMethodNotFound.Format(type.ToString(),
+                    Resources.DomainFactory_AggregateRootFactoryMethodNotFound.Format(type, factoryType,
                         FactoryMethodName));
             }
 

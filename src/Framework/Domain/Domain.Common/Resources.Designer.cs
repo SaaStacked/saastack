@@ -60,15 +60,6 @@ namespace Domain.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to deserialize event &apos;{0}&apos;. The serialized type: &apos;{1}&apos; cannot be found in the current AppDomain. Perhaps the type &apos;{1}&apos; has been renamed or no longer exists in the codebase?.
-        /// </summary>
-        internal static string ChangeEventMigrator_UnknownType {
-            get {
-                return ResourceManager.GetString("ChangeEventMigrator_UnknownType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Change events have already been loaded into the aggregate.
         /// </summary>
         internal static string EventingAggregateRootBase_ChangesAlreadyLoaded {

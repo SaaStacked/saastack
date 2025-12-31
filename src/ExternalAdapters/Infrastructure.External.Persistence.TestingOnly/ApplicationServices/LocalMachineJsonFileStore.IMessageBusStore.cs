@@ -1,6 +1,7 @@
 ﻿#if TESTINGONLY
 using Common;
 using Common.Extensions;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Interfaces.ApplicationServices;
 using Task = System.Threading.Tasks.Task;
@@ -16,9 +17,9 @@ partial class LocalMachineJsonFileStore : IMessageBusStore, IMessageBusStoreTrig
     async Task<Result<long, Error>> IMessageBusStore.CountAsync(string topicName, string subscriptionName,
         CancellationToken cancellationToken)
     {
-        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.InProcessInMemDataStore_MissingTopicName);
+        topicName.ThrowIfNotValuedParameter(nameof(topicName), Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter(nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
 
         var topicStore = EnsureContainer(GetTopicStoreContainerPath(topicName));
         if (topicStore.IsEmpty())
@@ -60,7 +61,7 @@ partial class LocalMachineJsonFileStore : IMessageBusStore, IMessageBusStoreTrig
     Task<Result<Error>> IMessageBusStore.DestroyAllAsync(string topicName, CancellationToken cancellationToken)
     {
         topicName.ThrowIfNotValuedParameter((string)nameof(topicName),
-            Resources.InProcessInMemDataStore_MissingTopicName);
+            Resources.AnyStore_MissingTopicName);
 
         var topicStore = EnsureContainer(GetTopicStoreContainerPath(topicName));
         topicStore.Erase();
@@ -78,9 +79,9 @@ partial class LocalMachineJsonFileStore : IMessageBusStore, IMessageBusStoreTrig
         CancellationToken cancellationToken)
     {
         topicName.ThrowIfNotValuedParameter((string)nameof(topicName),
-            Resources.InProcessInMemDataStore_MissingTopicName);
+            Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter((string)nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
         ArgumentNullException.ThrowIfNull(messageHandlerAsync);
 
         var topicStore = EnsureContainer(GetTopicStoreContainerPath(topicName));
@@ -153,9 +154,9 @@ partial class LocalMachineJsonFileStore : IMessageBusStore, IMessageBusStoreTrig
     public async Task<Result<Error>> SendAsync(string topicName, string message, CancellationToken cancellationToken)
     {
         topicName.ThrowIfNotValuedParameter((string)nameof(topicName),
-            Resources.InProcessInMemDataStore_MissingTopicName);
+            Resources.AnyStore_MissingTopicName);
         message.ThrowIfNotValuedParameter((string)nameof(message),
-            Resources.InProcessInMemDataStore_MissingQueueMessage);
+            Resources.AnyStore_MissingQueueMessage);
 
         // Note: queue message with timestamp
         var topicStore = EnsureContainer(GetTopicStoreContainerPath(topicName));
@@ -172,9 +173,9 @@ partial class LocalMachineJsonFileStore : IMessageBusStore, IMessageBusStoreTrig
         CancellationToken cancellationToken)
     {
         topicName.ThrowIfNotValuedParameter((string)nameof(topicName),
-            Resources.InProcessInMemDataStore_MissingTopicName);
+            Resources.AnyStore_MissingTopicName);
         subscriptionName.ThrowIfNotValuedParameter((string)nameof(subscriptionName),
-            Resources.InProcessInMemDataStore_MissingSubscriptionName);
+            Resources.AnyStore_MissingSubscriptionName);
 
         EnsureContainer(GetTopicStoreContainerPath(topicName));
         var subscriptionsStore = EnsureContainer(GetSubscriptionStoreContainerPath(topicName));

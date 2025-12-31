@@ -36,13 +36,7 @@
     <data name="DomainFactory_FactoryMethodHasParameters" xml:space="preserve">
       <value>Failed to register method: '{0}.{1}()' in DomainFactory. This method must be named '{2}' and declared with no parameters</value>
     </data>
-    <data name="DomainFactory_EntityFactoryMethodNotFound" xml:space="preserve">
-      <value>Failed to register Entity: '{0}' in DomainFactory. This class must declare a factory method with signature 'public static PersistableEntityOrAggregateFactory&lt;{0}&gt; {1}()''</value>
-    </data>
-    <data name="DomainFactory_ValueObjectFactoryMethodNotFound" xml:space="preserve">
-      <value>Failed to register ValueObject: '{0}' in DomainFactory. This class must declare a factory method with signature 'public static ValueObjectFactory&lt;{0}&gt; {1}()''</value>
-    </data>
     <data name="DomainFactory_AggregateRootFactoryMethodNotFound" xml:space="preserve">
-      <value>Failed to register AggregateRoot: '{0}' in DomainFactory. This class must declare a factory method with signature 'public static EventingAggregateRootFactory&lt;{0}&gt; {1}()''</value>
+      <value>Failed to register AggregateRoot: '{0}' in DomainFactory. This class must declare a factory method with signature 'public static {1} {2}()''</value>
     </data>
 </root>

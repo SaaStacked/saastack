@@ -19,6 +19,7 @@ using Domain.Shared;
 using Infrastructure.Common;
 using Infrastructure.Common.Extensions;
 using Infrastructure.Common.Recording;
+using Infrastructure.Eventing.Common;
 using Infrastructure.Eventing.Common.Notifications;
 using Infrastructure.Eventing.Common.Projections.ReadModels;
 using Infrastructure.Eventing.Interfaces.Notifications;

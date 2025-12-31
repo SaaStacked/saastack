@@ -1,8 +1,7 @@
-using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 using Common.Extensions;
-using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 using EventNotificationsInfrastructure.ApplicationServices;
 using FluentAssertions;
@@ -17,7 +16,6 @@ namespace EventNotificationsInfrastructure.UnitTests.ApplicationServices;
 [Trait("Category", "Unit")]
 public class ApiHostDomainEventingConsumerServiceSpec
 {
-    private readonly Mock<IEventSourcedChangeEventMigrator> _migrator;
     private readonly Mock<IDomainEventNotificationConsumer> _notificationConsumer;
     private readonly Mock<IRecorder> _recorder;
     private readonly ApiHostDomainEventingConsumerService _service;
@@ -37,7 +35,6 @@ public class ApiHostDomainEventingConsumerServiceSpec
             {
                 { _notificationConsumer.Object.GetType(), "asubscriptionname1" }
             });
-        _migrator = new Mock<IEventSourcedChangeEventMigrator>();
 
         _service =
             new ApiHostDomainEventingConsumerService(_subscriberService.Object, consumers);
@@ -52,7 +49,7 @@ public class ApiHostDomainEventingConsumerServiceSpec
             { _notificationConsumer.Object };
 
         FluentActions.Invoking(() =>
-                new ApiHostDomainEventingConsumerService(_recorder.Object, consumers, _migrator.Object,
+                new ApiHostDomainEventingConsumerService(_recorder.Object, consumers,
                     _subscriberService.Object))
             .Should().Throw<InvalidOperationException>()
             .WithMessageLike(
@@ -71,7 +68,6 @@ public class ApiHostDomainEventingConsumerServiceSpec
 
         FluentActions.Invoking(() =>
                 new ApiHostDomainEventingConsumerService(_recorder.Object, new List<IDomainEventNotificationConsumer>(),
-                    _migrator.Object,
                     _subscriberService.Object))
             .Should().Throw<InvalidOperationException>()
             .WithMessageLike(
@@ -95,29 +91,21 @@ public class ApiHostDomainEventingConsumerServiceSpec
     [Fact]
     public async Task WhenNotifyAsyncAndConsumerNotFound_ThenThrows()
     {
-        var domainEvent = new TestDomainEvent
-        {
-            RootId = "arootid",
-            AProperty = "avalue",
-            OccurredUtc = DateTime.UtcNow
-        };
         _subscribingConsumer.Setup(sc => sc.SubscriptionName)
             .Returns("asubscriptionname");
-        var eventJson = domainEvent.ToJson()!;
-        var changeEvent = new EventStreamChangeEvent
+        var eventNotification = new DomainEventNotification
         {
-            Data = eventJson,
-            RootAggregateType = "atype",
-            EventType = "aneventtype",
             Id = "anid",
             LastPersistedAtUtc = null,
-            Metadata = new EventMetadata("anfqn"),
             StreamName = "astreamname",
-            Version = 1
+            Version = 1,
+            AggregateTypeFullName = "anaggregatetypefullname",
+            EventJsonData = "adata",
+            EventTypeFullName = "aneventtypefullname"
         };
 
         await _service.Invoking(x =>
-                x.NotifySubscriberAsync("anothersubscriptionname", changeEvent, CancellationToken.None))
+                x.NotifySubscriberAsync("anothersubscriptionname", eventNotification, CancellationToken.None))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessageLike(
                 Resources.ApiHostDomainEventingConsumerService_NotifySubscriberAsync_MissingConsumer.Format(
@@ -127,34 +115,24 @@ public class ApiHostDomainEventingConsumerServiceSpec
     [Fact]
     public async Task WhenNotifyAsync_ThenNotifies()
     {
-        var domainEvent = new TestDomainEvent
-        {
-            RootId = "arootid",
-            AProperty = "avalue",
-            OccurredUtc = DateTime.UtcNow
-        };
         _subscribingConsumer.Setup(sc => sc.SubscriptionName)
             .Returns("asubscriptionname");
-        var eventJson = domainEvent.ToJson()!;
-        var changeEvent = new EventStreamChangeEvent
+        var eventNotification = new DomainEventNotification
         {
-            Data = eventJson,
-            RootAggregateType = "atype",
-            EventType = "aneventtype",
             Id = "anid",
             LastPersistedAtUtc = null,
-            Metadata = new EventMetadata("anfqn"),
             StreamName = "astreamname",
-            Version = 1
+            Version = 1,
+            AggregateTypeFullName = "anaggregatetypefullname",
+            EventJsonData = "adata",
+            EventTypeFullName = "aneventtypefullname"
         };
 
-        var result = await _service.NotifySubscriberAsync("asubscriptionname", changeEvent, CancellationToken.None);
+        var result =
+            await _service.NotifySubscriberAsync("asubscriptionname", eventNotification, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _subscribingConsumer.Verify(sc => sc.NotifyAsync(It.Is<EventStreamChangeEvent>(evt =>
-            evt.RootAggregateType == "atype"
-            && evt.StreamName == "astreamname"
-        ), It.IsAny<CancellationToken>()));
+        _subscribingConsumer.Verify(sc => sc.NotifyAsync(eventNotification, It.IsAny<CancellationToken>()));
     }
 }
 

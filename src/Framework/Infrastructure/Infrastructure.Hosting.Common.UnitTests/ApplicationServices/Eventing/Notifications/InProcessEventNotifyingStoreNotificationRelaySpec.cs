@@ -32,7 +32,7 @@ public class InProcessEventNotifyingStoreNotificationRelaySpec
             });
         var domainFactory = new Mock<IDomainFactory>();
         var store = new Mock<IEventStore>();
-        store.Setup(s => s.AddEventsAsync(It.IsAny<string>(), It.IsAny<string>(),
+        store.Setup(s => s.AddEventsAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
                 It.IsAny<List<EventSourcedChangeEvent>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync("astreamname");
         _eventSourcingStore =
@@ -50,7 +50,7 @@ public class InProcessEventNotifyingStoreNotificationRelaySpec
             registration
         };
 
-        _relay = new InProcessEventNotifyingStoreNotificationRelay(recorder.Object, migrator.Object, _consumerRelay,
+        _relay = new InProcessEventNotifyingStoreNotificationRelay(recorder.Object, _consumerRelay,
             _messageBroker,
             registrations, _eventSourcingStore);
     }

@@ -1,10 +1,10 @@
 #if TESTINGONLY
 #pragma warning disable CS0618 // Type or member is obsolete
-using Domain.Common;
 using Domain.Common.ValueObjects;
 using Domain.Events.Shared.TestingOnly;
 using Domain.Interfaces.Entities;
 using FluentAssertions;
+using Infrastructure.Eventing.Common;
 using UnitTesting.Common;
 using Xunit;
 
@@ -17,9 +17,9 @@ public class HappenedSpec
 
     public HappenedSpec()
     {
-        _migrator = new ChangeEventTypeMigrator(new Dictionary<string, string>
+        _migrator = new ChangeEventTypeMigrator(new Dictionary<string, Type>
         {
-            { typeof(Happened).AssemblyQualifiedName!, typeof(HappenedV2).AssemblyQualifiedName! }
+            { typeof(Happened).AssemblyQualifiedName!, typeof(HappenedV2) }
         });
     }
 

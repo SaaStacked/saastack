@@ -34,7 +34,7 @@ public class InProcessEventNotifyingStoreProjectionRelaySpec
             .ReturnsAsync(1);
         var domainFactory = new Mock<IDomainFactory>();
         var store = new Mock<IEventStore>();
-        store.Setup(s => s.AddEventsAsync(It.IsAny<string>(), It.IsAny<string>(),
+        store.Setup(s => s.AddEventsAsync<TestEventingAggregateRoot>(It.IsAny<string>(),
                 It.IsAny<List<EventSourcedChangeEvent>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync("astreamname");
         _eventSourcingStore =
@@ -46,7 +46,7 @@ public class InProcessEventNotifyingStoreProjectionRelaySpec
             _projection
         };
 
-        _relay = new InProcessEventNotifyingStoreProjectionRelay(recorder.Object, migrator.Object,
+        _relay = new InProcessEventNotifyingStoreProjectionRelay(recorder.Object,
             checkpointStore.Object,
             projections, _eventSourcingStore);
     }

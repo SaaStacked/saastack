@@ -1,9 +1,6 @@
 ﻿using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
-using Domain.Common;
-using Domain.Common.Extensions;
-using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 using FluentAssertions;
 using Infrastructure.Eventing.Common.Projections;
@@ -27,15 +24,15 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
     {
         var recorder = new Mock<IRecorder>();
         _checkpointRepository = new Mock<IProjectionCheckpointRepository>();
-        var changeEventTypeMigrator = new ChangeEventTypeMigrator();
         _projection = new Mock<IReadModelProjection>();
         _projection.Setup(prj => prj.RootAggregateType)
-            .Returns(typeof(string));
+            .Returns(typeof(TestAggregateRoot));
         _projection.Setup(prj => prj.ProjectEventAsync(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         var projections = new List<IReadModelProjection> { _projection.Object };
-        _projector = new InProcessSynchronousReadModelProjector(recorder.Object, _checkpointRepository.Object,
-            changeEventTypeMigrator, projections.ToArray());
+        _projector =
+            new InProcessSynchronousReadModelProjector(recorder.Object, _checkpointRepository.Object,
+                projections.ToArray());
     }
 
     ~InProcessSynchronousReadModelProjectorSpec()
@@ -81,19 +78,18 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
         var result = await _projector.WriteEventStreamAsync("astreamname", [
             new EventStreamChangeEvent
             {
-                Data = null!,
-                RootAggregateType = "atypename",
-                EventType = null!,
+                OriginalEvent = new TestEvent { RootId = "aneventid1" },
+                RootAggregateType = typeof(TestAggregateRoot),
+                EventType = typeof(TestEvent),
                 Id = null!,
-                LastPersistedAtUtc = default,
-                Metadata = null!,
+                LastPersistedAtUtc = null,
                 StreamName = null!,
                 Version = 0
             }
         ], CancellationToken.None);
 
         result.Should().BeError(ErrorCode.RuleViolation,
-            Resources.ReadModelProjector_ProjectionNotConfigured.Format("atypename"));
+            Resources.ReadModelProjector_ProjectionNotConfigured.Format(typeof(TestAggregateRoot)));
 
         _checkpointRepository.Verify(cs => cs.LoadCheckpointAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
@@ -110,18 +106,14 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
         _checkpointRepository.Setup(cs => cs.LoadCheckpointAsync("astreamname", It.IsAny<CancellationToken>()))
             .ReturnsAsync(5);
 
-        _projection.Setup(prj => prj.RootAggregateType)
-            .Returns(typeof(string));
-
         await _projector.Invoking(x => x.WriteEventStreamAsync("astreamname", [
                 new EventStreamChangeEvent
                 {
-                    Data = null!,
-                    RootAggregateType = nameof(String),
-                    EventType = null!,
+                    OriginalEvent = new TestEvent { RootId = "aneventid1" },
+                    RootAggregateType = typeof(TestAggregateRoot),
+                    EventType = typeof(TestEvent),
                     Id = null!,
-                    LastPersistedAtUtc = default,
-                    Metadata = null!,
+                    LastPersistedAtUtc = null,
                     StreamName = null!,
                     Version = 6
                 }
@@ -140,36 +132,33 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
             new EventStreamChangeEvent
             {
                 Id = "anid1",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid1" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 4,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid2",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid2" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = 5,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid3",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid3" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = 6,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -188,32 +177,6 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
     }
 
     [Fact]
-    public async Task WhenWriteEventStreamAsyncAndDeserializationOfEventsFails_ThenReturnsError()
-    {
-        _checkpointRepository.Setup(cs => cs.LoadCheckpointAsync("astreamname", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(3);
-
-        var result = await _projector.WriteEventStreamAsync("astreamname", [
-            new EventStreamChangeEvent
-            {
-                Id = "anid",
-                LastPersistedAtUtc = default,
-                RootAggregateType = nameof(String),
-                EventType = null!,
-                Data = new TestEvent
-                {
-                    RootId = "aneventid"
-                }.ToEventJson(),
-                Version = 3,
-                Metadata = new EventMetadata("unknowntype"),
-                StreamName = null!
-            }
-        ], CancellationToken.None);
-
-        result.Should().BeError(ErrorCode.RuleViolation);
-    }
-
-    [Fact]
     public async Task WhenWriteEventStreamAsyncAndFirstEverEvent_ThenProjectsEvents()
     {
         const int startingCheckpoint = ProjectionCheckpointRepository.StartingCheckpointVersion;
@@ -224,36 +187,33 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
             new EventStreamChangeEvent
             {
                 Id = "anid1",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid1" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = startingCheckpoint,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid2",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid2" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = startingCheckpoint + 1,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid3",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid3" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = startingCheckpoint + 2,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -284,12 +244,11 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
             new EventStreamChangeEvent
             {
                 Id = "anid1",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid1" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 3,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -316,36 +275,33 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
             new EventStreamChangeEvent
             {
                 Id = "anid1",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid1" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 3,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid2",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid2" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = 4,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             },
 
             new EventStreamChangeEvent
             {
                 Id = "anid3",
-                RootAggregateType = nameof(String),
-                Data = new TestEvent { RootId = "aneventid3" }.ToEventJson(),
+                RootAggregateType = typeof(TestAggregateRoot),
+                OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = 5,
-                Metadata = new EventMetadata(typeof(TestEvent).AssemblyQualifiedName!),
-                EventType = null!,
-                LastPersistedAtUtc = default,
+                EventType = typeof(TestEvent),
+                LastPersistedAtUtc = null,
                 StreamName = null!
             }
         ], CancellationToken.None);

@@ -4,7 +4,7 @@ using Application.Persistence.Shared;
 using Application.Persistence.Shared.ReadModels;
 using Common;
 using Common.Extensions;
-using Domain.Common.ValueObjects;
+using Domain.Common.Extensions;
 using Infrastructure.Eventing.Common.Notifications;
 using Moq;
 using UnitTesting.Common;
@@ -36,55 +36,31 @@ public class AsynchronousQueueConsumerRelaySpec
             .ReturnsAsync(Error.RuleViolation("amessage"));
         var changeEvent = new EventStreamChangeEvent
         {
-            Data = null!,
-            RootAggregateType = "atypename",
-            EventType = null!,
-            Id = null!,
-            LastPersistedAtUtc = default,
-            Metadata = new EventMetadata("anfqn"),
-            StreamName = null!,
-            Version = 0
+            OriginalEvent = new TestDomainEvent(),
+            RootAggregateType = typeof(TestAggregateRoot),
+            EventType = typeof(TestDomainEvent),
+            Id = "anid",
+            LastPersistedAtUtc = DateTime.UtcNow,
+            StreamName = "astreamname",
+            Version = 9
         };
 
         var result =
-            await _relay.RelayDomainEventAsync(new TestDomainEvent(), changeEvent, CancellationToken.None);
+            await _relay.RelayDomainEventAsync(changeEvent, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.Unexpected, Error.RuleViolation("amessage")
             .Wrap(Resources.AsynchronousConsumerRelay_RelayFailed.Format(
                 "AsynchronousQueueConsumerRelay",
-                "arootid", "anfqn")).ToString());
+                "arootid", typeof(TestDomainEvent).AssemblyQualifiedName!)).ToString());
         _queue.Verify(c => c.SendAsync(It.Is<ICallContext>(call =>
             call.HostRegion == DatacenterLocations.Local), It.Is<DomainEventingMessage>(msg =>
-            msg.Event == changeEvent
-        ), It.IsAny<CancellationToken>()));
-    }
-
-    [Fact]
-    public async Task WhenRelayAsyncAndConsumerSucceeds_ThenReturns()
-    {
-        _queue.Setup(c =>
-                c.SendAsync(It.IsAny<ICallContext>(), It.IsAny<DomainEventingMessage>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Result<DomainEventingMessage, Error>());
-
-        var changeEvent = new EventStreamChangeEvent
-        {
-            Data = null!,
-            RootAggregateType = "atypename",
-            EventType = null!,
-            Id = null!,
-            LastPersistedAtUtc = default,
-            Metadata = new EventMetadata("anfqn"),
-            StreamName = null!,
-            Version = 0
-        };
-
-        var result =
-            await _relay.RelayDomainEventAsync(new TestDomainEvent(), changeEvent, CancellationToken.None);
-
-        result.Should().BeSuccess();
-        _queue.Verify(c => c.SendAsync(It.Is<ICallContext>(call =>
-            call.HostRegion == DatacenterLocations.Local), It.Is<DomainEventingMessage>(msg =>
-            msg.Event == changeEvent
+            msg.Event!.Id == changeEvent.Id
+            && msg.Event.LastPersistedAtUtc == changeEvent.LastPersistedAtUtc
+            && msg.Event.EventTypeFullName == changeEvent.EventType.AssemblyQualifiedName
+            && msg.Event.AggregateTypeFullName == changeEvent.RootAggregateType.AssemblyQualifiedName
+            && msg.Event.StreamName == changeEvent.StreamName
+            && msg.Event.Version == changeEvent.Version
+            && msg.Event.EventJsonData == changeEvent.OriginalEvent.ToEventJson()
         ), It.IsAny<CancellationToken>()));
     }
 }

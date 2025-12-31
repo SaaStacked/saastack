@@ -84,22 +84,3 @@ public class DeliveredSms : IIdentifiableResource
 
     public required string Id { get; set; }
 }
-
-public class EventNotification : IIdentifiableResource
-{
-    public required string Data { get; set; }
-
-    public required string EventType { get; set; }
-
-    public required string MetadataFullyQualifiedName { get; set; }
-
-    public required string RootAggregateType { get; set; }
-
-    public required string StreamName { get; set; }
-
-    public required string SubscriberRef { get; set; }
-
-    public required int Version { get; set; }
-
-    public required string Id { get; set; }
-}

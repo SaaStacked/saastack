@@ -1,6 +1,5 @@
 using Application.Persistence.Common;
 using Common;
-using Domain.Common.ValueObjects;
 using QueryAny;
 
 namespace EventNotificationsApplication.Persistence.ReadModels;
@@ -8,13 +7,11 @@ namespace EventNotificationsApplication.Persistence.ReadModels;
 [EntityName("EventNotification")]
 public class EventNotification : ReadModelEntity
 {
-    public Optional<string> Data { get; set; }
+    public Optional<string> AggregateTypeFullName { get; set; }
 
-    public Optional<string> EventType { get; set; }
+    public Optional<string> EventJsonData { get; set; }
 
-    public Optional<EventMetadata> Metadata { get; set; }
-
-    public Optional<string> RootAggregateType { get; set; }
+    public Optional<string> EventTypeFullName { get; set; }
 
     public Optional<string> StreamName { get; set; }
 

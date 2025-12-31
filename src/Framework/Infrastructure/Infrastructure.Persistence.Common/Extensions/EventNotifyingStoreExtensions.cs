@@ -2,7 +2,6 @@ using Application.Persistence.Interfaces;
 using AsyncKeyedLock;
 using Common;
 using Common.Extensions;
-using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 
 namespace Infrastructure.Persistence.Common.Extensions;
@@ -89,12 +88,11 @@ public static class EventNotifyingStoreExtensions
     {
         return new EventStreamChangeEvent
         {
-            Data = changeEvent.Data,
-            RootAggregateType = changeEvent.EntityType,
+            OriginalEvent = changeEvent.OriginalEvent,
+            RootAggregateType = changeEvent.AggregateType,
             EventType = changeEvent.EventType,
             Id = changeEvent.Id,
             LastPersistedAtUtc = changeEvent.LastPersistedAtUtc,
-            Metadata = new EventMetadata(changeEvent.Metadata),
             StreamName = streamName,
             Version = changeEvent.Version
         };

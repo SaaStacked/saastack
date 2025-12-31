@@ -56,8 +56,7 @@ public class TestEventingAggregateRoot : IEventingAggregateRoot, IDehydratableAg
 
     public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
 
-    public Result<Error> LoadChanges(IEnumerable<EventSourcedChangeEvent> history,
-        IEventSourcedChangeEventMigrator migrator)
+    public Result<Error> LoadChanges(IEnumerable<EventSourcedChangeEvent> history)
     {
         LoadedChangeEvents = history;
 
@@ -75,7 +74,7 @@ public class TestEventingAggregateRoot : IEventingAggregateRoot, IDehydratableAg
         foreach (var @event in events)
         {
             _changeEvents.Add(@event.ToVersioned(new FixedIdentifierFactory(@event.Id),
-                nameof(TestEventingAggregateRoot),
+                typeof(TestEventingAggregateRoot),
                 ++counter).Value);
         }
     }

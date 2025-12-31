@@ -1,6 +1,7 @@
 ﻿#if TESTINGONLY
 using Common;
 using Common.Extensions;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Interfaces.ApplicationServices;
 using Task = System.Threading.Tasks.Task;
@@ -15,7 +16,7 @@ partial class LocalMachineJsonFileStore : IQueueStore, IQueueStoreTrigger
     Task<Result<long, Error>> IQueueStore.CountAsync(string queueName, CancellationToken cancellationToken)
     {
         queueName.ThrowIfNotValuedParameter((string)nameof(queueName),
-            Resources.InProcessInMemDataStore_MissingQueueName);
+            Resources.AnyStore_MissingQueueName);
 
         var queueStore = EnsureContainer(GetQueueStoreContainerPath(queueName));
 
@@ -27,7 +28,7 @@ partial class LocalMachineJsonFileStore : IQueueStore, IQueueStoreTrigger
     Task<Result<Error>> IQueueStore.DestroyAllAsync(string queueName, CancellationToken cancellationToken)
     {
         queueName.ThrowIfNotValuedParameter((string)nameof(queueName),
-            Resources.InProcessInMemDataStore_MissingQueueName);
+            Resources.AnyStore_MissingQueueName);
 
         var queueStore = EnsureContainer(GetQueueStoreContainerPath(queueName));
         queueStore.Erase();
@@ -41,7 +42,7 @@ partial class LocalMachineJsonFileStore : IQueueStore, IQueueStoreTrigger
         CancellationToken cancellationToken)
     {
         queueName.ThrowIfNotValuedParameter((string)nameof(queueName),
-            Resources.InProcessInMemDataStore_MissingQueueName);
+            Resources.AnyStore_MissingQueueName);
         ArgumentNullException.ThrowIfNull(messageHandlerAsync);
 
         var queueStore = EnsureContainer(GetQueueStoreContainerPath(queueName));
@@ -76,9 +77,9 @@ partial class LocalMachineJsonFileStore : IQueueStore, IQueueStoreTrigger
     public async Task<Result<Error>> PushAsync(string queueName, string message, CancellationToken cancellationToken)
     {
         queueName.ThrowIfNotValuedParameter((string)nameof(queueName),
-            Resources.InProcessInMemDataStore_MissingQueueName);
+            Resources.AnyStore_MissingQueueName);
         message.ThrowIfNotValuedParameter((string)nameof(message),
-            Resources.InProcessInMemDataStore_MissingQueueMessage);
+            Resources.AnyStore_MissingQueueMessage);
 
         var messageId = DateTime.UtcNow.Ticks.ToString();
         var queueStore = EnsureContainer(GetQueueStoreContainerPath(queueName));

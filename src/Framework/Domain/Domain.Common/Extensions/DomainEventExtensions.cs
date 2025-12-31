@@ -1,7 +1,6 @@
 ﻿using Common;
 using Common.Extensions;
 using Domain.Common.Identity;
-using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 using Domain.Interfaces.ValueObjects;
 
@@ -29,16 +28,12 @@ public static class DomainEventExtensions
     ///     Converts the <see cref="domainEvent" /> to a <see cref="EventSourcedChangeEvent" />
     /// </summary>
     public static Result<EventSourcedChangeEvent, Error> ToVersioned(this IDomainEvent domainEvent,
-        IIdentifierFactory factory, string entityType, int version)
+        IIdentifierFactory factory, Type aggregateType, int version)
     {
-        var typeName = domainEvent.GetType().Name;
-        var typeFullName = domainEvent.GetType().AssemblyQualifiedName!;
-        var isTombstone = domainEvent is ITombstoneEvent;
         return EventSourcedChangeEvent.Create(entity =>
-            {
-                var identifier = factory.Create(entity);
-                return identifier.Match<Result<ISingleValueObject<string>, Error>>(id => id.Value, error => error);
-            }, entityType, isTombstone, typeName, ToEventJson(domainEvent),
-            EventMetadata.Create(typeFullName), version);
+        {
+            var identifier = factory.Create(entity);
+            return identifier.Match<Result<ISingleValueObject<string>, Error>>(id => id.Value, error => error);
+        }, aggregateType, domainEvent, version);
     }
 }

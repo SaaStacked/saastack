@@ -1,7 +1,6 @@
 using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
-using Domain.Common.ValueObjects;
 using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Common.Notifications;
 using Infrastructure.Eventing.Interfaces.Notifications;
@@ -31,14 +30,13 @@ public class InProcessSynchronousConsumerRelaySpec
     {
         var relay = new InProcessSynchronousConsumerRelay([]);
 
-        var result = await relay.RelayDomainEventAsync(new TestDomainEvent(), new EventStreamChangeEvent
+        var result = await relay.RelayDomainEventAsync(new EventStreamChangeEvent
         {
-            Data = null!,
-            RootAggregateType = "atypename",
-            EventType = null!,
+            OriginalEvent = new TestDomainEvent(),
+            RootAggregateType = typeof(TestAggregateRoot),
+            EventType = typeof(TestDomainEvent),
             Id = null!,
-            LastPersistedAtUtc = default,
-            Metadata = null!,
+            LastPersistedAtUtc = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);
@@ -54,14 +52,13 @@ public class InProcessSynchronousConsumerRelaySpec
         _domainConsumer.Setup(c => c.NotifyAsync(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.RuleViolation("amessage"));
 
-        var result = await _relay.RelayDomainEventAsync(new TestDomainEvent(), new EventStreamChangeEvent
+        var result = await _relay.RelayDomainEventAsync(new EventStreamChangeEvent
         {
-            Data = null!,
-            RootAggregateType = "atypename",
-            EventType = null!,
+            OriginalEvent = new TestDomainEvent(),
+            RootAggregateType = typeof(TestAggregateRoot),
+            EventType = typeof(TestDomainEvent),
             Id = null!,
-            LastPersistedAtUtc = default,
-            Metadata = new EventMetadata("anfqn"),
+            LastPersistedAtUtc = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);
@@ -69,7 +66,7 @@ public class InProcessSynchronousConsumerRelaySpec
         result.Should().BeError(ErrorCode.Unexpected, Error.RuleViolation("amessage")
             .Wrap(Resources.InProcessSynchronousConsumerRelay_ConsumerFailed.Format(
                 "IDomainEventNotificationConsumerProxy",
-                "arootid", "anfqn")).ToString());
+                "arootid", typeof(TestDomainEvent).AssemblyQualifiedName!)).ToString());
         _domainConsumer.Verify(c => c.NotifyAsync(It.Is<TestDomainEvent>(e =>
             e.RootId == "arootid"
         ), It.IsAny<CancellationToken>()));
@@ -81,14 +78,13 @@ public class InProcessSynchronousConsumerRelaySpec
         _domainConsumer.Setup(c => c.NotifyAsync(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok);
 
-        var result = await _relay.RelayDomainEventAsync(new TestDomainEvent(), new EventStreamChangeEvent
+        var result = await _relay.RelayDomainEventAsync(new EventStreamChangeEvent
         {
-            Data = null!,
-            RootAggregateType = "atypename",
+            OriginalEvent = new TestDomainEvent(),
+            RootAggregateType = typeof(TestAggregateRoot),
             EventType = null!,
             Id = null!,
-            LastPersistedAtUtc = default,
-            Metadata = new EventMetadata("anfqn"),
+            LastPersistedAtUtc = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);

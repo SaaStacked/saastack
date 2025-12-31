@@ -2,6 +2,7 @@
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Interfaces.ApplicationServices;
 using Task = System.Threading.Tasks.Task;
@@ -15,7 +16,7 @@ partial class InProcessInMemStore : IQueueStore, IQueueStoreTrigger
 #if TESTINGONLY
     Task<Result<long, Error>> IQueueStore.CountAsync(string queueName, CancellationToken cancellationToken)
     {
-        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.InProcessInMemDataStore_MissingQueueName);
+        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.AnyStore_MissingQueueName);
 
         if (_queues.TryGetValue(queueName, out var value))
         {
@@ -29,7 +30,7 @@ partial class InProcessInMemStore : IQueueStore, IQueueStoreTrigger
 #if TESTINGONLY
     Task<Result<Error>> IQueueStore.DestroyAllAsync(string queueName, CancellationToken cancellationToken)
     {
-        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.InProcessInMemDataStore_MissingQueueName);
+        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.AnyStore_MissingQueueName);
 
         if (_queues.ContainsKey(queueName))
         {
@@ -44,7 +45,7 @@ partial class InProcessInMemStore : IQueueStore, IQueueStoreTrigger
         Func<string, CancellationToken, Task<Result<Error>>> messageHandlerAsync,
         CancellationToken cancellationToken)
     {
-        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.InProcessInMemDataStore_MissingQueueName);
+        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.AnyStore_MissingQueueName);
         ArgumentNullException.ThrowIfNull(messageHandlerAsync);
 
         if (!_queues.ContainsKey(queueName)
@@ -74,8 +75,8 @@ partial class InProcessInMemStore : IQueueStore, IQueueStoreTrigger
 
     public Task<Result<Error>> PushAsync(string queueName, string message, CancellationToken cancellationToken)
     {
-        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.InProcessInMemDataStore_MissingQueueName);
-        message.ThrowIfNotValuedParameter(nameof(message), Resources.InProcessInMemDataStore_MissingQueueMessage);
+        queueName.ThrowIfNotValuedParameter(nameof(queueName), Resources.AnyStore_MissingQueueName);
+        message.ThrowIfNotValuedParameter(nameof(message), Resources.AnyStore_MissingQueueMessage);
 
         if (!_queues.ContainsKey(queueName))
         {

@@ -60,7 +60,7 @@ namespace Infrastructure.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to register AggregateRoot: &apos;{0}&apos; in DomainFactory. This class must declare a factory method with signature &apos;public static EventingAggregateRootFactory&lt;{0}&gt; {1}()&apos;&apos;.
+        ///   Looks up a localized string similar to Failed to register AggregateRoot: &apos;{0}&apos; in DomainFactory. This class must declare a factory method with signature &apos;public static {1} {2}()&apos;&apos;.
         /// </summary>
         internal static string DomainFactory_AggregateRootFactoryMethodNotFound {
             get {
@@ -74,15 +74,6 @@ namespace Infrastructure.Common {
         internal static string DomainFactory_AggregateTypeNotFound {
             get {
                 return ResourceManager.GetString("DomainFactory_AggregateTypeNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to register Entity: &apos;{0}&apos; in DomainFactory. This class must declare a factory method with signature &apos;public static PersistableEntityOrAggregateFactory&lt;{0}&gt; {1}()&apos;&apos;.
-        /// </summary>
-        internal static string DomainFactory_EntityFactoryMethodNotFound {
-            get {
-                return ResourceManager.GetString("DomainFactory_EntityFactoryMethodNotFound", resourceCulture);
             }
         }
         
@@ -101,15 +92,6 @@ namespace Infrastructure.Common {
         internal static string DomainFactory_FactoryMethodHasParameters {
             get {
                 return ResourceManager.GetString("DomainFactory_FactoryMethodHasParameters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to register ValueObject: &apos;{0}&apos; in DomainFactory. This class must declare a factory method with signature &apos;public static ValueObjectFactory&lt;{0}&gt; {1}()&apos;&apos;.
-        /// </summary>
-        internal static string DomainFactory_ValueObjectFactoryMethodNotFound {
-            get {
-                return ResourceManager.GetString("DomainFactory_ValueObjectFactoryMethodNotFound", resourceCulture);
             }
         }
         

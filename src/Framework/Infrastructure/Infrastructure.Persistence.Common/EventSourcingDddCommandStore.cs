@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Application.Persistence.Interfaces;
+﻿using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
 using Common.Recording;
@@ -9,7 +8,6 @@ using Domain.Interfaces.Entities;
 using Domain.Interfaces.ValueObjects;
 using Infrastructure.Persistence.Common.Extensions;
 using Infrastructure.Persistence.Interfaces;
-using QueryAny;
 
 namespace Infrastructure.Persistence.Common;
 
@@ -18,10 +16,9 @@ namespace Infrastructure.Persistence.Common;
 ///     commands that use event sourced persistence
 /// </summary>
 public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCommandStore<TAggregateRoot>
-    where TAggregateRoot : IEventingAggregateRoot
+    where TAggregateRoot : class, IEventingAggregateRoot
 {
     private readonly IDomainFactory _domainFactory;
-    private readonly string _entityName;
     private readonly IEventStore _eventStore;
     private readonly IEventSourcedChangeEventMigrator _migrator;
     private readonly IRecorder _recorder;
@@ -34,7 +31,6 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
         _eventStore = eventStore;
         _domainFactory = domainFactory;
         _migrator = migrator;
-        _entityName = GetEntityName();
     }
 
     public Guid InstanceId { get; }
@@ -42,11 +38,12 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
 #if TESTINGONLY
     public async Task<Result<Error>> DestroyAllAsync(CancellationToken cancellationToken)
     {
-        var deleted = await _eventStore.DestroyAllAsync(_entityName, cancellationToken);
+        var deleted = await _eventStore.DestroyAllAsync<TAggregateRoot>(cancellationToken);
         if (deleted.IsSuccessful)
         {
-            _recorder.TraceDebug(null, "All events were deleted for the event stream {Entity} in the {Store} store",
-                _entityName, _eventStore.GetType().Name);
+            var aggregateName = typeof(TAggregateRoot).FullName!;
+            _recorder.TraceDebug(null, "All events were deleted for the event stream {Aggregate} in the {Store} store",
+                aggregateName, _eventStore.GetType().Name);
         }
 
         return deleted;
@@ -56,9 +53,11 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
     public async Task<Result<TAggregateRoot, Error>> LoadAsync(Identifier id, CancellationToken cancellationToken)
     {
         return await _recorder.MeasureWithDuration<Task<Result<TAggregateRoot, Error>>>(null,
-            "EventingDddCommandPersistence.Load", async context =>
+            "EventSourcingDddCommandStore<TAggregateRoot>.LoadAsync", async context =>
             {
-                var eventStream = await _eventStore.GetEventStreamAsync(_entityName, id, cancellationToken);
+                var eventStream =
+                    await _eventStore.GetEventStreamAsync<TAggregateRoot>(id, _migrator,
+                        cancellationToken);
                 if (eventStream.IsFailure)
                 {
                     return eventStream.Error;
@@ -70,16 +69,22 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
                     return Error.EntityNotFound();
                 }
 
+                var verified = VerifyEventsIntegrity(events);
+                if (verified.IsFailure)
+                {
+                    return verified.Error;
+                }
+
                 AddMeasurementData(context, events);
 
                 if (IsTombstoned(events))
                 {
-                    return Error.EntityDeleted(Resources.IEventSourcingDddCommandStore_StreamTombstoned);
+                    return Error.EntityDeleted(Resources.EventSourcingDddCommandStore_StreamTombstoned);
                 }
 
                 var lastPersistedAtUtc = events.Last().LastPersistedAtUtc;
                 var aggregate = RehydrateAggregateRoot(id, lastPersistedAtUtc);
-                var loaded = aggregate.LoadChanges(events, _migrator);
+                var loaded = aggregate.LoadChanges(events);
                 if (loaded.IsFailure)
                 {
                     return loaded.Error;
@@ -91,8 +96,8 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
         void AddMeasurementData(IDictionary<string, object> context,
             IReadOnlyCollection<EventSourcedChangeEvent> events)
         {
-            context.Add("EntityName", _entityName);
-            context.Add("EntityId", id);
+            context.Add("AggregateType", typeof(TAggregateRoot).FullName!);
+            context.Add("RootId", id);
             context.Add("EventCount", events.Count.ToString());
         }
     }
@@ -103,12 +108,13 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
     {
         if (aggregate.Id.IsEmpty())
         {
-            return Error.EntityExists(Resources.IEventSourcingDddCommandStore_SaveWithAggregateIdMissing);
+            return Error.EntityExists(Resources.EventSourcingDddCommandStore_SaveWithAggregateIdMissing);
         }
 
         var published = await this.SaveAndPublishChangesAsync(aggregate, OnEventStreamChanged,
             (root, changedEvents, token) =>
-                _eventStore.AddEventsAsync(_entityName, root.Id.Value, changedEvents, token), cancellationToken);
+                _eventStore.AddEventsAsync<TAggregateRoot>(root.Id.Value, changedEvents, token),
+            cancellationToken);
         if (published.IsFailure)
         {
             return published.Error;
@@ -117,31 +123,27 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
         return Result.Ok;
     }
 
-    private static string GetEntityName()
+    private Result<Error> VerifyEventsIntegrity(IReadOnlyList<EventSourcedChangeEvent> events)
     {
-        var customAttribute = typeof(TAggregateRoot).GetCustomAttribute<EntityNameAttribute>();
-        if (customAttribute.Exists())
+        if (events.HasNone())
         {
-            return customAttribute.EntityName;
+            return Result.Ok;
         }
 
-        var name = typeof(TAggregateRoot).Name;
-        if (name.EndsWith("Entity"))
+        var firstInvalidEvent = events
+            .Cast<EventSourcedChangeEvent?>() // Since we have a list of struct
+            .FirstOrDefault(evt => evt.HasValue && (evt.Value.AggregateType.NotExists()
+                                                    || evt.Value.OriginalEvent.NotExists()
+                                                    || evt.Value.EventType.NotExists()));
+        if (firstInvalidEvent.NotExists())
         {
-            name = name.Substring(0, name.LastIndexOf("Entity", StringComparison.Ordinal));
+            return Result.Ok;
         }
 
-        if (name.EndsWith("Aggregate"))
-        {
-            name = name.Substring(0, name.LastIndexOf("Aggregate", StringComparison.Ordinal));
-        }
-
-        if (name.EndsWith("Root"))
-        {
-            name = name.Substring(0, name.LastIndexOf("Root", StringComparison.Ordinal));
-        }
-
-        return name;
+        var storeType = _eventStore.GetType().Name;
+        return Error.Unexpected(
+            Resources.EventSourcingDddCommandStore_LoadWithEventDataMissing.Format(storeType,
+                firstInvalidEvent.ToJson()!));
     }
 
     private static bool IsTombstoned(IEnumerable<EventSourcedChangeEvent> events)

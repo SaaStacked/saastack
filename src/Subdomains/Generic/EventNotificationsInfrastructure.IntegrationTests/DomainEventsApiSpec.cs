@@ -1,16 +1,16 @@
 using ApiHost1;
-using Application.Persistence.Interfaces;
 using Application.Persistence.Shared;
 using Application.Persistence.Shared.ReadModels;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common.Extensions;
 using Domain.Common.Extensions;
-using Domain.Common.ValueObjects;
 using EventNotificationsInfrastructure.IntegrationTests.Stubs;
 using FluentAssertions;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Operations.Shared.EventNotifications;
 using IntegrationTesting.WebApi.Common;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
@@ -58,15 +58,14 @@ public class DomainEventsApiSpec : WebApiSpec<Program>
                 TenantId = null,
                 CallId = "acallid",
                 CallerId = "acallerid",
-                Event = new EventStreamChangeEvent
+                Event = new DomainEventNotification
                 {
                     Id = "aneventid",
-                    RootAggregateType = "anaggregatetype",
-                    Data = @event.ToEventJson(),
+                    AggregateTypeFullName = typeof(TestAggregateRoot).AssemblyQualifiedName!,
+                    EventJsonData = @event.ToEventJson(),
                     Version = 1,
-                    Metadata = new EventMetadata(typeof(Happened).AssemblyQualifiedName!),
-                    EventType = nameof(Happened),
-                    LastPersistedAtUtc = default,
+                    EventTypeFullName = typeof(Happened).AssemblyQualifiedName!,
+                    LastPersistedAtUtc = null,
                     StreamName = "astreamname"
                 }
             }.ToJson()!
@@ -84,4 +83,9 @@ public class DomainEventsApiSpec : WebApiSpec<Program>
     {
         services.AddSingleton<IDomainEventingConsumerService, StubDomainEventingConsumerService>();
     }
+}
+
+[UsedImplicitly]
+public class TestAggregateRoot
+{
 }

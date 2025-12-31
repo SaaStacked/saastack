@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Framework\Application\Application.Interfaces\Application.Interfaces.csproj" />
+        <ProjectReference Include="..\..\..\Framework\Infrastructure\Infrastructure.Eventing.Common\Infrastructure.Eventing.Common.csproj" />
         <ProjectReference Include="..\Domain.Events.Shared\Domain.Events.Shared.csproj" />
         <ProjectReference Include="..\..\..\Framework\Testing\UnitTesting.Common\UnitTesting.Common.csproj" />
     </ItemGroup>

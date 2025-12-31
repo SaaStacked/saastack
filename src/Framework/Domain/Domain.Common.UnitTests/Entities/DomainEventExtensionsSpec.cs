@@ -56,24 +56,19 @@ public class DomainEventExtensionsSpec
     public void WhenToVersioned_ThenReturnsEvent()
     {
         var datum = DateTime.UtcNow.ToNearestSecond();
-
-        var result = new TestEvent
+        var @event = new TestEvent
         {
             APropertyValue = "apropertyvalue",
             RootId = "anid",
             OccurredUtc = datum
-        }.ToVersioned("anid".ToIdentifierFactory(), "anentitytype", 6).Value;
+        };
+        var result = @event.ToVersioned("anid".ToIdentifierFactory(), typeof(TestEntity), 6).Value;
 
         result.Id.Should().Be("anid".ToId());
         result.LastPersistedAtUtc.Should().BeNone();
-        result.Data.Should()
-            .Be(
-                $"{{\"APropertyValue\":\"apropertyvalue\",\"OccurredUtc\":\"{datum.ToIso8601()}\",\"RootId\":\"anid\"}}");
-        result.Metadata.Should()
-            .Be(
-                "Domain.Common.UnitTests.Entities.TestEvent, Domain.Common.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+        result.OriginalEvent.Should().Be(@event);
         result.Version.Should().Be(6);
-        result.EntityType.Should().Be("anentitytype");
-        result.EventType.Should().Be(nameof(TestEvent));
+        result.AggregateType.Should().Be(typeof(TestEntity));
+        result.EventType.Should().Be(typeof(TestEvent));
     }
 }

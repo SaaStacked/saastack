@@ -51,10 +51,13 @@
     <data name="ReadModelStore_DtoDeleted" xml:space="preserve">
         <value>Entity cannot be updated as it is already deleted</value>
     </data>
-    <data name="IEventSourcingDddCommandStore_SaveWithAggregateIdMissing" xml:space="preserve">
+    <data name="EventSourcingDddCommandStore_SaveWithAggregateIdMissing" xml:space="preserve">
         <value>The aggregate does not have an Identifier</value>
     </data>
-    <data name="IEventSourcingDddCommandStore_StreamTombstoned" xml:space="preserve">
+    <data name="EventSourcingDddCommandStore_LoadWithEventDataMissing" xml:space="preserve">
+        <value>Events store '{0}' cannot return events with missing identifiable data. For example: '{1}'</value>
+    </data>
+    <data name="EventSourcingDddCommandStore_StreamTombstoned" xml:space="preserve">
         <value>This stream has been previously deleted and cannot be revived</value>
     </data>
     <data name="EventSourcingDddCommandStore_PublishFailed" xml:space="preserve">

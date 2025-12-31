@@ -7,5 +7,5 @@ namespace Domain.Interfaces.Entities;
 /// </summary>
 public interface IChangeEventConsumingAggregateRoot
 {
-    Result<Error> LoadChanges(IEnumerable<EventSourcedChangeEvent> history, IEventSourcedChangeEventMigrator migrator);
+    Result<Error> LoadChanges(IEnumerable<EventSourcedChangeEvent> history);
 }

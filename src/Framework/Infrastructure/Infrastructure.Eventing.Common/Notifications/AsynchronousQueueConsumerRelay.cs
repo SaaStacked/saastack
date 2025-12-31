@@ -1,11 +1,10 @@
 using Application.Interfaces.Services;
 using Application.Persistence.Interfaces;
 using Application.Persistence.Shared;
-using Application.Persistence.Shared.ReadModels;
+using Application.Persistence.Shared.Extensions;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
-using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Interfaces.Notifications;
 using Infrastructure.Persistence.Interfaces;
 using Infrastructure.Persistence.Shared.ApplicationServices;
@@ -35,14 +34,11 @@ public class AsynchronousQueueConsumerRelay : IDomainEventConsumerRelay
         _hostSettings = hostSettings;
     }
 
-    public async Task<Result<Error>> RelayDomainEventAsync(IDomainEvent @event,
-        EventStreamChangeEvent changeEvent, CancellationToken cancellationToken)
+    public async Task<Result<Error>> RelayDomainEventAsync(EventStreamChangeEvent changeEvent,
+        CancellationToken cancellationToken)
     {
-        var message = new DomainEventingMessage
-        {
-            Event = changeEvent
-        };
-
+        var @event = changeEvent.OriginalEvent;
+        var message = changeEvent.ToDomainEventingMessage();
         var region = _hostSettings.GetRegion();
         var call = CallContext.CreateUnknown(region);
         var queued = await _messageBusTopic.SendAsync(call, message, cancellationToken);
@@ -51,7 +47,7 @@ public class AsynchronousQueueConsumerRelay : IDomainEventConsumerRelay
             return queued.Error
                 .Wrap(ErrorCode.Unexpected,
                     Resources.AsynchronousConsumerRelay_RelayFailed.Format(GetType().Name, @event.RootId,
-                        changeEvent.Metadata.Fqn));
+                        changeEvent.EventType.AssemblyQualifiedName!));
         }
 
         return Result.Ok;

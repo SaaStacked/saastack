@@ -204,7 +204,7 @@ public class DomainEventsApplication : IDomainEventsApplication
 
         _recorder.TraceInformation(caller.ToCall(),
             "Notified domain event for {Subscription} for {EventType}:v{Version}",
-            subscriptionName, notification.Metadata.Value.Fqn, notification.Version);
+            subscriptionName, notification.EventTypeFullName, notification.Version);
 
         return true;
     }
@@ -218,10 +218,9 @@ public static class DomainEventConversionExtensions
         return new Persistence.ReadModels.EventNotification
         {
             Id = message.Event!.Id,
-            RootAggregateType = message.Event.RootAggregateType,
-            EventType = message.Event.EventType,
-            Data = message.Event.Data,
-            Metadata = message.Event.Metadata,
+            AggregateTypeFullName = message.Event.AggregateTypeFullName,
+            EventJsonData = message.Event.EventJsonData,
+            EventTypeFullName = message.Event.EventTypeFullName,
             StreamName = message.Event.StreamName,
             Version = message.Event.Version,
             SubscriberRef = subscriptionName
@@ -233,10 +232,10 @@ public static class DomainEventConversionExtensions
         return new EventNotification
         {
             Id = notification.Id,
-            RootAggregateType = notification.RootAggregateType,
-            EventType = notification.EventType,
-            Data = notification.Data,
-            MetadataFullyQualifiedName = notification.Metadata.Value.Fqn,
+            AggregateTypeFullName = notification.AggregateTypeFullName,
+            EventTypeFullName = notification.EventTypeFullName,
+            EventJsonData = notification.EventJsonData,
+            LastPersistedAtUtc = notification.LastPersistedAtUtc,
             StreamName = notification.StreamName,
             Version = notification.Version,
             SubscriberRef = notification.SubscriberRef

@@ -1,8 +1,6 @@
-﻿using Application.Persistence.Common.Extensions;
-using Application.Persistence.Interfaces;
+﻿using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
-using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Interfaces.Projections;
 
 namespace Infrastructure.Eventing.Common.Projections;
@@ -13,18 +11,16 @@ namespace Infrastructure.Eventing.Common.Projections;
 public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector, IDisposable
 {
     private readonly IProjectionCheckpointRepository _checkpointStore;
-    private readonly IEventSourcedChangeEventMigrator _migrator;
 
     // ReSharper disable once NotAccessedField.Local
     private readonly IRecorder _recorder;
 
     public InProcessSynchronousReadModelProjector(IRecorder recorder, IProjectionCheckpointRepository checkpointStore,
-        IEventSourcedChangeEventMigrator migrator, params IReadModelProjection[] projections)
+        params IReadModelProjection[] projections)
     {
         _recorder = recorder;
         _checkpointStore = checkpointStore;
         Projections = projections;
-        _migrator = migrator;
     }
 
     public void Dispose()
@@ -49,14 +45,14 @@ public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector
     {
         streamName.ThrowIfNotValuedParameter(nameof(streamName));
 
-        if (!eventStream.Any())
+        if (eventStream.HasNone())
         {
             return Result.Ok;
         }
 
-        var streamEntityType = Enumerable.First(eventStream).RootAggregateType;
+        var streamAggregateType = Enumerable.First(eventStream).RootAggregateType;
         var firstEventVersion = Enumerable.First(eventStream).Version;
-        var projection = GetProjectionForStream(Projections, streamEntityType);
+        var projection = GetProjectionForStream(Projections, streamAggregateType);
         if (projection.IsFailure)
         {
             return projection.Error;
@@ -78,14 +74,8 @@ public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector
         var processed = 0;
         foreach (var changeEvent in SkipPreviouslyProjectedVersions(eventStream, checkpointVersion))
         {
-            var deserialized = DeserializeChangeEvent(changeEvent, _migrator);
-            if (deserialized.IsFailure)
-            {
-                return deserialized.Error;
-            }
-
             var projected =
-                await ProjectEventAsync(projection.Value, deserialized.Value, changeEvent, cancellationToken);
+                await ProjectEventAsync(projection.Value, changeEvent, cancellationToken);
             if (projected.IsFailure)
             {
                 return projected.Error;
@@ -104,16 +94,17 @@ public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector
         return Result.Ok;
     }
 
-    private static async Task<Result<Error>> ProjectEventAsync(IReadModelProjection projection, IDomainEvent @event,
+    private static async Task<Result<Error>> ProjectEventAsync(IReadModelProjection projection,
         EventStreamChangeEvent changeEvent, CancellationToken cancellationToken)
     {
+        var @event = changeEvent.OriginalEvent;
         var projected = await projection.ProjectEventAsync(@event, cancellationToken);
         if (projected.IsFailure)
         {
             return projected.Error.Wrap(ErrorCode.Unexpected,
                 Resources.ReadModelProjector_ProjectionError_HandlerError.Format(
                     projection.GetType().Name,
-                    changeEvent.Id, changeEvent.Metadata.Fqn));
+                    changeEvent.Id, changeEvent.EventType.AssemblyQualifiedName!));
         }
 
 #if TESTINGONLY
@@ -122,7 +113,7 @@ public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector
             //Note: this is for local development and testing only to ensure all events are configured
             return Error.Unexpected(Resources.ReadModelProjector_ProjectionError_MissingHandler.Format(
                 projection.GetType().Name,
-                changeEvent.Id, changeEvent.Metadata.Fqn));
+                changeEvent.Id, changeEvent.EventType.AssemblyQualifiedName!));
         }
 #endif
 
@@ -137,22 +128,15 @@ public sealed class InProcessSynchronousReadModelProjector : IReadModelProjector
     }
 
     private static Result<IReadModelProjection, Error> GetProjectionForStream(
-        IEnumerable<IReadModelProjection> projections,
-        string entityTypeName)
+        IEnumerable<IReadModelProjection> projections, Type aggregateType)
     {
-        var projection = projections.FirstOrDefault(prj => prj.RootAggregateType.Name == entityTypeName);
+        var projection = projections.FirstOrDefault(prj => prj.RootAggregateType == aggregateType);
         if (projection.NotExists())
         {
-            return Error.RuleViolation(Resources.ReadModelProjector_ProjectionNotConfigured.Format(entityTypeName));
+            return Error.RuleViolation(Resources.ReadModelProjector_ProjectionNotConfigured.Format(aggregateType));
         }
 
         return new Result<IReadModelProjection, Error>(projection);
-    }
-
-    private static Result<IDomainEvent, Error> DeserializeChangeEvent(EventStreamChangeEvent changeEvent,
-        IEventSourcedChangeEventMigrator migrator)
-    {
-        return changeEvent.ToDomainEvent(migrator);
     }
 
     private static Result<Error> EnsureNextVersion(string streamName, int checkpointVersion, int firstEventVersion)

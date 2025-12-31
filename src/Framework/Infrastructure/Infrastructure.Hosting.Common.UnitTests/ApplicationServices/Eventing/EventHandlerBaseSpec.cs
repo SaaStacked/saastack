@@ -65,8 +65,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid1",
                     StreamName = "astreamname1",
                     Version = 5,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -76,8 +75,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid2",
                     StreamName = "astreamname2",
                     Version = 3,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -87,8 +85,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid3",
                     StreamName = "astreamname1",
                     Version = 4,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -126,8 +123,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid1",
                     StreamName = "astreamname1",
                     Version = 5,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -159,8 +155,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid1",
                     StreamName = "astreamname1",
                     Version = 5,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -170,8 +165,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid2",
                     StreamName = "astreamname1",
                     Version = 2,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -181,8 +175,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid3",
                     StreamName = "astreamname1",
                     Version = 4,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default
@@ -242,8 +235,7 @@ public sealed class EventHandlerBaseSpec
                     Id = "aneventid1",
                     StreamName = "astreamname1",
                     Version = 5,
-                    Data = null!,
-                    Metadata = null!,
+                    OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
                     LastPersistedAtUtc = default

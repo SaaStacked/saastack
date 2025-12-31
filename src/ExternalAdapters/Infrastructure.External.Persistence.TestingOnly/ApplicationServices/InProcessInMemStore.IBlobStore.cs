@@ -3,6 +3,7 @@ using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
+using Infrastructure.External.Persistence.Common;
 using Infrastructure.Persistence.Interfaces;
 using Task = System.Threading.Tasks.Task;
 
@@ -15,8 +16,8 @@ partial class InProcessInMemStore : IBlobStore
     public Task<Result<Error>> DeleteAsync(string containerName, string blobName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Common.Resources.AnyStore_MissingContainerName);
-        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
+            Resources.AnyStore_MissingContainerName);
+        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.AnyStore_MissingBlobName);
 
         if (_blobs.ContainsKey(containerName)
             && _blobs[containerName].ContainsKey(blobName))
@@ -31,7 +32,7 @@ partial class InProcessInMemStore : IBlobStore
     Task<Result<Error>> IBlobStore.DestroyAllAsync(string containerName, CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Common.Resources.AnyStore_MissingContainerName);
+            Resources.AnyStore_MissingContainerName);
 
         if (_blobs.ContainsKey(containerName))
         {
@@ -46,8 +47,8 @@ partial class InProcessInMemStore : IBlobStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Common.Resources.AnyStore_MissingContainerName);
-        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
+            Resources.AnyStore_MissingContainerName);
+        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.AnyStore_MissingBlobName);
         ArgumentNullException.ThrowIfNull(stream);
 
         if (_blobs.ContainsKey(containerName)
@@ -69,10 +70,10 @@ partial class InProcessInMemStore : IBlobStore
         CancellationToken cancellationToken)
     {
         containerName.ThrowIfNotValuedParameter(nameof(containerName),
-            Common.Resources.AnyStore_MissingContainerName);
-        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.InProcessInMemDataStore_MissingBlobName);
+            Resources.AnyStore_MissingContainerName);
+        blobName.ThrowIfNotValuedParameter(nameof(blobName), Resources.AnyStore_MissingBlobName);
         contentType.ThrowIfNotValuedParameter(nameof(contentType),
-            Resources.InProcessInMemDataStore_MissingContentType);
+            Resources.AnyStore_MissingContentType);
         ArgumentNullException.ThrowIfNull(stream);
 
         if (!_blobs.ContainsKey(containerName))

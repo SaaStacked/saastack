@@ -96,21 +96,23 @@ public class NoOpStore : IDataStore, IBlobStore, IQueueStore, IMessageBusStore, 
         return Task.FromResult(Result<Optional<CommandEntity>, Error>.FromResult(Optional<CommandEntity>.None));
     }
 
-    public Task<Result<string, Error>> AddEventsAsync(string entityName, string entityId,
+    public Task<Result<string, Error>> AddEventsAsync<TAggregateRoot>(string aggregateRootId,
         List<EventSourcedChangeEvent> events, CancellationToken cancellationToken)
+        where TAggregateRoot : class, IEventingAggregateRoot
     {
         return Task.FromResult(Result<string, Error>.FromResult(string.Empty));
     }
 
 #if TESTINGONLY
-    Task<Result<Error>> IEventStore.DestroyAllAsync(string entityName, CancellationToken cancellationToken)
+    Task<Result<Error>> IEventStore.DestroyAllAsync<TAggregateRoot>(CancellationToken cancellationToken)
     {
         return Task.FromResult(Result.Ok);
     }
 #endif
 
-    public Task<Result<IReadOnlyList<EventSourcedChangeEvent>, Error>> GetEventStreamAsync(string entityName,
-        string entityId, CancellationToken cancellationToken)
+    public Task<Result<IReadOnlyList<EventSourcedChangeEvent>, Error>> GetEventStreamAsync<TAggregateRoot>(
+        string aggregateRootId, IEventSourcedChangeEventMigrator eventMigrator, CancellationToken cancellationToken)
+        where TAggregateRoot : class, IEventingAggregateRoot
     {
         return Task.FromResult(
             Result<IReadOnlyList<EventSourcedChangeEvent>, Error>.FromResult(new List<EventSourcedChangeEvent>()));

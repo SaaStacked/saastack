@@ -39,14 +39,11 @@
     <data name="AnyStore_MissingQueueName" xml:space="preserve">
         <value>QueueName cannot be empty</value>
     </data>
-    <data name="AnyStore_MissingMessage" xml:space="preserve">
+    <data name="AnyStore_MissingQueueMessage" xml:space="preserve">
         <value>Message cannot be empty</value>
     </data>
-    <data name="AnyStore_MissingEntityName" xml:space="preserve">
-        <value>EntityName cannot be empty</value>
-    </data>
-    <data name="AnyStore_MissingEntityId" xml:space="preserve">
-        <value>EntityId cannot be empty</value>
+    <data name="AnyStore_MissingAggregateRootId" xml:space="preserve">
+        <value>AggregateRootId cannot be empty</value>
     </data>
     <data name="AnyStore_MissingTopicName" xml:space="preserve">
         <value>TopicName cannot be empty</value>

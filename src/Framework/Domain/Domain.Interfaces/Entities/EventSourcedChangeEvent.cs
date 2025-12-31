@@ -9,59 +9,72 @@ namespace Domain.Interfaces.Entities;
 ///     used to define the change events to and from event sourced aggregates.
 ///     Note: We are delegating the value of <see cref="Id" /> to be the value to the <see cref="IIdentifiableEntity.Id" />
 ///     (using the private <see cref="Identifier" /> class) as a convenient workaround, to avoid requiring the mapping of
-///     from domain properties
+///     from domain properties.
 /// </summary>
 public struct EventSourcedChangeEvent : IIdentifiableEntity, IQueryableEntity
 {
     private readonly Identifier _identifier;
 
+    /// <summary>
+    ///     Used to create <see cref="EventSourcedChangeEvent" /> instances from newly created <see cref="IDomainEvent" /> by
+    ///     aggregates.
+    /// </summary>
     public static Result<EventSourcedChangeEvent, Error> Create(
-        Func<IIdentifiableEntity, Result<ISingleValueObject<string>, Error>> idFactory, string entityType,
-        bool isTombstone,
-        string eventType, string jsonData, string eventMetadata, int version)
+        Func<IIdentifiableEntity, Result<ISingleValueObject<string>, Error>> idFactory, Type aggregateType,
+        IDomainEvent domainEvent, int version)
     {
         var identifier = idFactory(new EventSourcedChangeEvent());
-        return identifier.Match<Result<EventSourcedChangeEvent, Error>>(id =>
-            new EventSourcedChangeEvent(id.Value.Value, jsonData, entityType, isTombstone, eventType, eventMetadata)
-            {
-                Version = version
-            }, error => error);
-    }
+        if (identifier.IsFailure)
+        {
+            return identifier.Error;
+        }
 
-    public static EventSourcedChangeEvent Create(ISingleValueObject<string> id, string entityType, bool isTombstone,
-        string eventType, string jsonData, string eventMetadata, int version)
-    {
-        return new EventSourcedChangeEvent(id.Value, jsonData, entityType, isTombstone, eventType, eventMetadata)
+        var id = identifier.Value.Value;
+        return new EventSourcedChangeEvent(id, aggregateType, domainEvent)
         {
             Version = version
         };
     }
 
-    private EventSourcedChangeEvent(string id, string data, string entityType, bool isTombstone, string eventType,
-        string metadata)
+    /// <summary>
+    ///     Used by Event Stores to create <see cref="EventSourcedChangeEvent" /> for rehydrating aggregates.
+    /// </summary>
+    public static EventSourcedChangeEvent Create(string id, Type aggregateType, IDomainEvent domainEvent, int version,
+        DateTime lastPersistedAtUtc)
+    {
+        return new EventSourcedChangeEvent(id, aggregateType, domainEvent)
+        {
+            Version = version,
+            LastPersistedAtUtc = lastPersistedAtUtc
+        };
+    }
+
+    private EventSourcedChangeEvent(string id, Type aggregateType, IDomainEvent domainEvent)
     {
         _identifier = new Identifier(id);
         Id = id;
-        Data = data;
-        EntityType = entityType;
-        EventType = eventType;
-        Metadata = metadata;
-        IsTombstone = isTombstone;
+        AggregateType = aggregateType;
+        OriginalEvent = domainEvent;
+
+        EventType = domainEvent.GetType();
+        IsTombstone = domainEvent is ITombstoneEvent;
     }
 
-    public string Data { get; private init; }
+    public IDomainEvent OriginalEvent { get; private init; }
 
-    public string EntityType { get; private init; }
+    public Type AggregateType { get; private init; }
 
-    public string EventType { get; private init; }
+    public Type EventType { get; private init; }
 
+    /// <summary>
+    ///     The ID of this event.
+    ///     Note: This is distinct from the <see cref="IDomainEvent.RootId" /> which is the ID of the aggregate.
+    /// </summary>
     public string Id { get; private init; }
 
     ISingleValueObject<string> IIdentifiableEntity.Id => _identifier;
 
     public Optional<DateTime> LastPersistedAtUtc { get; set; }
-
-    public string Metadata { get; private init; }
 
     public int Version { get; private init; }
 

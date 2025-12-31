@@ -171,7 +171,7 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
             versioning = next.Value;
 
             var nextVersion = versioning.LastEventVersion;
-            var versioned = @event.ToVersioned(IdFactory, GetType().Name, nextVersion);
+            var versioned = @event.ToVersioned(IdFactory, GetType(), nextVersion);
             if (versioned.IsFailure)
             {
                 return versioned.Error;
@@ -198,8 +198,7 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
     ///     Reconstitutes the aggregates in-memory state from the past <see cref="history" /> of events,
     ///     using the <see cref="migrator" /> to handle any unknown event types no longer present in the codebase
     /// </summary>
-    Result<Error> IChangeEventConsumingAggregateRoot.LoadChanges(IEnumerable<EventSourcedChangeEvent> history,
-        IEventSourcedChangeEventMigrator migrator)
+    Result<Error> IChangeEventConsumingAggregateRoot.LoadChanges(IEnumerable<EventSourcedChangeEvent> history)
     {
         if (EventStream.HasChanges)
         {
@@ -214,13 +213,7 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
 
         foreach (var change in changes)
         {
-            var @event = change.ToEvent(migrator);
-            if (!@event.IsSuccessful)
-            {
-                return @event.Error;
-            }
-
-            var onStateChanged = OnStateChanged(@event.Value, true);
+            var onStateChanged = OnStateChanged(change.OriginalEvent, true);
             if (onStateChanged.IsFailure)
             {
                 return onStateChanged.Error;

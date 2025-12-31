@@ -61,6 +61,31 @@ public class DomainFactorySpec
     }
 
     [Fact]
+    public void WhenRehydrateAggregateRootAndTypeNotExist_ThenThrows()
+    {
+        _factory
+            .Invoking(x => x
+                .RehydrateAggregateRoot(typeof(TestAggregateRoot),
+                    new HydrationProperties())).Should()
+            .Throw<InvalidOperationException>()
+            .WithMessageLike(Resources.DomainFactory_AggregateTypeNotFound);
+    }
+
+    [Fact]
+    public void WhenRehydrateAggregateRootAndExists_ThenReturnsEntityInstance()
+    {
+        _factory.RegisterDomainTypesFromAssemblies(typeof(DomainFactorySpec).Assembly);
+
+        var result = (TestAggregateRoot)_factory.RehydrateAggregateRoot(
+            typeof(TestAggregateRoot), new HydrationProperties
+            {
+                { nameof(IIdentifiableEntity.Id), "anid".ToId() }
+            });
+
+        result.Id.Should().Be("anid".ToId());
+    }
+
+    [Fact]
     public void WhenRehydrateEntityAndTypeNotExist_ThenThrows()
     {
         _factory

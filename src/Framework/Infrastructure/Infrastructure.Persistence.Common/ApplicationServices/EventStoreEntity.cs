@@ -10,15 +10,11 @@ namespace Infrastructure.Persistence.Common.ApplicationServices;
 [EntityName("EventStore")]
 public class EventStoreEntity : ReadModelEntity
 {
-    public Optional<string> Data { get; set; }
+    public Optional<string> AggregateTypeFullName { get; set; }
 
-    public Optional<string> EntityName { get; set; }
+    public Optional<string> EventJsonData { get; set; }
 
-    public Optional<string> EntityType { get; set; }
-
-    public Optional<string> EventType { get; set; }
-
-    public Optional<string> Metadata { get; set; }
+    public Optional<string> EventTypeFullName { get; set; }
 
     public Optional<string> StreamName { get; set; }
 
