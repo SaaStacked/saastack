@@ -2,7 +2,7 @@
 [![Frontend WebApp Ready](https://img.shields.io/badge/Frontend_App-Ready-green.svg)](README.md)
 [![Build and Test](https://github.com/SaaStacked/saastack/actions/workflows/build.yml/badge.svg)](https://github.com/SaaStacked/saastack/actions/workflows/build.yml)
 
-[![Basic Available](https://img.shields.io/badge/Free_SKU_Available-B8C8D1.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Standard_SKU_Available-3BBEC6.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Premium_SKU_Available-F5AD20.svg)](https://www.saastacked.com)
+[![Basic Available](https://img.shields.io/badge/Free_SKU_Available-B8C8D1.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Paid_Standard_SKU_Available-3BBEC6.svg)](https://www.saastacked.com) [![Standard Available](https://img.shields.io/badge/Paid_Premium_SKU_Available-F5AD20.svg)](https://www.saastacked.com)
 
 
 # SaaStack
@@ -11,29 +11,31 @@ Are you about to build a new SaaS product from scratch on .NET?
 
 Then do yourself a huge favor, and don't start it from scratch. Start with SaaStack instead.
 
-It’s not just a codebase template — it’s your startup's unfair advantage.
+It’s not just a codebase template — it’s your startup's unfair advantage in time-savings.
 
-SaaStack saves you months (possibly even years) of engineering work (and rework) by giving you a fully-featured, scalable foundation for real-world SaaS products, based on all the latest and great dotnet tech.
+SaaStack saves you months (possibly even years) of engineering work (and future rework) by giving you a fully-featured, fully-scalable and fully-tested foundation for real-world SaaS products, based on all the latest and greatest .NET tech.
 
-It solves the unavoidable work of building out: user authentication, API access, authorization schemes, third-party integrations, management APIs, an initial website, and making all this secure and ready for scale, as well as being highly testable and robust.
+It resolves the unavoidable work of building out a basic SaaS architecture that also includes: user authentication, secure API access, authorization schemes, third-party integrations, management APIs, observability, with an initial website that just needs styling, and all the developer tooling to needed to get your product to market the quickest.
 
 Your job as a founding engineer (or startup CTO) is not to do all this from scratch yourself, but to make smart tech, team, tooling and timing decisions that make you move fast, get your ideas to market and start iterating on product market fit.
 
-If you start from scratch youself, yes its fun and exciting, but you have months of work ahead of you just to get something reasonable working for your customers, and that's time and money you dont have to waste. Why not learn from those who have done this ten's of times before in multiple startups? and who can show you what is important to establish in your first couple years, long before you discover you can't do these things, when the crunch comes. 
+If you start from scratch yourself, yes its fun and exciting, and you might think you finally get to do things your way, but you have months of work ahead of you just to get something reasonable working for your customers to use, and that's time and money you don't have to waste. Instead, why not learn from those who have done this ten's of times before in multiple startups? and who can show you what is important to establish in your first couple years, long before you discover you can't do these things, when the crunch comes. 
 
 Skip the startup trap:
 
-- ❌ Reinventing the wheel, where we already have well-known standard solutions
+- ❌ Reinventing the wheel, where we already have well-known standard patterns and solutions
 - ❌ Rushing forward on a fragile foundation, that is under-engineered, untestable, insecure, and with no production observability, or extensibility.
-- ❌ Building a tangled monolith, destined for a rewrite next year, when you discover that you and your team cannot move fast, stuck in a big-ball-of-mud.
+- ❌ Putting up your own bespoke mash-up of the latest and greatest libraries (that you never got a chance to use in the past), only to find yourself creating a tightly coupled over-engineered Frankenstein than no one else can easily change.
+- ❌ Building a tangled monolith, destined for a rewrite next year, when you discover that you and your team cannot move fast anymore, stuck in a big-ball-of-mud, where changing anything breaks something else, somewhere else.
 
-SaaStack is opinionated, but it is also flexible and extensible and real-world. It is not a sample, it has been used and honed in a dozen real world SaaS products already (by the authors).
+SaaStack is opinionated, of course, but it is also flexible and extensible and real-world. It is not a sample, it has been used and honed in a dozen real world SaaS products already (by its authors).
 
-Since it is a codebase and not a nuget package (secret sauce), you never get boxed inside it waiting for some other team to improve it for you.
-- ✅ It’s already battle-tested in several live SaaS companies - you benefit from their in-the-wild learnings and optimizations.
-- ✅ It’s cloud-ready (Azure or AWS). It is easily extensible to work with your specific 3rd party providers, plug and play.
-- ✅ It does NOT lock you into someone else's framework, and you won't have to plea with them to improve it for you, nor will you send a PR to update it for you. You own it from the start, and can modify it safely at any time.
-- ✅ With extensive documentation and regression tests to guide you as you evolve or extend it, you are safeguarded against breaking anything, anywhere.
+* ✅It is not the kind of framework that you've come to hate. Since it is a codebase (and not a NuGet package), you never get boxed inside it waiting for some other team or person to improve or extend it for you. You just do it yourself.
+
+- ✅ It’s already battle-tested in several live SaaS companies - you benefit from their in-the-wild learnings and optimizations of this codebase as it constantly evolves.
+- ✅ It’s cloud-ready (Azure or AWS). It is easily extensible to work with any of your preferred 3rd party providers - plug and play. If we don't ship them already, make the adapter yourself.
+- ✅ It does NOT lock you into someone else's NuGet-controlled framework, and you won't have to plea with them to improve it for you, nor will you send them a PR to update it for you. You own it from the start, and can modify it safely at any time. You have a full-suite of regression tests to tell you what you broke with your new change.
+- ✅ With extensive documentation, developer tooling, coding standards and code analysis rules to guide you as you evolve or extend it, you are safeguarded against breaking anything, anywhere at anytime.
 - ✅ This isn’t a NuGet package. It’s not a toy demo, it's not a code sample. It’s a fully deployable product for serious builders who want to have a robust, testable, secure and fully scalable system from day one.
 
 To be useful now and into the future, and to guard against the future problems of scaling your business, the codebase employs and demonstrates several common architectural styles that you are going to need in your product, such as:
@@ -216,9 +218,16 @@ The starter template also takes care of these specific kinds of things:
 
 ## Try it out yourself!
 
-1. Download and explore the codebase and documentation (don't fork, start fresh instead)
+1. Install the following platforms:
 
-    ```bash
+    * .NET8.0 SDK (specifically version 8.0.19). Available for [Windows x64 Download](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.413-windows-x64-installer), or [MacOS x64 Download](dotnet-sdk-8.0.413-osx-x64.pkg)
+    *  Node.js (22.12.0 LTS or later), available for [Download](https://nodejs.org/en/download/)
+
+2. Download, explore, build, run and test the codebase and documentation. DO NOT fork! Start from the template instead.
+
+    * On Windows:
+
+    ```cmd
     git clone https://github.com/SaaStacked/saastack.git
     ren saastack yourproductname
     cd yourproductname
@@ -229,7 +238,20 @@ The starter template also takes care of these specific kinds of things:
     git commit -m "Initial commit for MyProduct"
     ```
 
-2. Open the solution in your favorite IDE (we recommend JetBrains Rider)
+    * On MacOS/Linux:
+
+    ```bash
+    git clone https://github.com/SaaStacked/saastack.git
+    mv saastack yourproductname
+    cd yourproductname
+    rm -rf .git
+    git config --global init.defaultBranch main
+    git init
+    git add .
+    git commit -m "Initial commit for MyProduct"
+    ```
+
+3. Open the solution in your favorite IDE (we recommend JetBrains Rider)
 
     ```bash
     rider src/SaaStack.sln
@@ -270,7 +292,9 @@ From this GitHub project, you get ALL of this for _Free_:
 
    * No local dependencies on any infrastructure, no databases, no docker containers, nothing!
 
-   * Develop on Windows, On MacOS, On Linux.
+   * Develop on Windows, MacOS or Linux.
+
+   * Study the documentation, and use the available limited developer tooling.
 
 2. You can onboard new team members and get them up to speed quickly.
 
@@ -280,18 +304,19 @@ From this GitHub project, you get ALL of this for _Free_:
 
    * Demo it to your company from your local machine.
 
-But what you can't yet do, is deploy this into a commercial production environment:
+However, what you CANT do yet (with the Basic/Free version), is deploy it into a commercial production environment.
 
-To get your new product to market, you need a few more things:
-1. You need a set of cloud provider connectors to connect to: databases, queues, message buses, and APM for monitoring
-   * So you can run this product in either Azure or AWS.
+To get your new product to market, you need a few more things to complete the journey:
+1. You need a set of production ready cloud provider specific adapters to connect to: databases, queues, message buses, and APM for monitoring
+   * To run this codebase in either Azure or AWS.
 
 2. You need a set of production environment technology adapters, to interact (both ways) to various 3rd party services
-   * For example, to connect to: SSO Providers, Twilio, Mailgun, Stripe, UserPilot, Launch Darkly, etc.
+   * To offload various services to 3rd party providers. For example, to connect to: SSO Providers, Twilio email and SMS, Stripe payments, UserPilot product metrics, Launch Darkly feature flags, etc, etc.
 
 3. You need an automated deployment pipeline to push releases to a cloud production environment, in minutes.
+   * To deploy this codebase to your chosen cloud provider, with your secure production configuration
 
-4. And you could use some more helpful tools & documentation to learn the patterns and techniques
+4. And you could also use some more helpful tools & documentation to learn and enforce the patterns and techniques used in this codebase:
 
    * Coding standards for your team
 
@@ -304,6 +329,21 @@ That is what [SaaStack Standard](https://www.saastacked.com) and [SaaStack Premi
 
 <a href="https://www.saastacked.com"><img alt="SaaStack Licenses" src="docs/images/Skus.png" width="850" /></a>
 
-Upgrade, for a one time fee, and get access to everything to launch your new product in the cloud!
+[Upgrade, for a one-time fee](https://www.saastacked.com/plans), and get access to everything you need to launch your new product in the cloud!
 
-Then get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
+Get access to community of other SaaS builders who are extending the core architecture for more mature SaaS products and services.
+
+## Support and Upgrades
+
+This repository is free to clone and own, and get started with immediately - you don't need anything else to do that. We will monitor discussions and issues and PR's, as we can.
+
+We are constantly updating this codebase, improving it, and fixing issues as they are reported.
+We recommend you stay updated with these changes, and use git patching (instead of forking the repository) so you don't miss anything important. 
+
+> Forking this codebase is not recommended because it is expected that within a few months, at least, your codebase may have diverged significantly, from this one, which will have also changed, and managing the 3-way differences is expected to get out of hand pretty quickly - at least that has been past experience for those that have adopted it.  
+
+However, for the Basic/Free version we are not publishing release notes nor publishing breaking changes nor migration notes. All you will see are changes in the commit history.
+
+> We highly recommend that you copy the commit revision number of the Basic/Free version (that you are up to date with) in your own repo, to track changes as they happen over time in this repo.
+
+Release notes, breaking changes and migration notes, are all captured and available to Standard or Premium customers, where we will also actively support customers needs more frequently. If support is important to you, we recommend that you upgrade to get all the assets and benefits.
