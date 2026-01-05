@@ -106,47 +106,52 @@ public sealed class InterHostServiceClient : ApiServiceClient
         }
     }
 
-    protected override JsonClient CreateJsonClient(ICallerContext? context,
-        Action<HttpRequestMessage>? inboundRequestFilter,
-        out Action<HttpRequestMessage> modifiedRequestFilter)
+    protected override JsonClient CreateJsonClient(ICallerContext? caller,
+        Action<HttpRequestMessage>? inboundRequestInterceptor, Action<HttpResponseMessage>? inboundResponseInterceptor,
+        out Action<HttpRequestMessage> modifiedRequestInterceptor,
+        out Action<HttpResponseMessage> modifiedResponseInterceptor)
     {
         var client = new JsonClient(ClientFactory, JsonOptions);
         client.SetBaseUrl(BaseUrl);
-        if (inboundRequestFilter.Exists())
+        if (inboundRequestInterceptor.Exists())
         {
-            modifiedRequestFilter = msg =>
+            modifiedRequestInterceptor = msg =>
             {
-                AddCorrelationId(msg, context);
-                AddCallerAuthorization(msg, context, _privateInterHostSecret, _hmacSecret);
-                inboundRequestFilter(msg);
+                AddCorrelationId(msg, caller);
+                AddCallerAuthorization(msg, caller, _privateInterHostSecret, _hmacSecret);
+                inboundRequestInterceptor(msg);
             };
         }
         else
         {
-            modifiedRequestFilter = msg =>
+            modifiedRequestInterceptor = msg =>
             {
-                AddCorrelationId(msg, context);
-                AddCallerAuthorization(msg, context, _privateInterHostSecret, _hmacSecret);
+                AddCorrelationId(msg, caller);
+                AddCallerAuthorization(msg, caller, _privateInterHostSecret, _hmacSecret);
             };
         }
+
+        modifiedResponseInterceptor = inboundResponseInterceptor.Exists()
+            ? inboundResponseInterceptor
+            : _ => { };
 
         return client;
     }
 
-    private static void AddCorrelationId(HttpRequestMessage message, ICallerContext? context)
+    private static void AddCorrelationId(HttpRequestMessage message, ICallerContext? caller)
     {
-        if (context.Exists())
+        if (caller.Exists())
         {
-            message.SetRequestId(context.ToCall());
+            message.SetRequestId(caller.ToCall());
         }
     }
 
-    private static void AddCallerAuthorization(HttpRequestMessage message, ICallerContext? context,
+    private static void AddCallerAuthorization(HttpRequestMessage message, ICallerContext? caller,
         string privateInterHostSecret, string hmacSecret)
     {
-        if (context.Exists())
+        if (caller.Exists())
         {
-            SetAuthorization(message, context, privateInterHostSecret, hmacSecret);
+            SetAuthorization(message, caller, privateInterHostSecret, hmacSecret);
         }
     }
 }

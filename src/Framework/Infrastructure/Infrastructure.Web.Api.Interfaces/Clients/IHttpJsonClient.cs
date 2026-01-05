@@ -6,54 +6,63 @@ namespace Infrastructure.Web.Api.Interfaces.Clients;
 public interface IHttpJsonClient
 {
     Task<JsonResponse<TResponse>> DeleteAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> DeleteAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 
     Task<JsonResponse<TResponse>> GetAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> GetAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 
     Task<JsonResponse<TResponse>> PatchAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> PatchAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 
     Task<JsonResponse<TResponse>> PostAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> PostAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 
     Task<JsonResponse<TResponse>> PostAsync<TResponse>(IWebRequest<TResponse> request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> PostAsync(IWebRequest request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 
     Task<JsonResponse<TResponse>> PutAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse<TResponse>> PutAsync<TResponse>(IWebRequest<TResponse> request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse;
 
     Task<JsonResponse> PutAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default);
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null);
 }
 
 /// <summary>

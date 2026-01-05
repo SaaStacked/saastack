@@ -30,7 +30,8 @@ public class FeatureFlagsApplicationSpec
     public async Task WhenGetFeatureFlagForCaller_ThenReturns()
     {
         _serviceClient.Setup(sc => sc.GetAsync(It.IsAny<ICallerContext>(), It.IsAny<GetFeatureFlagForCallerRequest>(),
-                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetFeatureFlagResponse
             {
                 Flag = new FeatureFlag
@@ -48,14 +49,16 @@ public class FeatureFlagsApplicationSpec
         result.Value.IsEnabled.Should().BeTrue();
         _serviceClient.Verify(sc => sc.GetAsync(_caller.Object, It.Is<GetFeatureFlagForCallerRequest>(req =>
             req.Name == "aname"
-        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+            It.IsAny<CancellationToken>()));
     }
 
     [Fact]
     public async Task WhenGetAllFeatureFlags_ThenReturns()
     {
         _serviceClient.Setup(sc => sc.GetAsync(It.IsAny<ICallerContext>(), It.IsAny<GetAllFeatureFlagsRequest>(),
-                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetAllFeatureFlagsResponse
             {
                 Flags = new List<FeatureFlag>
@@ -76,6 +79,7 @@ public class FeatureFlagsApplicationSpec
         result.Value[0].Name.Should().Be("aname");
         result.Value[0].IsEnabled.Should().BeTrue();
         _serviceClient.Verify(sc => sc.GetAsync(_caller.Object, It.IsAny<GetAllFeatureFlagsRequest>(),
-            It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+            It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+            It.IsAny<CancellationToken>()));
     }
 }

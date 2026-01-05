@@ -45,7 +45,8 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<AuthenticateCredentialRequest>(),
-                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateResponse
             {
                 Tokens = new AuthenticateTokens
@@ -77,7 +78,8 @@ public class AuthenticationApplicationSpec
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateCredentialRequest>(req =>
             req.Username == "ausername"
             && req.Password == "apassword"
-        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+            It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -86,7 +88,8 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<AuthenticateSingleSignOnRequest>(),
-                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateResponse
             {
                 Tokens = new AuthenticateTokens
@@ -122,7 +125,8 @@ public class AuthenticationApplicationSpec
             && req.Provider == "aprovider"
             && req.InvitationToken == null
             && req.TermsAndConditionsAccepted == true
-        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+            It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -132,7 +136,8 @@ public class AuthenticationApplicationSpec
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _serviceClient.Verify(
-            sc => sc.PostAsync(_caller.Object, It.IsAny<RefreshTokenRequest>(), null, It.IsAny<CancellationToken>()),
+            sc => sc.PostAsync(_caller.Object, It.IsAny<RefreshTokenRequest>(), null, null,
+                It.IsAny<CancellationToken>()),
             Times.Never);
         _recorder.Verify(rec =>
             rec.TrackUsage(It.IsAny<ICallContext>(), It.IsAny<string>(), null), Times.Never);
@@ -144,7 +149,8 @@ public class AuthenticationApplicationSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _serviceClient.Setup(sc => sc.PostAsync(It.IsAny<ICallerContext>(), It.IsAny<RefreshTokenRequest>(),
-                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new RefreshTokenResponse
             {
                 Tokens = new AuthenticateTokens
@@ -175,6 +181,7 @@ public class AuthenticationApplicationSpec
         result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<RefreshTokenRequest>(req =>
             req.RefreshToken == "arefreshtoken"
-        ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<CancellationToken>()));
+            ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
+            It.IsAny<CancellationToken>()));
     }
 }

@@ -33,7 +33,8 @@ public sealed class TestingClient : IHttpClient, IDisposable
     public Uri? BaseAddress => _httpClient.BaseAddress;
 
     public async Task<HttpResponseMessage> GetAsync(string route,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null)
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null)
     {
         var message = new HttpRequestMessage
         {
@@ -41,11 +42,12 @@ public sealed class TestingClient : IHttpClient, IDisposable
             RequestUri = new Uri(BaseAddress!, route)
         };
 
-        return await SendAsync(message, requestFilter);
+        return await SendAsync(message, requestInterceptor, responseInterceptor);
     }
 
     public async Task<string> GetStringAsync(string route,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null)
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null)
     {
         var message = new HttpRequestMessage
         {
@@ -53,13 +55,14 @@ public sealed class TestingClient : IHttpClient, IDisposable
             RequestUri = new Uri(BaseAddress!, route)
         };
 
-        var response = await SendAsync(message, requestFilter);
+        var response = await SendAsync(message, requestInterceptor, responseInterceptor);
 
         return await response.Content.ReadAsStringAsync();
     }
 
     public async Task<HttpResponseMessage> PostAsync(string route, HttpContent content,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null)
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null)
     {
         var message = new HttpRequestMessage
         {
@@ -68,11 +71,12 @@ public sealed class TestingClient : IHttpClient, IDisposable
             Content = content
         };
 
-        return await SendAsync(message, requestFilter);
+        return await SendAsync(message, requestInterceptor, responseInterceptor);
     }
 
     public async Task<HttpResponseMessage> PostEmptyJsonAsync(string route,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null)
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null)
     {
         var message = new HttpRequestMessage
         {
@@ -81,21 +85,27 @@ public sealed class TestingClient : IHttpClient, IDisposable
             Content = JsonContent.Create(new { })
         };
 
-        return await SendAsync(message, requestFilter);
+        return await SendAsync(message, requestInterceptor, responseInterceptor);
     }
 
     public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null)
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null)
     {
-        if (requestFilter.Exists())
+        if (requestInterceptor.Exists())
         {
-            requestFilter(message, _handler.Container);
+            requestInterceptor(message, _handler.Container);
         }
 
         var response = await _httpClient.SendAsync(message);
         if (response.StatusCode >= HttpStatusCode.InternalServerError)
         {
             throw await ToExceptionAsync(response, _jsonOptions);
+        }
+
+        if (responseInterceptor.Exists())
+        {
+            responseInterceptor(response);
         }
 
         return response;

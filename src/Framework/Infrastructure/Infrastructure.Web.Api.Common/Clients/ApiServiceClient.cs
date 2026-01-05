@@ -35,54 +35,72 @@ public class ApiServiceClient : IServiceClient
         _retryPolicy = ApiClientRetryPolicies.CreateRetryWithExponentialBackoffAndJitter(retryCount);
     }
 
-    public async Task<Result<string?, ResponseProblem>> DeleteAsync(ICallerContext? context,
-        IWebRequest request, Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<string?, ResponseProblem>> DeleteAsync(ICallerContext? caller,
+        IWebRequest request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.DeleteAsync(request, modifiedRequestFilter, ct)).Content,
+            async ct => (await client.DeleteAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task FireAsync(ICallerContext? context, IWebRequestVoid request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = null)
+    public async Task FireAsync(ICallerContext? caller, IWebRequestVoid request,
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
-        await _retryPolicy.ExecuteAsync(async ct => await client.SendOneWayAsync(request, modifiedRequestFilter, ct),
-            cancellationToken ?? CancellationToken.None);
-    }
-
-    public async Task FireAsync<TResponse>(ICallerContext? context, IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter, CancellationToken? cancellationToken = null)
-        where TResponse : IWebResponse
-    {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         await _retryPolicy.ExecuteAsync(
-            async ct => { await client.SendOneWayAsync(request, modifiedRequestFilter, ct); },
+            async ct => await client.SendOneWayAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor,
+                ct),
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<TResponse, ResponseProblem>> GetAsync<TResponse>(ICallerContext? context,
-        IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = null)
+    public async Task FireAsync<TResponse>(ICallerContext? caller, IWebRequest<TResponse> request,
+        Action<HttpRequestMessage>? requestInterceptor, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
-        return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.GetAsync(request, modifiedRequestFilter, ct)).Content,
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
+        await _retryPolicy.ExecuteAsync(
+            async ct =>
+            {
+                await client.SendOneWayAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct);
+            },
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<BinaryResponse, ResponseProblem>> GetBinaryAsync(ICallerContext? context,
-        IWebRequest request, Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<TResponse, ResponseProblem>> GetAsync<TResponse>(ICallerContext? caller,
+        IWebRequest<TResponse> request,
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
+        where TResponse : IWebResponse
+    {
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
+        return await _retryPolicy.ExecuteAsync(
+            async ct => (await client.GetAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
+            cancellationToken ?? CancellationToken.None);
+    }
+
+    public async Task<Result<BinaryResponse, ResponseProblem>> GetBinaryAsync(ICallerContext? caller,
+        IWebRequest request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
             async ct =>
             {
-                var response = await client.GetAsync(request, modifiedRequestFilter, ct);
+                var response =
+                    await client.GetAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct);
                 return new BinaryResponse
                 {
                     Content = response.RawContent!,
@@ -94,68 +112,86 @@ public class ApiServiceClient : IServiceClient
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<string?, ResponseProblem>> GetStringAsync(ICallerContext? context, IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<string?, ResponseProblem>> GetStringAsync(ICallerContext? caller, IWebRequest request,
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.GetAsync(request, modifiedRequestFilter, ct)).Content,
+            async ct => (await client.GetAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<TResponse, ResponseProblem>> PatchAsync<TResponse>(ICallerContext? context,
-        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = null)
-        where TResponse : IWebResponse
-    {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
-        return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.PatchAsync(request, modifiedRequestFilter, ct)).Content,
-            cancellationToken ?? CancellationToken.None);
-    }
-
-    public async Task<Result<TResponse, ResponseProblem>> PostAsync<TResponse>(ICallerContext? context,
-        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<TResponse, ResponseProblem>> PatchAsync<TResponse>(ICallerContext? caller,
+        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.PostAsync(request, modifiedRequestFilter, ct)).Content,
+            async ct => (await client.PatchAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<TResponse, ResponseProblem>> PostAsync<TResponse>(ICallerContext? context,
-        IWebRequest<TResponse> request, PostFile file, Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<TResponse, ResponseProblem>> PostAsync<TResponse>(ICallerContext? caller,
+        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.PostAsync(request, file, modifiedRequestFilter, ct)).Content,
+            async ct => (await client.PostAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
             cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<Result<TResponse, ResponseProblem>> PutAsync<TResponse>(ICallerContext? context,
-        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestFilter = null,
+    public async Task<Result<TResponse, ResponseProblem>> PostAsync<TResponse>(ICallerContext? caller,
+        IWebRequest<TResponse> request, PostFile file, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
         CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        using var client = CreateJsonClient(context, requestFilter, out var modifiedRequestFilter);
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
         return await _retryPolicy.ExecuteAsync(
-            async ct => (await client.PutAsync(request, modifiedRequestFilter, ct)).Content,
+            async ct => (await client.PostAsync(request, file, modifiedRequestInterceptor, modifiedResponseInterceptor,
+                ct)).Content,
             cancellationToken ?? CancellationToken.None);
     }
 
-    protected virtual JsonClient CreateJsonClient(ICallerContext? context,
-        Action<HttpRequestMessage>? inboundRequestFilter,
-        out Action<HttpRequestMessage> modifiedRequestFilter)
+    public async Task<Result<TResponse, ResponseProblem>> PutAsync<TResponse>(ICallerContext? caller,
+        IWebRequest<TResponse> request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
+        where TResponse : IWebResponse
+    {
+        using var client = CreateJsonClient(caller, requestInterceptor, responseInterceptor,
+            out var modifiedRequestInterceptor, out var modifiedResponseInterceptor);
+        return await _retryPolicy.ExecuteAsync(
+            async ct => (await client.PutAsync(request, modifiedRequestInterceptor, modifiedResponseInterceptor, ct))
+                .Content,
+            cancellationToken ?? CancellationToken.None);
+    }
+
+    protected virtual JsonClient CreateJsonClient(ICallerContext? caller,
+        Action<HttpRequestMessage>? inboundRequestInterceptor, Action<HttpResponseMessage>? inboundResponseInterceptor,
+        out Action<HttpRequestMessage> modifiedRequestInterceptor,
+        out Action<HttpResponseMessage> modifiedResponseInterceptor)
     {
         var client = new JsonClient(ClientFactory, JsonOptions);
         client.SetBaseUrl(BaseUrl);
-        modifiedRequestFilter = inboundRequestFilter.Exists()
-            ? inboundRequestFilter
+        modifiedRequestInterceptor = inboundRequestInterceptor.Exists()
+            ? inboundRequestInterceptor
+            : _ => { };
+        modifiedResponseInterceptor = inboundResponseInterceptor.Exists()
+            ? inboundResponseInterceptor
             : _ => { };
 
         return client;

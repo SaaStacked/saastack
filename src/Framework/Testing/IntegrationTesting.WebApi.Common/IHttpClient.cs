@@ -9,16 +9,22 @@ public interface IHttpClient
 {
     Uri? BaseAddress { get; }
 
-    Task<HttpResponseMessage> GetAsync(string route, Action<HttpRequestMessage, CookieContainer>? requestFilter = null);
+    Task<HttpResponseMessage> GetAsync(string route,
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null);
 
-    Task<string> GetStringAsync(string route, Action<HttpRequestMessage, CookieContainer>? requestFilter = null);
+    Task<string> GetStringAsync(string route, Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null);
 
     Task<HttpResponseMessage> PostAsync(string route, HttpContent content,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null);
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null);
 
     Task<HttpResponseMessage> PostEmptyJsonAsync(string route,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null);
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null);
 
     Task<HttpResponseMessage> SendAsync(HttpRequestMessage message,
-        Action<HttpRequestMessage, CookieContainer>? requestFilter = null);
+        Action<HttpRequestMessage, CookieContainer>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null);
 }

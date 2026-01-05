@@ -1,5 +1,5 @@
 #if TESTINGONLY
-     using System.Text.Json;
+using System.Text.Json;
 using Common;
 using Common.Configuration;
 using Common.FeatureFlags;
@@ -38,7 +38,7 @@ public class FakeFeatureFlagProviderServiceClient : IFeatureFlags
 
     public async Task<Result<IReadOnlyList<FeatureFlag>, Error>> GetAllFlagsAsync(CancellationToken cancellationToken)
     {
-        var response = await _serviceClient.GetAsync(null, new ListFakeFeatureFlagProviderFlagsRequest(), null,
+        var response = await _serviceClient.GetAsync(null, new ListFakeFeatureFlagProviderFlagsRequest(), null, null,
             cancellationToken);
         if (response.IsFailure)
         {
@@ -61,8 +61,7 @@ public class FakeFeatureFlagProviderServiceClient : IFeatureFlags
         var response = await _serviceClient.GetAsync(null, new GetFakeFeatureFlagProviderFlagRequest
             {
                 Name = flag.Name
-            }, null,
-            cancellationToken);
+            }, null, null, cancellationToken);
         if (response.IsFailure)
         {
             return response.Error.ToError();

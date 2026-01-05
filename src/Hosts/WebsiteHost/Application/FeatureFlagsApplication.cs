@@ -28,7 +28,7 @@ public class FeatureFlagsApplication : IFeatureFlagsApplication
             {
                 req.RemoveAuthorization();
                 req.SetHMACAuth(request, _hmacSecret);
-            },
+            }, null,
             cancellationToken);
         if (retrieved.IsFailure)
         {
@@ -46,7 +46,7 @@ public class FeatureFlagsApplication : IFeatureFlagsApplication
             Name = name
         };
 
-        var retrieved = await _serviceClient.GetAsync(caller, request, null, cancellationToken);
+        var retrieved = await _serviceClient.GetAsync(caller, request, cancellationToken: cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error.ToError();

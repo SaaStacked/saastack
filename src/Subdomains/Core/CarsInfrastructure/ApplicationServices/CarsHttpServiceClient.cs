@@ -28,7 +28,7 @@ public class CarsHttpServiceClient : ICarsService
         {
             OrganizationId = organizationId,
             Id = id
-        }, null, cancellationToken);
+        }, cancellationToken: cancellationToken);
 
         return response.Match<Result<Car, Error>>(res => res.Value.Car, error => error.ToError());
     }
@@ -42,7 +42,7 @@ public class CarsHttpServiceClient : ICarsService
             Id = id,
             FromUtc = fromUtc,
             ToUtc = toUtc
-        }, null, cancellationToken);
+        }, cancellationToken: cancellationToken);
 
         return response.Match<Result<Car, Error>>(res => res.Value.Car, error => error.ToError());
     }
@@ -57,7 +57,7 @@ public class CarsHttpServiceClient : ICarsService
             FromUtc = fromUtc,
             ToUtc = toUtc,
             ReferenceId = referenceId
-        }, null, cancellationToken);
+        }, cancellationToken: cancellationToken);
 
         return response.Match<Result<bool, Error>>(res => res.Value.IsReserved, error => error.ToError());
     }

@@ -31,7 +31,7 @@ public class AuthenticationApplication : IAuthenticationApplication
                 {
                     Username = username,
                     Password = password
-                }, req => req.RemoveAuthorization(), cancellationToken);
+                }, req => req.RemoveAuthorization(), null, cancellationToken);
                 break;
 
             default:
@@ -41,7 +41,7 @@ public class AuthenticationApplication : IAuthenticationApplication
                     Provider = provider,
                     CodeVerifier = codeVerifier,
                     TermsAndConditionsAccepted = true
-                }, req => req.RemoveAuthorization(), cancellationToken);
+                }, req => req.RemoveAuthorization(), null, cancellationToken);
                 break;
         }
 
@@ -72,7 +72,7 @@ public class AuthenticationApplication : IAuthenticationApplication
         var refreshed = await _serviceClient.PostAsync(caller, new RefreshTokenRequest
         {
             RefreshToken = refreshToken
-        }, req => req.RemoveAuthorization(), cancellationToken);
+        }, req => req.RemoveAuthorization(), null, cancellationToken);
         if (refreshed.IsFailure)
         {
             return refreshed.Error.ToError();

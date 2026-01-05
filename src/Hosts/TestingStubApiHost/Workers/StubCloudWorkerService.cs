@@ -120,7 +120,7 @@ public class StubCloudWorkerService : BackgroundService
                             WorkerConstants.Queues.QueueDeliveryApiEndpoints[queueName](_settings);
                         var apiClient = CreateApiEndpointClient("queues", _httpClientFactory, _jsonOptions, baseUrl);
                         await apiClient.PostAsync(webRequest,
-                            req => req.SetHMACAuth(webRequest, hmacSecret),
+                            req => req.SetHMACAuth(webRequest, hmacSecret), null,
                             cancellationToken);
                         _logger.LogDebug("Drained messages for queue: {Queue}", queueName);
                     }
@@ -159,7 +159,7 @@ public class StubCloudWorkerService : BackgroundService
                             var apiClient = CreateApiEndpointClient("topics", _httpClientFactory, _jsonOptions,
                                 host.BaseUrl);
                             await apiClient.PostAsync(webRequest,
-                                req => req.SetHMACAuth(webRequest, host.HmacSecret),
+                                req => req.SetHMACAuth(webRequest, host.HmacSecret), null,
                                 cancellationToken);
                             _logger.LogDebug("Drained messages on bus topic: {Topic}, for: {Subscriber}", topicName,
                                 host.HostName);

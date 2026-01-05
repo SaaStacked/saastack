@@ -53,10 +53,12 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     public async Task<JsonResponse<TResponse>> DeleteAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        var response = await SendRequestAsync(_httpClient, HttpMethod.Delete, request, null, requestFilter,
+        var response = await SendRequestAsync(_httpClient, HttpMethod.Delete, request, null, requestInterceptor,
+            responseInterceptor,
             cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
@@ -64,9 +66,11 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     public async Task<JsonResponse> DeleteAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null, CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
-        var response = await SendRequestAsync(_httpClient, HttpMethod.Delete, request, null, requestFilter,
+        var response = await SendRequestAsync(_httpClient, HttpMethod.Delete, request, null, requestInterceptor,
+            responseInterceptor,
             cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
@@ -74,34 +78,37 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     public async Task<JsonResponse<TResponse>> GetAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Get, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Get, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse> GetAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Get, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Get, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse<TResponse>> PatchAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
-        var response = await SendRequestAsync(_httpClient, HttpMethod.Patch, request, null, requestFilter,
+        var response = await SendRequestAsync(_httpClient, HttpMethod.Patch, request, null, requestInterceptor,
+            responseInterceptor,
             cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
@@ -109,10 +116,11 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     public async Task<JsonResponse> PatchAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
-        var response = await SendRequestAsync(_httpClient, HttpMethod.Patch, request, null, requestFilter,
+        var response = await SendRequestAsync(_httpClient, HttpMethod.Patch, request, null, requestInterceptor,
+            responseInterceptor,
             cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
@@ -120,81 +128,88 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     public async Task<JsonResponse<TResponse>> PostAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Post, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Post, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse> PostAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Post, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Post, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse<TResponse>> PostAsync<TResponse>(IWebRequest<TResponse> request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Post, request, file, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Post, request, file, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse> PostAsync(IWebRequest request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Post, request, file, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Post, request, file, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse<TResponse>> PutAsync<TResponse>(IWebRequest<TResponse> request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse<TResponse>> PutAsync<TResponse>(IWebRequest<TResponse> request, PostFile file,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
         where TResponse : IWebResponse
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Put, request, file, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Put, request, file, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetTypedResponseAsync<TResponse>(response, _jsonOptions, cancellationToken);
 
         return CreateResponse(response, content);
     }
 
     public async Task<JsonResponse> PutAsync(IWebRequest request,
-        Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+        Action<HttpRequestMessage>? requestInterceptor = null, Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
         var response =
-            await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestFilter, cancellationToken);
+            await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestInterceptor, responseInterceptor,
+                cancellationToken);
         var content = await GetStringResponseAsync(response, cancellationToken);
 
         return CreateResponse(response, content);
@@ -306,15 +321,18 @@ public class JsonClient : IHttpJsonClient, IDisposable
         return await ParseErrorAsync(response, cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task SendOneWayAsync(IWebRequest request, Action<HttpRequestMessage>? requestFilter = null,
-        CancellationToken? cancellationToken = default)
+    public async Task SendOneWayAsync(IWebRequest request, Action<HttpRequestMessage>? requestInterceptor = null,
+        Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
-        await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestFilter, cancellationToken);
+        await SendRequestAsync(_httpClient, HttpMethod.Put, request, null, requestInterceptor, responseInterceptor,
+            cancellationToken);
     }
 
     internal static async Task<HttpResponseMessage> SendRequestAsync(HttpClient httpClient, HttpMethod method,
-        IWebRequest request, PostFile? file, Action<HttpRequestMessage>? requestFilter,
-        CancellationToken? cancellationToken = default)
+        IWebRequest request, PostFile? file, Action<HttpRequestMessage>? requestInterceptor,
+        Action<HttpResponseMessage>? responseInterceptor = null,
+        CancellationToken? cancellationToken = null)
     {
         var (info, body) = request.ParseRequestInfo();
         var requestUri = info.Route;
@@ -353,7 +371,8 @@ public class JsonClient : IHttpJsonClient, IDisposable
                     : null;
             }
 
-            return await SendRequestAsync(httpClient, method, requestUri, content, requestFilter, cancellationToken);
+            return await SendRequestAsync(httpClient, method, requestUri, content, requestInterceptor,
+                responseInterceptor, cancellationToken);
         }
         finally
         {
@@ -489,8 +508,9 @@ public class JsonClient : IHttpJsonClient, IDisposable
     }
 
     private static async Task<HttpResponseMessage> SendRequestAsync(HttpClient httpClient, HttpMethod method,
-        string requestUri, HttpContent? requestContent, Action<HttpRequestMessage>? requestFilter,
-        CancellationToken? cancellationToken = default)
+        string requestUri, HttpContent? requestContent, Action<HttpRequestMessage>? requestInterceptor,
+        Action<HttpResponseMessage>? responseInterceptor,
+        CancellationToken? cancellationToken = null)
     {
         var request = new HttpRequestMessage
         {
@@ -499,12 +519,19 @@ public class JsonClient : IHttpJsonClient, IDisposable
             Content = requestContent,
             Headers = { { HttpConstants.Headers.Accept, HttpConstants.ContentTypes.Json } }
         };
-        if (requestFilter is not null)
+        if (requestInterceptor.Exists())
         {
-            requestFilter(request);
+            requestInterceptor(request);
         }
 
-        return await httpClient.SendAsync(request, cancellationToken ?? CancellationToken.None);
+        var response = await httpClient.SendAsync(request, cancellationToken ?? CancellationToken.None);
+
+        if (responseInterceptor.Exists())
+        {
+            responseInterceptor(response);
+        }
+
+        return response;
     }
 
     private static async Task<ResponseProblem> ParseErrorAsync(HttpResponseMessage response,
