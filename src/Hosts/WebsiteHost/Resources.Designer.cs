@@ -114,6 +114,87 @@ namespace WebsiteHost {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;ClientId&apos; is either missing or invalid.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidClientId {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;CodeChallenge&apos; is invalid.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidCodeChallenge {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidCodeChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;CodeChallengeMethod&apos; must be &apos;S256&apos; or &apos;plain&apos;.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidCodeChallengeMethod {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidCodeChallengeMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Nonce&apos; parameter is either missing or invalid.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidNonce {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidNonce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;RedirectUri&apos; is either missing or invalid.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidRedirectUri {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidRedirectUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;ResponseType&apos; must be &apos;code&apos;.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidResponseType {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidResponseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Scope&apos; must only contain allowable scopes.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidScope {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;State&apos; parameter is invalid.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_InvalidState {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_InvalidState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;CodeChallengeMethod&apos; is required when &apos;CodeChallenge&apos; is provided.
+        /// </summary>
+        internal static string AuthorizeOAuth2RequestValidator_MissingCodeChallengeMethod {
+            get {
+                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_MissingCodeChallengeMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Name&apos; is either missing or invalid.
         /// </summary>
         internal static string GetFeatureFlagForCallerRequestValidator_InvalidName {

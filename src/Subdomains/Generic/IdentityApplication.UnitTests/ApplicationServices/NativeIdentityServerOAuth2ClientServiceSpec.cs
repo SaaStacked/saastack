@@ -152,7 +152,7 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
     }
 
     [Fact]
-    public async Task WhenConsentToClientAsyncAndConsentExistsAndAlreadyConsented_ThenReturnsTrue()
+    public async Task WhenConsentToClientAsyncAndConsentExistsAndConsents_ThenReturnsConsented()
     {
         var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
             _passwordHasherService.Object,
@@ -167,35 +167,13 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(consent.ToOptional());
 
-        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid",
+        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid", "aredirecturi",
             OpenIdConnectConstants.Scopes.OpenId, true, CancellationToken.None);
 
         result.Should().BeSuccess();
-        result.Value.IsConsented.Should().BeTrue();
-        _consentRepository.Verify(
-            rep => rep.SaveAsync(It.IsAny<OAuth2ClientConsentRoot>(), It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task WhenConsentToClientAsyncAndConsentExistsAndNotConsented_ThenConsents()
-    {
-        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
-            _passwordHasherService.Object,
-            Name.Create("aclientname").Value).Value;
-        var consent = OAuth2ClientConsentRoot.Create(_recorder.Object, _identifierFactory.Object,
-            "aclientid".ToId(), "auserid".ToId()).Value;
-
-        _clientRepository.Setup(rep => rep.LoadAsync("aclientid".ToId(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(client);
-        _consentRepository.Setup(rep =>
-                rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(consent.ToOptional());
-
-        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid",
-            OpenIdConnectConstants.Scopes.OpenId, true, CancellationToken.None);
-
-        result.Should().BeSuccess();
-        result.Value.IsConsented.Should().BeTrue();
+        result.Value.Consent.Should().NotBeNull();
+        result.Value.DenyError.Should().BeNull();
+        result.Value.Consent!.IsConsented.Should().BeTrue();
         _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(c =>
             c.IsConsented == true
             && c.Scopes.Items.SequenceEqual(new List<string> { OpenIdConnectConstants.Scopes.OpenId })
@@ -203,7 +181,87 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
     }
 
     [Fact]
-    public async Task WhenGetConsentAsyncAndConsentDoesNotExist_ThenReturnsError()
+    public async Task WhenConsentToClientAsyncAndNoConsentExistsAndConsents_ThenReturnsConsented()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object,
+            Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync("aclientid".ToId(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+        _consentRepository.Setup(rep =>
+                rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<OAuth2ClientConsentRoot>.None);
+
+        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid", "aredirecturi",
+            OpenIdConnectConstants.Scopes.OpenId, true, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.Consent.Should().NotBeNull();
+        result.Value.DenyError.Should().BeNull();
+        result.Value.Consent!.IsConsented.Should().BeTrue();
+        _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(c =>
+            c.IsConsented == true
+            && c.Scopes.Items.SequenceEqual(new List<string> { OpenIdConnectConstants.Scopes.OpenId })
+        ), It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenConsentToClientAsyncAndConsentExistsAndUnConsents_ThenReturnsUnconsented()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object,
+            Name.Create("aclientname").Value).Value;
+        var consent = OAuth2ClientConsentRoot.Create(_recorder.Object, _identifierFactory.Object,
+            "aclientid".ToId(), "auserid".ToId()).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync("aclientid".ToId(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+        _consentRepository.Setup(rep =>
+                rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(consent.ToOptional());
+
+        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid", "aredirecturi",
+            OpenIdConnectConstants.Scopes.OpenId, false, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.Consent.Should().BeNull();
+        result.Value.DenyError.Should().NotBeNull();
+        result.Value.DenyError!.Value.AdditionalCode.Should().Be(OAuth2Constants.ErrorCodes.AccessDenied);
+        result.Value.DenyError!.Value.Message.Should().Be(Resources.ClientsApi_ConsentClientForCaller_ClientRevoked);
+        _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(c =>
+            c.IsConsented == false
+            && c.Scopes.Items.Count == 0
+        ), It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenConsentToClientAsyncAndNoConsentExistsAndUnConsents_ThenReturnsUnconsented()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object,
+            Name.Create("aclientname").Value).Value;
+
+        _clientRepository.Setup(rep => rep.LoadAsync("aclientid".ToId(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+        _consentRepository.Setup(rep =>
+                rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<OAuth2ClientConsentRoot>.None);
+
+        var result = await _service.ConsentToClientAsync(_caller.Object, "aclientid", "auserid", "aredirecturi",
+            OpenIdConnectConstants.Scopes.OpenId, false, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.Consent.Should().BeNull();
+        result.Value.DenyError.Should().NotBeNull();
+        result.Value.DenyError!.Value.AdditionalCode.Should().Be(OAuth2Constants.ErrorCodes.AccessDenied);
+        result.Value.DenyError!.Value.Message.Should().Be(Resources.ClientsApi_ConsentClientForCaller_ClientRevoked);
+        _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(c =>
+            c.IsConsented == false
+            && c.Scopes.Items.Count == 0
+        ), It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenGetConsentAsyncAndConsentDoesNotExist_ThenReturnsUnconsented()
     {
         _consentRepository.Setup(rep =>
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -211,7 +269,9 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
 
         var result = await _service.GetConsentAsync(_caller.Object, "aclientid", "auserid", CancellationToken.None);
 
-        result.Should().BeError(ErrorCode.EntityNotFound);
+        result.Should().BeSuccess();
+        result.Value.Id.Should().Be(string.Empty);
+        result.Value.IsConsented.Should().BeFalse();
     }
 
     [Fact]
@@ -291,7 +351,7 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
     }
 
     [Fact]
-    public async Task WhenRevokeConsentAsyncAndConsentDoesNotExist_ThenReturnsError()
+    public async Task WhenRevokeConsentAsyncAndConsentDoesNotExist_ThenCreatesRevokedConsent()
     {
         var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
             _passwordHasherService.Object,
@@ -304,9 +364,11 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
 
         var result = await _service.RevokeConsentAsync(_caller.Object, "aclientid", "auserid", CancellationToken.None);
 
-        result.Should().BeError(ErrorCode.EntityNotFound);
-        _consentRepository.Verify(
-            rep => rep.SaveAsync(It.IsAny<OAuth2ClientConsentRoot>(), It.IsAny<CancellationToken>()), Times.Never);
+        result.Should().BeSuccess();
+        _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(root =>
+            root.IsConsented == false
+            && root.Scopes == OAuth2Scopes.Empty
+        ), It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -327,8 +389,10 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
         var result = await _service.RevokeConsentAsync(_caller.Object, "aclientid", "auserid", CancellationToken.None);
 
         result.Should().BeSuccess();
-        _consentRepository.Verify(
-            rep => rep.SaveAsync(It.IsAny<OAuth2ClientConsentRoot>(), It.IsAny<CancellationToken>()), Times.Never);
+        _consentRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientConsentRoot>(root =>
+            root.IsConsented == false
+            && root.Scopes == OAuth2Scopes.Empty
+        ), It.IsAny<CancellationToken>()));
     }
 
     [Fact]
@@ -357,38 +421,59 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
     }
 
     [Fact]
-    public async Task WhenHasClientConsentedUserAsyncConsentDoesNotExist_ThenReturnsFalse()
+    public async Task WhenHasUserConsentedClientAsyncAndConsentDoesNotExist_ThenReturnsFalse()
     {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, "aclientid".ToIdentifierFactory(), _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
         _consentRepository.Setup(rep =>
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<OAuth2ClientConsentRoot>.None);
 
-        var result = await _service.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid", "ascope",
+        var result = await _service.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
+            OAuth2Constants.Scopes.Email,
             CancellationToken.None);
 
         result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
+        result.Value.IsConsented.Should().BeFalse();
+        result.Value.Scopes.Should().ContainInOrder(OAuth2Constants.Scopes.Email);
+        result.Value.UserId.Should().Be("auserid");
+        result.Value.Client.Id.Should().Be("aclientid");
+        result.Value.Client.Name.Should().Be("aclientname");
     }
 
     [Fact]
-    public async Task WhenHasClientConsentedUserAsyncAndIsNotConsented_ThenReturnsFalse()
+    public async Task WhenHasUserConsentedClientAsyncAndIsNotConsented_ThenReturnsFalse()
     {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, "aclientid".ToIdentifierFactory(), _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
         var consent = OAuth2ClientConsentRoot.Create(_recorder.Object, _identifierFactory.Object,
             "aclientid".ToId(), "auserid".ToId()).Value;
         _consentRepository.Setup(rep =>
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(consent.ToOptional());
 
-        var result = await _service.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+        var result = await _service.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
             OAuth2Constants.Scopes.Email, CancellationToken.None);
 
         result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
+        result.Value.IsConsented.Should().BeFalse();
+        result.Value.Scopes.Should().ContainInOrder(OAuth2Constants.Scopes.Email);
+        result.Value.UserId.Should().Be("auserid");
+        result.Value.Client.Id.Should().Be("aclientid");
+        result.Value.Client.Name.Should().Be("aclientname");
     }
 
     [Fact]
-    public async Task WhenHasClientConsentedUserAsyncAndIsConsentedWithDifferentScope_ThenReturnsFalse()
+    public async Task WhenHasUserConsentedClientAsyncAndIsConsentedWithDifferentScope_ThenReturnsFalse()
     {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, "aclientid".ToIdentifierFactory(), _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
         var consent = OAuth2ClientConsentRoot.Create(_recorder.Object, _identifierFactory.Object,
             "aclientid".ToId(), "auserid".ToId()).Value;
         consent.ChangeConsent("auserid".ToId(), true, OAuth2Scopes.Create(OAuth2Constants.Scopes.Profile).Value);
@@ -396,16 +481,24 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(consent.ToOptional());
 
-        var result = await _service.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+        var result = await _service.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
             OAuth2Constants.Scopes.Email, CancellationToken.None);
 
         result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
+        result.Value.IsConsented.Should().BeFalse();
+        result.Value.Scopes.Should().ContainInOrder(OAuth2Constants.Scopes.Email);
+        result.Value.UserId.Should().Be("auserid");
+        result.Value.Client.Id.Should().Be("aclientid");
+        result.Value.Client.Name.Should().Be("aclientname");
     }
 
     [Fact]
-    public async Task WhenHasClientConsentedUserAsyncAndIsConsentedWithSameScope_ThenReturnsTrue()
+    public async Task WhenHasUserConsentedClientAsyncAndIsConsentedWithSameScope_ThenReturnsTrue()
     {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, "aclientid".ToIdentifierFactory(), _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
         var consent = OAuth2ClientConsentRoot.Create(_recorder.Object, _identifierFactory.Object,
             "aclientid".ToId(), "auserid".ToId()).Value;
         consent.ChangeConsent("auserid".ToId(), true,
@@ -416,11 +509,15 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
                 rep.FindByUserId(It.IsAny<Identifier>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(consent.ToOptional());
 
-        var result = await _service.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+        var result = await _service.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
             OAuth2Constants.Scopes.Profile, CancellationToken.None);
 
         result.Should().BeSuccess();
-        result.Value.Should().BeTrue();
+        result.Value.IsConsented.Should().BeTrue();
+        result.Value.Scopes.Should().ContainInOrder(OAuth2Constants.Scopes.Profile);
+        result.Value.UserId.Should().Be("auserid");
+        result.Value.Client.Id.Should().Be("aclientid");
+        result.Value.Client.Name.Should().Be("aclientname");
     }
 
     [Fact]

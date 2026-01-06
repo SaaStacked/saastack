@@ -16,7 +16,7 @@ export interface ActionCommandConfiguration<
   // Whether the request is tenanted or not
   isTenanted?: boolean;
   // What to do in the case of a successful response
-  onSuccess?: (response: TResponse) => void;
+  onSuccess?: (requestData: TRequestData, response: TResponse, statusCode: number, headers: Headers) => void;
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
   // The keys in the request cache that we want to invalidate, in the case of successful response
@@ -58,7 +58,7 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
         throw new Error(translate('actions.errors.offline'));
       }
     },
-    onSuccess: (response: TResponse, _requestData: TRequestData) => {
+    onSuccess: (apiResponse: ApiResponse<TResponse>, requestData: TRequestData) => {
       recorder.traceDebug('ActionCommand: Mutation returned success');
       clearErrors();
       if (invalidateCacheKeys) {
@@ -70,12 +70,15 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
       }
       
       if (onSuccess) {
-        onSuccess(response);
+        onSuccess(
+          requestData,
+          apiResponse.data ?? ({} as TResponse),
+          apiResponse.response.status,
+          apiResponse.response.headers
+        );
       }
     },
-    onError: (error) => {
-      handleRequestError(error, handleError);
-    },
+    onError: (error) => handleRequestError(error, handleError),
     throwOnError: (_error: Error) => false,
     retry: false
   });
@@ -83,7 +86,16 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
   const executeCallback = useCallback(
     (
       requestData?: TRequestData,
-      { onSuccess }: { onSuccess?: (params: { requestData?: TRequestData; response: TResponse }) => void } = {}
+      {
+        onSuccess
+      }: {
+        onSuccess?: (params: {
+          requestData?: TRequestData;
+          response: TResponse;
+          statusCode: number;
+          headers: Headers;
+        }) => void;
+      } = {}
     ) => {
       let submittedRequestData: TRequestData = modifyRequestData(requestData, configuration.isTenanted);
 
@@ -91,9 +103,14 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
         submittedRequestData
       });
       mutate(submittedRequestData, {
-        onSuccess: (response, requestData) => {
+        onSuccess: (apiResponse, requestData) => {
           if (onSuccess) {
-            onSuccess({ requestData, response });
+            onSuccess({
+              requestData,
+              response: apiResponse.data ?? ({} as TResponse),
+              statusCode: apiResponse.response.status,
+              headers: apiResponse.response.headers
+            });
           }
         }
       });
@@ -105,7 +122,7 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
   const isCompleted = isPending ? undefined : isSuccess ? true : isError ? false : undefined;
   return {
     execute: executeCallback,
-    lastSuccessResponse: response,
+    lastSuccessResponse: response?.data,
     isSuccess: isCompleted,
     lastExpectedError: expectedError,
     lastUnexpectedError: unexpectedError,

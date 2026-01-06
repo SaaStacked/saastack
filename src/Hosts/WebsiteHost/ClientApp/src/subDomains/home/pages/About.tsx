@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { RoutePaths } from '../../../framework/constants.ts';
+
 
 export function AboutPage() {
   const { t: translate } = useTranslation();
@@ -179,7 +181,7 @@ export function AboutPage() {
             your product unique while we handle the foundation.
           </p>
           <Link
-            to="/"
+            to={RoutePaths.Home}
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors no-underline"
           >
             Start Building Today

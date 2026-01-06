@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { RoutePaths } from '../../constants.ts';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
 
@@ -16,25 +17,25 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex space-x-6 text-xs">
             <Link
-              to="/"
+              to={RoutePaths.Home}
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 no-underline"
             >
               {translate('components.layout.footer.links.home')}
             </Link>
             <Link
-              to="/about"
+              to={RoutePaths.About}
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 no-underline"
             >
               {translate('components.layout.footer.links.about')}
             </Link>
             <Link
-              to="/privacy"
+              to={RoutePaths.Privacy}
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 no-underline"
             >
               {translate('components.layout.footer.links.privacy')}
             </Link>
             <Link
-              to="/terms"
+              to={RoutePaths.Terms}
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 no-underline"
             >
               {translate('components.layout.footer.links.terms')}

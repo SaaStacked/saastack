@@ -6,7 +6,9 @@ import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { InitiatePasswordResetAction, InitiatePasswordResetErrors } from '../actions/initiatePasswordReset.ts';
+
 
 export const PasswordResetRequestPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -29,7 +31,7 @@ export const PasswordResetRequestPage: React.FC = () => {
           )
         })}
         onSuccess={() => {
-          window.location.href = '/identity/credentials/password-reset-redirect';
+          window.location.replace(RoutePaths.PasswordResetRedirect); // no browser history
         }}
       >
         <FormInput
@@ -45,12 +47,12 @@ export const PasswordResetRequestPage: React.FC = () => {
       <div className="text-center">
         <p>
           {translate('pages.identity.credentials_password_reset_initiate.links.login.question')}{' '}
-          <Link to="/identity/credentials/login">
+          <Link to={RoutePaths.CredentialsLogin}>
             {translate('pages.identity.credentials_password_reset_initiate.links.login.text')}
           </Link>
         </p>
         <p>
-          <Link to="/" className="btn btn-secondary">
+          <Link to={RoutePaths.Home} className="btn btn-secondary">
             {translate('pages.identity.credentials_password_reset_initiate.links.home')}
           </Link>
         </p>

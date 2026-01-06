@@ -27,6 +27,7 @@ import {
   faPeopleRoof,
   faRepeat,
   faRobot,
+  faShieldHalved,
   faShuffle,
   faTrash,
   faUser,
@@ -36,6 +37,7 @@ import {
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons/faPeopleGroup';
 import { createComponentId, toClasses } from '../Components.ts';
 import { TailwindColor } from '../typography/Tailwind.ts';
+
 
 interface IconProps {
   className?: string;
@@ -77,6 +79,7 @@ const fontAwesomeSymbols = {
   plus: faAdd,
   repeat: faRepeat,
   robot: faRobot,
+  shield: faShieldHalved,
   'show-password': faEyeSlash,
   shuffle: faShuffle,
   trash: faTrash

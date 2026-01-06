@@ -69,6 +69,15 @@ namespace IdentityApplication {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The user has denied access to the client application.
+        /// </summary>
+        internal static string ClientsApi_ConsentClientForCaller_ClientRevoked {
+            get {
+                return ResourceManager.GetString("ClientsApi_ConsentClientForCaller_ClientRevoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account is suspended.
         /// </summary>
         internal static string NativeIdentityServerApiKeyService_AccountSuspended {

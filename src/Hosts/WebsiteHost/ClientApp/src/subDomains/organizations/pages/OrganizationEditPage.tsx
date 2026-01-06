@@ -3,17 +3,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import z from 'zod';
-import {
-  AssignRolesToOrganizationRequest,
-  ChangeOrganizationRequest,
-  GetOrganizationResponse,
-  Organization,
-  OrganizationMember,
-  OrganizationOwnership,
-  UnassignRolesFromOrganizationRequest,
-  UserProfileClassification,
-  UserProfileForCaller
-} from '../../../framework/api/apiHost1';
+import { AssignRolesToOrganizationRequest, ChangeOrganizationRequest, GetOrganizationResponse, Organization, OrganizationMember, OrganizationOwnership, UnassignRolesFromOrganizationRequest, UserProfileClassification, UserProfileForCaller } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import Button from '../../../framework/components/button/Button.tsx';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
@@ -27,30 +17,20 @@ import { Tabs } from '../../../framework/components/navigation/Tabs.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import Select from '../../../framework/components/select/Select.tsx';
 import Tag from '../../../framework/components/tag/Tag.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { UploadAvatarErrors } from '../../userProfiles/actions/changeProfileAvatar.ts';
-import {
-  AssignRolesToOrganizationAction,
-  AssignRolesToOrganizationErrorCodes
-} from '../actions/assignRolesToOrganization.ts';
+import { AssignRolesToOrganizationAction, AssignRolesToOrganizationErrorCodes } from '../actions/assignRolesToOrganization.ts';
 import { ChangeOrganizationAction } from '../actions/changeOrganization.ts';
-import {
-  ChangeOrganizationAvatarAction,
-  ChangeOrganizationAvatarRequest
-} from '../actions/changeOrganizationAvatar.ts';
+import { ChangeOrganizationAvatarAction, ChangeOrganizationAvatarRequest } from '../actions/changeOrganizationAvatar.ts';
 import { DeleteOrganizationAvatarAction } from '../actions/deleteOrganizationAvatar.ts';
 import { GetOrganizationAction, OrganizationErrorCodes } from '../actions/getOrganization.ts';
-import {
-  InviteMemberToOrganizationAction,
-  InviteMemberToOrganizationErrorCodes
-} from '../actions/inviteMemberToOrganization.ts';
-import {
-  ListMembersForOrganizationAction,
-  ListMembersForOrganizationErrorCodes
-} from '../actions/listMembersForOrganization.ts';
+import { InviteMemberToOrganizationAction, InviteMemberToOrganizationErrorCodes } from '../actions/inviteMemberToOrganization.ts';
+import { ListMembersForOrganizationAction, ListMembersForOrganizationErrorCodes } from '../actions/listMembersForOrganization.ts';
 import { UnAssignRolesFromOrganizationAction } from '../actions/unAssignRolesFromOrganization.ts';
 import { UnInviteMemberFromOrganizationAction } from '../actions/unInviteMemberFromOrganization.ts';
 import { formatRoleName, TenantRoles } from './Organizations.ts';
+
 
 export const OrganizationEditPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -104,7 +84,7 @@ export const OrganizationEditPage: React.FC = () => {
         />
       </PageAction>
       <div className="text-center">
-        <Link to="/organizations">{translate('pages.organizations.edit.links.organizations')}</Link>
+        <Link to={RoutePaths.Organizations}>{translate('pages.organizations.edit.links.organizations')}</Link>
       </div>
     </FormPage>
   );

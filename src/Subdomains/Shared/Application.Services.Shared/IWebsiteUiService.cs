@@ -13,7 +13,7 @@ public interface IWebsiteUiService
 
     string CreateRegistrationPageUrl(string token);
 
-    string ConstructOAuth2ConsentPageUrl(string clientId, string scope);
+    string ConstructOAuth2ConsentPageUrl(string clientId, string redirectUri, string scope, string? state);
 
     string ConstructLoginPageUrl();
 }

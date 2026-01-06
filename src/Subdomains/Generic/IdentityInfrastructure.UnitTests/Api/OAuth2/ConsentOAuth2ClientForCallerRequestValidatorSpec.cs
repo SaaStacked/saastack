@@ -10,14 +10,14 @@ using Xunit;
 namespace IdentityInfrastructure.UnitTests.Api.OAuth2;
 
 [Trait("Category", "Unit")]
-public class ConsentOAuth2ClientRequestValidatorSpec
+public class ConsentOAuth2ClientForCallerRequestValidatorSpec
 {
     private readonly ConsentOAuth2ClientForCallerRequest _dto;
-    private readonly ConsentOAuth2ClientRequestValidator _validator;
+    private readonly ConsentOAuth2ClientForCallerRequestValidator _validator;
 
-    public ConsentOAuth2ClientRequestValidatorSpec()
+    public ConsentOAuth2ClientForCallerRequestValidatorSpec()
     {
-        _validator = new ConsentOAuth2ClientRequestValidator(new FixedIdentifierFactory("anid"));
+        _validator = new ConsentOAuth2ClientForCallerRequestValidator(new FixedIdentifierFactory("anid"));
         _dto = new ConsentOAuth2ClientForCallerRequest
         {
             Id = "anid",
@@ -42,7 +42,7 @@ public class ConsentOAuth2ClientRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConsentToOAuth2ClientRequestValidator_InvalidScope);
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidScope);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class ConsentOAuth2ClientRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConsentToOAuth2ClientRequestValidator_InvalidScope);
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidScope);
     }
 
     [Fact]
@@ -64,7 +64,18 @@ public class ConsentOAuth2ClientRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConsentToOAuth2ClientRequestValidator_InvalidScope);
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidScope);
+    }
+
+    [Fact]
+    public void WhenRedirectUriIsNull_ThenThrows()
+    {
+        _dto.RedirectUri = null;
+
+        _validator
+            .Invoking(x => x.ValidateAndThrow(_dto))
+            .Should().Throw<ValidationException>()
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidRedirectUri);
     }
 
     [Fact]
@@ -75,7 +86,7 @@ public class ConsentOAuth2ClientRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConsentToOAuth2ClientRequestValidator_InvalidRedirectUri);
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidRedirectUri);
     }
 
     [Fact]
@@ -86,6 +97,6 @@ public class ConsentOAuth2ClientRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConsentToOAuth2ClientRequestValidator_InvalidState);
+            .WithMessageLike(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidState);
     }
 }

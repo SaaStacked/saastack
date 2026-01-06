@@ -39,30 +39,12 @@ public class OpenIdConnectApiSpec
         }
 
         [Fact]
-        public async Task WhenGetAuthorize_ThenRedirectsToLogin()
+        public async Task WhenAuthorize_ThenRedirectsToLogin()
         {
             var @operator = await LoginUserAsync(LoginUser.Operator);
             var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
 
-            var result = await Api.GetAsync(new AuthorizeOAuth2GetRequest
-            {
-                ClientId = client.Id,
-                RedirectUri = client.RedirectUri,
-                ResponseType = OAuth2ResponseType.Code.ToString(),
-                Scope = $"{OpenIdConnectConstants.Scopes.OpenId}"
-            });
-
-            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location!.PathAndQuery.Should().Be(WebsiteUiService.LoginPageRoute);
-        }
-
-        [Fact]
-        public async Task WhenPostAuthorize_ThenRedirectsToLogin()
-        {
-            var @operator = await LoginUserAsync(LoginUser.Operator);
-            var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
-
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -471,7 +453,7 @@ public class OpenIdConnectApiSpec
                 OpenIdConnectCodeChallengeMethod.S256 => "WWHTYIjNclXxS69q1gerQ+eTlW5ab1YCpKTorurQ3zw=",
                 _ => null
             };
-            var response = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var response = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -508,6 +490,7 @@ public class OpenIdConnectApiSpec
             await Api.PostAsync(new ConsentOAuth2ClientForCallerRequest
             {
                 Id = client.Id,
+                RedirectUri = "https://localhost/callback",
                 Scope = scopes,
                 Consented = true
             }, req => req.SetJWTBearerToken(login.AccessToken));
@@ -544,7 +527,7 @@ public class OpenIdConnectApiSpec
             var login = await LoginUserAsync();
             var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -552,7 +535,7 @@ public class OpenIdConnectApiSpec
                 Scope = $"{OpenIdConnectConstants.Scopes.OpenId}"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be(client.RedirectUri);
             ParseLocationParameter(result, "error").Should().Be(OAuth2Constants.ErrorCodes.UnsupportedResponseType);
             ParseLocationParameter(result, "error_description").Should().Be(IdentityApplication.Resources
@@ -567,7 +550,7 @@ public class OpenIdConnectApiSpec
             var login = await LoginUserAsync();
             var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -575,7 +558,7 @@ public class OpenIdConnectApiSpec
                 Scope = $"{OAuth2Constants.Scopes.Profile}"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be(client.RedirectUri);
             ParseLocationParameter(result, "error").Should().Be(OAuth2Constants.ErrorCodes.InvalidScope);
             ParseLocationParameter(result, "error_description").Should().Be(IdentityApplication.Resources
@@ -589,7 +572,7 @@ public class OpenIdConnectApiSpec
             var login = await LoginUserAsync();
             var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -599,7 +582,7 @@ public class OpenIdConnectApiSpec
                 CodeChallengeMethod = null
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be(client.RedirectUri);
             ParseLocationParameter(result, "error").Should().Be(OAuth2Constants.ErrorCodes.InvalidRequest);
             ParseLocationParameter(result, "error_description").Should().Be(IdentityApplication.Resources
@@ -611,7 +594,7 @@ public class OpenIdConnectApiSpec
         {
             var login = await LoginUserAsync();
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = "oauthclient_1234567890123456789012",
                 RedirectUri = "https://localhost/callback",
@@ -619,7 +602,7 @@ public class OpenIdConnectApiSpec
                 Scope = $"{OpenIdConnectConstants.Scopes.OpenId}"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be("https://localhost/callback");
             ParseLocationParameter(result, "error").Should().Be(OAuth2Constants.ErrorCodes.InvalidClient);
             ParseLocationParameter(result, "error_description").Should().Be(IdentityApplication.Resources
@@ -633,20 +616,22 @@ public class OpenIdConnectApiSpec
             var login = await LoginUserAsync();
             var client = await CreateClientAsync(@operator);
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = "https://localhost/callback",
                 ResponseType = OAuth2ResponseType.Code,
-                Scope = $"{OpenIdConnectConstants.Scopes.OpenId}"
+                Scope = $"{OpenIdConnectConstants.Scopes.OpenId}",
+                State = "astate"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be("https://localhost/callback");
             ParseLocationParameter(result, "error").Should().Be(OAuth2Constants.ErrorCodes.InvalidRequest);
             ParseLocationParameter(result, "error_description").Should().Be(IdentityApplication.Resources
                 .NativeIdentityServerOpenIdConnectService_Authorize_MismatchedRequestUri
                 .Format("https://localhost/callback"));
+            ParseLocationParameter(result, "state").Should().Be("astate");
         }
 
         [Fact]
@@ -656,18 +641,22 @@ public class OpenIdConnectApiSpec
             var login = await LoginUserAsync();
             var client = await CreateClientAsync(@operator, redirectUri: "https://localhost/callback");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
                 ResponseType = OAuth2ResponseType.Code,
-                Scope = $"{OpenIdConnectConstants.Scopes.OpenId}"
+                Scope = $"{OpenIdConnectConstants.Scopes.OpenId}",
+                State = "astate"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location!.PathAndQuery.Should()
-                .Be(
-                    $"{WebsiteUiService.OAuth2ConsentPageRoute}?client_id={client.Id}&scope={OpenIdConnectConstants.Scopes.OpenId}");
+            ParseLocationRedirectUri(result).Should()
+                .Be($"https://localhost:5101{WebsiteUiService.OAuth2ConsentPageRoute}");
+            ParseLocationParameter(result, "client_id").Should().Be(client.Id);
+            ParseLocationParameter(result, "scope").Should().Be($"{OpenIdConnectConstants.Scopes.OpenId}");
+            ParseLocationParameter(result, "redirect_uri").Should().Be(client.RedirectUri);
+            ParseLocationParameter(result, "state").Should().Be("astate");
         }
 
         [Fact]
@@ -679,22 +668,28 @@ public class OpenIdConnectApiSpec
             await ConsentClientAsync(login, client,
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
                 ResponseType = OAuth2ResponseType.Code,
-                Scope = $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Email}"
+                Scope = $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Email}",
+                State = "astate"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location!.PathAndQuery.Should()
-                .Be(
-                    $"{WebsiteUiService.OAuth2ConsentPageRoute}?client_id={client.Id}&scope={OpenIdConnectConstants.Scopes.OpenId}%20{OAuth2Constants.Scopes.Email}");
+            ParseLocationRedirectUri(result).Should()
+                .Be($"https://localhost:5101{WebsiteUiService.OAuth2ConsentPageRoute}");
+            ParseLocationParameter(result, "client_id").Should().Be(client.Id);
+            ParseLocationParameter(result, "scope").Should()
+                .Be($"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Email}");
+            ParseLocationParameter(result, "redirect_uri").Should().Be(client.RedirectUri);
+            ParseLocationParameter(result, "state").Should().Be("astate");
+            
         }
 
         [Fact]
-        public async Task WhenPostAuthorizeAndClientIsConsented_ThenReturnsCode()
+        public async Task WhenPostAuthorizeAndClientIsConsented_ThenReturnsAuthorizationCode()
         {
             var @operator = await LoginUserAsync(LoginUser.Operator);
             var login = await LoginUserAsync();
@@ -702,22 +697,23 @@ public class OpenIdConnectApiSpec
             await ConsentClientAsync(login, client,
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
                 ResponseType = OAuth2ResponseType.Code,
-                Scope = $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}"
+                Scope = $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}",
+                State = "astate"
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be(client.RedirectUri);
             ParseLocationParameter(result, "code").Should().NotBeNullOrEmpty();
-            ParseLocationParameter(result, "state").Should().BeNull();
+            ParseLocationParameter(result, "state").Should().Be("astate");
         }
 
         [Fact]
-        public async Task WhenPostAuthorizeAndClientIsConsentedWithAllSecurity_ThenReturnsCode()
+        public async Task WhenPostAuthorizeAndClientIsConsentedWithAllSecurity_ThenReturnsAuthorizationCode()
         {
             var @operator = await LoginUserAsync(LoginUser.Operator);
             var login = await LoginUserAsync();
@@ -725,7 +721,7 @@ public class OpenIdConnectApiSpec
             await ConsentClientAsync(login, client,
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}");
 
-            var result = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var result = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -737,7 +733,7 @@ public class OpenIdConnectApiSpec
                 CodeChallengeMethod = OpenIdConnectCodeChallengeMethod.S256
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
-            result.StatusCode.Should().Be(HttpStatusCode.Found);
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
             ParseLocationRedirectUri(result).Should().Be(client.RedirectUri);
             ParseLocationParameter(result, "code").Should().NotBeNullOrEmpty();
             ParseLocationParameter(result, "state").Should().Be("astate");
@@ -871,7 +867,7 @@ public class OpenIdConnectApiSpec
                     "WWHTYIjNclXxS69q1gerQ+eTlW5ab1YCpKTorurQ3zw=", // base64(SHA256_hash(codeverifier))
                 _ => null
             };
-            var response = await Api.PostAsync(new AuthorizeOAuth2PostRequest
+            var response = await Api.PostAsync(new AuthorizeOAuth2Request
             {
                 ClientId = client.Id,
                 RedirectUri = client.RedirectUri,
@@ -930,12 +926,12 @@ public class OpenIdConnectApiSpec
             return HttpUtility.ParseQueryString(response.Headers.Location!.Query)[parameterName]!;
         }
 
-        private async Task ConsentClientAsync(LoginDetails login, OAuth2Client client,
-            string scopes)
+        private async Task ConsentClientAsync(LoginDetails login, OAuth2Client client, string scopes)
         {
             await Api.PostAsync(new ConsentOAuth2ClientForCallerRequest
             {
                 Id = client.Id,
+                RedirectUri = "https://localhost/callback",
                 Scope = scopes,
                 Consented = true
             }, req => req.SetJWTBearerToken(login.AccessToken));

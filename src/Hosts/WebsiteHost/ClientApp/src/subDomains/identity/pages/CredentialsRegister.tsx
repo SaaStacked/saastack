@@ -7,6 +7,7 @@ import FormCheckbox from '../../../framework/components/form/formCheckbox/FormCh
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { getBrowserCountry, getBrowserLocale, getBrowserTimezone } from '../../../framework/utils/browser.ts';
 import { RegisterCredentialsAction } from '../actions/registerCredentials.ts';
 
@@ -55,7 +56,7 @@ export const CredentialsRegisterPage: React.FC = () => {
           countryCode: getBrowserCountry()
         }}
         onSuccess={() => {
-          window.location.href = '/identity/credentials/register-redirect';
+          window.location.replace(RoutePaths.RegisterRedirect); // no browser history
         }}
       >
         <FormInput
@@ -102,8 +103,8 @@ export const CredentialsRegisterPage: React.FC = () => {
               privacy: translate('pages.identity.credentials_register.links.privacy')
             }}
             components={{
-              1: <a href="/terms" target="_blank"></a>,
-              2: <a href="/privacy" target="_blank"></a>
+              1: <a href={RoutePaths.Terms} target="_blank"></a>,
+              2: <a href={RoutePaths.Privacy} target="_blank"></a>
             }}
           />
         </FormCheckbox>
@@ -112,12 +113,12 @@ export const CredentialsRegisterPage: React.FC = () => {
       <div className="text-center">
         <p>
           {translate('pages.identity.credentials_register.links.login.question')}{' '}
-          <Link to="/identity/credentials/login">
+          <Link to={RoutePaths.CredentialsLogin}>
             {translate('pages.identity.credentials_register.links.login.text')}
           </Link>
         </p>
         <p>
-          <Link to="/" className="btn btn-secondary">
+          <Link to={RoutePaths.Home} className="btn btn-secondary">
             {translate('pages.identity.credentials_register.links.home')}
           </Link>
         </p>

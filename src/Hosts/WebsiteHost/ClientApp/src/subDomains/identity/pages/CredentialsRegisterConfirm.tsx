@@ -10,11 +10,10 @@ import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import UnhandledError from '../../../framework/components/unhandledError/UnhandledError.tsx';
-import {
-  ConfirmPersonCredentialRegistrationAction,
-  ConfirmPersonCredentialRegistrationErrors
-} from '../actions/confirmPersonCredentialRegistration.ts';
+import { RoutePaths } from '../../../framework/constants.ts';
+import { ConfirmPersonCredentialRegistrationAction, ConfirmPersonCredentialRegistrationErrors } from '../actions/confirmPersonCredentialRegistration.ts';
 import { ResendPersonCredentialRegistrationConfirmationAction } from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
+
 
 export const CredentialsRegisterConfirm: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -52,7 +51,7 @@ export const CredentialsRegisterConfirm: React.FC = () => {
             />
           </PageAction>
           <div className="text-center mt-4">
-            <Link to="/" className="btn btn-secondary">
+            <Link to={RoutePaths.Home} className="btn btn-secondary">
               {translate('pages.identity.credentials_register_confirm.links.home')}
             </Link>
           </div>
@@ -86,7 +85,7 @@ function HandleMissingToken({ translate }: Pick<HandlerProps, 'translate'>) {
         message={translate('pages.identity.credentials_register_confirm.states.confirming.invalid.message')}
       />
       <div className="text-center mt-4">
-        <Link to="/" className="btn btn-secondary">
+        <Link to={RoutePaths.Home} className="btn btn-secondary">
           {translate('pages.identity.credentials_register_confirm.links.home')}
         </Link>
       </div>
@@ -101,10 +100,10 @@ function HandleConfirmSuccess({ translate }: HandlerProps) {
         <p className="text-lg mb-4">
           {translate('pages.identity.credentials_register_confirm.states.registered.message')}
         </p>
-        <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
+        <Link to={RoutePaths.CredentialsLogin} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_register_confirm.links.login')}
         </Link>
-        <Link to="/" className="btn btn-secondary">
+        <Link to={RoutePaths.Home} className="btn btn-secondary">
           {translate('pages.identity.credentials_register_confirm.links.home')}
         </Link>
       </div>

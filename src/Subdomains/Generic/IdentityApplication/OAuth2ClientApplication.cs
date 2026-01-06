@@ -14,11 +14,12 @@ public class OAuth2ClientApplication : IOAuth2ClientApplication
         _identityServerProvider = identityServerProvider;
     }
 
-    public async Task<Result<OAuth2ClientConsent, Error>> ConsentToClientAsync(ICallerContext caller,
-        string clientId, string? scope, bool consented, CancellationToken cancellationToken)
+    public async Task<Result<OAuth2ClientConsentResult, Error>> ConsentToClientAsync(ICallerContext caller,
+        string clientId, string redirectUri, string scope, bool consented, CancellationToken cancellationToken)
     {
         var userId = caller.CallerId;
-        return await _identityServerProvider.OAuth2ClientService.ConsentToClientAsync(caller, clientId, userId, scope,
+        return await _identityServerProvider.OAuth2ClientService.ConsentToClientAsync(caller, clientId, userId,
+            redirectUri, scope,
             consented, cancellationToken);
     }
 
@@ -46,6 +47,16 @@ public class OAuth2ClientApplication : IOAuth2ClientApplication
     {
         var userId = caller.CallerId;
         return await _identityServerProvider.OAuth2ClientService.GetConsentAsync(caller, clientId, userId,
+            cancellationToken);
+    }
+
+    public async Task<Result<OAuth2ClientConsentStatus, Error>> HasUserConsentedClientAsync(ICallerContext caller,
+        string clientId, string scope,
+        CancellationToken cancellationToken)
+    {
+        var userId = caller.CallerId;
+        return await _identityServerProvider.OAuth2ClientService.HasUserConsentedClientAsync(caller, clientId, userId,
+            scope,
             cancellationToken);
     }
 

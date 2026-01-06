@@ -11,10 +11,10 @@ public sealed class WebsiteUiService : IWebsiteUiService
 {
     //EXTEND: these URLs must reflect routes used by the website in App.tsx
     public const string LoginPageRoute = "/identity/credentials/login";
-    public const string OAuth2ConsentPageRoute = "/identity/oauth2/authorize/consent";
+    public const string OAuth2ConsentPageRoute = "/identity/oauth2/client/consent";
     public const string PasswordMfaOobConfirmationPageRoute = "/identity/credentials/2fa/mfaoob-confirm";
     public const string PasswordRegistrationConfirmationPageRoute = "/identity/credentials/register-confirm";
-    public const string PasswordResetConfirmationPageRoute = "/identity/credentials/password-reset-confirm";
+    public const string PasswordResetConfirmationPageRoute = "/identity/credentials/password-reset-complete";
     public const string RegistrationPageRoute = "/identity/credentials/register";
     private readonly string _websiteHostBaseUrl;
 
@@ -25,13 +25,16 @@ public sealed class WebsiteUiService : IWebsiteUiService
 
     public string ConstructLoginPageUrl()
     {
-        return LoginPageRoute;
+        return $"{_websiteHostBaseUrl}/{LoginPageRoute.WithoutLeadingSlash()}";
     }
 
-    public string ConstructOAuth2ConsentPageUrl(string clientId, string scope)
+    public string ConstructOAuth2ConsentPageUrl(string clientId, string redirectUri, string scope, string? state)
     {
+        var stateParam = state.HasValue()
+            ? $"&state={state}"
+            : string.Empty;
         return
-            $"{_websiteHostBaseUrl}/{OAuth2ConsentPageRoute.WithoutLeadingSlash()}?client_id={clientId}&scope={scope}";
+            $"{_websiteHostBaseUrl}/{OAuth2ConsentPageRoute.WithoutLeadingSlash()}?client_id={clientId}&scope={scope}&redirect_uri={redirectUri}{stateParam}";
     }
 
     public string ConstructPasswordMfaOobConfirmationPageUrl(string code)

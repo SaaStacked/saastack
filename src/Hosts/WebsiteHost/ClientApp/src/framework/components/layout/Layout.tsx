@@ -1,25 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { MainMenuExcludedRoutes } from '../../../App.tsx';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
-import { Footer } from './Footer.tsx';
-import { MainMenu } from '../navigation/MainMenu.tsx';
 import { toClasses } from '../Components.ts';
-
+import { MainMenu } from '../navigation/MainMenu.tsx';
+import { Footer } from './Footer.tsx';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
-
-const EXCLUDED_ANONYMOUS_ROUTES = [
-  '/about',
-  '/privacy',
-  '/terms',
-  '/identity/credentials/login',
-  '/identity/sso/microsoft',
-  '/identity/credentials/register',
-  '/identity/credentials/register-confirm',
-  '/identity/credentials/register-redirect'
-];
 
 // Creates the main layout of all pages
 // Displays the main navigation bar at the top if the page is not excluded
@@ -30,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [needsBottomPadding, setNeedsBottomPadding] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
-  const shouldShowNavigation = isAuthenticated && !EXCLUDED_ANONYMOUS_ROUTES.includes(location.pathname);
+  const shouldShowMainMenu = isAuthenticated && !MainMenuExcludedRoutes.includes(location.pathname);
 
   useEffect(() => {
     const checkContentHeight = () => {
@@ -48,17 +37,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     return () => window.removeEventListener('resize', checkContentHeight);
   }, [children]);
 
-  const baseClasses = `px-4 py-8 ${shouldShowNavigation ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`;
+  const baseClasses = `px-4 py-8 ${shouldShowMainMenu ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`;
   const widthClasses = 'container mx-auto max-w-4xl lg:max-w-none';
   const classes = toClasses([baseClasses, widthClasses]);
 
   return (
     <div className="min-h-screen font-sans bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      {shouldShowNavigation && <MainMenu />}
-      <main
-        ref={mainRef}
-        className={classes}
-      >
+      {shouldShowMainMenu && <MainMenu />}
+      <main ref={mainRef} className={classes}>
         {children}
       </main>
       <Footer />

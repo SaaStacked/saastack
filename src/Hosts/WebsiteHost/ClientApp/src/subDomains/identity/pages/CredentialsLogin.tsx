@@ -6,6 +6,7 @@ import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { LoginCredentialsAction, LoginCredentialsErrors } from '../actions/loginCredentials.ts';
 
 
@@ -55,18 +56,16 @@ export const CredentialsLoginPage: React.FC = () => {
       </FormAction>
       <div className="text-center">
         <p>
-          <Link to="/identity/credentials/password-reset">
+          <Link to={RoutePaths.PasswordReset}>
             {translate('pages.identity.credentials_login.links.forgot_password')}
           </Link>
         </p>
         <p>
           {translate('pages.identity.credentials_login.links.register.question')}{' '}
-          <Link to="/identity/credentials/register">
-            {translate('pages.identity.credentials_login.links.register.text')}
-          </Link>
+          <Link to={RoutePaths.Register}>{translate('pages.identity.credentials_login.links.register.text')}</Link>
         </p>
         <p>
-          <Link to="/" className="btn btn-secondary">
+          <Link to={RoutePaths.Home} className="btn btn-secondary">
             {translate('pages.identity.credentials_login.links.home')}
           </Link>
         </p>

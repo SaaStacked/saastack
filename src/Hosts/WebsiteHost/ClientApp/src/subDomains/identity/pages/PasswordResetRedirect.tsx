@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
+
 
 export const PasswordResetRedirectPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -30,7 +32,7 @@ export const PasswordResetRedirectPage: React.FC = () => {
         <p>{translate('pages.identity.credentials_password_reset_redirect.troubleshoot.answer')}</p>
       </div>
       <div className="text-center">
-        <Link to="/" className="btn btn-secondary">
+        <Link to={RoutePaths.Home} className="btn btn-secondary">
           {translate('pages.identity.credentials_password_reset_redirect.links.home')}
         </Link>
       </div>

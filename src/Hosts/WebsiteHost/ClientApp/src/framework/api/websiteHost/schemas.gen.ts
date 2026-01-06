@@ -43,6 +43,87 @@ export const AuthenticateResponseSchema = {
     additionalProperties: false
 } as const;
 
+export const AuthorizeOAuth2RequestSchema = {
+    required: [
+        'clientId',
+        'redirectUri',
+        'responseType',
+        'scope'
+    ],
+    type: 'object',
+    properties: {
+        clientId: {
+            minLength: 1,
+            type: 'string'
+        },
+        codeChallenge: {
+            type: 'string',
+            nullable: true
+        },
+        codeChallengeMethod: {
+            $ref: '#/components/schemas/OpenIdConnectCodeChallengeMethod'
+        },
+        nonce: {
+            type: 'string',
+            nullable: true
+        },
+        redirectUri: {
+            minLength: 1,
+            type: 'string'
+        },
+        responseType: {
+            $ref: '#/components/schemas/OAuth2ResponseType'
+        },
+        scope: {
+            minLength: 1,
+            type: 'string'
+        },
+        state: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const AuthorizeOAuth2ResponseSchema = {
+    required: [
+        'redirect'
+    ],
+    type: 'object',
+    properties: {
+        redirect: {
+            $ref: '#/components/schemas/AuthorizeRedirect'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const AuthorizeRedirectSchema = {
+    required: [
+        'isConsent',
+        'isExternal',
+        'isLogin',
+        'redirectUri'
+    ],
+    type: 'object',
+    properties: {
+        redirectUri: {
+            type: 'string'
+        },
+        isLogin: {
+            type: 'boolean'
+        },
+        isConsent: {
+            type: 'boolean'
+        },
+        isExternal: {
+            type: 'boolean'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const BeffeAnonymousDirectTestingOnlyRequestSchema = {
     type: 'object',
     additionalProperties: false
@@ -66,6 +147,64 @@ export const BeffeTestingOnlyResponseSchema = {
     properties: {
         callerId: {
             type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ConsentOAuth2ClientRequestSchema = {
+    required: [
+        'consented',
+        'id',
+        'redirectUri',
+        'scope'
+    ],
+    type: 'object',
+    properties: {
+        consented: {
+            type: 'boolean'
+        },
+        redirectUri: {
+            minLength: 1,
+            type: 'string'
+        },
+        scope: {
+            minLength: 1,
+            type: 'string'
+        },
+        state: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ConsentOAuth2ClientResponseSchema = {
+    required: [
+        'redirect'
+    ],
+    type: 'object',
+    properties: {
+        redirect: {
+            $ref: '#/components/schemas/ConsentRedirect'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ConsentRedirectSchema = {
+    required: [
+        'isConsented',
+        'redirectUri'
+    ],
+    type: 'object',
+    properties: {
+        redirectUri: {
+            type: 'string'
+        },
+        isConsented: {
+            type: 'boolean'
         }
     },
     additionalProperties: false
@@ -142,6 +281,23 @@ export const HealthCheckResponseSchema = {
 export const LogoutRequestSchema = {
     type: 'object',
     additionalProperties: false
+} as const;
+
+export const OAuth2ResponseTypeSchema = {
+    enum: [
+        'code',
+        'id_Token',
+        'token'
+    ],
+    type: 'string'
+} as const;
+
+export const OpenIdConnectCodeChallengeMethodSchema = {
+    enum: [
+        'plain',
+        's256'
+    ],
+    type: 'string'
 } as const;
 
 export const ProblemDetailsSchema = {
@@ -270,11 +426,6 @@ export const RecordUseRequestSchema = {
 } as const;
 
 export const RefreshTokenRequestSchema = {
-    type: 'object',
-    additionalProperties: false
-} as const;
-
-export const VoidSchema = {
     type: 'object',
     additionalProperties: false
 } as const;

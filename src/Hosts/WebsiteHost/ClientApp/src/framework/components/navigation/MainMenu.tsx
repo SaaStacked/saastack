@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { LogoutAction } from '../../../subDomains/identity/actions/logout.ts';
 import { Organization, UserProfileForCaller } from '../../api/apiHost1';
+import { RoutePaths } from '../../constants.ts';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import Icon from '../icon/Icon.tsx';
+
 
 interface NavigationProps {
   isMobileMenuOpen: boolean;
@@ -148,14 +150,14 @@ function MobileDropdownMenu({ isMobileMenuOpen, setIsMobileMenuOpen, navItems, i
 function BrandText({ translate }: NavigationProps) {
   return (
     <>
-      <Link to="/" className="hidden md:flex items-center space-x-2 no-underline hover:no-underline">
+      <Link to={RoutePaths.Home} className="hidden md:flex items-center space-x-2 no-underline hover:no-underline">
         <img src="/images/logo.png" alt={translate('components.navigation.main_menu.logo')} className="w-8 h-8" />
         <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
           {translate('components.navigation.main_menu.logo')}
         </span>
       </Link>
 
-      <Link to="/" className="md:hidden no-underline hover:no-underline">
+      <Link to={RoutePaths.Home} className="md:hidden no-underline hover:no-underline">
         <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
           {translate('components.navigation.main_menu.logo')}
         </span>
@@ -222,14 +224,14 @@ function UserAvatar({
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-600 z-50">
             <div className="py-1">
               <Link
-                to="/profile"
+                to={RoutePaths.UserProfile}
                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
                 {translate('components.navigation.main_menu.links.profile')}
               </Link>
               <Link
-                to="/organizations"
+                to={RoutePaths.Organizations}
                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
@@ -257,7 +259,7 @@ function OrganizationAvatar({ organization }: { organization?: Organization }) {
   const avatarUrl = organization?.avatarUrl;
 
   return (
-    <Link to="/organizations" className="flex items-center">
+    <Link to={RoutePaths.Organizations} className="flex items-center">
       {avatarUrl ? (
         <img
           src={avatarUrl}

@@ -31,10 +31,11 @@ public class NativeOAuth2ClientService : IOAuth2ClientService
         return await _service.FindClientByIdAsync(caller, clientId, cancellationToken);
     }
 
-    public async Task<Result<bool, Error>> HasClientConsentedUserAsync(ICallerContext caller, string clientId,
+    public async Task<Result<bool, Error>> HasUserConsentedClientAsync(ICallerContext caller, string clientId,
         string userId, string scope, CancellationToken cancellationToken)
     {
-        return await _service.HasClientConsentedUserAsync(caller, clientId, userId, scope, cancellationToken);
+        var consented = await _service.HasUserConsentedClientAsync(caller, clientId, userId, scope, cancellationToken);
+        return consented.Match<Result<bool, Error>>(consent => consent.Value.IsConsented, error => error);
     }
 
     public async Task<Result<OAuth2Client, Error>> VerifyClientAsync(ICallerContext caller, string clientId,

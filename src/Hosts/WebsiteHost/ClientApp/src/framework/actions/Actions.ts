@@ -2,6 +2,7 @@ import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 import { recorder } from '../recorder.ts';
 import { ExpectedErrorDetails } from './ApiErrorState.ts';
 
+
 export interface ErrorResponse {
   data: unknown | undefined;
   response: Response;
@@ -15,7 +16,14 @@ export interface ActionResult<TRequestData = any, ExpectedErrorCode extends stri
   // To execute the XHR request
   execute: (
     requestData?: TRequestData,
-    options?: { onSuccess?: (params: { requestData?: TRequestData; response: TResponse }) => void }
+    options?: {
+      onSuccess?: (params: {
+        requestData?: TRequestData;
+        response: TResponse;
+        statusCode: number;
+        headers: Headers;
+      }) => void;
+    }
   ) => void;
   // Whether the action completed a successful XHR request
   isSuccess?: boolean;
@@ -55,7 +63,11 @@ export async function executeRequest<TRequestData, TResponse>(
   try {
     let res = await request(requestData);
     if (res.response && res.response.ok) {
-      return await (res.data ?? ({} as TResponse));
+      return {
+        data: res.data ?? ({} as TResponse),
+        request: res.request,
+        response: res.response
+      } as ApiResponse<TResponse>;
     } else {
       recorder.traceDebug('Action: Returned error: {Error}', { error: res.error });
       return Promise.reject({

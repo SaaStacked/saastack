@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../../../framework/components/button/Button.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
+
 
 export function HomeAnonymousPage() {
   const { t: translate } = useTranslation();
@@ -20,7 +22,7 @@ export function HomeAnonymousPage() {
             <span className="ml-4">{translate('pages.home.home_anonymous.providers.fakesso')}</span>
           </Button>
         )}
-        <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/sso/microsoft">
+        <Button className="w-4/5 rounded-full" variant="outline" navigateTo={RoutePaths.SsoMicrosoft}>
           <img
             src="/images/microsoft-logo.svg"
             width={48}
@@ -30,7 +32,7 @@ export function HomeAnonymousPage() {
           />
           <span className="ml-4">{translate('pages.home.home_anonymous.providers.microsoft')}</span>
         </Button>
-        <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/sso/google">
+        <Button className="w-4/5 rounded-full" variant="outline" navigateTo={RoutePaths.SsoGoogle}>
           <img
             src="/images/google-logo.svg"
             width={48}
@@ -40,13 +42,13 @@ export function HomeAnonymousPage() {
           />
           <span className="ml-4">{translate('pages.home.home_anonymous.providers.google')}</span>
         </Button>
-        <Button className="w-4/5 rounded-full" variant="outline" navigateTo="/identity/credentials/login">
+        <Button className="w-4/5 rounded-full" variant="outline" navigateTo={RoutePaths.CredentialsLogin}>
           <img src="/images/email-icon.svg" width={48} height={48} alt="Email" className="dark:invert" />
           <span className="ml-2">{translate('pages.home.home_anonymous.providers.credentials')}</span>
         </Button>
         <div className="justify-center">
           <span className="px-3">{translate('pages.home.home_anonymous.links.register.question')}&nbsp;</span>
-          <Link to="/identity/credentials/register">{translate('pages.home.home_anonymous.links.register.text')}</Link>
+          <Link to={RoutePaths.Register}>{translate('pages.home.home_anonymous.links.register.text')}</Link>
         </div>
       </div>
     </FormPage>

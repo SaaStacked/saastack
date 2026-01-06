@@ -56,6 +56,16 @@ public sealed class OAuth2ClientConsentRoot : AggregateRootBase
             return ensureInvariants.Error;
         }
 
+        if (IsConsented && Scopes.HasNone)
+        {
+            return Error.RuleViolation(Resources.OAuth2ClientConsentRoot_RequiresScopes);
+        }
+
+        if (!IsConsented && !Scopes.HasNone)
+        {
+            return Error.RuleViolation(Resources.OAuth2ClientConsentRoot_RequiresNoScopes);
+        }
+
         return Result.Ok;
     }
 
@@ -112,10 +122,12 @@ public sealed class OAuth2ClientConsentRoot : AggregateRootBase
             return Result.Ok;
         }
 
-        return RaiseChangeEvent(IdentityDomain.Events.OAuth2.ClientConsents.ConsentChanged(Id, isConsented, scopes));
+        return RaiseChangeEvent(IdentityDomain.Events.OAuth2.ClientConsents.ConsentChanged(Id, isConsented, isConsented
+            ? scopes
+            : OAuth2Scopes.Empty));
     }
 
-    public Result<bool, Error> HasConsentedTo(OAuth2Scopes scopes)
+    public bool HasConsentedTo(OAuth2Scopes scopes)
     {
         if (!IsConsented)
         {
@@ -125,7 +137,7 @@ public sealed class OAuth2ClientConsentRoot : AggregateRootBase
         return Scopes.HasAll(scopes);
     }
 
-    public Result<bool, Error> Revoke(Identifier revokerId)
+    public Result<Error> Revoke(Identifier revokerId)
     {
         if (!IsOwner(revokerId))
         {
@@ -134,17 +146,11 @@ public sealed class OAuth2ClientConsentRoot : AggregateRootBase
 
         if (!IsConsented)
         {
-            return false;
+            return Result.Ok;
         }
 
-        var revoked =
-            RaiseChangeEvent(IdentityDomain.Events.OAuth2.ClientConsents.ConsentChanged(Id, false, OAuth2Scopes.Empty));
-        if (revoked.IsFailure)
-        {
-            return revoked.Error;
-        }
-
-        return true;
+        return RaiseChangeEvent(
+            IdentityDomain.Events.OAuth2.ClientConsents.ConsentChanged(Id, false, OAuth2Scopes.Empty));
     }
 
     private bool IsOwner(Identifier userId)

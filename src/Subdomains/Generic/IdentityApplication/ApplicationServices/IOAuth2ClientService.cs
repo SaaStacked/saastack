@@ -12,7 +12,7 @@ public interface IOAuth2ClientService
     Task<Result<Optional<OAuth2Client>, Error>> FindClientByIdAsync(ICallerContext caller, string clientId,
         CancellationToken cancellationToken);
 
-    Task<Result<bool, Error>> HasClientConsentedUserAsync(ICallerContext caller, string clientId, string userId,
+    Task<Result<bool, Error>> HasUserConsentedClientAsync(ICallerContext caller, string clientId, string userId,
         string scope,
         CancellationToken cancellationToken);
 

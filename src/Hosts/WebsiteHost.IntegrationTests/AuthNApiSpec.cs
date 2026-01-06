@@ -72,8 +72,8 @@ public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
         var accessToken = response.GetCookie(CookieType.AuthNToken);
         var refreshToken = response.GetCookie(CookieType.AuthNRefreshToken);
 
-        accessToken.Should().NotBeNull();
-        refreshToken.Should().NotBeNull();
+        accessToken.Should().NotBeNone();
+        refreshToken.Should().NotBeNone();
     }
 
     [Fact]

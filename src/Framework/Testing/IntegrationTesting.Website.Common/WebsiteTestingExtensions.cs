@@ -21,7 +21,8 @@ public enum CookieType
 {
     AntiCSRF,
     AuthNToken,
-    AuthNRefreshToken
+    AuthNRefreshToken,
+    PendingOAuth2Authorization
 }
 
 public static class WebsiteTestingExtensions
@@ -64,6 +65,7 @@ public static class WebsiteTestingExtensions
             CookieType.AntiCSRF => CSRFConstants.Cookies.AntiCSRF,
             CookieType.AuthNToken => AuthenticationConstants.Cookies.Token,
             CookieType.AuthNRefreshToken => AuthenticationConstants.Cookies.RefreshToken,
+            CookieType.PendingOAuth2Authorization => AuthenticationConstants.Cookies.PendingOAuth2Authorization,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
@@ -98,23 +100,47 @@ public static class WebsiteTestingExtensions
         return cookieValue;
     }
 
+    public static async Task<(string UserId, HttpResponseMessage Response)> LoginOperatorFromBrowserAsync(
+        this IHttpClient websiteClient, JsonSerializerOptions jsonOptions,
+        CSRFMiddleware.ICSRFService csrfService)
+    {
+        return await LoginUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, "operator@company.com");
+    }
+
     public static async Task<(string UserId, HttpResponseMessage Response)> LoginUserFromBrowserAsync(
         this IHttpClient websiteClient, JsonSerializerOptions jsonOptions,
         CSRFMiddleware.ICSRFService csrfService)
     {
-        const string emailAddress = "auser@company.com";
-        const string password = "1Password!";
+        return await LoginUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, "auser@company.com");
+    }
 
-        await RegisterPersonUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, emailAddress,
-            password);
-
-        return await AuthenticateUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, emailAddress,
-            password);
+    public static async Task LogoutAsync(this IHttpClient websiteClient, JsonSerializerOptions jsonOptions,
+        CSRFMiddleware.ICSRFService csrfService, string userId)
+    {
+        await websiteClient.PostEmptyJsonAsync(new LogoutRequest().MakeApiRoute(),
+            (msg, cookies) => msg.WithCSRF(cookies, csrfService, userId));
     }
 
     public static string MakeApiRoute(this IWebRequest request)
     {
         return $"{WebConstants.BackEndForFrontEndBasePath}{request.GetRequestInfo().Route}";
+    }
+
+    public static async Task PropagateDomainEventsAsync(this IHttpClient websiteClient,
+        CSRFMiddleware.ICSRFService csrfService)
+    {
+#if TESTINGONLY
+        var drainRequest = new DrainAllEventNotificationsRequest();
+        var drainAllUrl = drainRequest.MakeApiRoute();
+        await websiteClient.PostAsync(drainAllUrl, JsonContent.Create(drainRequest),
+            (msg, cookies) =>
+            {
+                msg.WithCSRF(cookies, csrfService);
+                msg.SetHMACAuth(drainRequest, "asecret");
+            });
+#else
+        await Task.CompletedTask;
+#endif
     }
 
     public static async Task RegisterPersonUserFromBrowserAsync(this IHttpClient websiteClient,
@@ -180,20 +206,14 @@ public static class WebsiteTestingExtensions
         message.Headers.Add(HttpConstants.Headers.Origin, origin);
     }
 
-    private static async Task PropagateDomainEventsAsync(this IHttpClient websiteClient,
-        CSRFMiddleware.ICSRFService csrfService)
+    private static async Task<(string UserId, HttpResponseMessage Response)> LoginUserFromBrowserAsync(
+        this IHttpClient websiteClient, JsonSerializerOptions jsonOptions,
+        CSRFMiddleware.ICSRFService csrfService, string emailAddress, string password = "1Password!")
     {
-#if TESTINGONLY
-        var drainRequest = new DrainAllEventNotificationsRequest();
-        var drainAllUrl = drainRequest.MakeApiRoute();
-        await websiteClient.PostAsync(drainAllUrl, JsonContent.Create(drainRequest),
-            (msg, cookies) =>
-            {
-                msg.WithCSRF(cookies, csrfService);
-                msg.SetHMACAuth(drainRequest, "asecret");
-            });
-#else
-        await Task.CompletedTask;
-#endif
+        await RegisterPersonUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, emailAddress,
+            password);
+
+        return await AuthenticateUserFromBrowserAsync(websiteClient, jsonOptions, csrfService, emailAddress,
+            password);
     }
 }

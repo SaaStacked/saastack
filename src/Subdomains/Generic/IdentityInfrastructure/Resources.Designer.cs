@@ -195,21 +195,21 @@ namespace IdentityInfrastructure {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;CodeChallengeMethod&apos; is required when &apos;CodeChallenge&apos; is provided.
-        /// </summary>
-        internal static string AuthorizeOAuth2RequestValidator_MissingCodeChallengeMethod {
-            get {
-                return ResourceManager.GetString("AuthorizeOAuth2RequestValidator_MissingCodeChallengeMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The &apos;AuthenticatorId&apos; is either missing or invalid.
         /// </summary>
         internal static string ChallengePasswordMfaAuthenticatorForCallerRequestValidator_InvalidAuthenticatorId {
             get {
                 return ResourceManager.GetString("ChallengePasswordMfaAuthenticatorForCallerRequestValidator_InvalidAuthenticatorId" +
                         "", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;RedirectUri&apos; is missing.
+        /// </summary>
+        internal static string ClientsApi_ConsentClientForCaller_RedirectUriMissing {
+            get {
+                return ResourceManager.GetString("ClientsApi_ConsentClientForCaller_RedirectUriMissing", resourceCulture);
             }
         }
         
@@ -271,36 +271,36 @@ namespace IdentityInfrastructure {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;ClientId&apos; is either missing or invalid.
         /// </summary>
-        internal static string ConsentToOAuth2ClientRequestValidator_InvalidClientId {
+        internal static string ConsentOAuth2ClientForCallerRequestValidator_InvalidClientId {
             get {
-                return ResourceManager.GetString("ConsentToOAuth2ClientRequestValidator_InvalidClientId", resourceCulture);
+                return ResourceManager.GetString("ConsentOAuth2ClientForCallerRequestValidator_InvalidClientId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The &apos;RedirectUri&apos; is either missing or invalid.
         /// </summary>
-        internal static string ConsentToOAuth2ClientRequestValidator_InvalidRedirectUri {
+        internal static string ConsentOAuth2ClientForCallerRequestValidator_InvalidRedirectUri {
             get {
-                return ResourceManager.GetString("ConsentToOAuth2ClientRequestValidator_InvalidRedirectUri", resourceCulture);
+                return ResourceManager.GetString("ConsentOAuth2ClientForCallerRequestValidator_InvalidRedirectUri", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Scope&apos; must only contain allowable scopes.
         /// </summary>
-        internal static string ConsentToOAuth2ClientRequestValidator_InvalidScope {
+        internal static string ConsentOAuth2ClientForCallerRequestValidator_InvalidScope {
             get {
-                return ResourceManager.GetString("ConsentToOAuth2ClientRequestValidator_InvalidScope", resourceCulture);
+                return ResourceManager.GetString("ConsentOAuth2ClientForCallerRequestValidator_InvalidScope", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The &apos;State&apos; parameter is either missing or invalid.
         /// </summary>
-        internal static string ConsentToOAuth2ClientRequestValidator_InvalidState {
+        internal static string ConsentOAuth2ClientForCallerRequestValidator_InvalidState {
             get {
-                return ResourceManager.GetString("ConsentToOAuth2ClientRequestValidator_InvalidState", resourceCulture);
+                return ResourceManager.GetString("ConsentOAuth2ClientForCallerRequestValidator_InvalidState", resourceCulture);
             }
         }
         
@@ -449,6 +449,15 @@ namespace IdentityInfrastructure {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;Scope&apos; is missing or contains invalid values.
+        /// </summary>
+        internal static string GetOAuth2ClientConsentStatusForCallerRequestValidator_InvalidScope {
+            get {
+                return ResourceManager.GetString("GetOAuth2ClientConsentStatusForCallerRequestValidator_InvalidScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;EmailAddress&apos; is either missing or invalid.
         /// </summary>
         internal static string InitiatePasswordResetRequestValidator_InvalidEmailAddress {
@@ -460,9 +469,9 @@ namespace IdentityInfrastructure {
         /// <summary>
         ///   Looks up a localized string similar to &apos;RedirectUri&apos; is missing.
         /// </summary>
-        internal static string OAuth2Api_AuthorizeGet_RedirectUriMIssing {
+        internal static string OAuth2Api_AuthorizeGet_RedirectUriMissing {
             get {
-                return ResourceManager.GetString("OAuth2Api_AuthorizeGet_RedirectUriMIssing", resourceCulture);
+                return ResourceManager.GetString("OAuth2Api_AuthorizeGet_RedirectUriMissing", resourceCulture);
             }
         }
         

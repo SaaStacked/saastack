@@ -213,6 +213,12 @@
     <data name="OAuth2ClientConsentRoot_MissingOpenIdScope" xml:space="preserve">
         <value>You must consent to the 'openid' scope</value>
     </data>
+    <data name="OAuth2ClientConsentRoot_RequiresScopes" xml:space="preserve">
+        <value>You must have consented to at least one scope</value>
+    </data>
+    <data name="OAuth2ClientConsentRoot_RequiresNoScopes" xml:space="preserve">
+        <value>You must not have consented to any scopes</value>
+    </data>
     <data name="OpenIdConnectAuthorizationRootNotConfigured" xml:space="preserve">
         <value>Authorization has not been configured</value>
     </data>

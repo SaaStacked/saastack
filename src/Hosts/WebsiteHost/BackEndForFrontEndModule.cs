@@ -56,6 +56,7 @@ public class BackEndForFrontEndModule : ISubdomainModule
                 services.AddSingleton<IFeatureFlagsApplication, FeatureFlagsApplication>();
                 services.AddSingleton<IRecordingApplication, RecordingApplication>();
                 services.AddSingleton<IAuthenticationApplication, AuthenticationApplication>();
+                services.AddSingleton<IOAuth2AuthorizationApplication, OAuth2AuthorizationApplication>();
                 services.AddSingleton<IServiceClient>(c =>
                     new InterHostServiceClient(c.GetRequiredService<IHttpClientFactory>(),
                         c.GetRequiredService<JsonSerializerOptions>(),

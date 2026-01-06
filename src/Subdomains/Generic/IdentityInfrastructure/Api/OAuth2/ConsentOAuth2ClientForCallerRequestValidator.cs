@@ -1,3 +1,4 @@
+using Common.Extensions;
 using Domain.Common.Identity;
 using Domain.Interfaces.Validations;
 using FluentValidation;
@@ -7,9 +8,9 @@ using Infrastructure.Web.Api.Operations.Shared.Identities;
 
 namespace IdentityInfrastructure.Api.OAuth2;
 
-public class ConsentOAuth2ClientRequestValidator : AbstractValidator<ConsentOAuth2ClientForCallerRequest>
+public class ConsentOAuth2ClientForCallerRequestValidator : AbstractValidator<ConsentOAuth2ClientForCallerRequest>
 {
-    public ConsentOAuth2ClientRequestValidator(IIdentifierFactory identifierFactory)
+    public ConsentOAuth2ClientForCallerRequestValidator(IIdentifierFactory identifierFactory)
     {
         RuleFor(req => req.Id)
             .IsEntityId(identifierFactory)
@@ -18,16 +19,15 @@ public class ConsentOAuth2ClientRequestValidator : AbstractValidator<ConsentOAut
         RuleFor(req => req.Scope)
             .NotEmpty()
             .Matches(Validations.OpenIdConnect.Scope)
-            .WithMessage(Resources.ConsentToOAuth2ClientRequestValidator_InvalidScope);
+            .WithMessage(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidScope);
 
         RuleFor(req => req.RedirectUri)
             .IsUrl()
-            .WithMessage(Resources.ConsentToOAuth2ClientRequestValidator_InvalidRedirectUri)
-            .When(req => !string.IsNullOrEmpty(req.RedirectUri));
+            .WithMessage(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidRedirectUri);
 
         RuleFor(req => req.State)
             .Matches(Validations.OAuth2.State)
-            .WithMessage(Resources.ConsentToOAuth2ClientRequestValidator_InvalidState)
-            .When(req => !string.IsNullOrEmpty(req.State));
+            .WithMessage(Resources.ConsentOAuth2ClientForCallerRequestValidator_InvalidState)
+            .When(req => req.State.HasValue());
     }
 }

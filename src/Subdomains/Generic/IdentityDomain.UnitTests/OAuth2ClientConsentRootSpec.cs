@@ -131,7 +131,6 @@ public class OAuth2ClientConsentRootSpec
         var result = _consent.Revoke("auserid".ToId());
 
         result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
         _consent.Events.Count.Should().Be(2);
         _consent.Events.Last().Should().BeOfType<ConsentChanged>();
     }
@@ -145,7 +144,6 @@ public class OAuth2ClientConsentRootSpec
         var result = _consent.Revoke("auserid".ToId());
 
         result.Should().BeSuccess();
-        result.Value.Should().BeTrue();
         _consent.Events.Last().Should().BeOfType<ConsentChanged>();
     }
 
@@ -154,8 +152,7 @@ public class OAuth2ClientConsentRootSpec
     {
         var result = _consent.HasConsentedTo(OAuth2Scopes.Empty);
 
-        result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
+        result.Should().BeFalse();
     }
 
     [Fact]
@@ -166,8 +163,7 @@ public class OAuth2ClientConsentRootSpec
 
         var result = _consent.HasConsentedTo(OAuth2Scopes.Create([OAuth2Constants.Scopes.Email]).Value);
 
-        result.Should().BeSuccess();
-        result.Value.Should().BeFalse();
+        result.Should().BeFalse();
     }
 
     [Fact]
@@ -180,7 +176,6 @@ public class OAuth2ClientConsentRootSpec
 
         var result = _consent.HasConsentedTo(OAuth2Scopes.Create([OAuth2Constants.Scopes.Profile]).Value);
 
-        result.Should().BeSuccess();
-        result.Value.Should().BeTrue();
+        result.Should().BeTrue();
     }
 }

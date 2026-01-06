@@ -16,6 +16,28 @@ export type AuthenticateResponse = {
     userId: string;
 };
 
+export type AuthorizeOAuth2Request = {
+    clientId: string;
+    codeChallenge?: string | null;
+    codeChallengeMethod?: OpenIdConnectCodeChallengeMethod;
+    nonce?: string | null;
+    redirectUri: string;
+    responseType: OAuth2ResponseType;
+    scope: string;
+    state?: string | null;
+};
+
+export type AuthorizeOAuth2Response = {
+    redirect: AuthorizeRedirect;
+};
+
+export type AuthorizeRedirect = {
+    redirectUri: string;
+    isLogin: boolean;
+    isConsent: boolean;
+    isExternal: boolean;
+};
+
 export type BeffeAnonymousDirectTestingOnlyRequest = {
     [key: string]: never;
 };
@@ -30,6 +52,22 @@ export type BeffeHMacDirectTestingOnlyRequest = {
 
 export type BeffeTestingOnlyResponse = {
     callerId: string;
+};
+
+export type ConsentOAuth2ClientRequest = {
+    consented: boolean;
+    redirectUri: string;
+    scope: string;
+    state?: string | null;
+};
+
+export type ConsentOAuth2ClientResponse = {
+    redirect: ConsentRedirect;
+};
+
+export type ConsentRedirect = {
+    redirectUri: string;
+    isConsented: boolean;
 };
 
 export type EmptyResponse = {
@@ -57,6 +95,18 @@ export type HealthCheckResponse = {
 export type LogoutRequest = {
     [key: string]: never;
 };
+
+export const OAuth2ResponseType = {
+    CODE: 'code',
+    ID_TOKEN: 'id_Token',
+    TOKEN: 'token'
+} as const;
+
+export type OAuth2ResponseType = typeof OAuth2ResponseType[keyof typeof OAuth2ResponseType];
+
+export const OpenIdConnectCodeChallengeMethod = { PLAIN: 'plain', S256: 's256' } as const;
+
+export type OpenIdConnectCodeChallengeMethod = typeof OpenIdConnectCodeChallengeMethod[keyof typeof OpenIdConnectCodeChallengeMethod];
 
 export type ProblemDetails = {
     type: string;
@@ -98,10 +148,6 @@ export type RecordUseRequest = {
 };
 
 export type RefreshTokenRequest = {
-    [key: string]: never;
-};
-
-export type Void = {
     [key: string]: never;
 };
 
@@ -462,6 +508,122 @@ export type GetErrorResponses = {
      */
     200: unknown;
 };
+
+export type AuthorizeOAuth2Data = {
+    body?: AuthorizeOAuth2Request;
+    path?: never;
+    query?: never;
+    url: '/api/oauth2/authorize';
+};
+
+export type AuthorizeOAuth2Errors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type AuthorizeOAuth2Error = AuthorizeOAuth2Errors[keyof AuthorizeOAuth2Errors];
+
+export type AuthorizeOAuth2Responses = {
+    /**
+     * Created
+     */
+    201: AuthorizeOAuth2Response;
+};
+
+export type AuthorizeOAuth2Response2 = AuthorizeOAuth2Responses[keyof AuthorizeOAuth2Responses];
+
+export type ConsentOAuth2ClientData = {
+    body?: ConsentOAuth2ClientRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/api/oauth2/clients/{Id}/consent';
+};
+
+export type ConsentOAuth2ClientErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ConsentOAuth2ClientError = ConsentOAuth2ClientErrors[keyof ConsentOAuth2ClientErrors];
+
+export type ConsentOAuth2ClientResponses = {
+    /**
+     * Created
+     */
+    201: ConsentOAuth2ClientResponse;
+};
+
+export type ConsentOAuth2ClientResponse2 = ConsentOAuth2ClientResponses[keyof ConsentOAuth2ClientResponses];
 
 export type RecordCrashData = {
     body?: RecordCrashRequest;

@@ -201,7 +201,7 @@ export type ConfirmSmsDeliveryFailedRequest = {
 
 export type ConsentOAuth2ClientForCallerRequest = {
     consented: boolean;
-    redirectUri?: string | null;
+    redirectUri: string;
     scope: string;
     state?: string | null;
 };
@@ -375,14 +375,14 @@ export const EndUserStatus = { UNREGISTERED: 'unregistered', REGISTERED: 'regist
 export type EndUserStatus = typeof EndUserStatus[keyof typeof EndUserStatus];
 
 export type EventNotification = {
-    data: string;
-    eventType: string;
-    metadataFullyQualifiedName: string;
-    rootAggregateType: string;
+    aggregateTypeFullName: string;
+    eventJsonData: string;
+    eventTypeFullName: string;
+    lastPersistedAtUtc?: Date;
     streamName: string;
-    subscriberRef: string;
     version: number;
     id: string;
+    subscriberRef: string;
 };
 
 export type ExchangeOAuth2ForTokensResponse = {
@@ -480,6 +480,10 @@ export type GetOAuth2ClientConsentResponse = {
     consent: OAuth2ClientConsent;
 };
 
+export type GetOAuth2ClientConsentStatusResponse = {
+    status: OAuth2ClientConsentStatus;
+};
+
 export type GetOAuth2ClientResponse = {
     client: OAuth2Client;
 };
@@ -513,6 +517,10 @@ export type GetProfileResponse = {
 
 export type GetSubscriptionResponse = {
     subscription: SubscriptionWithPlan;
+};
+
+export type GetTenantedTestingOnlyResponse = {
+    organizationId: string;
 };
 
 export type GetUserInfoForCallerResponse = {
@@ -712,6 +720,13 @@ export type OAuth2ClientConsent = {
     scopes: Array<string>;
     userId: string;
     id: string;
+};
+
+export type OAuth2ClientConsentStatus = {
+    client: OAuth2Client;
+    isConsented: boolean;
+    scopes: Array<string>;
+    userId: string;
 };
 
 export type OAuth2ClientWithSecret = {
@@ -3155,7 +3170,7 @@ export type ConsentOAuth2ClientForCallerError = ConsentOAuth2ClientForCallerErro
 
 export type ConsentOAuth2ClientForCallerResponses = {
     /**
-     * Created
+     * Created: The user has consented to the client
      */
     201: GetOAuth2ClientConsentResponse;
 };
@@ -3532,6 +3547,67 @@ export type UpdateOAuth2ClientPutResponses = {
 };
 
 export type UpdateOAuth2ClientPutResponse = UpdateOAuth2ClientPutResponses[keyof UpdateOAuth2ClientPutResponses];
+
+export type GetOAuth2ClientConsentStatusForCallerData = {
+    body?: never;
+    path: {
+        Id: string;
+    };
+    query: {
+        Scope: string;
+    };
+    url: '/oauth2/clients/{Id}/consent/status';
+};
+
+export type GetOAuth2ClientConsentStatusForCallerErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type GetOAuth2ClientConsentStatusForCallerError = GetOAuth2ClientConsentStatusForCallerErrors[keyof GetOAuth2ClientConsentStatusForCallerErrors];
+
+export type GetOAuth2ClientConsentStatusForCallerResponses = {
+    /**
+     * OK
+     */
+    200: GetOAuth2ClientConsentStatusResponse;
+};
+
+export type GetOAuth2ClientConsentStatusForCallerResponse = GetOAuth2ClientConsentStatusForCallerResponses[keyof GetOAuth2ClientConsentStatusForCallerResponses];
 
 export type RegenerateOAuth2ClientSecretData = {
     body?: RegenerateOAuth2ClientSecretRequest;
@@ -6735,73 +6811,7 @@ export type VerifyCredentialMfaAuthenticatorForCallerPutResponses = {
 
 export type VerifyCredentialMfaAuthenticatorForCallerPutResponse = VerifyCredentialMfaAuthenticatorForCallerPutResponses[keyof VerifyCredentialMfaAuthenticatorForCallerPutResponses];
 
-export type AuthorizeOAuth2GetData = {
-    body?: never;
-    path?: never;
-    query: {
-        ClientId?: string;
-        CodeChallenge?: string;
-        CodeChallengeMethod?: string;
-        Nonce?: string;
-        RedirectUri: string;
-        ResponseType: string;
-        Scope: string;
-        State?: string;
-    };
-    url: '/oauth2/authorize';
-};
-
-export type AuthorizeOAuth2GetErrors = {
-    /**
-     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
-     */
-    400: ProblemDetails;
-    /**
-     * Unauthorized: The client must authenticate itself to get the requested response
-     */
-    401: unknown;
-    /**
-     * Payment Required: The client must have payment information to get the requested response
-     */
-    402: unknown;
-    /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
-     */
-    403: unknown;
-    /**
-     * Not Found: The server cannot find the requested resource
-     */
-    404: unknown;
-    /**
-     * Method Not Allowed: The request is not allowed by the current state of the resource
-     */
-    405: unknown;
-    /**
-     * Conflict: The request conflicts with the current state of the resource
-     */
-    409: unknown;
-    /**
-     * Locked: The current resource is locked and cannot be accessed
-     */
-    423: unknown;
-    /**
-     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
-     */
-    500: ProblemDetails;
-};
-
-export type AuthorizeOAuth2GetError = AuthorizeOAuth2GetErrors[keyof AuthorizeOAuth2GetErrors];
-
-export type AuthorizeOAuth2GetResponses = {
-    /**
-     * OK
-     */
-    200: EmptyResponse;
-};
-
-export type AuthorizeOAuth2GetResponse = AuthorizeOAuth2GetResponses[keyof AuthorizeOAuth2GetResponses];
-
-export type AuthorizeOAuth2PostData = {
+export type AuthorizeOAuth2Data = {
     body?: {
         clientId: string;
         codeChallenge?: string;
@@ -6817,7 +6827,7 @@ export type AuthorizeOAuth2PostData = {
     url: '/oauth2/authorize';
 };
 
-export type AuthorizeOAuth2PostErrors = {
+export type AuthorizeOAuth2Errors = {
     /**
      * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
      */
@@ -6856,16 +6866,16 @@ export type AuthorizeOAuth2PostErrors = {
     500: ProblemDetails;
 };
 
-export type AuthorizeOAuth2PostError = AuthorizeOAuth2PostErrors[keyof AuthorizeOAuth2PostErrors];
+export type AuthorizeOAuth2Error = AuthorizeOAuth2Errors[keyof AuthorizeOAuth2Errors];
 
-export type AuthorizeOAuth2PostResponses = {
+export type AuthorizeOAuth2Responses = {
     /**
      * Created
      */
     201: EmptyResponse;
 };
 
-export type AuthorizeOAuth2PostResponse = AuthorizeOAuth2PostResponses[keyof AuthorizeOAuth2PostResponses];
+export type AuthorizeOAuth2Response = AuthorizeOAuth2Responses[keyof AuthorizeOAuth2Responses];
 
 export type ExchangeOAuth2ForTokensData = {
     body?: {
@@ -7127,7 +7137,7 @@ export type AssignRolesToOrganizationPatchErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The assigner is not an owner of the organization
      */
     403: unknown;
     /**
@@ -7186,7 +7196,7 @@ export type AssignRolesToOrganizationPutErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The assigner is not an owner of the organization
      */
     403: unknown;
     /**
@@ -7858,7 +7868,7 @@ export type InviteMemberToOrganizationErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The inviter is not an owner of the organization
      */
     403: unknown;
     /**
@@ -7917,7 +7927,7 @@ export type UnassignRolesFromOrganizationPatchErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The assigner is not an owner of the organization
      */
     403: unknown;
     /**
@@ -7976,7 +7986,7 @@ export type UnassignRolesFromOrganizationPutErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The assigner is not an owner of the organization
      */
     403: unknown;
     /**
@@ -8036,7 +8046,7 @@ export type UnInviteMemberFromOrganizationErrors = {
      */
     402: unknown;
     /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     * The inviter is not an owner of the organization, or the invited is a required member of the organization
      */
     403: unknown;
     /**
@@ -10416,6 +10426,68 @@ export type PostInsecureTestingOnlyResponses = {
 };
 
 export type PostInsecureTestingOnlyResponse = PostInsecureTestingOnlyResponses[keyof PostInsecureTestingOnlyResponses];
+
+export type GetTenantedTestingOnlyData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used
+         */
+        OrganizationId?: string;
+    };
+    url: '/testingonly/tenanted';
+};
+
+export type GetTenantedTestingOnlyErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type GetTenantedTestingOnlyError = GetTenantedTestingOnlyErrors[keyof GetTenantedTestingOnlyErrors];
+
+export type GetTenantedTestingOnlyResponses = {
+    /**
+     * OK
+     */
+    200: GetTenantedTestingOnlyResponse;
+};
+
+export type GetTenantedTestingOnlyResponse2 = GetTenantedTestingOnlyResponses[keyof GetTenantedTestingOnlyResponses];
 
 export type OpenApiPostFormUrlEncodedTestingOnlyData = {
     body?: {

@@ -1,4 +1,3 @@
-using Application.Resources.Shared;
 using Common.Extensions;
 using Domain.Common.Identity;
 using FluentValidation;
@@ -6,16 +5,14 @@ using IdentityDomain;
 using Infrastructure.Web.Api.Common.Validation;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
 using JetBrains.Annotations;
-using OAuth2ResponseType = Application.Resources.Shared.OAuth2ResponseType;
 
 namespace IdentityInfrastructure.Api.OAuth2;
 
 [UsedImplicitly]
-public class AuthorizeOAuth2GetRequestValidator : AbstractValidator<AuthorizeOAuth2GetRequest>
+public class AuthorizeOAuth2RequestValidator : AbstractValidator<AuthorizeOAuth2Request>
 {
-    public AuthorizeOAuth2GetRequestValidator(IIdentifierFactory identifierFactory)
+    public AuthorizeOAuth2RequestValidator(IIdentifierFactory identifierFactory)
     {
-        //Note: changes to this validator need to be reflected in AuthorizeOAuth2PostRequestValidator
         RuleFor(req => req.ClientId)
             .IsEntityId(identifierFactory)
             .WithMessage(Resources.AuthorizeOAuth2RequestValidator_InvalidClientId);
@@ -25,8 +22,8 @@ public class AuthorizeOAuth2GetRequestValidator : AbstractValidator<AuthorizeOAu
             .WithMessage(Resources.AuthorizeOAuth2RequestValidator_InvalidRedirectUri);
 
         RuleFor(req => req.ResponseType)
+            .IsInEnum()
             .NotNull()
-            .Must(rt => Enum.TryParse(rt, true, out OAuth2ResponseType _))
             .WithMessage(Resources.AuthorizeOAuth2RequestValidator_InvalidResponseType);
 
         RuleFor(req => req.Scope)
@@ -49,8 +46,9 @@ public class AuthorizeOAuth2GetRequestValidator : AbstractValidator<AuthorizeOAu
             .When(req => req.CodeChallenge.HasValue());
 
         RuleFor(req => req.CodeChallengeMethod)
-            .Must(rt => Enum.TryParse(rt, true, out OpenIdConnectCodeChallengeMethod _))
+            .IsInEnum()
+            .NotNull()
             .WithMessage(Resources.AuthorizeOAuth2RequestValidator_InvalidCodeChallengeMethod)
-            .When(req => req.CodeChallengeMethod.HasValue());
+            .When(req => req.CodeChallengeMethod.HasValue);
     }
 }

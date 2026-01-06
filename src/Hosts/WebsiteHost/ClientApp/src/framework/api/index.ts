@@ -1,12 +1,12 @@
-import { UsageConstants } from '../constants';
+import { RoutePaths, UsageConstants } from '../constants';
 import { recorder } from '../recorder';
+import { ResolvedRequestOptions } from './apiHost1/client';
 import { client as apiHost1 } from './apiHost1/client.gen';
 import { logout, ProblemDetails, refreshToken } from './websiteHost';
 import { client as websiteHost } from './websiteHost/client.gen';
-import { ResolvedRequestOptions } from './apiHost1/client';
+
 
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
-export const homePath = '/';
 
 // This function sets up the appropriate request headers and handlers,
 // as detailed in docs/design-principles/0110-back-end-for-front-end.md
@@ -21,7 +21,7 @@ function initializeApiClient() {
 
       if (Array.isArray(value)) {
         // No indexes - just repeat the key for each value
-        value.forEach(v => searchParams.append(key, String(v)));
+        value.forEach((v) => searchParams.append(key, String(v)));
       } else {
         searchParams.append(key, String(value));
       }
@@ -53,15 +53,22 @@ function initializeApiClient() {
 
   apiHost1.interceptors.request.use((request, options) => cacheRequestBody(request, options));
   websiteHost.interceptors.request.use((request, options) => cacheRequestBody(request, options));
-  apiHost1.interceptors.response.use((response, request, options) => handleUnauthorizedResponse(response, request, options));
-  websiteHost.interceptors.response.use((response, request,options) => handleUnauthorizedResponse(response, request, options));
+  apiHost1.interceptors.response.use((response, request, options) =>
+    handleUnauthorizedResponse(response, request, options)
+  );
+  websiteHost.interceptors.response.use((response, request, options) =>
+    handleUnauthorizedResponse(response, request, options)
+  );
 }
 
 // This interceptor clones and saves the request, so that it can be later re-sent after a retry in the response interceptor.
-async function cacheRequestBody(request: Request, options: ResolvedRequestOptions<'fields', boolean, string>): Promise<Request> {
+async function cacheRequestBody(
+  request: Request,
+  options: ResolvedRequestOptions<'fields', boolean, string>
+): Promise<Request> {
   // @ts-ignore
   options._bufferedBody = undefined;
-  
+
   if (request.method === 'GET' || request.method === 'HEAD') {
     return request;
   }
@@ -69,12 +76,12 @@ async function cacheRequestBody(request: Request, options: ResolvedRequestOption
   if (request.body) {
     const cloned = request.clone();
     let body = cloned.body;
-    if (body instanceof ReadableStream){
+    if (body instanceof ReadableStream) {
       const temp = new Response(body);
       // @ts-ignore
       body = await temp.arrayBuffer();
     }
-    
+
     // @ts-ignore
     options._bufferedBody = body;
   }
@@ -94,7 +101,11 @@ async function cacheRequestBody(request: Request, options: ResolvedRequestOption
 // will call this interceptor a second time around with a 401,
 // and we are intentionally ignoring that error (as an unRetryableRequestUrls),
 // so that we can handle the response fully in the then() clause (below) of the first interceptor call.
-async function handleUnauthorizedResponse(response: Response, request: Request, options: ResolvedRequestOptions<'fields', boolean, string>): Promise<Response> {
+async function handleUnauthorizedResponse(
+  response: Response,
+  request: Request,
+  options: ResolvedRequestOptions<'fields', boolean, string>
+): Promise<Response> {
   if (!response) {
     return Promise.resolve(response);
   }
@@ -127,7 +138,7 @@ async function handleUnauthorizedResponse(response: Response, request: Request, 
   recorder.traceDebug("UnAuthorizedHandler: 401 detected, refreshing user's token");
   // Attempt to refresh the access_token cookies (if exist)
   // This request will call back to this interceptor, but will be short-circuited by the unRetryableRequestUrls check above
-  return await refreshToken().then(async res => {
+  return await refreshToken().then(async (res) => {
     if (res.response.ok) {
       recorder.traceDebug("UnAuthorizedHandler: Refreshed user's token, retrying original request");
       recorder.trackUsage(UsageConstants.UsageScenarios.BrowserAuthRefresh);
@@ -137,11 +148,11 @@ async function handleUnauthorizedResponse(response: Response, request: Request, 
       const retry = await fetch(request.url, {
         method: request.method,
         headers: request.headers,
-          body,
+        body,
         credentials: 'include'
       });
       // @ts-ignore
-      if (options._bufferedBody){
+      if (options._bufferedBody) {
         // @ts-ignore
         options._bufferedBody = undefined;
       }
@@ -179,7 +190,7 @@ async function handleUnauthorizedResponse(response: Response, request: Request, 
 
 // Send the user home, re-fetching index.html, and refreshing CSRF token and auth cookies
 function forceReloadHome() {
-  window.location.assign(homePath);
+  window.location.assign(RoutePaths.Home); // allow browser history
 }
 
 async function getResponseBody(response: Response) {

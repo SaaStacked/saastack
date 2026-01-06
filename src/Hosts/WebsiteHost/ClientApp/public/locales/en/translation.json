@@ -1,5 +1,6 @@
 {
   "app": {
+    "name": "SaaStack",
     "languages": {
       "en": "English",
       "fr": "French"
@@ -359,6 +360,44 @@
         },
         "links": {
           "home": "Go Home"
+        }
+      },
+      "oauth2_authorize": {
+        "title": "Authorize User",
+        "loader": "Authorizing",
+        "states": {
+          "redirected": {
+            "title": "Redirecting you to the appropriate page"
+          }
+        },
+        "errors": {
+          "bad_request": "This was request was invalid, or the application is not configured correctly, please check the parameters. More details: {{error}}"
+        }
+      },
+      "oauth2_consent_client": {
+        "title": "Authorize Application",
+        "loader": "Loading application details...",
+        "header": {
+          "title": "Authorize Access",
+          "subtitle": "{{appName}} wants to access your SaaStack account"
+        },
+        "labels": {
+          "permissions": "This application will be able to:",
+          "scopes": {
+            "openid": "Verify your identity",
+            "profile": "Access your basic profile information (name, username)",
+            "email": "Access your email address"
+          },
+          "security": {
+            "title": "Security Notice",
+            "message": "Only authorize applications you trust. You can revoke access at any time from your account settings."
+          },
+          "privacy_notice": "By authorizing, you agree to share the requested information with this application."
+        },
+        "actions": {
+          "authorize": "Authorize",
+          "authorizing": "Authorizing...",
+          "deny": "Deny"
         }
       }
     },

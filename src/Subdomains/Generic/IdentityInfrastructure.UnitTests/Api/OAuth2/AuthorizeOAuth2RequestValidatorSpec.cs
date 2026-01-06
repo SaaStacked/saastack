@@ -12,24 +12,24 @@ using OAuth2ResponseType = Application.Resources.Shared.OAuth2ResponseType;
 namespace IdentityInfrastructure.UnitTests.Api.OAuth2;
 
 [Trait("Category", "Unit")]
-public class AuthorizeOAuth2GetRequestValidatorSpec
+public class AuthorizeOAuth2RequestValidatorSpec
 {
-    private readonly AuthorizeOAuth2GetRequest _dto;
-    private readonly AuthorizeOAuth2GetRequestValidator _validator;
+    private readonly AuthorizeOAuth2Request _dto;
+    private readonly AuthorizeOAuth2RequestValidator _validator;
 
-    public AuthorizeOAuth2GetRequestValidatorSpec()
+    public AuthorizeOAuth2RequestValidatorSpec()
     {
-        _validator = new AuthorizeOAuth2GetRequestValidator(new FixedIdentifierFactory("anid"));
-        _dto = new AuthorizeOAuth2GetRequest
+        _validator = new AuthorizeOAuth2RequestValidator(new FixedIdentifierFactory("anid"));
+        _dto = new AuthorizeOAuth2Request
         {
             ClientId = "anid",
             RedirectUri = "https://localhost/callback",
-            ResponseType = OAuth2ResponseType.Code.ToString(),
+            ResponseType = OAuth2ResponseType.Code,
             Scope =
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile} {OAuth2Constants.Scopes.Email}",
             Nonce = "anonce",
             CodeChallenge = new string('a', 43),
-            CodeChallengeMethod = OpenIdConnectCodeChallengeMethod.S256.ToString(),
+            CodeChallengeMethod = OpenIdConnectCodeChallengeMethod.S256,
             State = "astate"
         };
     }
@@ -175,7 +175,7 @@ public class AuthorizeOAuth2GetRequestValidatorSpec
     public void WhenCodeChallengeAndMethodAreValid_ThenSucceeds()
     {
         _dto.CodeChallenge = new string('a', 43);
-        _dto.CodeChallengeMethod = OpenIdConnectCodeChallengeMethod.S256.ToString();
+        _dto.CodeChallengeMethod = OpenIdConnectCodeChallengeMethod.S256;
 
         _validator.ValidateAndThrow(_dto);
     }
@@ -184,6 +184,15 @@ public class AuthorizeOAuth2GetRequestValidatorSpec
     public void WhenCodeChallengeAndMethodIsNull_ThenSucceeds()
     {
         _dto.CodeChallenge = null;
+        _dto.CodeChallengeMethod = null;
+
+        _validator.ValidateAndThrow(_dto);
+    }
+
+    [Fact]
+    public void WhenCodeChallengeIsDefinedAndCodeChallengeMethodIsNull_ThenSucceeds()
+    {
+        _dto.CodeChallenge = "acodechallenge";
         _dto.CodeChallengeMethod = null;
 
         _validator.ValidateAndThrow(_dto);

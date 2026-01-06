@@ -119,7 +119,7 @@ public class NativeIdentityServerOpenIdConnectService : IIdentityServerOpenIdCon
         }
 
         var consented =
-            await _oauth2ClientService.HasClientConsentedUserAsync(caller, client.Id, userId, scope, cancellationToken);
+            await _oauth2ClientService.HasUserConsentedClientAsync(caller, client.Id, userId, scope, cancellationToken);
         if (consented.IsFailure)
         {
             return consented.Error;
@@ -129,7 +129,7 @@ public class NativeIdentityServerOpenIdConnectService : IIdentityServerOpenIdCon
         {
             return new OpenIdConnectAuthorization
             {
-                RawRedirectUri = _websiteUiService.ConstructOAuth2ConsentPageUrl(clientId, scope),
+                RawRedirectUri = _websiteUiService.ConstructOAuth2ConsentPageUrl(clientId, redirectUri, scope, state),
                 Code = null
             };
         }
@@ -456,7 +456,7 @@ public class NativeIdentityServerOpenIdConnectService : IIdentityServerOpenIdCon
 
         var scopeList = authorization.Scopes.Value.Items.JoinAsOredChoices(string.Empty);
         var consented =
-            await _oauth2ClientService.HasClientConsentedUserAsync(caller, authorization.ClientId, authorization.UserId,
+            await _oauth2ClientService.HasUserConsentedClientAsync(caller, authorization.ClientId, authorization.UserId,
                 scopeList,
                 cancellationToken);
         if (consented.IsFailure)

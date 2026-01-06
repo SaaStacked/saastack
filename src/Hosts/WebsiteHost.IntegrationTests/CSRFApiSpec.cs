@@ -9,6 +9,7 @@ using IntegrationTesting.WebApi.Common;
 using IntegrationTesting.WebApi.Common.Extensions;
 using IntegrationTesting.Website.Common;
 using JetBrains.Annotations;
+using UnitTesting.Common;
 using Xunit;
 
 namespace WebsiteHost.IntegrationTests;
@@ -31,7 +32,7 @@ public class CSRFApiSpec
 
             var content = await result.Content.ReadAsStringAsync();
             content.Should().Contain("<html");
-            result.GetCookie(CookieType.AntiCSRF).Value.Should().NotBeEmpty();
+            result.GetCookie(CookieType.AntiCSRF).Should().NotBeNone();
             result.Headers.TryGetValues(CSRFConstants.Headers.AntiCSRF, out _).Should().BeFalse();
 
             var doc = new HtmlDocument();

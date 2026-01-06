@@ -1,5 +1,6 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../../framework/api/websiteHost';
+import { LocalStorageKeys, RoutePaths } from '../../../framework/constants.ts';
 
 
 export enum LoginCredentialsErrors {
@@ -25,5 +26,14 @@ export const LoginCredentialsAction = () =>
       405: LoginCredentialsErrors.account_unverified,
       423: LoginCredentialsErrors.account_locked
     },
-    onSuccess: () => window.location.reload() //so that we pick up the changed auth cookies, and return to dashboard page
+    onSuccess: () => {
+      const isPendingAuthorize = localStorage.getItem(LocalStorageKeys.IsPendingOAuth2Authorization);
+      if (isPendingAuthorize) {
+        localStorage.removeItem(LocalStorageKeys.IsPendingOAuth2Authorization);
+        window.location.href = RoutePaths.OAuth2Authorize; // no browser history
+        return;
+      }
+
+      window.location.replace(RoutePaths.Home); //so that we reload index.html and pick up the changed auth cookies, and return to home page
+    }
   });

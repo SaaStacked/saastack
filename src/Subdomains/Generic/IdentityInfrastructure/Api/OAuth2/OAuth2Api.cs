@@ -20,52 +20,8 @@ public class OAuth2Api : IWebApiService
         _openIdConnectApplication = openIdConnectApplication;
     }
 
-    public async Task<ApiRedirectResult<OpenIdConnectAuthorization, EmptyResponse>> AuthorizeGet(
-        AuthorizeOAuth2GetRequest request, CancellationToken cancellationToken)
-    {
-        var result = await _openIdConnectApplication.AuthorizeAsync(
-            _callerFactory.Create(),
-            request.ClientId!,
-            request.RedirectUri!,
-            request.ResponseType.ToEnumOrDefault(OAuth2ResponseType.Code),
-            request.Scope!,
-            request.State,
-            request.Nonce,
-            request.CodeChallenge,
-            request.CodeChallengeMethod.ToEnumOrDefault(OpenIdConnectCodeChallengeMethod.Plain),
-            cancellationToken);
-
-        if (request.RedirectUri.HasNoValue())
-        {
-            return () => Error.Validation(Resources.OAuth2Api_AuthorizeGet_RedirectUriMIssing); //Should never get here
-        }
-
-        var redirectUri = result.Match(response =>
-        {
-            var code = response.Value.Code;
-            if (code.Exists())
-            {
-                var codeParam = $"code={code.Code}";
-                var stateParam = code.State.HasValue()
-                    ? $"&state={code.State}"
-                    : string.Empty;
-                return $"{request.RedirectUri.WithoutTrailingSlash()}?{codeParam}{stateParam}";
-            }
-
-            return response.Value.RawRedirectUri;
-        }, error =>
-        {
-            var errorCode = error.AdditionalCode.HasValue()
-                ? error.AdditionalCode
-                : error.Code.ToString();
-            return $"{request.RedirectUri.WithoutTrailingSlash()}?error={errorCode}&error_description={error.Message}";
-        });
-
-        return () => new RedirectResult<EmptyResponse>(new EmptyResponse(), redirectUri);
-    }
-
     public async Task<ApiRedirectResult<OpenIdConnectAuthorization, EmptyResponse>> AuthorizePost(
-        AuthorizeOAuth2PostRequest request, CancellationToken cancellationToken)
+        AuthorizeOAuth2Request request, CancellationToken cancellationToken)
     {
         var result = await _openIdConnectApplication.AuthorizeAsync(
             _callerFactory.Create(),
@@ -81,7 +37,7 @@ public class OAuth2Api : IWebApiService
 
         if (request.RedirectUri.HasNoValue())
         {
-            return () => Error.Validation(Resources.OAuth2Api_AuthorizeGet_RedirectUriMIssing); //Should never get here
+            return () => Error.Validation(Resources.OAuth2Api_AuthorizeGet_RedirectUriMissing); //Should never get here
         }
 
         var redirectUri = result.Match(response =>
@@ -102,7 +58,11 @@ public class OAuth2Api : IWebApiService
             var errorCode = error.AdditionalCode.HasValue()
                 ? error.AdditionalCode
                 : error.Code.ToString();
-            return $"{request.RedirectUri.WithoutTrailingSlash()}?error={errorCode}&error_description={error.Message}";
+            var stateParam = request.State.HasValue()
+                ? $"&state={request.State}"
+                : string.Empty;
+            return
+                $"{request.RedirectUri.WithoutTrailingSlash()}?error={errorCode}&error_description={error.Message}{stateParam}";
         });
 
         return () => new RedirectResult<EmptyResponse>(new EmptyResponse(), redirectUri);

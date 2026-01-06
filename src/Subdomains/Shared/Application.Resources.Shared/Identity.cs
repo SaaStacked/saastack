@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Application.Interfaces.Resources;
+using Common;
 
 namespace Application.Resources.Shared;
 
@@ -313,6 +314,24 @@ public class OAuth2ClientConsent : IIdentifiableResource
     public required string UserId { get; set; }
 
     public required string Id { get; set; }
+}
+
+public class OAuth2ClientConsentResult
+{
+    public OAuth2ClientConsent? Consent { get; set; }
+
+    public Error? DenyError { get; set; }
+}
+
+public class OAuth2ClientConsentStatus
+{
+    public required OAuth2Client Client { get; set; }
+
+    public required bool IsConsented { get; set; }
+
+    public required List<string> Scopes { get; set; }
+
+    public required string UserId { get; set; }
 }
 
 public enum OpenIdConnectCodeChallengeMethod

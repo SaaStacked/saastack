@@ -62,7 +62,9 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _websiteUiService = new Mock<IWebsiteUiService>();
         _websiteUiService.Setup(wus => wus.ConstructLoginPageUrl())
             .Returns("aloginredirecturi");
-        _websiteUiService.Setup(wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>()))
+        _websiteUiService.Setup(wus =>
+                wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<string>()))
             .Returns("aconsentredirecturi");
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateOAuthorizationCodeDigest(It.IsAny<string>()))
@@ -193,7 +195,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _oauth2ClientService.Setup(ocs => ocs.FindClientByIdAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(client.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
@@ -205,12 +207,14 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
             Resources.NativeIdentityServerOpenIdConnectService_Authorize_MismatchedRequestUri.Format(
                 "anotherredirecturi"));
         _websiteUiService.Verify(wus => wus.ConstructLoginPageUrl(), Times.Never);
-        _websiteUiService.Verify(wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>()),
+        _websiteUiService.Verify(
+            wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>()),
             Times.Never);
         _oauth2ClientService.Verify(ocs =>
             ocs.FindClientByIdAsync(_caller.Object, "aclientid", It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -228,22 +232,24 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _oauth2ClientService.Setup(ocs => ocs.FindClientByIdAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(client.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await _service.AuthorizeAsync(_caller.Object, "aclientid", "auserid",
-            "aredirecturi", OAuth2ResponseType.Code, $"{OpenIdConnectConstants.Scopes.OpenId}", null, null,
+            "aredirecturi", OAuth2ResponseType.Code, $"{OpenIdConnectConstants.Scopes.OpenId}", "astate", null,
             null, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.RawRedirectUri.Should().Be("aconsentredirecturi");
         _websiteUiService.Verify(wus => wus.ConstructLoginPageUrl(), Times.Never);
-        _websiteUiService.Verify(wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>()));
+        _websiteUiService.Verify(wus =>
+            wus.ConstructOAuth2ConsentPageUrl("aclientid", "aredirecturi", $"{OpenIdConnectConstants.Scopes.OpenId}",
+                "astate"));
         _oauth2ClientService.Verify(ocs =>
             ocs.FindClientByIdAsync(_caller.Object, "aclientid", It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 $"{OpenIdConnectConstants.Scopes.OpenId}",
                 It.IsAny<CancellationToken>()));
     }
@@ -262,7 +268,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _oauth2ClientService.Setup(ocs => ocs.FindClientByIdAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(client.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         _repository.Setup(rep =>
@@ -280,12 +286,13 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         result.Value.Code!.Code.Should().Be("aclientid:anauthorizationcode");
         result.Value.Code.State.Should().Be("astate");
         _websiteUiService.Verify(wus => wus.ConstructLoginPageUrl(), Times.Never);
-        _websiteUiService.Verify(wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>()),
+        _websiteUiService.Verify(wus => wus.ConstructOAuth2ConsentPageUrl(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<string>()),
             Times.Never);
         _oauth2ClientService.Verify(ocs =>
             ocs.FindClientByIdAsync(_caller.Object, "aclientid", It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 $"{OpenIdConnectConstants.Scopes.OpenId}",
                 It.IsAny<CancellationToken>()));
         _repository.Verify(rep => rep.SaveAsync(It.Is<OpenIdConnectAuthorizationRoot>(root =>
@@ -939,7 +946,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -966,7 +973,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -994,7 +1001,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -1020,7 +1027,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -1038,7 +1045,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1051,7 +1058,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -1073,7 +1080,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -1086,7 +1093,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 OpenIdConnectConstants.Scopes.OpenId, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -1108,7 +1115,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1131,7 +1138,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 OpenIdConnectConstants.Scopes.OpenId, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
@@ -1152,7 +1159,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1175,7 +1182,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 OpenIdConnectConstants.Scopes.OpenId, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
@@ -1196,7 +1203,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1224,7 +1231,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 OpenIdConnectConstants.Scopes.OpenId, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
@@ -1245,7 +1252,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1302,7 +1309,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 OpenIdConnectConstants.Scopes.OpenId, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
             eus.GetUserPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
@@ -1323,7 +1330,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1380,7 +1387,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile}",
                 It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>
@@ -1405,7 +1412,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Setup(rep => rep.FindByAccessTokenDigestAsync(It.IsAny<Identifier>(), It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(authorization.ToOptional());
-        _oauth2ClientService.Setup(ocs => ocs.HasClientConsentedUserAsync(It.IsAny<ICallerContext>(),
+        _oauth2ClientService.Setup(ocs => ocs.HasUserConsentedClientAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1463,7 +1470,7 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
         _repository.Verify(rep => rep.FindByAccessTokenDigestAsync("auserid".ToId(), It.IsAny<string>(),
             It.IsAny<CancellationToken>()));
         _oauth2ClientService.Verify(ocs =>
-            ocs.HasClientConsentedUserAsync(_caller.Object, "aclientid", "auserid",
+            ocs.HasUserConsentedClientAsync(_caller.Object, "aclientid", "auserid",
                 $"{OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Profile} {OAuth2Constants.Scopes.Email} {OAuth2Constants.Scopes.Phone} {OAuth2Constants.Scopes.Address}",
                 It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus =>

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AuthenticateData, AuthenticateErrors, AuthenticateResponses, BeffeAnonymousDirectTestingOnlyData, BeffeAnonymousDirectTestingOnlyErrors, BeffeAnonymousDirectTestingOnlyResponses, BeffeAnonymousTestingOnlyData, BeffeAnonymousTestingOnlyErrors, BeffeAnonymousTestingOnlyResponses, BeffeHMacDirectTestingOnlyData, BeffeHMacDirectTestingOnlyErrors, BeffeHMacDirectTestingOnlyResponses, GetAllFeatureFlagsData, GetAllFeatureFlagsErrors, GetAllFeatureFlagsResponses, GetErrorData, GetErrorResponses, GetFeatureFlagForCallerData, GetFeatureFlagForCallerErrors, GetFeatureFlagForCallerResponses, HealthCheckData, HealthCheckErrors, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, RecordCrashData, RecordCrashErrors, RecordCrashResponses, RecordMeasureData, RecordMeasureErrors, RecordMeasureResponses, RecordPageViewData, RecordPageViewErrors, RecordPageViewResponses, RecordTraceData, RecordTraceErrors, RecordTraceResponses, RecordUseData, RecordUseErrors, RecordUseResponses, RefreshTokenData, RefreshTokenErrors, RefreshTokenResponses } from './types.gen';
+import type { AuthenticateData, AuthenticateErrors, AuthenticateResponses, AuthorizeOAuth2Data, AuthorizeOAuth2Errors, AuthorizeOAuth2Responses, BeffeAnonymousDirectTestingOnlyData, BeffeAnonymousDirectTestingOnlyErrors, BeffeAnonymousDirectTestingOnlyResponses, BeffeAnonymousTestingOnlyData, BeffeAnonymousTestingOnlyErrors, BeffeAnonymousTestingOnlyResponses, BeffeHMacDirectTestingOnlyData, BeffeHMacDirectTestingOnlyErrors, BeffeHMacDirectTestingOnlyResponses, ConsentOAuth2ClientData, ConsentOAuth2ClientErrors, ConsentOAuth2ClientResponses, GetAllFeatureFlagsData, GetAllFeatureFlagsErrors, GetAllFeatureFlagsResponses, GetErrorData, GetErrorResponses, GetFeatureFlagForCallerData, GetFeatureFlagForCallerErrors, GetFeatureFlagForCallerResponses, HealthCheckData, HealthCheckErrors, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, RecordCrashData, RecordCrashErrors, RecordCrashResponses, RecordMeasureData, RecordMeasureErrors, RecordMeasureResponses, RecordPageViewData, RecordPageViewErrors, RecordPageViewResponses, RecordTraceData, RecordTraceErrors, RecordTraceResponses, RecordUseData, RecordUseErrors, RecordUseResponses, RefreshTokenData, RefreshTokenErrors, RefreshTokenResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -82,6 +82,34 @@ export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(op
 export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, HealthCheckErrors, ThrowOnError>({ url: '/api/health', ...options });
 
 export const getError = <ThrowOnError extends boolean = false>(options?: Options<GetErrorData, ThrowOnError>) => (options?.client ?? client).get<GetErrorResponses, unknown, ThrowOnError>({ url: '/error', ...options });
+
+/**
+ * Authorizes the user to access the application in Open ID Connect.
+ *
+ * (request type: AuthorizeOAuth2Request)
+ */
+export const authorizeOAuth2 = <ThrowOnError extends boolean = false>(options?: Options<AuthorizeOAuth2Data, ThrowOnError>) => (options?.client ?? client).post<AuthorizeOAuth2Responses, AuthorizeOAuth2Errors, ThrowOnError>({
+    url: '/api/oauth2/authorize',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Consent for the user to authorize the OAuth2/Open ID Connect client to access their data
+ *
+ * (request type: ConsentOAuth2ClientRequest)
+ */
+export const consentOAuth2Client = <ThrowOnError extends boolean = false>(options: Options<ConsentOAuth2ClientData, ThrowOnError>) => (options.client ?? client).post<ConsentOAuth2ClientResponses, ConsentOAuth2ClientErrors, ThrowOnError>({
+    url: '/api/oauth2/clients/{Id}/consent',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Records a crash event of the product

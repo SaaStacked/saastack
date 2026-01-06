@@ -7,7 +7,9 @@ import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { CreateOrganizationAction, CreateOrganizationErrors } from '../actions/createOrganization.ts';
+
 
 export const OrganizationNewPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -47,7 +49,7 @@ export const OrganizationNewPage: React.FC = () => {
         <FormSubmitButton label={translate('pages.organizations.edit.tabs.details.form.submit.label')} />
       </FormAction>
       <div className="text-center">
-        <Link to="/organizations">{translate('pages.organizations.new.links.organizations')}</Link>
+        <Link to={RoutePaths.Organizations}>{translate('pages.organizations.new.links.organizations')}</Link>
       </div>
     </FormPage>
   );

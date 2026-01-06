@@ -1,24 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import {
-  ChangeDefaultOrganizationRequest,
-  Membership,
-  Organization,
-  OrganizationOwnership,
-  UpdateUserResponse
-} from '../../../framework/api/apiHost1';
+import { ChangeDefaultOrganizationRequest, Membership, Organization, OrganizationOwnership, UpdateUserResponse } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import Tag from '../../../framework/components/tag/Tag.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { ChangeDefaultOrganizationAction } from '../../endUsers/actions/changeDefaultOrganization.ts';
 import { ListAllMembershipsAction } from '../../endUsers/actions/listAllMemberships.ts';
 import { GetOrganizationAction, OrganizationErrorCodes } from '../actions/getOrganization.ts';
 import { formatFeatureName, formatRoleName, TenantRoles } from './Organizations.ts';
+
 
 export const OrganizationsManagePage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -57,7 +53,7 @@ export const OrganizationsManagePage: React.FC = () => {
         )}
       </PageAction>
       <div className="text-center">
-        <Link to="/organizations/new">{translate('pages.organizations.manage.links.new')}</Link>
+        <Link to={RoutePaths.OrganizationsNew}>{translate('pages.organizations.manage.links.new')}</Link>
       </div>
     </FormPage>
   );

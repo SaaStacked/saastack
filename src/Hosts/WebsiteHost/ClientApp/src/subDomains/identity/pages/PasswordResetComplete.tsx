@@ -11,6 +11,7 @@ import FormInput from '../../../framework/components/form/formInput/FormInput.ts
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import FormSubmitButton from '../../../framework/components/form/formSubmitButton/FormSubmitButton.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
 import { CompletePasswordResetAction, CompletePasswordResetErrors } from '../actions/completePasswordReset.ts';
 import { VerifyPasswordResetAction, VerifyPasswordResetErrors } from '../actions/verifyPasswordReset.ts';
 
@@ -51,10 +52,10 @@ export const PasswordResetCompletePage: React.FC = () => {
             loadingMessage={translate('pages.identity.credentials_password_reset_complete.states.verifying.loader')}
           ></PageAction>
           <div className="text-center mt-4">
-            <Link to="/identity/credentials/password-reset" className="btn btn-primary mr-4">
+            <Link to={RoutePaths.PasswordReset} className="btn btn-primary mr-4">
               {translate('pages.identity.credentials_password_reset_complete.links.request_reset')}
             </Link>
-            <Link to="/" className="btn btn-secondary">
+            <Link to={RoutePaths.Home} className="btn btn-secondary">
               {translate('pages.identity.credentials_password_reset_complete.links.home')}
             </Link>
           </div>
@@ -82,10 +83,10 @@ function HandleMissingToken({ translate }: Pick<HandlerProps, 'translate'>) {
         message={translate('pages.identity.credentials_password_reset_complete.states.invalid.message')}
       />
       <div className="text-center mt-4">
-        <Link to="/identity/credentials/password-reset" className="btn btn-primary mr-4">
+        <Link to={RoutePaths.PasswordReset} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_password_reset_complete.links.request_reset')}
         </Link>
-        <Link to="/" className="btn btn-secondary">
+        <Link to={RoutePaths.Home} className="btn btn-secondary">
           {translate('pages.identity.credentials_password_reset_complete.links.home')}
         </Link>
       </div>
@@ -172,7 +173,7 @@ function HandleVerifySuccess({ translate, token }: HandlerProps) {
             />
             <div className="text-center">
               <p>
-                <Link to="/identity/credentials/login" className="btn btn-secondary">
+                <Link to={RoutePaths.CredentialsLogin} className="btn btn-secondary">
                   {translate('pages.identity.credentials_password_reset_complete.links.login')}
                 </Link>
               </p>
@@ -193,10 +194,10 @@ function HandleCompleted({ translate }: HandlerProps) {
         <p className="text-lg mb-4">
           {translate('pages.identity.credentials_password_reset_complete.states.completed.message')}
         </p>
-        <Link to="/identity/credentials/login" className="btn btn-primary mr-4">
+        <Link to={RoutePaths.CredentialsLogin} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_password_reset_complete.links.login')}
         </Link>
-        <Link to="/" className="btn btn-secondary">
+        <Link to={RoutePaths.Home} className="btn btn-secondary">
           {translate('pages.identity.credentials_password_reset_complete.links.home')}
         </Link>
       </div>

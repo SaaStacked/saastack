@@ -1,5 +1,7 @@
 using Application.Interfaces;
 using Application.Resources.Shared;
+using Common;
+using Common.Extensions;
 using IdentityApplication;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Common.Extensions;
@@ -19,18 +21,48 @@ public class ClientsApi : IWebApiService
         _oauth2ClientApplication = oauth2ClientApplication;
     }
 
-    public async Task<ApiPostResult<OAuth2ClientConsent, GetOAuth2ClientConsentResponse>> ConsentClientForCaller(
+    public async Task<ApiRedirectResult<OAuth2ClientConsent, GetOAuth2ClientConsentResponse>> ConsentClientForCaller(
         ConsentOAuth2ClientForCallerRequest request, CancellationToken cancellationToken)
     {
         var consented = await _oauth2ClientApplication.ConsentToClientAsync(
             _callerFactory.Create(),
             request.Id!,
-            request.Scope,
+            request.RedirectUri!,
+            request.Scope!,
             request.Consented,
             cancellationToken);
 
-        return () => consented.HandleApplicationResult<OAuth2ClientConsent, GetOAuth2ClientConsentResponse>(c =>
-            new PostResult<GetOAuth2ClientConsentResponse>(new GetOAuth2ClientConsentResponse { Consent = c }));
+        if (request.RedirectUri.HasNoValue())
+        {
+            return () =>
+                Error.Validation(Resources
+                    .ClientsApi_ConsentClientForCaller_RedirectUriMissing); //Should never get here
+        }
+
+        if (consented.IsFailure)
+        {
+            return () => consented.Error;
+        }
+
+        if (consented.Value.Consent.Exists()
+            && consented.Value.Consent.IsConsented)
+        {
+            var consent = consented.Value.Consent;
+            return () => new RedirectResult<GetOAuth2ClientConsentResponse>(new GetOAuth2ClientConsentResponse
+                { Consent = consent });
+        }
+
+        var error = consented.Value.DenyError!.Value;
+        var errorCode = error.AdditionalCode.HasValue()
+            ? error.AdditionalCode
+            : error.Code.ToString();
+        var stateParam = request.State.HasValue()
+            ? $"&state={request.State}"
+            : string.Empty;
+        var redirectUri =
+            $"{request.RedirectUri.WithoutTrailingSlash()}?error={errorCode}&error_description={error.Message}{stateParam}";
+        return () =>
+            new RedirectResult<GetOAuth2ClientConsentResponse>(new GetOAuth2ClientConsentResponse(), redirectUri);
     }
 
     public async Task<ApiPostResult<OAuth2Client, GetOAuth2ClientResponse>> CreateClient(
@@ -79,6 +111,19 @@ public class ClientsApi : IWebApiService
                     { Consent = c });
     }
 
+    public async Task<ApiGetResult<OAuth2ClientConsentStatus, GetOAuth2ClientConsentStatusResponse>>
+        HasUserConsentedClient(
+            GetOAuth2ClientConsentStatusForCallerRequest request, CancellationToken cancellationToken)
+    {
+        var status = await _oauth2ClientApplication.HasUserConsentedClientAsync(
+            _callerFactory.Create(), request.Id!, request.Scope!, cancellationToken);
+
+        return () =>
+            status.HandleApplicationResult<OAuth2ClientConsentStatus, GetOAuth2ClientConsentStatusResponse>(s =>
+                new GetOAuth2ClientConsentStatusResponse
+                    { Status = s });
+    }
+
     public async Task<ApiPostResult<OAuth2ClientWithSecret, RegenerateOAuth2ClientSecretResponse>>
         RegenerateClientSecret(RegenerateOAuth2ClientSecretRequest request, CancellationToken cancellationToken)
     {
@@ -109,8 +154,8 @@ public class ClientsApi : IWebApiService
         var clients = await _oauth2ClientApplication.SearchAllClientsAsync(
             _callerFactory.Create(), request.ToSearchOptions(), request.ToGetOptions(), cancellationToken);
 
-        return () => clients.HandleApplicationResult<SearchResults<OAuth2Client>, SearchAllOAuth2ClientsResponse>(
-            c => new SearchAllOAuth2ClientsResponse
+        return () => clients.HandleApplicationResult<SearchResults<OAuth2Client>, SearchAllOAuth2ClientsResponse>(c =>
+            new SearchAllOAuth2ClientsResponse
             {
                 Clients = c.Results,
                 Metadata = c.Metadata

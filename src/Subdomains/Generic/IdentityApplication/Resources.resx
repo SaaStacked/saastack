@@ -112,4 +112,7 @@
     <data name="NativeIdentityServerOpenIdConnectService_GetUserInfo_MissingUser" xml:space="preserve">
         <value>Unknown user</value>
     </data>
+    <data name="ClientsApi_ConsentClientForCaller_ClientRevoked" xml:space="preserve">
+        <value>The user has denied access to the client application</value>
+    </data>
 </root>

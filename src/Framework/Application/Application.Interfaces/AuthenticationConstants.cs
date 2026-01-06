@@ -35,19 +35,28 @@ public static class AuthenticationConstants
 
     public static class Authorization
     {
+        public const string AnonymousPolicyName = "Anonymous";
         public const string HMACPolicyName = "HMAC";
         public const string PrivateInterHostPolicyName = "PrivateInterHost";
+        public const string RolesAndFeaturesPolicyName = "RolesAndFeatures";
         public const string RolesAndFeaturesPolicyNameForNone = $"{RolesAndFeaturesPolicyNamePrefix}None";
         public const string RolesAndFeaturesPolicyNamePrefix = "RolesAndFeatures_";
         public const string TokenPolicyName = "Token";
-        public const string AnonymousPolicyName = "Anonymous";
-        public const string RolesAndFeaturesPolicyName = "RolesAndFeatures";
     }
 
     public static class Cookies
     {
+        public const string PendingOAuth2Authorization = "oauth2-pending-auth";
         public const string RefreshToken = "auth-reftok";
         public const string Token = "auth-tok";
+
+        public static class CookieOptions
+        {
+            public const string Path = "/";
+            public const bool Secure = true;
+            public const bool HttpOnly = true;
+            public const string SameSite = "Lax";
+        }
     }
 
     public static class Providers
@@ -59,6 +68,7 @@ public static class AuthenticationConstants
     {
         public static readonly TimeSpan DefaultAccessTokenExpiry = TimeSpan.FromMinutes(15);
         public static readonly TimeSpan DefaultIdTokenExpiry = TimeSpan.FromMinutes(30);
+        public static readonly TimeSpan DefaultPendingOAuth2AuthorizationExpiry = TimeSpan.FromMinutes(15);
         public static readonly TimeSpan DefaultRefreshTokenExpiry = TimeSpan.FromDays(14);
     }
 

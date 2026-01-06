@@ -729,6 +729,7 @@ export const ConsentOAuth2ClientForCallerRequestSchema = {
     required: [
         'consented',
         'id',
+        'redirectUri',
         'scope'
     ],
     type: 'object',
@@ -737,8 +738,8 @@ export const ConsentOAuth2ClientForCallerRequestSchema = {
             type: 'boolean'
         },
         redirectUri: {
-            type: 'string',
-            nullable: true
+            minLength: 1,
+            type: 'string'
         },
         scope: {
             minLength: 1,
@@ -1296,33 +1297,30 @@ export const EndUserStatusSchema = {
 
 export const EventNotificationSchema = {
     required: [
-        'data',
-        'eventType',
+        'aggregateTypeFullName',
+        'eventJsonData',
+        'eventTypeFullName',
         'id',
-        'metadataFullyQualifiedName',
-        'rootAggregateType',
         'streamName',
         'subscriberRef',
         'version'
     ],
     type: 'object',
     properties: {
-        data: {
+        aggregateTypeFullName: {
             type: 'string'
         },
-        eventType: {
+        eventJsonData: {
             type: 'string'
         },
-        metadataFullyQualifiedName: {
+        eventTypeFullName: {
             type: 'string'
         },
-        rootAggregateType: {
-            type: 'string'
+        lastPersistedAtUtc: {
+            type: 'string',
+            format: 'date-time'
         },
         streamName: {
-            type: 'string'
-        },
-        subscriberRef: {
             type: 'string'
         },
         version: {
@@ -1330,6 +1328,9 @@ export const EventNotificationSchema = {
             format: 'int32'
         },
         id: {
+            type: 'string'
+        },
+        subscriberRef: {
             type: 'string'
         }
     },
@@ -1669,6 +1670,19 @@ export const GetOAuth2ClientConsentResponseSchema = {
     additionalProperties: false
 } as const;
 
+export const GetOAuth2ClientConsentStatusResponseSchema = {
+    required: [
+        'status'
+    ],
+    type: 'object',
+    properties: {
+        status: {
+            $ref: '#/components/schemas/OAuth2ClientConsentStatus'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GetOAuth2ClientResponseSchema = {
     required: [
         'client'
@@ -1779,6 +1793,19 @@ export const GetSubscriptionResponseSchema = {
     properties: {
         subscription: {
             $ref: '#/components/schemas/SubscriptionWithPlan'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const GetTenantedTestingOnlyResponseSchema = {
+    required: [
+        'organizationId'
+    ],
+    type: 'object',
+    properties: {
+        organizationId: {
+            type: 'string'
         }
     },
     additionalProperties: false
@@ -2496,6 +2523,38 @@ export const OAuth2ClientConsentSchema = {
             type: 'string'
         },
         id: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OAuth2ClientConsentStatusSchema = {
+    required: [
+        'client',
+        'isConsented',
+        'scopes',
+        'userId'
+    ],
+    type: 'object',
+    properties: {
+        client: {
+            $ref: '#/components/schemas/OAuth2Client'
+        },
+        isConsented: {
+            type: 'boolean'
+        },
+        scopes: {
+            type: 'array',
+            items: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        },
+        userId: {
             type: 'string'
         }
     },

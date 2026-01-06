@@ -384,6 +384,24 @@ namespace IdentityDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must not have consented to any scopes.
+        /// </summary>
+        internal static string OAuth2ClientConsentRoot_RequiresNoScopes {
+            get {
+                return ResourceManager.GetString("OAuth2ClientConsentRoot_RequiresNoScopes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must have consented to at least one scope.
+        /// </summary>
+        internal static string OAuth2ClientConsentRoot_RequiresScopes {
+            get {
+                return ResourceManager.GetString("OAuth2ClientConsentRoot_RequiresScopes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This first four of the secret is not valid.
         /// </summary>
         internal static string OAuth2ClientSecret_InvalidFirstFour {

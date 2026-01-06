@@ -2996,7 +2996,7 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Created: The user has consented to the client",
             "content": {
               "application/json": {
                 "schema": {
@@ -3031,6 +3031,9 @@
                 }
               }
             }
+          },
+          "302": {
+            "description": "If not consented to the specified client, then redirected back to the Infrastructure.Web.Api.Operations.Shared.Identities.ConsentOAuth2ClientForCallerRequest.RedirectUriwith an error with an error and description"
           },
           "401": {
             "description": "Unauthorized: The client must authenticate itself to get the requested response"
@@ -3084,7 +3087,7 @@
         "tags": [
           "ClientsApi"
         ],
-        "summary": "Gets the user's consent status for an OAuth2/Open ID Connect client",
+        "summary": "Gets the user's consent for an OAuth2/Open ID Connect client",
         "description": "(request type: GetOAuth2ClientConsentForCallerRequest)",
         "operationId": "GetOAuth2ClientConsentForCaller",
         "parameters": [
@@ -3778,6 +3781,121 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/GetOAuth2ClientResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
+    "/oauth2/clients/{Id}/consent/status": {
+      "get": {
+        "tags": [
+          "ClientsApi"
+        ],
+        "summary": "Gets the user's consent status for an OAuth2/Open ID Connect client",
+        "description": "(request type: GetOAuth2ClientConsentStatusForCallerRequest)",
+        "operationId": "GetOAuth2ClientConsentStatusForCaller",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Scope",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentStatusResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOAuth2ClientConsentStatusResponse"
                 }
               }
             }
@@ -9527,170 +9645,13 @@
       }
     },
     "/oauth2/authorize": {
-      "get": {
-        "tags": [
-          "OAuth2Api"
-        ],
-        "summary": "Authorizes the user to access the application in Open ID Connect",
-        "description": "(request type: AuthorizeOAuth2GetRequest)",
-        "operationId": "AuthorizeOAuth2Get",
-        "parameters": [
-          {
-            "name": "ClientId",
-            "in": "query",
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "CodeChallenge",
-            "in": "query",
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "CodeChallengeMethod",
-            "in": "query",
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Nonce",
-            "in": "query",
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "RedirectUri",
-            "in": "query",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "ResponseType",
-            "in": "query",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Scope",
-            "in": "query",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "State",
-            "in": "query",
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Validation": {
-                    "summary": "Validation Error",
-                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
-                  },
-                  "RuleViolation": {
-                    "summary": "Rule Violation",
-                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
-                  }
-                }
-              }
-            }
-          },
-          "302": {
-            "description": "The user is redirected to the redirect_uri with the authorization code. Or if failed, if unauthenticated, the redirected to the login website page, or if un-consented to the specified client, then redirected to the consent website page, or if an error occurred, then redirected to the redirect_uri with an error and description."
-          },
-          "401": {
-            "description": "Unauthorized: The client must authenticate itself to get the requested response"
-          },
-          "402": {
-            "description": "Payment Required: The client must have payment information to get the requested response"
-          },
-          "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
-          },
-          "404": {
-            "description": "Not Found: The server cannot find the requested resource"
-          },
-          "405": {
-            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
-          },
-          "409": {
-            "description": "Conflict: The request conflicts with the current state of the resource"
-          },
-          "423": {
-            "description": "Locked: The current resource is locked and cannot be accessed"
-          },
-          "500": {
-            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                },
-                "examples": {
-                  "Unexpected": {
-                    "summary": "Unexpected Error",
-                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "OAuth2Api"
         ],
         "summary": "Authorizes the user to access the application in Open ID Connect",
-        "description": "(request type: AuthorizeOAuth2PostRequest)",
-        "operationId": "AuthorizeOAuth2Post",
+        "description": "(request type: AuthorizeOAuth2Request)",
+        "operationId": "AuthorizeOAuth2",
         "requestBody": {
           "content": {
             "application/x-www-form-urlencoded": {
@@ -9767,7 +9728,7 @@
             }
           },
           "302": {
-            "description": "The user is redirected to the redirect_uri with the authorization code. Or if failed, if unauthenticated, the redirected to the login website page, or if un-consented to the specified client, then redirected to the consent website page, or if an error occurred, then redirected to the redirect_uri with an error and description."
+            "description": "The user is redirected to the redirect_uri with the authorization code. Or if failed, if unauthenticated, the redirected to the login website page, or if un-consented to the specified client, then redirected to the consent website page, or if an error occurred, then redirected back to the Infrastructure.Web.Api.Operations.Shared.Identities.AuthorizeOAuth2Request.RedirectUri with an error with an error and description."
           },
           "401": {
             "description": "Unauthorized: The client must authenticate itself to get the requested response"
@@ -10278,7 +10239,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The assigner is not an owner of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -10391,7 +10352,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The assigner is not an owner of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -11496,7 +11457,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The inviter is not an owner of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -11760,7 +11721,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The assigner is not an owner of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -11873,7 +11834,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The assigner is not an owner of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -11988,7 +11949,7 @@
             "description": "Payment Required: The client must have payment information to get the requested response"
           },
           "403": {
-            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+            "description": "The inviter is not an owner of the organization, or the invited is a required member of the organization"
           },
           "404": {
             "description": "Not Found: The server cannot find the requested resource"
@@ -16276,6 +16237,104 @@
         }
       }
     },
+    "/testingonly/tenanted": {
+      "get": {
+        "tags": [
+          "TestingWebApi"
+        ],
+        "summary": "Tests the automatic population of default organization in tenanted requests",
+        "description": "(request type: GetTenantedTestingOnlyRequest)",
+        "operationId": "GetTenantedTestingOnly",
+        "parameters": [
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "description": "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTenantedTestingOnlyResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTenantedTestingOnlyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/testingonly/openapi/{Id}/urlencoded": {
       "post": {
         "tags": [
@@ -20078,6 +20137,7 @@
         "required": [
           "consented",
           "id",
+          "redirectUri",
           "scope"
         ],
         "type": "object",
@@ -20086,8 +20146,8 @@
             "type": "boolean"
           },
           "redirectUri": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "scope": {
             "minLength": 1,
@@ -20616,33 +20676,30 @@
       },
       "EventNotification": {
         "required": [
-          "data",
-          "eventType",
+          "aggregateTypeFullName",
+          "eventJsonData",
+          "eventTypeFullName",
           "id",
-          "metadataFullyQualifiedName",
-          "rootAggregateType",
           "streamName",
           "subscriberRef",
           "version"
         ],
         "type": "object",
         "properties": {
-          "data": {
+          "aggregateTypeFullName": {
             "type": "string"
           },
-          "eventType": {
+          "eventJsonData": {
             "type": "string"
           },
-          "metadataFullyQualifiedName": {
+          "eventTypeFullName": {
             "type": "string"
           },
-          "rootAggregateType": {
-            "type": "string"
+          "lastPersistedAtUtc": {
+            "type": "string",
+            "format": "date-time"
           },
           "streamName": {
-            "type": "string"
-          },
-          "subscriberRef": {
             "type": "string"
           },
           "version": {
@@ -20650,6 +20707,9 @@
             "format": "int32"
           },
           "id": {
+            "type": "string"
+          },
+          "subscriberRef": {
             "type": "string"
           }
         },
@@ -20971,6 +21031,18 @@
         },
         "additionalProperties": false
       },
+      "GetOAuth2ClientConsentStatusResponse": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OAuth2ClientConsentStatus"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetOAuth2ClientResponse": {
         "required": [
           "client"
@@ -21074,6 +21146,18 @@
         "properties": {
           "subscription": {
             "$ref": "#/components/schemas/SubscriptionWithPlan"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetTenantedTestingOnlyResponse": {
+        "required": [
+          "organizationId"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -21758,6 +21842,37 @@
             "type": "string"
           },
           "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OAuth2ClientConsentStatus": {
+        "required": [
+          "client",
+          "isConsented",
+          "scopes",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/OAuth2Client"
+          },
+          "isConsented": {
+            "type": "boolean"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
+          },
+          "userId": {
             "type": "string"
           }
         },

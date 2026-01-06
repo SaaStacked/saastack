@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { RoutePaths } from '../../../framework/constants.ts';
+
 
 export function PrivacyPage() {
   const { t: translate } = useTranslation();
@@ -275,7 +277,7 @@ export function PrivacyPage() {
       </div>
 
       <div>
-        <Link to="/">Back to Home</Link>
+        <Link to={RoutePaths.Home}>Back to Home</Link>
       </div>
     </article>
   );
