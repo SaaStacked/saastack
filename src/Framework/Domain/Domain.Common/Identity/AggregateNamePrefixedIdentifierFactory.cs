@@ -8,21 +8,22 @@ using Domain.Interfaces.Validations;
 namespace Domain.Common.Identity;
 
 /// <summary>
-///     Provides a <see cref="IIdentifierFactory" /> that creates identifiers that are prefixed with a prefix using the
-///     name of the entity.
-///     For example: a UserAccount entity could have the prefix "user_"
+///     Provides a <see cref="IIdentifierFactory" /> that creates identifiers for aggregates that are prefixed using the
+///     name of the aggregate/entity,  followed by a simplified and base64 encoded version of a guid.
+///     For example: a UserAccount aggregate might have the prefix "user_"
 /// </summary>
-public abstract class NamePrefixedIdentifierFactory : IIdentifierFactory
+public abstract class AggregateNamePrefixedIdentifierFactory : IIdentifierFactory
 {
     private const string Delimiter = "_";
-    private const string UnknownEntityPrefix = "xxx";
-    private readonly IDictionary<Type, string> _prefixes;
+    private const string UnknownAggregatePrefix = "xxx";
+    private readonly IDictionary<Type, string> _aggregatePrefixes;
     private readonly List<string> _supportedPrefixes = new();
 
-    protected NamePrefixedIdentifierFactory(IDictionary<Type, string> prefixes)
+    protected AggregateNamePrefixedIdentifierFactory(IDictionary<Type, string> aggregatePrefixes)
     {
-        prefixes.Merge(new Dictionary<Type, string>(prefixes) { { typeof(EventSourcedChangeEvent), "event" } });
-        _prefixes = prefixes;
+        aggregatePrefixes.Merge(new Dictionary<Type, string>(aggregatePrefixes)
+            { { typeof(EventSourcedChangeEvent), "event" } });
+        _aggregatePrefixes = aggregatePrefixes;
     }
 
 #if TESTINGONLY
@@ -30,16 +31,19 @@ public abstract class NamePrefixedIdentifierFactory : IIdentifierFactory
     public Dictionary<string, string> LastCreatedIds { get; } = new();
 #endif
 
-    public IEnumerable<Type> RegisteredTypes => _prefixes.Keys;
+    public IEnumerable<Type> RegisteredTypes => _aggregatePrefixes.Keys;
 
     public IReadOnlyList<string> SupportedPrefixes => _supportedPrefixes;
 
+    /// <summary>
+    ///     Creates an identifier for the specified registered aggregate
+    /// </summary>
     public Result<Identifier, Error> Create(IIdentifiableEntity entity)
     {
         var entityType = entity.GetType();
-        var prefix = _prefixes.ContainsKey(entityType)
-            ? _prefixes[entity.GetType()]
-            : UnknownEntityPrefix;
+        var prefix = _aggregatePrefixes.ContainsKey(entityType)
+            ? _aggregatePrefixes[entity.GetType()]
+            : UnknownAggregatePrefix;
 
         var guid = Guid.NewGuid();
         var identifier = ConvertGuid(guid, prefix);
@@ -52,6 +56,9 @@ public abstract class NamePrefixedIdentifierFactory : IIdentifierFactory
         }, error => error);
     }
 
+    /// <summary>
+    ///     Whether the identifier is of the form expected, and has a known prefix
+    /// </summary>
     public bool IsValid(Identifier value)
     {
         var id = value.ToString();
@@ -62,7 +69,7 @@ public abstract class NamePrefixedIdentifierFactory : IIdentifierFactory
         }
 
         var prefix = id.Substring(0, delimiterIndex);
-        if (!IsKnownPrefix(prefix) && prefix != UnknownEntityPrefix)
+        if (!IsKnownPrefix(prefix) && prefix != UnknownAggregatePrefix)
         {
             return false;
         }
@@ -103,7 +110,7 @@ public abstract class NamePrefixedIdentifierFactory : IIdentifierFactory
 
     private bool IsKnownPrefix(string prefix)
     {
-        var allPossiblePrefixes = _prefixes.Select(pre => pre.Value)
+        var allPossiblePrefixes = _aggregatePrefixes.Select(pre => pre.Value)
             .Concat(SupportedPrefixes)
             .Distinct();
 

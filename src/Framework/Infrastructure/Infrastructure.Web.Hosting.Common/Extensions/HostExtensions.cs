@@ -75,7 +75,7 @@ public static class HostExtensions
         RegisterApiRequests();
         RegisterApiDocumentation(hostOptions.HostName, hostOptions.HostVersion, hostOptions.UsesApiDocumentation);
         RegisterNotifications(hostOptions.UsesNotifications);
-        RegisterApplicationServices(hostOptions.HostName, hostOptions.IsMultiTenanted,
+        RegisterApplicationServices(hostOptions.HostName, hostOptions.IsBackendForFrontEnd, hostOptions.IsMultiTenanted,
             hostOptions.ReceivesWebhooks);
         RegisterPersistence(hostOptions.Persistence.UsesQueues, hostOptions.IsMultiTenanted);
         RegisterEventing(hostOptions.Persistence.UsesEventing);
@@ -470,7 +470,8 @@ public static class HostExtensions
             services.ConfigureHttpXmlOptions(options => { options.SerializerOptions.WriteIndented = false; });
         }
 
-        void RegisterApplicationServices(string hostName, bool isMultiTenanted, bool receivesWebhooks)
+        void RegisterApplicationServices(string hostName, bool isBackendForFrontEnd, bool isMultiTenanted,
+            bool receivesWebhooks)
         {
             services.AddHttpClient(hostName);
             services.ConfigureAll<HttpClientFactoryOptions>(options =>
@@ -488,9 +489,17 @@ public static class HostExtensions
                 });
             });
 
-            var prefixes = modules.EntityPrefixes;
-            prefixes.Add(typeof(Checkpoint), CheckPointAggregatePrefix);
-            services.AddSingleton<IIdentifierFactory>(_ => new HostIdentifierFactory(prefixes));
+            if (isBackendForFrontEnd)
+            {
+                services.AddSingleton<IIdentifierFactory, BeffeIdentifierFactory>();
+            }
+            else
+            {
+                var aggregatePrefixes = modules.EntityPrefixes;
+                aggregatePrefixes.Add(typeof(Checkpoint), CheckPointAggregatePrefix);
+                services.AddSingleton<IIdentifierFactory>(_ => new ApiHostIdentifierFactory(aggregatePrefixes));
+            }
+
 
             if (isMultiTenanted)
             {

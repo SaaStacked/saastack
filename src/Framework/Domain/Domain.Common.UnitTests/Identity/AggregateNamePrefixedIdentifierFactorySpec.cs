@@ -9,9 +9,9 @@ using Xunit;
 namespace Domain.Common.UnitTests.Identity;
 
 [Trait("Category", "Unit")]
-public class NamePrefixedIdentifierFactorySpec
+public class AggregateNamePrefixedIdentifierFactorySpec
 {
-    private readonly TestNamePrefixedIdentifierFactory _factory = new();
+    private readonly TestAggregateNamePrefixedIdentifierFactory _factory = new();
 
     [Fact]
     public void WhenCreateWithUnknownEntityType_ThenReturnsGuid()
@@ -98,16 +98,17 @@ public class NamePrefixedIdentifierFactorySpec
     [Fact]
     public void WhenConvertGuidWithKnownGuid_ThenReturnsConverted()
     {
-        var id = NamePrefixedIdentifierFactory.ConvertGuid(new Guid("65dd0b02-170b-4ea1-a5a5-00d2808b9aee"), "known")
+        var id = AggregateNamePrefixedIdentifierFactory
+            .ConvertGuid(new Guid("65dd0b02-170b-4ea1-a5a5-00d2808b9aee"), "known")
             .Value;
 
         id.Should().Be("known_AgvdZQsXoU6lpQDSgIua7g");
     }
 }
 
-public class TestNamePrefixedIdentifierFactory : NamePrefixedIdentifierFactory
+public class TestAggregateNamePrefixedIdentifierFactory : AggregateNamePrefixedIdentifierFactory
 {
-    public TestNamePrefixedIdentifierFactory() : base(new Dictionary<Type, string>
+    public TestAggregateNamePrefixedIdentifierFactory() : base(new Dictionary<Type, string>
     {
         { typeof(KnownEntity), "kno" }
     })
