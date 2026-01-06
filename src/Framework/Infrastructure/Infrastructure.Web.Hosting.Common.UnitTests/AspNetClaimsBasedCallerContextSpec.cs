@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Common;
+using Common.Extensions;
 using Domain.Interfaces;
 using Domain.Interfaces.Authorization;
 using FluentAssertions;
@@ -379,7 +380,7 @@ public class AspNetClaimsBasedCallerContextSpec
     }
 
     [Fact]
-    public void WhenGetAuthorizationAndHMACAuthScheme_ThenResetsAuthorization()
+    public void WhenGetAuthorizationAndOnlyHMACAuthScheme_ThenResetsAuthorization()
     {
         var authFeature = new Mock<IAuthenticateResultFeature>();
         var ticket = new AuthenticationTicket(new ClaimsPrincipal(), HMACAuthenticationHandler.AuthenticationScheme);
@@ -488,5 +489,62 @@ public class AspNetClaimsBasedCallerContextSpec
 
         result.Should().BeSome(auth =>
             auth.Method == ICallerContext.AuthorizationMethod.APIKey && auth.Value == apiKey.ToOptional());
+    }
+
+    [Fact]
+    public void WhenGetAuthorizationAndBeffeCookieAuthScheme_ThenSetsAuthorization()
+    {
+        var authFeature = new Mock<IAuthenticateResultFeature>();
+        var ticket =
+            new AuthenticationTicket(new ClaimsPrincipal(), BeffeCookieAuthenticationHandler.AuthenticationScheme);
+        authFeature.Setup(af => af.AuthenticateResult)
+            .Returns(AuthenticateResult.Success(ticket));
+        var features = new FeatureCollection();
+        features.Set(authFeature.Object);
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        var cookieCollection = new Mock<IRequestCookieCollection>();
+        cookieCollection.Setup(c => c.TryGetValue(It.IsAny<string>(), out It.Ref<string?>.IsAny))
+            .Returns((string _, ref string? val) =>
+            {
+                val = new AuthNTokenCookieValue { Token = "atoken" }.ToJson();
+                return true;
+            });
+        httpContextAccessor.Setup(hc => hc.HttpContext!.Request.Cookies)
+            .Returns(cookieCollection.Object);
+        httpContextAccessor.Setup(hc => hc.HttpContext!.Features).Returns(features);
+
+        var result = AspNetClaimsBasedCallerContext.GetAuthorization(httpContextAccessor.Object);
+
+        result.Should().BeSome(auth =>
+            auth.Method == ICallerContext.AuthorizationMethod.AuthNCookie && auth.Value == "atoken");
+    }
+
+    [Fact]
+    public void WhenGetAuthorizationAndHMACAndBeffeCookieAuthScheme_ThenSetsBeffeAuthorization()
+    {
+        var authFeature = new Mock<IAuthenticateResultFeature>();
+        var ticket =
+            new AuthenticationTicket(new ClaimsPrincipal(),
+                $"{BeffeCookieAuthenticationHandler.AuthenticationScheme},{HMACAuthenticationHandler.AuthenticationScheme}");
+        authFeature.Setup(af => af.AuthenticateResult)
+            .Returns(AuthenticateResult.Success(ticket));
+        var features = new FeatureCollection();
+        features.Set(authFeature.Object);
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        var cookieCollection = new Mock<IRequestCookieCollection>();
+        cookieCollection.Setup(c => c.TryGetValue(It.IsAny<string>(), out It.Ref<string?>.IsAny))
+            .Returns((string _, ref string? val) =>
+            {
+                val = new AuthNTokenCookieValue { Token = "atoken" }.ToJson();
+                return true;
+            });
+        httpContextAccessor.Setup(hc => hc.HttpContext!.Request.Cookies)
+            .Returns(cookieCollection.Object);
+        httpContextAccessor.Setup(hc => hc.HttpContext!.Features).Returns(features);
+
+        var result = AspNetClaimsBasedCallerContext.GetAuthorization(httpContextAccessor.Object);
+
+        result.Should().BeSome(auth =>
+            auth.Method == ICallerContext.AuthorizationMethod.AuthNCookie && auth.Value == "atoken");
     }
 }

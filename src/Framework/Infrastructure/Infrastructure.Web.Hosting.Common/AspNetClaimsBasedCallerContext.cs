@@ -180,12 +180,6 @@ public sealed class AspNetClaimsBasedCallerContext : ICallerContext
             return new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.APIKey, apikey);
         }
 
-        if (schemes.ContainsIgnoreCase(HMACAuthenticationHandler.AuthenticationScheme))
-        {
-            return new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.HMAC,
-                Optional<string>.None);
-        }
-
         if (schemes.ContainsIgnoreCase(BeffeCookieAuthenticationHandler.AuthenticationScheme))
         {
             var token = context.Request.GetTokenFromAuthNCookies();
@@ -196,6 +190,13 @@ public sealed class AspNetClaimsBasedCallerContext : ICallerContext
             }
 
             return new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.AuthNCookie, token);
+        }
+
+        // This scheme needs to come after all the others, as they take precedent 
+        if (schemes.ContainsIgnoreCase(HMACAuthenticationHandler.AuthenticationScheme))
+        {
+            return new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.HMAC,
+                Optional<string>.None);
         }
 
         return Optional<ICallerContext.CallerAuthorization>.None;
