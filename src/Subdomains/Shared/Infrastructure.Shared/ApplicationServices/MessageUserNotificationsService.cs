@@ -1,5 +1,4 @@
 using Application.Interfaces;
-using Application.Interfaces.Services;
 using Application.Services.Shared;
 using Common;
 using Common.Configuration;
@@ -18,18 +17,16 @@ public class MessageUserNotificationsService : IUserNotificationsService
     private const string SenderDisplayNameSettingName = "ApplicationServices:EmailNotifications:SenderDisplayName";
     private const string SenderEmailAddressSettingName = "ApplicationServices:EmailNotifications:SenderEmailAddress";
     private readonly IEmailSchedulingService _emailSchedulingService;
-    private readonly IHostSettings _hostSettings;
     private readonly string _productName;
     private readonly string _senderEmailAddress;
     private readonly string _senderName;
     private readonly ISmsSchedulingService _smsSchedulingService;
     private readonly IWebsiteUiService _websiteUiService;
 
-    public MessageUserNotificationsService(IConfigurationSettings settings, IHostSettings hostSettings,
+    public MessageUserNotificationsService(IConfigurationSettings settings,
         IWebsiteUiService websiteUiService, IEmailSchedulingService emailSchedulingService,
         ISmsSchedulingService smsSchedulingService)
     {
-        _hostSettings = hostSettings;
         _websiteUiService = websiteUiService;
         _emailSchedulingService = emailSchedulingService;
         _smsSchedulingService = smsSchedulingService;
@@ -44,9 +41,7 @@ public class MessageUserNotificationsService : IUserNotificationsService
         string inviteeEmailAddress, string inviteeName, string inviterName, IReadOnlyList<string>? tags,
         CancellationToken cancellationToken)
     {
-        var webSiteUrl = _hostSettings.GetWebsiteHostBaseUrl();
-        var webSiteRoute = _websiteUiService.CreateRegistrationPageUrl(token);
-        var link = webSiteUrl.WithoutTrailingSlash() + webSiteRoute;
+        var link = _websiteUiService.CreateRegistrationPageUrl(token);
         var htmlBody =
             $"""
              <p>Hello,</p>
@@ -74,9 +69,7 @@ public class MessageUserNotificationsService : IUserNotificationsService
         IReadOnlyList<string>? tags,
         CancellationToken cancellationToken)
     {
-        var webSiteUrl = _hostSettings.GetWebsiteHostBaseUrl();
-        var webSiteRoute = _websiteUiService.ConstructPasswordMfaOobConfirmationPageUrl(code);
-        var link = webSiteUrl.WithoutTrailingSlash() + webSiteRoute;
+        var link = _websiteUiService.ConstructPasswordMfaOobConfirmationPageUrl(code);
         var htmlBody =
             $"""
              <p>Thank you for signin in at {_productName}.</p>
@@ -123,9 +116,7 @@ public class MessageUserNotificationsService : IUserNotificationsService
         string emailAddress, string name, string token, IReadOnlyList<string>? tags,
         CancellationToken cancellationToken)
     {
-        var webSiteUrl = _hostSettings.GetWebsiteHostBaseUrl();
-        var webSiteRoute = _websiteUiService.ConstructPasswordRegistrationConfirmationPageUrl(token);
-        var link = webSiteUrl.WithoutTrailingSlash() + webSiteRoute;
+        var link = _websiteUiService.ConstructPasswordRegistrationConfirmationPageUrl(token);
         var htmlBody =
             $"""
              <p>Hello {name},</p>
@@ -181,9 +172,7 @@ public class MessageUserNotificationsService : IUserNotificationsService
     public async Task<Result<Error>> NotifyPasswordResetInitiatedAsync(ICallerContext caller, string name,
         string emailAddress, string token, IReadOnlyList<string>? tags, CancellationToken cancellationToken)
     {
-        var webSiteUrl = _hostSettings.GetWebsiteHostBaseUrl();
-        var webSiteRoute = _websiteUiService.ConstructPasswordResetConfirmationPageUrl(token);
-        var link = webSiteUrl.WithoutTrailingSlash() + webSiteRoute;
+        var link = _websiteUiService.ConstructPasswordResetConfirmationPageUrl(token);
         var htmlBody =
             $$"""
               <p>Hello {{name}},</p>

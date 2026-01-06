@@ -75,7 +75,7 @@ public static class HostExtensions
         RegisterApiRequests();
         RegisterApiDocumentation(hostOptions.HostName, hostOptions.HostVersion, hostOptions.UsesApiDocumentation);
         RegisterNotifications(hostOptions.UsesNotifications);
-        RegisterApplicationServices(hostOptions.IsMultiTenanted,
+        RegisterApplicationServices(hostOptions.HostName, hostOptions.IsMultiTenanted,
             hostOptions.ReceivesWebhooks);
         RegisterPersistence(hostOptions.Persistence.UsesQueues, hostOptions.IsMultiTenanted);
         RegisterEventing(hostOptions.Persistence.UsesEventing);
@@ -436,7 +436,7 @@ public static class HostExtensions
                 services.AddSingleton<IWebsiteUiService, WebsiteUiService>();
                 services.AddSingleton<IUserNotificationsService>(c =>
                     new MessageUserNotificationsService(c.GetRequiredServiceForPlatform<IConfigurationSettings>(),
-                        c.GetRequiredService<IHostSettings>(), c.GetRequiredService<IWebsiteUiService>(),
+                        c.GetRequiredService<IWebsiteUiService>(),
                         c.GetRequiredService<IEmailSchedulingService>(),
                         c.GetRequiredService<ISmsSchedulingService>()));
             }
@@ -470,13 +470,17 @@ public static class HostExtensions
             services.ConfigureHttpXmlOptions(options => { options.SerializerOptions.WriteIndented = false; });
         }
 
-        void RegisterApplicationServices(bool isMultiTenanted, bool receivesWebhooks)
+        void RegisterApplicationServices(string hostName, bool isMultiTenanted, bool receivesWebhooks)
         {
-            services.AddHttpClient();
+            services.AddHttpClient(hostName);
             services.ConfigureAll<HttpClientFactoryOptions>(options =>
             {
                 options.HttpMessageHandlerBuilderActions.Add(builder =>
                 {
+                    builder.PrimaryHandler = new HttpClientHandler
+                    {
+                        AllowAutoRedirect = false
+                    };
                     var container = builder.Services;
                     builder.AdditionalHandlers.Add(new HttpClientLoggingHandler(
                         container.GetRequiredService<IRecorder>(),

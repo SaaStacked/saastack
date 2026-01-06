@@ -53,7 +53,7 @@ public class OpenIdConnectApiSpec
             });
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location.Should().Be(WebsiteUiService.LoginPageRoute);
+            result.Headers.Location!.PathAndQuery.Should().Be(WebsiteUiService.LoginPageRoute);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class OpenIdConnectApiSpec
             });
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location.Should().Be(WebsiteUiService.LoginPageRoute);
+            result.Headers.Location!.PathAndQuery.Should().Be(WebsiteUiService.LoginPageRoute);
         }
 
         [Fact]
@@ -665,7 +665,7 @@ public class OpenIdConnectApiSpec
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location.Should()
+            result.Headers.Location!.PathAndQuery.Should()
                 .Be(
                     $"{WebsiteUiService.OAuth2ConsentPageRoute}?client_id={client.Id}&scope={OpenIdConnectConstants.Scopes.OpenId}");
         }
@@ -688,9 +688,9 @@ public class OpenIdConnectApiSpec
             }, req => req.SetJWTBearerToken(login.AccessToken));
 
             result.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            result.Headers.Location.Should()
+            result.Headers.Location!.PathAndQuery.Should()
                 .Be(
-                    $"{WebsiteUiService.OAuth2ConsentPageRoute}?client_id={client.Id}&scope={OpenIdConnectConstants.Scopes.OpenId} {OAuth2Constants.Scopes.Email}");
+                    $"{WebsiteUiService.OAuth2ConsentPageRoute}?client_id={client.Id}&scope={OpenIdConnectConstants.Scopes.OpenId}%20{OAuth2Constants.Scopes.Email}");
         }
 
         [Fact]

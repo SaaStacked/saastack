@@ -1,3 +1,4 @@
+using Application.Interfaces.Services;
 using Application.Services.Shared;
 using Common.Extensions;
 
@@ -15,6 +16,12 @@ public sealed class WebsiteUiService : IWebsiteUiService
     public const string PasswordRegistrationConfirmationPageRoute = "/identity/credentials/register-confirm";
     public const string PasswordResetConfirmationPageRoute = "/identity/credentials/password-reset-confirm";
     public const string RegistrationPageRoute = "/identity/credentials/register";
+    private readonly string _websiteHostBaseUrl;
+
+    public WebsiteUiService(IHostSettings hostSettings)
+    {
+        _websiteHostBaseUrl = hostSettings.GetWebsiteHostBaseUrl().WithoutTrailingSlash();
+    }
 
     public string ConstructLoginPageUrl()
     {
@@ -23,30 +30,32 @@ public sealed class WebsiteUiService : IWebsiteUiService
 
     public string ConstructOAuth2ConsentPageUrl(string clientId, string scope)
     {
-        return $"{OAuth2ConsentPageRoute.WithoutTrailingSlash()}?client_id={clientId}&scope={scope}";
+        return
+            $"{_websiteHostBaseUrl}/{OAuth2ConsentPageRoute.WithoutLeadingSlash()}?client_id={clientId}&scope={scope}";
     }
 
     public string ConstructPasswordMfaOobConfirmationPageUrl(string code)
     {
         var escapedCode = Uri.EscapeDataString(code);
-        return $"{PasswordMfaOobConfirmationPageRoute}?code={escapedCode}";
+        return $"{_websiteHostBaseUrl}/{PasswordMfaOobConfirmationPageRoute.WithoutLeadingSlash()}?code={escapedCode}";
     }
 
     public string ConstructPasswordRegistrationConfirmationPageUrl(string token)
     {
         var escapedToken = Uri.EscapeDataString(token);
-        return $"{PasswordRegistrationConfirmationPageRoute}?token={escapedToken}";
+        return
+            $"{_websiteHostBaseUrl}/{PasswordRegistrationConfirmationPageRoute.WithoutLeadingSlash()}?token={escapedToken}";
     }
 
     public string ConstructPasswordResetConfirmationPageUrl(string token)
     {
         var escapedToken = Uri.EscapeDataString(token);
-        return $"{PasswordResetConfirmationPageRoute}?token={escapedToken}";
+        return $"{_websiteHostBaseUrl}/{PasswordResetConfirmationPageRoute.WithoutLeadingSlash()}?token={escapedToken}";
     }
 
     public string CreateRegistrationPageUrl(string token)
     {
         var escapedToken = Uri.EscapeDataString(token);
-        return $"{RegistrationPageRoute}?token={escapedToken}";
+        return $"{_websiteHostBaseUrl}/{RegistrationPageRoute.WithoutLeadingSlash()}?token={escapedToken}";
     }
 }
