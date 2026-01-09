@@ -68,6 +68,7 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
           exact: false // we want to support wildcards
         });
       }
+      
       if (onSuccess) {
         onSuccess(response);
       }

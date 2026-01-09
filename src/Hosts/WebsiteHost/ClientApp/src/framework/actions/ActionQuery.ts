@@ -6,6 +6,7 @@ import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
+
 export interface ActionQueryConfiguration<
   TRequestData = any,
   ExpectedErrorCode extends string = '',
@@ -16,6 +17,8 @@ export interface ActionQueryConfiguration<
   request: (requestData: TRequestData) => Promise<ApiResponse<TResponse>>;
   // Whether the request is tenanted or not
   isTenanted?: boolean;
+  // What to do in the case of a successful response
+  onSuccess?: (requestData: TRequestData, response: TTransformedResponse, statusCode: number, headers: Headers) => void;
   // The transformation function to apply to the response
   transform: (result: TResponse) => TTransformedResponse;
   // What kind of known errors are we expecting to handle ourselves
@@ -39,7 +42,7 @@ export function useActionQuery<
   configuration: ActionQueryConfiguration<TRequestData, ExpectedErrorCode, TResponse, TTransformedResponse>
 ): ActionResult<TRequestData, ExpectedErrorCode, TTransformedResponse> {
   const { t: translate } = useTranslation();
-  const { request, passThroughErrors, cacheKey, transform: onTransform } = configuration;
+  const { request, passThroughErrors, cacheKey, transform: onTransform, onSuccess } = configuration;
 
   const { onError: handleError, expectedError, unexpectedError, clearErrors } = useApiErrorState(passThroughErrors);
 
@@ -71,17 +74,54 @@ export function useActionQuery<
       }
     },
     select: useCallback(
-      (data: TResponse) => {
+      (apiResponse: ApiResponse<TResponse>): ApiResponse<TTransformedResponse> => {
         recorder.traceDebug('QueryCommand: Query returned success');
-        if (data === undefined || data === null) {
+        if (apiResponse === undefined || apiResponse === null) {
           recorder.traceDebug('QueryCommand: Query returned no data!');
-          return;
+          return {
+            data: {} as TTransformedResponse,
+            error: undefined,
+            request: {} as Request,
+            response: { ok: true, status: 200 } as Response
+          } as ApiResponse<TTransformedResponse>;
         }
+
+        if (apiResponse.error != undefined) {
+          return apiResponse as ApiResponse<TTransformedResponse>;
+        }
+
+        let response: ApiResponse<TTransformedResponse>;
         if (onTransform) {
-          return onTransform(data);
+          const transformed = onTransform(apiResponse.data ?? ({} as TResponse));
+
+          response = {
+            data: transformed,
+            error: undefined,
+            request: apiResponse.request,
+            response: apiResponse.response
+          } as ApiResponse<TTransformedResponse>;
+        } else {
+          response = {
+            data: apiResponse.data,
+            error: undefined,
+            request: apiResponse.request,
+            response: apiResponse.response
+          } as ApiResponse<TTransformedResponse>;
         }
+
+        if (onSuccess) {
+          const requestData = currentRequestDataRef.current ?? {} as TRequestData;
+          onSuccess(
+            requestData,
+            response.data ?? {} as TTransformedResponse,
+            response.response.status,
+            response.response.headers
+          );
+        }
+
+        return response;
       },
-      [onTransform]
+      [onTransform, onSuccess]
     ),
     retry: false,
     refetchOnWindowFocus: false,
@@ -106,7 +146,12 @@ export function useActionQuery<
       {
         onSuccess
       }: {
-        onSuccess?: (params: { requestData?: TRequestData; response: TTransformedResponse }) => void;
+        onSuccess?: (params: {
+          requestData?: TRequestData;
+          response: TTransformedResponse;
+          statusCode: number;
+          headers: Headers;
+        }) => void;
       } = {}
     ) => {
       let submittedRequestData: TRequestData = modifyRequestData(requestData, configuration.isTenanted);
@@ -123,8 +168,20 @@ export function useActionQuery<
             recorder.traceDebug('QueryCommand: Query returned error: {Error}', { result });
             return;
           }
+
+          if (result.data == undefined) {
+            recorder.traceDebug('QueryCommand: Query returned no data!');
+            return;
+          }
+
+          const apiResponse = result.data as ApiResponse<TTransformedResponse>;
           if (onSuccess) {
-            onSuccess({ requestData, response: result.data as TTransformedResponse });
+            onSuccess({
+              requestData,
+              response: apiResponse.data ?? ({} as TTransformedResponse),
+              statusCode: apiResponse.response.status,
+              headers: apiResponse.response.headers
+            });
           }
         })
         .catch((error) => {
@@ -141,7 +198,7 @@ export function useActionQuery<
   const variables = currentRequestDataRef.current ?? ({} as TRequestData);
   return {
     execute: executeCallback,
-    lastSuccessResponse: response,
+    lastSuccessResponse: response?.data,
     isSuccess: isCompleted,
     lastExpectedError: expectedError,
     lastUnexpectedError: unexpectedError,
