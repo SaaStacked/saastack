@@ -277,6 +277,8 @@ public class JsonWebKey
 
 public class OAuth2Client : IIdentifiableResource
 {
+    public string? LogoUrl { get; set; }
+
     public required string Name { get; set; }
 
     public string? RedirectUri { get; set; }

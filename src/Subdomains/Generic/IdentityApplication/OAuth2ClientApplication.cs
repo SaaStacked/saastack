@@ -14,6 +14,13 @@ public class OAuth2ClientApplication : IOAuth2ClientApplication
         _identityServerProvider = identityServerProvider;
     }
 
+    public async Task<Result<OAuth2Client, Error>> ChangeClientLogoAsync(ICallerContext caller, string id,
+        FileUpload upload, CancellationToken cancellationToken)
+    {
+        return await _identityServerProvider.OAuth2ClientService.ChangeClientLogoAsync(caller, id, upload,
+            cancellationToken);
+    }
+
     public async Task<Result<OAuth2ClientConsentResult, Error>> ConsentToClientAsync(ICallerContext caller,
         string clientId, string redirectUri, string scope, bool consented, CancellationToken cancellationToken)
     {
@@ -34,6 +41,13 @@ public class OAuth2ClientApplication : IOAuth2ClientApplication
         CancellationToken cancellationToken)
     {
         return await _identityServerProvider.OAuth2ClientService.DeleteClientAsync(caller, id, cancellationToken);
+    }
+
+    public async Task<Result<OAuth2Client, Error>> DeleteClientLogoAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken)
+    {
+        return await _identityServerProvider.OAuth2ClientService.DeleteClientLogoAsync(caller, id,
+            cancellationToken);
     }
 
     public async Task<Result<OAuth2ClientWithSecrets, Error>> GetClientAsync(ICallerContext caller, string id,

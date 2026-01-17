@@ -378,15 +378,14 @@
         "title": "Authorize Application",
         "loader": "Loading application details...",
         "header": {
-          "title": "Authorize Access",
-          "subtitle": "{{appName}} wants to access your SaaStack account"
+          "title": "Let this app access your info?"
         },
         "labels": {
-          "permissions": "This application will be able to:",
+          "permissions": "{{appName}} needs your permission to:",
           "scopes": {
             "openid": "Verify your identity",
-            "profile": "Access your basic profile information (name, username)",
-            "email": "Access your email address"
+            "profile": "View your basic profile",
+            "email": "View your email address"
           },
           "security": {
             "title": "Security Notice",
@@ -395,7 +394,7 @@
           "privacy_notice": "By authorizing, you agree to share the requested information with this application."
         },
         "actions": {
-          "authorize": "Authorize",
+          "authorize": "Accept",
           "authorizing": "Authorizing...",
           "deny": "Deny"
         }

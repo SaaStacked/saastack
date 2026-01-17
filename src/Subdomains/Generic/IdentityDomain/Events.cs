@@ -400,6 +400,23 @@ public static class Events
                 return new Domain.Events.Shared.Identities.OAuth2.Clients.Deleted(id, deletedById);
             }
 
+            public static LogoAdded LogoAdded(Identifier id, Avatar logo)
+            {
+                return new LogoAdded(id)
+                {
+                    LogoId = logo.ImageId,
+                    LogoUrl = logo.Url
+                };
+            }
+
+            public static LogoRemoved LogoRemoved(Identifier id, Identifier logoId)
+            {
+                return new LogoRemoved(id)
+                {
+                    LogoId = logoId
+                };
+            }
+
             public static NameChanged NameChanged(Identifier id, Name name)
             {
                 return new NameChanged(id)

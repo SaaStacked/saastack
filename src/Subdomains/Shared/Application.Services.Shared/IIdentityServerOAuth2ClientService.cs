@@ -10,6 +10,12 @@ namespace Application.Services.Shared;
 public interface IIdentityServerOAuth2ClientService
 {
     /// <summary>
+    ///     Changes the avatar of the OAuth2 client
+    /// </summary>
+    Task<Result<OAuth2Client, Error>> ChangeClientLogoAsync(ICallerContext caller, string id, FileUpload upload,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     ///     Consents the user to the OAuth2 client
     /// </summary>
     Task<Result<OAuth2ClientConsentResult, Error>> ConsentToClientAsync(ICallerContext caller, string clientId,
@@ -26,6 +32,12 @@ public interface IIdentityServerOAuth2ClientService
     ///     Deletes the OAuth2 client
     /// </summary>
     Task<Result<Error>> DeleteClientAsync(ICallerContext caller, string id, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Deletes the avatar of the OAuth2 client
+    /// </summary>
+    Task<Result<OAuth2Client, Error>> DeleteClientLogoAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken);
 
     /// <summary>
     ///     Finds the OAuth2 client

@@ -25,13 +25,15 @@ public class NativeIdentityServerOAuth2ClientService : IIdentityServerOAuth2Clie
     private readonly IOAuth2ClientConsentRepository _clientConsentRepository;
     private readonly IOAuth2ClientRepository _clientRepository;
     private readonly IIdentifierFactory _identifierFactory;
+    private readonly IImagesService _imagesService;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly IRecorder _recorder;
     private readonly ITokensService _tokensService;
 
     public NativeIdentityServerOAuth2ClientService(IRecorder recorder, IIdentifierFactory identifierFactory,
         ITokensService tokensService, IPasswordHasherService passwordHasherService,
-        IOAuth2ClientRepository clientRepository, IOAuth2ClientConsentRepository clientConsentRepository)
+        IImagesService imagesService, IOAuth2ClientRepository clientRepository,
+        IOAuth2ClientConsentRepository clientConsentRepository)
     {
         _recorder = recorder;
         _identifierFactory = identifierFactory;
@@ -39,6 +41,50 @@ public class NativeIdentityServerOAuth2ClientService : IIdentityServerOAuth2Clie
         _passwordHasherService = passwordHasherService;
         _clientRepository = clientRepository;
         _clientConsentRepository = clientConsentRepository;
+        _imagesService = imagesService;
+    }
+
+    public async Task<Result<OAuth2Client, Error>> ChangeClientLogoAsync(ICallerContext caller, string id,
+        FileUpload upload, CancellationToken cancellationToken)
+    {
+        var retrieved = await _clientRepository.LoadAsync(id.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var client = retrieved.Value;
+        var logoed = await client.ChangeLogoAsync(async name =>
+        {
+            var created = await _imagesService.CreateImageAsync(caller, upload, name.Text, cancellationToken);
+            if (created.IsFailure)
+            {
+                return created.Error;
+            }
+
+            return Avatar.Create(created.Value.Id.ToId(), created.Value.Url);
+        }, async logoId =>
+        {
+            var removed = await _imagesService.DeleteImageAsync(caller, logoId, cancellationToken);
+            return removed.IsFailure
+                ? removed.Error
+                : Result.Ok;
+        });
+        if (logoed.IsFailure)
+        {
+            return logoed.Error;
+        }
+
+        var saved = await _clientRepository.SaveAsync(client, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        client = saved.Value;
+        _recorder.TraceInformation(caller.ToCall(), "Changed logo for OAuth2 client: {Id}", client.Id);
+
+        return client.ToClient();
     }
 
     public async Task<Result<OAuth2ClientConsentResult, Error>> ConsentToClientAsync(ICallerContext caller,
@@ -182,6 +228,40 @@ public class NativeIdentityServerOAuth2ClientService : IIdentityServerOAuth2Clie
         _recorder.TraceInformation(caller.ToCall(), "Client {Id} deleted", client.Id);
 
         return Result.Ok;
+    }
+
+    public async Task<Result<OAuth2Client, Error>> DeleteClientLogoAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken)
+    {
+        var retrieved = await _clientRepository.LoadAsync(id.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var client = retrieved.Value;
+        var deleted = await client.RemoveLogoAsync(async logoId =>
+        {
+            var removed = await _imagesService.DeleteImageAsync(caller, logoId, cancellationToken);
+            return removed.IsFailure
+                ? removed.Error
+                : Result.Ok;
+        });
+        if (deleted.IsFailure)
+        {
+            return deleted.Error;
+        }
+
+        var saved = await _clientRepository.SaveAsync(client, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        client = saved.Value;
+        _recorder.TraceInformation(caller.ToCall(), "OAuth2 client {Id} logo was deleted", client.Id);
+
+        return client.ToClient();
     }
 
     public async Task<Result<Optional<OAuth2Client>, Error>> FindClientByIdAsync(ICallerContext caller, string id,
@@ -466,6 +546,7 @@ public static class NativeIdentityServerOAuth2ClientServiceConversionExtensions
         return new OAuth2Client
         {
             Id = client.Id,
+            LogoUrl = client.Logo.ToNullable(c => c.Url),
             Name = client.Name.ValueOrDefault!,
             RedirectUri = client.RedirectUri.ValueOrDefault!
         };
@@ -476,6 +557,7 @@ public static class NativeIdentityServerOAuth2ClientServiceConversionExtensions
         return new OAuth2Client
         {
             Id = client.Id,
+            LogoUrl = client.LogoUrl,
             Name = client.Name,
             RedirectUri = client.RedirectUri
         };
@@ -486,6 +568,7 @@ public static class NativeIdentityServerOAuth2ClientServiceConversionExtensions
         return new OAuth2ClientWithSecret
         {
             Id = client.Id,
+            LogoUrl = client.Logo.ToNullable(c => c.Url),
             Name = client.Name.ValueOrDefault!,
             RedirectUri = client.RedirectUri,
             Secret = secret.PlainSecret,
@@ -498,6 +581,7 @@ public static class NativeIdentityServerOAuth2ClientServiceConversionExtensions
         return new OAuth2ClientWithSecrets
         {
             Id = client.Id,
+            LogoUrl = client.Logo.ToNullable(c => c.Url),
             Name = client.Name.ValueOrDefault!,
             RedirectUri = client.RedirectUri,
             Secrets = client.Secrets.Select(sec => new OAuthClientSecret

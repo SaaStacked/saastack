@@ -42,23 +42,29 @@ export const OAuth2ConsentClientPage: React.FC = () => {
         loadingMessage={translate('pages.identity.oauth2_consent_client.loader')}
       >
         <div className="max-w-md mx-auto bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-6">
-          <div className="text-center mb-6">
-            <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-              <Icon symbol="shield" size={32} color="brand-primary" />
+          <div className="flex items-center mb-6">
+            <div className="w-16 h-16 mr-4 bg-neutral-900 dark:bg-neutral-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+              {consentStatus.lastSuccessResponse?.client.logoUrl ? <img
+                  src={consentStatus.lastSuccessResponse.client.logoUrl}
+                  alt={consentStatus.lastSuccessResponse.client.name || clientId || 'Client logo'}
+                  className="w-full h-full object-cover"
+                /> : <Icon symbol="shield" size={32} color="brand-primary" />}
             </div>
-            <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
-              {translate('pages.identity.oauth2_consent_client.header.title')}
-            </h2>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              {translate('pages.identity.oauth2_consent_client.header.subtitle', {
-                appName: consentStatus.lastSuccessResponse?.client.name || clientId
-              })}
-            </p>
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+                {translate('pages.identity.oauth2_consent_client.header.title')}
+              </h2>
+              <p className="text-md font-bold text-neutral-600 dark:text-neutral-400">
+                {consentStatus.lastSuccessResponse?.client.name || clientId}
+              </p>
+            </div>
           </div>
 
           <div className="mb-6">
             <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">
-              {translate('pages.identity.oauth2_consent_client.labels.permissions')}
+              {translate('pages.identity.oauth2_consent_client.labels.permissions', {
+                appName: consentStatus.lastSuccessResponse?.client.name || clientId
+              })}
             </h3>
             <div className="space-y-2">
               {scopes.map((scopeItem) => (
@@ -88,7 +94,7 @@ export const OAuth2ConsentClientPage: React.FC = () => {
                   className="w-full"
                   id="deny"
                   action={denyClientConsent}
-                  variant="danger"
+                  variant="outline"
                   label={translate('pages.identity.oauth2_consent_client.actions.deny')}
                 />
               </div>

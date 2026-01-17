@@ -18,11 +18,12 @@ public class NativeOAuth2ClientService : IOAuth2ClientService
 
     public NativeOAuth2ClientService(IRecorder recorder, IIdentifierFactory identifierFactory,
         ITokensService tokensService, IPasswordHasherService passwordHasherService,
-        IOAuth2ClientRepository oAuthClientRepository, IOAuth2ClientConsentRepository oAuthClientConsentRepository)
+        IImagesService imagesService, IOAuth2ClientRepository oAuthClientRepository,
+        IOAuth2ClientConsentRepository oAuthClientConsentRepository)
     {
         _service =
             new NativeIdentityServerOAuth2ClientService(recorder, identifierFactory, tokensService,
-                passwordHasherService, oAuthClientRepository, oAuthClientConsentRepository);
+                passwordHasherService, imagesService, oAuthClientRepository, oAuthClientConsentRepository);
     }
 
     public async Task<Result<Optional<OAuth2Client>, Error>> FindClientByIdAsync(ICallerContext caller, string clientId,

@@ -149,4 +149,80 @@ public class OAuth2ClientRootSpec
         client.Secrets[0].ExpiresOn.Value.Should().BeNear(DateTime.UtcNow.Add(duration), TimeSpan.FromMinutes(1));
         client.Events.Last().Should().BeOfType<SecretAdded>();
     }
+
+    [Fact]
+    public async Task WhenChangeLogoAsync_ThenChangesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _idFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        var logo = Avatar.Create("alogoid".ToId(), "https://localhost/logo.png").Value;
+
+        var result = await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(logo),
+            _ => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        client.Logo.Value.ImageId.Should().Be("alogoid".ToId());
+        client.Logo.Value.Url.Should().Be("https://localhost/logo.png");
+        client.Events.Last().Should().BeOfType<LogoAdded>();
+    }
+
+    [Fact]
+    public async Task WhenChangeLogoAsyncAndExistingLogo_ThenReplacesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _idFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        var oldLogo = Avatar.Create("oldlogoid".ToId(), "https://localhost/oldlogo.png").Value;
+        await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(oldLogo),
+            _ => Task.FromResult(Result.Ok));
+        var newLogo = Avatar.Create("newlogoid".ToId(), "https://localhost/newlogo.png").Value;
+        var removedLogoId = Identifier.Empty();
+
+        var result = await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(newLogo),
+            logoId =>
+            {
+                removedLogoId = logoId;
+                return Task.FromResult(Result.Ok);
+            });
+
+        result.Should().BeSuccess();
+        client.Logo.Value.ImageId.Should().Be("newlogoid".ToId());
+        client.Logo.Value.Url.Should().Be("https://localhost/newlogo.png");
+        removedLogoId.Should().Be("oldlogoid".ToId());
+        client.Events.Last().Should().BeOfType<LogoAdded>();
+    }
+
+    [Fact]
+    public async Task WhenRemoveLogoAsyncAndNoLogo_ThenDoesNothing()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _idFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+
+        var result = await client.RemoveLogoAsync(_ => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        client.Logo.Should().BeNone();
+        client.Events.Last().Should().BeOfType<Created>();
+    }
+
+    [Fact]
+    public async Task WhenRemoveLogoAsync_ThenRemovesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _idFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        var logo = Avatar.Create("alogoid".ToId(), "https://localhost/logo.png").Value;
+        await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(logo),
+            _ => Task.FromResult(Result.Ok));
+        var removedLogoId = Identifier.Empty();
+
+        var result = await client.RemoveLogoAsync(logoId =>
+        {
+            removedLogoId = logoId;
+            return Task.FromResult(Result.Ok);
+        });
+
+        result.Should().BeSuccess();
+        client.Logo.Should().BeNone();
+        removedLogoId.Should().Be("alogoid".ToId());
+        client.Events.Last().Should().BeOfType<LogoRemoved>();
+    }
 }

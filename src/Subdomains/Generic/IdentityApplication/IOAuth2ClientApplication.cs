@@ -6,6 +6,9 @@ namespace IdentityApplication;
 
 public interface IOAuth2ClientApplication
 {
+    Task<Result<OAuth2Client, Error>> ChangeClientLogoAsync(ICallerContext caller, string id, FileUpload upload,
+        CancellationToken cancellationToken);
+
     Task<Result<OAuth2ClientConsentResult, Error>> ConsentToClientAsync(ICallerContext caller, string clientId,
         string redirectUri, string scope, bool consented, CancellationToken cancellationToken);
 
@@ -13,6 +16,9 @@ public interface IOAuth2ClientApplication
         CancellationToken cancellationToken);
 
     Task<Result<Error>> DeleteClientAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken);
+
+    Task<Result<OAuth2Client, Error>> DeleteClientLogoAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 
     Task<Result<OAuth2ClientWithSecrets, Error>> GetClientAsync(ICallerContext caller, string id,

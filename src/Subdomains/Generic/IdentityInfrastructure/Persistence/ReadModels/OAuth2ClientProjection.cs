@@ -25,6 +25,22 @@ public class OAuth2ClientProjection : IReadModelProjection
     {
         switch (changeEvent)
         {
+            case LogoAdded e:
+                return await _clients.HandleUpdateAsync(e.RootId, dto =>
+                    {
+                        dto.LogoImageId = e.LogoId;
+                        dto.LogoUrl = e.LogoUrl;
+                    },
+                    cancellationToken);
+
+            case LogoRemoved e:
+                return await _clients.HandleUpdateAsync(e.RootId, dto =>
+                    {
+                        dto.LogoImageId = Optional<string>.None;
+                        dto.LogoUrl = Optional<string>.None;
+                    },
+                    cancellationToken);
+
             case Created e:
                 return await _clients.HandleCreateAsync(e.RootId, dto => { dto.Name = e.Name; },
                     cancellationToken);

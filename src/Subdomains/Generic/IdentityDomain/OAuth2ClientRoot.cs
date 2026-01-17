@@ -42,6 +42,8 @@ public sealed class OAuth2ClientRoot : AggregateRootBase
         _passwordHasherService = passwordHasherService;
     }
 
+    public Optional<Avatar> Logo { get; private set; }
+
     public Optional<Name> Name { get; private set; }
 
     public Optional<string> RedirectUri { get; private set; }
@@ -123,9 +125,52 @@ public sealed class OAuth2ClientRoot : AggregateRootBase
                 return Result.Ok;
             }
 
+            case LogoAdded added:
+            {
+                var logo = Avatar.Create(added.LogoId.ToId(), added.LogoUrl);
+                if (logo.IsFailure)
+                {
+                    return logo.Error;
+                }
+
+                Logo = logo.Value;
+                Recorder.TraceDebug(null, "OAuthClient {Id} added logo {Image}", Id, logo.Value.ImageId);
+                return Result.Ok;
+            }
+
+            case LogoRemoved _:
+            {
+                Logo = Optional<Avatar>.None;
+                Recorder.TraceDebug(null, "OAuthClient {Id} removed logo", Id);
+                return Result.Ok;
+            }
+
             default:
                 return HandleUnKnownStateChangedEvent(@event);
         }
+    }
+
+    public async Task<Result<Error>> ChangeLogoAsync(CreateAvatarAction onCreateNew, RemoveAvatarAction onRemoveOld)
+    {
+        var existingLogoId = Logo.HasValue
+            ? Logo.Value.ImageId.ToOptional()
+            : Optional<Identifier>.None;
+        var created = await onCreateNew(Domain.Shared.Name.Create(Name.Value.Text).Value);
+        if (created.IsFailure)
+        {
+            return created.Error;
+        }
+
+        if (existingLogoId.HasValue)
+        {
+            var removed = await onRemoveOld(existingLogoId.Value);
+            if (removed.IsFailure)
+            {
+                return removed.Error;
+            }
+        }
+
+        return RaiseChangeEvent(IdentityDomain.Events.OAuth2.Clients.LogoAdded(Id, created.Value));
     }
 
     public Result<Error> ChangeName(Name name)
@@ -179,6 +224,23 @@ public sealed class OAuth2ClientRoot : AggregateRootBase
         }
 
         return new GeneratedClientSecret(secret, expiresOn);
+    }
+
+    public async Task<Result<Error>> RemoveLogoAsync(RemoveAvatarAction onRemoveOld)
+    {
+        if (!Logo.HasValue)
+        {
+            return Result.Ok;
+        }
+
+        var logoId = Logo.Value.ImageId;
+        var removed = await onRemoveOld(logoId);
+        if (removed.IsFailure)
+        {
+            return removed.Error;
+        }
+
+        return RaiseChangeEvent(IdentityDomain.Events.OAuth2.Clients.LogoRemoved(Id, logoId));
     }
 
     public Result<Error> VerifySecret(string secret)

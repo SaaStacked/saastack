@@ -7,6 +7,10 @@ namespace IdentityApplication.Persistence.ReadModels;
 [EntityName("OAuth2Client")]
 public class OAuth2Client : ReadModelEntity
 {
+    public Optional<string> LogoImageId { get; set; }
+
+    public Optional<string> LogoUrl { get; set; }
+
     public Optional<string> Name { get; set; }
 
     public Optional<string> RedirectUri { get; set; }

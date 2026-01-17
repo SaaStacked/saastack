@@ -95,5 +95,16 @@ public static class Validations
         public static readonly Validation RefreshToken = CommonValidations.RandomToken();
 
         public static readonly Validation State = new(@"^[a-zA-Z0-9_\-\.\~]{1,500}$", 1, 500);
+
+        public static class Logo
+        {
+            public const long MaxSizeInBytes = 134_217_728; //approx 100MB
+            public static readonly IReadOnlyList<string> AllowableContentTypes =
+            [
+                "image/jpeg",
+                "image/png",
+                "image/gif"
+            ];
+        }
     }
 }

@@ -1,5 +1,7 @@
 using Application.Interfaces;
 using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
+using Application.Services.Shared;
 using Common;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
@@ -26,6 +28,7 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
     private readonly Mock<IOAuth2ClientRepository> _clientRepository;
     private readonly Mock<IOAuth2ClientConsentRepository> _consentRepository;
     private readonly Mock<IIdentifierFactory> _identifierFactory;
+    private readonly Mock<IImagesService> _imagesService;
     private readonly Mock<IPasswordHasherService> _passwordHasherService;
     private readonly Mock<IRecorder> _recorder;
     private readonly NativeIdentityServerOAuth2ClientService _service;
@@ -53,9 +56,11 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
         _passwordHasherService = new Mock<IPasswordHasherService>();
         _passwordHasherService.Setup(phs => phs.HashPassword(It.IsAny<string>()))
             .Returns((string value) => value);
+        _imagesService = new Mock<IImagesService>();
 
         _service = new NativeIdentityServerOAuth2ClientService(_recorder.Object, _identifierFactory.Object,
-            _tokensService.Object, _passwordHasherService.Object, _clientRepository.Object, _consentRepository.Object);
+            _tokensService.Object, _passwordHasherService.Object, _imagesService.Object, _clientRepository.Object,
+            _consentRepository.Object);
     }
 
     [Fact]
@@ -539,5 +544,104 @@ public class NativeIdentityServerOAuth2ClientServiceSpec
         result.Value.Id.Should().Be("anid");
         result.Value.Name.Should().Be("aclientname");
         result.Value.RedirectUri.Should().Be("aredirecturi");
+    }
+
+    [Fact]
+    public async Task WhenChangeClientLogoAsync_ThenChangesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+        var upload = new FileUpload
+        {
+            ContentType = new FileUploadContentType { MediaType = "image/png" },
+            Filename = "afilename",
+            Size = 1024,
+            Content = new MemoryStream()
+        };
+        _imagesService.Setup(svc =>
+                svc.CreateImageAsync(It.IsAny<ICallerContext>(), It.IsAny<FileUpload>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Image
+            {
+                Id = "alogoid",
+                Url = "https://localhost/logo.png",
+                Description = "aclientname",
+                Filename = "afilename",
+                ContentType = "image/png"
+            });
+
+        var result = await _service.ChangeClientLogoAsync(_caller.Object, "aclientid", upload, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.Id.Should().Be("anid");
+        result.Value.Name.Should().Be("aclientname");
+        result.Value.LogoUrl.Should().Be("https://localhost/logo.png");
+        _clientRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientRoot>(c =>
+            c.Logo.HasValue
+            && c.Logo.Value.ImageId == "alogoid".ToId()
+            && c.Logo.Value.Url == "https://localhost/logo.png"
+        ), It.IsAny<CancellationToken>()));
+        _imagesService.Verify(svc => svc.CreateImageAsync(_caller.Object, upload, "aclientname",
+            CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task WhenChangeClientLogoAsyncAndExistingLogo_ThenReplacesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        var oldLogo = Avatar.Create("anoldlogoid".ToId(), "https://localhost/oldlogo.png").Value;
+        await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(oldLogo),
+            _ => Task.FromResult(Result.Ok));
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+        var upload = new FileUpload
+        {
+            ContentType = new FileUploadContentType { MediaType = "image/png" },
+            Filename = "afilename",
+            Size = 1024,
+            Content = new MemoryStream()
+        };
+        _imagesService.Setup(svc =>
+                svc.CreateImageAsync(It.IsAny<ICallerContext>(), It.IsAny<FileUpload>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Image
+            {
+                Id = "anewlogoid",
+                Url = "https://localhost/newlogo.png",
+                Description = "aclientname",
+                Filename = "afilename",
+                ContentType = "image/png"
+            });
+
+        var result = await _service.ChangeClientLogoAsync(_caller.Object, "aclientid", upload, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.LogoUrl.Should().Be("https://localhost/newlogo.png");
+        _imagesService.Verify(svc =>
+            svc.DeleteImageAsync(_caller.Object, "anoldlogoid".ToId(), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task WhenDeleteClientLogoAsync_ThenDeletesLogo()
+    {
+        var client = OAuth2ClientRoot.Create(_recorder.Object, _identifierFactory.Object, _tokensService.Object,
+            _passwordHasherService.Object, Name.Create("aclientname").Value).Value;
+        var logo = Avatar.Create("alogoid".ToId(), "https://localhost/logo.png").Value;
+        await client.ChangeLogoAsync(_ => Task.FromResult<Result<Avatar, Error>>(logo),
+            _ => Task.FromResult(Result.Ok));
+        _clientRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(client);
+
+        var result = await _service.DeleteClientLogoAsync(_caller.Object, "aclientid", CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.LogoUrl.Should().BeNull();
+        _clientRepository.Verify(rep => rep.SaveAsync(It.Is<OAuth2ClientRoot>(c =>
+            !c.Logo.HasValue
+        ), It.IsAny<CancellationToken>()));
+        _imagesService.Verify(svc => svc.DeleteImageAsync(_caller.Object, "alogoid".ToId(), CancellationToken.None));
     }
 }

@@ -2,8 +2,10 @@ using System.Net;
 using ApiHost1;
 using Domain.Interfaces;
 using FluentAssertions;
+using Infrastructure.Web.Api.Interfaces.Clients;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
 using Infrastructure.Web.Common.Extensions;
+using Infrastructure.Web.Interfaces;
 using IntegrationTesting.WebApi.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -222,7 +224,7 @@ public class OAuth2ClientsApiSpec : WebApiSpec<Program>
                 $"?error={OAuth2Constants.ErrorCodes.AccessDenied}&error_description=The%20user%20has%20denied%20access%20to%20the%20client%20application&state=astate");
         result.Content.Value.Consent.Should().BeNull();
     }
-    
+
     [Fact]
     public async Task WhenConsentClientForCaller_ThenConsentsToClient()
     {
@@ -409,6 +411,52 @@ public class OAuth2ClientsApiSpec : WebApiSpec<Program>
         });
 
         result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task WhenChangeClientLogo_ThenChangesLogo()
+    {
+        var @operator = await LoginUserAsync(LoginUser.Operator);
+        var client = (await Api.PostAsync(new CreateOAuth2ClientRequest
+        {
+            Name = "aclientname"
+        }, req => req.SetJWTBearerToken(@operator.AccessToken))).Content.Value.Client;
+
+        var result = await Api.PutAsync(new ChangeOAuth2ClientLogoRequest
+            {
+                Id = client.Id
+            }, new PostFile(GetTestImage(), HttpConstants.ContentTypes.ImagePng),
+            req => req.SetJWTBearerToken(@operator.AccessToken));
+
+        result.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        result.Content.Value.Client.Id.Should().Be(client.Id);
+        result.Content.Value.Client.Name.Should().Be("aclientname");
+        result.Content.Value.Client.LogoUrl.Should().NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public async Task WhenDeleteClientLogo_ThenDeletesLogo()
+    {
+        var @operator = await LoginUserAsync(LoginUser.Operator);
+        var client = (await Api.PostAsync(new CreateOAuth2ClientRequest
+        {
+            Name = "aclientname"
+        }, req => req.SetJWTBearerToken(@operator.AccessToken))).Content.Value.Client;
+
+        await Api.PutAsync(new ChangeOAuth2ClientLogoRequest
+            {
+                Id = client.Id
+            }, new PostFile(GetTestImage(), HttpConstants.ContentTypes.ImagePng),
+            req => req.SetJWTBearerToken(@operator.AccessToken));
+
+        var result = await Api.DeleteAsync(new DeleteOAuth2ClientLogoRequest
+        {
+            Id = client.Id
+        }, req => req.SetJWTBearerToken(@operator.AccessToken));
+
+        result.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        result.Content.Value.Client.Id.Should().Be(client.Id);
+        result.Content.Value.Client.LogoUrl.Should().BeNull();
     }
 
     private static void OverrideDependencies(IServiceCollection services)
