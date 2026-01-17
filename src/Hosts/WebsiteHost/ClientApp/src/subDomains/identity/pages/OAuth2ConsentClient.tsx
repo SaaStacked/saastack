@@ -12,7 +12,6 @@ import PageAction, { PageActionRef } from '../../../framework/components/page/Pa
 import { ConsentOAuth2ClientAction } from '../actions/consentOAuth2Client.ts';
 import { GetOAuth2ClientConsentAction } from '../actions/GetOAuth2ClientConsent.ts';
 
-
 export const OAuth2ConsentClientPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const [searchParams] = useSearchParams();

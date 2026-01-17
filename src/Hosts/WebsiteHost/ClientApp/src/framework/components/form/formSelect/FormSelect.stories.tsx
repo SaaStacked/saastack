@@ -7,7 +7,6 @@ import FormAction from '../FormAction.tsx';
 import FormSubmitButton from '../formSubmitButton/FormSubmitButton.tsx';
 import FormSelect from './FormSelect';
 
-
 const meta: Meta<typeof FormSelect> = {
   title: 'Components/Form/FormSelect',
   component: FormSelect,

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './Tabs.tsx';
 
-
 const meta: Meta<typeof Tabs> = {
   title: 'Components/Navigation/Tabs',
   component: Tabs,

@@ -7,7 +7,6 @@ import { createComponentId, toClasses } from '../Components';
 import { BusyLabelRevertAfterMs } from '../form/formSubmitButton/FormSubmitButton.tsx';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
 
-
 export interface ButtonActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
   className?: string;
   id?: string;

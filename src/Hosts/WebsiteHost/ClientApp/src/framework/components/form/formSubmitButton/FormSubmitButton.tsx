@@ -6,7 +6,6 @@ import Button from '../../button/Button';
 import { createComponentId } from '../../Components.ts';
 import { FormActionContext } from '../FormActionContexts.tsx';
 
-
 export const BusyLabelRevertAfterMs = 2000;
 
 interface FormSubmitButtonProps {

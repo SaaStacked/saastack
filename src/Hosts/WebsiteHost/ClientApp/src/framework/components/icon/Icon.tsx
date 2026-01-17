@@ -53,7 +53,6 @@ import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons/faPeopleGroup';
 import { createComponentId, toClasses } from '../Components.ts';
 import { TailwindColor } from '../typography/Tailwind.ts';
 
-
 interface IconProps {
   className?: string;
   id?: string;

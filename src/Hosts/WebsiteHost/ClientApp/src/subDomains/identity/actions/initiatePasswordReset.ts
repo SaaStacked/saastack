@@ -1,5 +1,9 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
-import { initiatePasswordReset, InitiatePasswordResetRequest, InitiatePasswordResetResponse } from '../../../framework/api/apiHost1';
+import {
+  initiatePasswordReset,
+  InitiatePasswordResetRequest,
+  InitiatePasswordResetResponse
+} from '../../../framework/api/apiHost1';
 
 
 export enum InitiatePasswordResetErrors {

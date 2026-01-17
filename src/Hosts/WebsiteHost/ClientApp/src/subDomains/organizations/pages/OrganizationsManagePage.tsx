@@ -21,7 +21,6 @@ import { ListAllMembershipsAction } from '../../endUsers/actions/listAllMembersh
 import { GetOrganizationAction, OrganizationErrorCodes } from '../actions/getOrganization.ts';
 import { formatFeatureName, formatRoleName, TenantRoles } from './Organizations.ts';
 
-
 export const OrganizationsManagePage: React.FC = () => {
   const { t: translate } = useTranslation();
   const { refetch: refetchCurrentUser } = useCurrentUser();

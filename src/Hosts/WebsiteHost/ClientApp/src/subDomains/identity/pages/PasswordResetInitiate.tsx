@@ -9,7 +9,6 @@ import FormSubmitButton from '../../../framework/components/form/formSubmitButto
 import { RoutePaths } from '../../../framework/constants.ts';
 import { InitiatePasswordResetAction, InitiatePasswordResetErrors } from '../actions/initiatePasswordReset.ts';
 
-
 export const PasswordResetRequestPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const initiateReset = InitiatePasswordResetAction();

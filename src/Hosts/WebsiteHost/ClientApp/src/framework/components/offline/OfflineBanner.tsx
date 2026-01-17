@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useOfflineService } from '../../providers/OfflineServiceContext.tsx';
 import { toClasses } from '../Components.ts';
 
-
 export const animationDurationInMs = 2000;
 
 // Creates a full screen banner when the browser is offline

@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Alert from './Alert';
 
-
 describe('Alert', () => {
   it('when no message and no children are provided, renders nothing', () => {
     const { container } = render(<Alert id="anid" />);

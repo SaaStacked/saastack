@@ -18,7 +18,6 @@ import {
   validatePKCEParametersFromStorage
 } from '../utils/OAuth2Security.ts';
 
-
 interface SsoLoginPageProps {
   providerId: string;
   providerName: string;

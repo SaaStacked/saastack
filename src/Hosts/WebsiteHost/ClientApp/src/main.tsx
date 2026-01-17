@@ -8,7 +8,6 @@ import { initializeApiClient } from './framework/api';
 import { AppProviders } from './framework/providers/AppProviders.tsx';
 import { recorder } from './framework/recorder.ts';
 
-
 initializeApiClient();
 
 if (window.isTestingOnly) {

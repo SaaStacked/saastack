@@ -2,7 +2,6 @@ import React, { AllHTMLAttributes } from 'react';
 import { createComponentId, toClasses } from '../Components';
 import Icon from '../icon/Icon.tsx';
 
-
 type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
 
 export interface InputProps {

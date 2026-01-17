@@ -2,7 +2,6 @@ import { AwsRecorder } from './recorders/awsRecorder';
 import { AzureRecorder } from './recorders/azureRecorder';
 import { NoOpRecorder } from './recorders/noOpRecorder';
 
-
 const IgnoreTraceDebugInProduction: boolean = true;
 
 export interface Recorder {

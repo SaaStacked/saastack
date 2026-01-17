@@ -4,7 +4,6 @@ import Select, { SelectOption } from '../../select/Select.tsx';
 import { FormActionRequiredFieldsContext } from '../FormActionContexts.tsx';
 import { useFormValidation } from '../FormValidation.ts';
 
-
 export interface FormSelectProps {
   className?: string;
   id: string;

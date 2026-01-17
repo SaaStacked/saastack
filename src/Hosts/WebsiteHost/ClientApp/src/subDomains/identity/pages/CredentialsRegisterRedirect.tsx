@@ -5,7 +5,6 @@ import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Icon from '../../../framework/components/icon/Icon.tsx';
 import { RoutePaths } from '../../../framework/constants.ts';
 
-
 export const CredentialsRegisterRedirect: React.FC = () => {
   const { t: translate } = useTranslation();
   return (

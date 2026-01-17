@@ -5,7 +5,6 @@ import { ProblemDetails } from '../../api/apiHost1';
 import { createComponentId } from '../Components.ts';
 import Tag from '../tag/Tag.tsx';
 
-
 interface UnhandledErrorProps {
   id?: string;
   error?: ErrorResponse;

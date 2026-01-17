@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import Select from './Select';
 
-
 const mockOptions = [
   { value: 'anoption1', label: 'avalue1' },
   { value: 'anoption2', label: 'avalue2' },

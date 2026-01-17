@@ -1,7 +1,6 @@
 import React from 'react';
 import { createComponentId, toClasses } from '../Components';
 
-
 export interface LoaderProps {
   id?: string;
   message: string;

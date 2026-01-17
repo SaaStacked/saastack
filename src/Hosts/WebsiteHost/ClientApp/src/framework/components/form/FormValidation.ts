@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FormActionValidationContext } from './FormActionContexts.tsx';
 
-
 // A hook that begins validation based on the ancestor Form's validatesWhen.
 // It keeps track of whether the field has been validated, and whether it has an error.
 // Allows components to communicate with an ancestor Form via useFormContext() and useContext(), to fetch the validation state.

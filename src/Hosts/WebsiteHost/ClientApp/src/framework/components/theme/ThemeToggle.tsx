@@ -1,6 +1,5 @@
 import { useTheme } from '../../providers/ThemeContext.tsx';
 
-
 // Creates a control to toggle the theme from light to dark
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

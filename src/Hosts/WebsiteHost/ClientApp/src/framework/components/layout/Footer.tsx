@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { RoutePaths } from '../../constants.ts';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
-
 // Creates a footer at the bottom of the layout
 // Defines a set of links and tools
 export const Footer: React.FC = () => {

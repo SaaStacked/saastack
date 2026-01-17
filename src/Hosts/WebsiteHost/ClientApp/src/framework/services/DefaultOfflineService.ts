@@ -1,6 +1,5 @@
 import { IOfflineService } from './IOfflineService';
 
-
 export const PeriodicCheckIntervalInMs = 60000; //every minute
 
 export class DefaultOfflineService implements IOfflineService {

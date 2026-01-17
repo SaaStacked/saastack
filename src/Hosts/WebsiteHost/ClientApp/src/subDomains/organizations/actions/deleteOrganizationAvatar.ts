@@ -3,7 +3,6 @@ import { deleteOrganizationAvatar, DeleteOrganizationAvatarResponse } from '../.
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import organizationCacheKeys from './responseCache.ts';
 
-
 export const DeleteOrganizationAvatarAction = (id: string) =>
   useActionCommand<EmptyRequest, DeleteOrganizationAvatarResponse>({
     request: (_request) =>

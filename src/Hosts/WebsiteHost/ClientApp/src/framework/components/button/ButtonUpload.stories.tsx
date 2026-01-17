@@ -3,7 +3,6 @@ import React from 'react';
 import { action } from 'storybook/actions';
 import ButtonUpload from './ButtonUpload.tsx';
 
-
 const meta: Meta<typeof ButtonUpload> = {
   title: 'Components/Button/ButtonUpload',
   component: ButtonUpload,

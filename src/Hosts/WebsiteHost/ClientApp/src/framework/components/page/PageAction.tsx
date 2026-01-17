@@ -6,7 +6,6 @@ import { createComponentId } from '../Components';
 import Loader from '../loader/Loader.tsx';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
 
-
 export interface PageActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
   id?: string;
   children?: React.ReactNode;

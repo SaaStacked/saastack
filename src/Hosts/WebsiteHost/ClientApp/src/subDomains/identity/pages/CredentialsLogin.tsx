@@ -9,7 +9,6 @@ import FormSubmitButton from '../../../framework/components/form/formSubmitButto
 import { RoutePaths } from '../../../framework/constants.ts';
 import { LoginCredentialsAction, LoginCredentialsErrors } from '../actions/loginCredentials.ts';
 
-
 export const CredentialsLoginPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const login = LoginCredentialsAction();

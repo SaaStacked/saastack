@@ -2,7 +2,6 @@ import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../../framework/api/websiteHost';
 import { LocalStorageKeys, RoutePaths } from '../../../framework/constants.ts';
 
-
 export enum LoginCredentialsErrors {
   account_locked = 'account_locked',
   account_unverified = 'account_unverified',

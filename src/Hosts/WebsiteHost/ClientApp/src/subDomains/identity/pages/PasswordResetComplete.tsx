@@ -15,7 +15,6 @@ import { RoutePaths } from '../../../framework/constants.ts';
 import { CompletePasswordResetAction, CompletePasswordResetErrors } from '../actions/completePasswordReset.ts';
 import { VerifyPasswordResetAction, VerifyPasswordResetErrors } from '../actions/verifyPasswordReset.ts';
 
-
 export const PasswordResetCompletePage: React.FC = () => {
   const { t: translate } = useTranslation();
   const [queryString] = useSearchParams();

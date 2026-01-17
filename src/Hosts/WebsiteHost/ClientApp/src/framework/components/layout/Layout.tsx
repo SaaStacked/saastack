@@ -7,7 +7,6 @@ import { BrandBar } from '../navigation/BrandBar.tsx';
 import { MainMenu } from '../navigation/MainMenu.tsx';
 import { Footer } from './Footer.tsx';
 
-
 interface LayoutProps {
   children: React.ReactNode;
 }

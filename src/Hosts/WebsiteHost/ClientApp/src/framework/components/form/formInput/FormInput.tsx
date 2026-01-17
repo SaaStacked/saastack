@@ -4,7 +4,6 @@ import Input from '../../input/Input';
 import { FormActionRequiredFieldsContext } from '../FormActionContexts.tsx';
 import { useFormValidation } from '../FormValidation.ts';
 
-
 export interface FormInputProps {
   className?: string;
   id: string;

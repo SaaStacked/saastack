@@ -4,7 +4,6 @@ import * as React from 'react';
 import { AppProviders } from '../providers/AppProviders';
 import { IOfflineService } from '../services/IOfflineService.ts';
 
-
 interface TestAppProvidersProps {
   children?: React.ReactNode;
   queryClient?: QueryClient;

@@ -1,6 +1,5 @@
 import { Recorder, SeverityLevel } from '../recorder';
 
-
 export class NoOpRecorder implements Recorder {
   // @ts-ignore
   crash(error: Error, message?: string): void {

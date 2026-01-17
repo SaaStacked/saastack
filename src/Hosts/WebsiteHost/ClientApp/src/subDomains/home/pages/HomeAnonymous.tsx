@@ -4,7 +4,6 @@ import Button from '../../../framework/components/button/Button.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import { RoutePaths } from '../../../framework/constants.ts';
 
-
 export function HomeAnonymousPage() {
   const { t: translate } = useTranslation();
   return (

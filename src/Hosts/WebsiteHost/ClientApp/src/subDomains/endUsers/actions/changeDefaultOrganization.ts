@@ -1,5 +1,9 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
-import { changeDefaultOrganizationPatch, ChangeDefaultOrganizationPatchResponse, ChangeDefaultOrganizationRequest } from '../../../framework/api/apiHost1';
+import {
+  changeDefaultOrganizationPatch,
+  ChangeDefaultOrganizationPatchResponse,
+  ChangeDefaultOrganizationRequest
+} from '../../../framework/api/apiHost1';
 import endUserCacheKeys from './responseCache';
 
 

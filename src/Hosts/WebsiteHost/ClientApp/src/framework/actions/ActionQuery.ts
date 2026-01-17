@@ -6,7 +6,6 @@ import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
-
 export interface ActionQueryConfiguration<
   TRequestData = any,
   ExpectedErrorCode extends string = '',

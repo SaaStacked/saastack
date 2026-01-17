@@ -1,7 +1,6 @@
 import { recordCrash, recordPageView, recordTrace, recordUse } from '../api/websiteHost';
 import { Recorder, SeverityLevel } from '../recorder';
 
-
 const SkipDebugTracesInTestingOnly: boolean = true;
 
 interface BrowserRecorderOptions {

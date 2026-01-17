@@ -3,7 +3,6 @@ import { createComponentId, toClasses } from '../Components.ts';
 import Icon, { IconSymbol } from '../icon/Icon';
 import { TailwindColor } from '../typography/Tailwind.ts';
 
-
 interface AlertProps {
   id?: string;
   children?: ReactNode;

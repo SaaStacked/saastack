@@ -130,4 +130,3 @@ export const countryTimezones: Record<string, string> = {
   'Africa/Lagos': 'NG',
   'Africa/Casablanca': 'MA'
 };
-

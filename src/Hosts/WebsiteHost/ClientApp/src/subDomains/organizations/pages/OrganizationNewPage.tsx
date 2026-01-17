@@ -11,7 +11,6 @@ import { RoutePaths } from '../../../framework/constants.ts';
 import { LogoutAction } from '../../identity/actions/logout.ts';
 import { CreateOrganizationAction, CreateOrganizationErrors } from '../actions/createOrganization.ts';
 
-
 export const OrganizationNewPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const { execute: logout } = LogoutAction();

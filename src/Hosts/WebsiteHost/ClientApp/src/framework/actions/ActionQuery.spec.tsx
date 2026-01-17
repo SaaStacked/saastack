@@ -9,7 +9,6 @@ import { useActionCommand } from './ActionCommand.ts';
 import { useActionQuery } from './ActionQuery';
 import { ApiResponse } from './Actions.ts';
 
-
 interface UntenantedRequestData {
   name?: string;
   value?: string;

@@ -2,7 +2,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import Button from '../button/Button.tsx';
 import Alert from './Alert';
 
-
 export default {
   title: 'Components/Alert',
   component: Alert,

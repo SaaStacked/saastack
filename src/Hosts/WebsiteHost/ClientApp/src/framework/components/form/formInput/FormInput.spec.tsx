@@ -9,7 +9,6 @@ import Button from '../../button/Button.tsx';
 import { FormActionRequiredFieldsContext, FormActionValidationContext } from '../FormActionContexts.tsx';
 import FormInput from './FormInput';
 
-
 vi.mock('../../Components.ts', async (importActual) => {
   const actualImpl = await importActual<typeof import('../../Components.ts')>();
   return {

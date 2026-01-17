@@ -92,7 +92,7 @@ export const getParseAs = (
   }
 
   if (
-    ['application/', 'audio/', 'image/', 'video/'].some((type) =>
+    ['application/', 'audio/', 'image/', 'video/'].some( type =>
       cleanContent.startsWith(type),
     )
   ) {
@@ -163,7 +163,7 @@ export const setAuthParams = async ({
   }
 };
 
-export const buildUrl: Client['buildUrl'] = (options) =>
+export const buildUrl: Client['buildUrl'] = options =>
   getUrl({
     baseUrl: options.baseUrl as string,
     path: options.path,
@@ -186,9 +186,7 @@ export const mergeConfigs = (a: Config, b: Config): Config => {
 
 const headersEntries = (headers: Headers): Array<[string, string]> => {
   const entries: Array<[string, string]> = [];
-  headers.forEach((value, key) => {
-    entries.push([key, value]);
-  });
+  headers.forEach((value, key) => entries.push([key, value]));
   return entries;
 };
 
@@ -218,7 +216,7 @@ export const mergeHeaders = (
         // content value in OpenAPI specification is 'application/json'
         mergedHeaders.set(
           key,
-          typeof value === 'object' ? JSON.stringify(value) : (value as string),
+          typeof value === 'object' ? JSON.stringify(value) : value as string,
         );
       }
     }

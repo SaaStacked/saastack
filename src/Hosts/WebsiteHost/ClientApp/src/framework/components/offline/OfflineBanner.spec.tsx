@@ -5,7 +5,6 @@ import { OfflineServiceContext } from '../../providers/OfflineServiceContext.tsx
 import { IOfflineService } from '../../services/IOfflineService.ts';
 import { animationDurationInMs, OfflineBanner } from './OfflineBanner';
 
-
 describe('OfflineBanner', () => {
   const mockOfflineService: IOfflineService = {
     status: 'online',

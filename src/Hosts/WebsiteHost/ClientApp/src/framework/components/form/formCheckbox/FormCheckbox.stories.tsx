@@ -7,7 +7,6 @@ import FormAction from '../FormAction.tsx';
 import FormSubmitButton from '../formSubmitButton/FormSubmitButton.tsx';
 import FormCheckbox from './FormCheckbox';
 
-
 const meta: Meta<typeof FormCheckbox> = {
   title: 'Components/Form/FormCheckbox',
   component: FormCheckbox,

@@ -3,7 +3,6 @@ import { deleteProfileAvatar, DeleteProfileAvatarResponse } from '../../../frame
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import userProfileCacheKeys from './responseCache.ts';
 
-
 export const DeleteProfileAvatarAction = (userId: string) =>
   useActionCommand<EmptyRequest, DeleteProfileAvatarResponse>({
     request: (_request) =>

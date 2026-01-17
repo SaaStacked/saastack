@@ -3,7 +3,6 @@ import { EmptyResponse } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import { logout } from '../../../framework/api/websiteHost';
 
-
 export const LogoutAction = () =>
   useActionCommand<EmptyRequest, EmptyResponse>({
     request: () => logout(),

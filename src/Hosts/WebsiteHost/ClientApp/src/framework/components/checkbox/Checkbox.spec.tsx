@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import Checkbox from './Checkbox';
 
-
 describe('Checkbox', () => {
   it('renders with default props', () => {
     render(<Checkbox label="alabel" />);

@@ -2,7 +2,6 @@ import React from 'react';
 import { createComponentId, toClasses } from '../Components.ts';
 import Icon from '../icon/Icon.tsx';
 
-
 export interface UploadButtonProps {
   className?: string;
   id?: string;

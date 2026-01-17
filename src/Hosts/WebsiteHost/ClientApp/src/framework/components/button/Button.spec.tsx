@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import { renderWithTestingProviders } from '../../testing/TestingProviders.tsx';
 import Button from './Button';
 
-
 describe('Button', () => {
   it('renders with default props', () => {
     renderWithTestingProviders(<Button>Click me</Button>);

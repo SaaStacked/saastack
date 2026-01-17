@@ -7,7 +7,6 @@ import { RoutePaths } from '../../constants.ts';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import Icon from '../icon/Icon.tsx';
 
-
 interface NavigationProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (value: boolean) => void;

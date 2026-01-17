@@ -4,7 +4,6 @@ import { OfflineServiceContext } from '../../providers/OfflineServiceContext.tsx
 import { IOfflineService } from '../../services/IOfflineService.ts';
 import { OfflineBanner } from './OfflineBanner';
 
-
 const meta: Meta<typeof OfflineBanner> = {
   title: 'Components/OfflineBanner',
   component: OfflineBanner,

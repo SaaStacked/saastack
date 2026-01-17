@@ -2,7 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult, ErrorResponse } from '../../../framework/actions/Actions.ts';
-import { ConfirmPersonCredentialRegistrationRequest, ConfirmPersonCredentialRegistrationResponse, ResendPersonCredentialRegistrationConfirmationRequest, ResendPersonCredentialRegistrationConfirmationResponse } from '../../../framework/api/apiHost1';
+import {
+  ConfirmPersonCredentialRegistrationRequest,
+  ConfirmPersonCredentialRegistrationResponse,
+  ResendPersonCredentialRegistrationConfirmationRequest,
+  ResendPersonCredentialRegistrationConfirmationResponse
+} from '../../../framework/api/apiHost1';
 import { ConfirmPersonCredentialRegistrationErrors } from '../actions/confirmPersonCredentialRegistration.ts';
 import { CredentialsRegisterConfirm } from './CredentialsRegisterConfirm';
 

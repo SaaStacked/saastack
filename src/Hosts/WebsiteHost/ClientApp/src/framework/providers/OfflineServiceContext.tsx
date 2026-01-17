@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react';
 import { DefaultOfflineService } from '../services/DefaultOfflineService.ts';
 import { IOfflineService } from '../services/IOfflineService.ts';
 
-
 interface OfflineServiceProps {
   children: React.ReactNode;
   offlineService?: IOfflineService;

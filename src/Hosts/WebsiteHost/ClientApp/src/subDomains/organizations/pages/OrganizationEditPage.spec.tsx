@@ -13,7 +13,6 @@ import { renderWithTestingProviders } from '../../../framework/testing/TestingPr
 import { OrganizationEditPage } from './OrganizationEditPage';
 import { TenantRoles } from './Organizations';
 
-
 // Mock data
 const mockOrganization = {
   id: 'anorganizationid1',

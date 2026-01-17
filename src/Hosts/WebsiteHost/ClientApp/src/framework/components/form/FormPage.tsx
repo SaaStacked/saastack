@@ -1,7 +1,6 @@
 import React from 'react';
 import { createComponentId, toClasses } from '../Components';
 
-
 export interface CardProps {
   className?: string;
   id?: string;

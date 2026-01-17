@@ -5,7 +5,6 @@ import { client as apiHost1 } from './apiHost1/client.gen';
 import { logout, ProblemDetails, refreshToken } from './websiteHost';
 import { client as websiteHost } from './websiteHost/client.gen';
 
-
 const unRetryableRequestUrls: string[] = ['/api/auth/refresh', '/api/auth'];
 
 // This function sets up the appropriate request headers and handlers,

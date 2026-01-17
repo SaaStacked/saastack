@@ -1,7 +1,6 @@
 import { SeverityLevel } from '../recorder';
 import { BrowserRecorder } from './browserRecorder';
 
-
 interface AwsRecorderOptions {
   ignoreDebug?: boolean;
 }

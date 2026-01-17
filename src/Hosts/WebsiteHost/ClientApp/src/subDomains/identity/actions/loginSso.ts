@@ -3,7 +3,6 @@ import { authenticate, AuthenticateRequest, AuthenticateResponse } from '../../.
 import { RoutePaths } from '../../../framework/constants.ts';
 import { cleanupStoredPKCEParameters } from '../utils/OAuth2Security.ts';
 
-
 export enum LoginSsoErrors {
   unauthorized = 'unauthorized'
 }

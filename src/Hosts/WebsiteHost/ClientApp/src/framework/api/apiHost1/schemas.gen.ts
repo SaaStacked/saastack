@@ -2480,6 +2480,9 @@ export const OAuth2ClientSchema = {
     ],
     type: 'object',
     properties: {
+        logoUrl: {
+            type: 'string'
+        },
         name: {
             type: 'string'
         },
@@ -2569,6 +2572,9 @@ export const OAuth2ClientWithSecretSchema = {
     ],
     type: 'object',
     properties: {
+        logoUrl: {
+            type: 'string'
+        },
         name: {
             type: 'string'
         },
@@ -2597,6 +2603,9 @@ export const OAuth2ClientWithSecretsSchema = {
     ],
     type: 'object',
     properties: {
+        logoUrl: {
+            type: 'string'
+        },
         name: {
             type: 'string'
         },

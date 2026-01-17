@@ -2,7 +2,6 @@ import React from 'react';
 import { createComponentId, toClasses } from '../Components.ts';
 import { TailwindColorName } from '../typography/Tailwind.ts';
 
-
 export interface TagProps {
   className?: string;
   id?: string;

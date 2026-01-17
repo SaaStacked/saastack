@@ -1,6 +1,5 @@
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
-
 vi.mock('../recorder.ts', async (importActual) => {
   const actualImpl = await importActual<typeof import('../recorder.ts')>();
 

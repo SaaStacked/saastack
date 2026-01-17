@@ -3,7 +3,6 @@ import Checkbox from '../../checkbox/Checkbox.tsx';
 import { createComponentId, toClasses } from '../../Components.ts';
 import { useFormValidation } from '../FormValidation.ts';
 
-
 interface FormCheckboxProps {
   className?: string;
   id: string;

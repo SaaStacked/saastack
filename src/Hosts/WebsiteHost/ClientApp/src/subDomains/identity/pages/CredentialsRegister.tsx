@@ -11,7 +11,6 @@ import { RoutePaths } from '../../../framework/constants.ts';
 import { getBrowserCountry, getBrowserLocale, getBrowserTimezone } from '../../../framework/utils/browser.ts';
 import { RegisterCredentialsAction } from '../actions/registerCredentials.ts';
 
-
 export const CredentialsRegisterPage: React.FC = () => {
   const { t: translate } = useTranslation();
   const register = RegisterCredentialsAction();

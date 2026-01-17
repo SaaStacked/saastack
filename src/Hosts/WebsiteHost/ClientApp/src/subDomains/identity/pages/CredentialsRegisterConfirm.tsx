@@ -17,7 +17,6 @@ import {
 } from '../actions/confirmPersonCredentialRegistration.ts';
 import { ResendPersonCredentialRegistrationConfirmationAction } from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
 
-
 export const CredentialsRegisterConfirm: React.FC = () => {
   const { t: translate } = useTranslation();
   const [queryString] = useSearchParams();

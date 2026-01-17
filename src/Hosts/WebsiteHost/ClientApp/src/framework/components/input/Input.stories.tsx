@@ -105,7 +105,7 @@ export const FullWidth: Story = {
     label: 'Full Width Input',
     placeholder: 'This input takes full width',
     fullWidth: true
-  },
+  }
 };
 
 export const AllTypes: Story = {
@@ -118,5 +118,5 @@ export const AllTypes: Story = {
       <Input label="Telephone" type="tel" placeholder="Phone number" />
       <Input label="URL" type="url" placeholder="Website URL" />
     </div>
-  ),
+  )
 };

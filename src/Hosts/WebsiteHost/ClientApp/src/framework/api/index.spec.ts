@@ -5,7 +5,6 @@ import { client as apiHost1 } from './apiHost1/client.gen';
 import { initializeApiClient } from './index';
 import { logout, refreshToken } from './websiteHost';
 
-
 type ResInterceptor<Res, Req, Options> = (response: Res, request: Req, options: Options) => Res | Promise<Res>;
 
 vi.mock('../api/websiteHost/sdk.gen', async (importActual) => {

@@ -2,7 +2,6 @@ import { SeverityLevel as AISeverityLevel, ApplicationInsights } from '@microsof
 import { SeverityLevel } from '../recorder';
 import { BrowserRecorder } from './browserRecorder';
 
-
 const appInsightsKey = import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTIONSTRING;
 const applicationInsightsEnabled = import.meta.env.MODE === 'production';
 

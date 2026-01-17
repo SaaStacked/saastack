@@ -8,6 +8,7 @@ import { CurrentUserProvider } from './CurrentUserContext';
 import { OfflineServiceProvider } from './OfflineServiceContext.tsx';
 import { ThemeProvider } from './ThemeContext.tsx';
 
+
 export const QueryClientDefaultCacheTimeInMs: number = 10000;
 
 interface AppProvidersProps {
@@ -31,7 +32,7 @@ export function AppProviders({
       defaultOptions: {
         queries: {
           staleTime: QueryClientDefaultCacheTimeInMs // all data is automatically invalidated after 10 seconds
-        },
+        }
       }
     });
 

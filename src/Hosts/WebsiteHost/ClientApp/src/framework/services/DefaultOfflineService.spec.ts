@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { DefaultOfflineService, PeriodicCheckIntervalInMs } from './DefaultOfflineService';
 
-
 global.fetch = vi.fn();
 global.setInterval = vi.fn();
 global.clearInterval = vi.fn();

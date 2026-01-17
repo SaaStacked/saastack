@@ -3,7 +3,6 @@ import { getOrganization, GetOrganizationResponse, Organization } from '../../..
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import organizationCacheKeys from './responseCache';
 
-
 export enum OrganizationErrorCodes {
   forbidden = 'forbidden'
 }

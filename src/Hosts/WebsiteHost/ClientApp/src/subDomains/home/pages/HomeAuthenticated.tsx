@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 
-
 export function HomeAuthenticatedPage() {
   const { t: translate } = useTranslation();
   return (
