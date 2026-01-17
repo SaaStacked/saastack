@@ -15,10 +15,10 @@ interface AlertProps {
 type AlertType = 'info' | 'error' | 'warning' | 'success';
 
 const BorderColors = {
-  error: 'border-red-600 dark:border-red-400',
-  success: 'border-green-600 dark:border-green-400',
-  warning: 'border-yellow-600 dark:border-yellow-400',
-  info: 'border-blue-600 dark:border-blue-400'
+  error: 'border-error-600 dark:border-error-400',
+  success: 'border-success-600 dark:border-success-400',
+  warning: 'border-warning-600 dark:border-warning-400',
+  info: 'border-info-600 dark:border-info-400'
 } as const;
 
 const Icons = {
@@ -28,32 +28,32 @@ const Icons = {
   info: 'info-circle-fill'
 } as const;
 
-const IconColors = {
-  error: 'red-600',
-  success: 'green-600',
-  warning: 'yellow-600',
-  info: 'blue-600'
-} as const;
-
 const BackgroundColors = {
-  error: 'bg-red-100 dark:bg-red-900/20',
-  success: 'bg-green-100 dark:bg-green-900/20',
-  warning: 'bg-yellow-100 dark:bg-yellow-900/20',
-  info: 'bg-blue-100 dark:bg-blue-900/20'
+  error: 'bg-error-100 dark:bg-error-900/20',
+  success: 'bg-success-100 dark:bg-success-900/20',
+  warning: 'bg-warning-100 dark:bg-warning-900/20',
+  info: 'bg-info-100 dark:bg-info-900/20'
 } as const;
 
-const TextColors = {
-  error: 'text-red-800 dark:text-red-200',
-  success: 'text-green-800 dark:text-green-200',
-  warning: 'text-yellow-800 dark:text-yellow-200',
-  info: 'text-blue-800 dark:text-blue-200'
+const IconColors = {
+  error: 'error-600',
+  success: 'success-600',
+  warning: 'warning-600',
+  info: 'info-600'
 } as const;
 
 const TitleColors = {
-  error: 'red-600',
-  success: 'green-600',
-  warning: 'yellow-600',
-  info: 'blue-600'
+  error: 'text-error-600 dark:text-error-200',
+  success: 'text-success-600 dark:text-success-200',
+  warning: 'text-warning-600 dark:text-warning-200',
+  info: 'text-info-600 dark:text-info-200'
+} as const;
+
+const TextColors = {
+  error: 'text-error-800 dark:text-error-200',
+  success: 'text-success-800 dark:text-success-200',
+  warning: 'text-warning-800 dark:text-warning-200',
+  info: 'text-info-800 dark:text-info-200'
 } as const;
 
 // Creates an inline alert to display a title and a message
@@ -81,15 +81,15 @@ export default function Alert({ id, children, type = 'info', title, message }: A
         </div>
         <div className="flex-1 mb-3">
           {title ? (
-            <h3 className={`text-base font-semibold mb-2 text-${titleColor}`} data-testid={`${componentId}_title`}>
+            <h1 className={`mt-1 mb-2 text-base font-semibold ${titleColor}`} data-testid={`${componentId}_title`}>
               {title}
-            </h3>
+            </h1>
           ) : (
-            <div className="h-3"></div>
+            <div className="h-1"></div>
           )}
           <div className="text-xs">
             {message && (
-              <span data-testid={`${componentId}_message`} className={`text-${textColor}`}>
+              <span data-testid={`${componentId}_message`} className={textColor}>
                 {message}
               </span>
             )}

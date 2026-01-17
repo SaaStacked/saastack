@@ -52,22 +52,20 @@ export const CredentialsLoginPage: React.FC = () => {
           placeholder={translate('pages.identity.credentials_login.form.fields.password.placeholder')}
           autoComplete="current-password"
         />
-        <FormSubmitButton label={translate('pages.identity.credentials_login.form.submit.label')} />
-      </FormAction>
-      <div className="text-center">
-        <p>
+        <div className="text-right">
           <Link to={RoutePaths.PasswordReset}>
             {translate('pages.identity.credentials_login.links.forgot_password')}
           </Link>
-        </p>
+        </div>
+        <FormSubmitButton label={translate('pages.identity.credentials_login.form.submit.label')} />
+      </FormAction>
+      <div className="text-center">
         <p>
           {translate('pages.identity.credentials_login.links.register.question')}{' '}
           <Link to={RoutePaths.Register}>{translate('pages.identity.credentials_login.links.register.text')}</Link>
         </p>
         <p>
-          <Link to={RoutePaths.Home} className="btn btn-secondary">
-            {translate('pages.identity.credentials_login.links.home')}
-          </Link>
+          <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_login.links.home')}</Link>
         </p>
       </div>
     </FormPage>

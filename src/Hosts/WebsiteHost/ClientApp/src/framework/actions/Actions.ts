@@ -2,7 +2,6 @@ import { useCurrentUser } from '../providers/CurrentUserContext.tsx';
 import { recorder } from '../recorder.ts';
 import { ExpectedErrorDetails } from './ApiErrorState.ts';
 
-
 export interface ErrorResponse {
   data: unknown | undefined;
   response: Response;

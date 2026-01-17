@@ -186,8 +186,8 @@ describe('ButtonUpload', () => {
     const label = screen.getByTestId('anid_upload_button');
     expect(label).toHaveClass(
       'cursor-pointer',
-      'bg-blue-500',
-      'hover:bg-blue-600',
+      'bg-brand-primary-600',
+      'hover:bg-brand-primary-700',
       'text-white',
       'p-2',
       'rounded-full',

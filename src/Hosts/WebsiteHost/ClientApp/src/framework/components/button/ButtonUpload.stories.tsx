@@ -57,11 +57,11 @@ export const Interactive: Story = {
   },
   render: (args) => (
     <div className="space-y-4">
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-neutral-600">
         Click the upload button to select an image file. Check the console and Actions tab for file details.
       </div>
       <ButtonUpload {...args} />
-      <div className="text-xs text-gray-500">Accepts: JPEG, PNG, GIF images only</div>
+      <div className="text-xs text-neutral-500">Accepts: JPEG, PNG, GIF images only</div>
     </div>
   )
 };
@@ -94,18 +94,18 @@ export const WithFilePreview: Story = {
     return (
       <div className="space-y-4">
         <div className="text-center">
-          <div className="w-32 h-32 mx-auto border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center relative overflow-hidden">
+          <div className="w-32 h-32 mx-auto border-2 border-dashed border-neutral-300 rounded-lg flex items-center justify-center relative overflow-hidden">
             {previewUrl ? (
               <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-gray-400 text-sm">No image</span>
+              <span className="text-neutral-400 text-sm">No image</span>
             )}
             <div className="absolute bottom-2 right-2">
               <ButtonUpload id="preview-upload" onFileChange={handleFileChange} />
             </div>
           </div>
           {selectedFile && (
-            <div className="mt-2 text-xs text-gray-600">
+            <div className="mt-2 text-xs text-neutral-600">
               {selectedFile.name} ({Math.round(selectedFile.size / 1024)}KB)
             </div>
           )}

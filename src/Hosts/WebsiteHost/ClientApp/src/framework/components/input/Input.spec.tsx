@@ -58,7 +58,7 @@ describe('Input', () => {
 
     const input = screen.getByRole('textbox');
     expect(input).toBeDisabled();
-    expect(input).toHaveClass('disabled:opacity-50', 'disabled:cursor-not-allowed');
+    expect(input).toHaveClass('disabled:opacity-60', 'disabled:cursor-not-allowed');
   });
 
   it('handles required state correctly', () => {
@@ -73,16 +73,16 @@ describe('Input', () => {
     render(<Input errorMessage="anerrormessage" />);
 
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-red-300', 'focus:border-red-500');
+    expect(input).toHaveClass('border-error', 'focus:border-error');
     expect(screen.getByText('anerrormessage')).toBeInTheDocument();
-    expect(screen.getByText('anerrormessage')).toHaveClass('text-red-600');
+    expect(screen.getByText('anerrormessage')).toHaveClass('text-error');
   });
 
   it('shows help text when provided', () => {
     render(<Input hintText="ahint" />);
 
     expect(screen.getByText('ahint')).toBeInTheDocument();
-    expect(screen.getByText('ahint')).toHaveClass('text-gray-500');
+    expect(screen.getByText('ahint')).toHaveClass('text-neutral-500');
   });
 
   it('prioritizes error message over help text', () => {

@@ -13,7 +13,6 @@ import FormInput from './formInput/FormInput.tsx';
 import FormSelect from './formSelect/FormSelect.tsx';
 import FormSubmitButton from './formSubmitButton/FormSubmitButton';
 
-
 const meta: Meta<typeof FormAction> = {
   title: 'Components/Form/FormAction',
   component: FormAction,

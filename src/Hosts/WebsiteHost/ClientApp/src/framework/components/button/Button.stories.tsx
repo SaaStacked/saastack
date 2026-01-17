@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from './Button';
 
+
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
@@ -14,7 +15,7 @@ const meta: Meta<typeof Button> = {
     },
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'outline', 'ghost', 'danger']
+      options: ['brand-primary', 'brand-secondary', 'outline', 'ghost', 'danger']
     },
     size: {
       control: { type: 'select' },
@@ -38,8 +39,8 @@ type Story = StoryObj<typeof meta>;
 export const AllVariants: Story = {
   render: () => (
     <div className="grid grid-cols-3 gap-16 max-w-2xl">
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
+      <Button variant="brand-primary">Brand Primary</Button>
+      <Button variant="brand-secondary">Brand Secondary</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="danger">Danger</Button>
@@ -49,20 +50,20 @@ export const AllVariants: Story = {
       <Button busy>Loading</Button>
       <Button disabled>Disabled</Button>
     </div>
-  ),
+  )
 };
 
 export const Primary: Story = {
   args: {
     label: 'Button',
-    variant: 'primary'
+    variant: 'brand-primary'
   }
 };
 
 export const Secondary: Story = {
   args: {
     label: 'Button',
-    variant: 'secondary'
+    variant: 'brand-secondary'
   }
 };
 
@@ -119,5 +120,5 @@ export const FullWidth: Story = {
   args: {
     label: 'Button',
     fullWidth: true
-  },
+  }
 };

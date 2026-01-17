@@ -1,5 +1,6 @@
 import React, { AllHTMLAttributes } from 'react';
 import { createComponentId, toClasses } from '../Components';
+import Icon from '../icon/Icon.tsx';
 
 
 type HTMLInputProps = AllHTMLAttributes<HTMLInputElement>;
@@ -54,8 +55,8 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       lg: 'w-6 h-6 text-base'
     };
     const stateClasses = errorMessage
-      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-      : 'border-gray-300 focus:border-primary focus:ring-primary';
+      ? 'border-error focus:border-error focus:ring-error'
+      : 'border-neutral-300 focus:border-brand-primary focus:ring-brand-primary';
     const widthClass = fullWidth ? 'w-full' : '';
     const classes = toClasses([baseClasses, sizeClasses[size], stateClasses, widthClass, className]);
     const componentId = createComponentId('checkbox', id);
@@ -82,7 +83,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               {...props}
             />
             <label
-              className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-400 flex-1 w-full"
+              className="ml-2 text-sm font-medium text-neutral-700 dark:text-neutral-400 flex-1 w-full"
               data-testid={`${componentId}_label`}
               htmlFor={componentId}
               aria-labelledby={componentId}
@@ -92,9 +93,10 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           </div>
           <div className="mt-1 h-12 flex items-start w-full overflow-hidden">
             {errorMessage && (
-              <p className="mt-1 text-sm text-red-600 break-words" data-testid={`${componentId}_error`}>
+              <div className="mt-1 pl-1 text-xs text-error break-words" data-testid={`${componentId}_error`}>
+                <Icon className="pr-1" size={12} color="error" symbol="exclamation-circle" />
                 {errorMessage}
-              </p>
+              </div>
             )}
           </div>
         </div>

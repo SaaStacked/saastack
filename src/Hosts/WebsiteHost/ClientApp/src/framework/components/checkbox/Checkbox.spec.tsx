@@ -61,9 +61,9 @@ describe('Checkbox', () => {
     render(<Checkbox label="alabel" errorMessage="anerrormessage" />);
 
     const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toHaveClass('border-red-300', 'focus:border-red-500');
+    expect(checkbox).toHaveClass('border-error', 'focus:border-error');
     expect(screen.getByText('anerrormessage')).toBeInTheDocument();
-    expect(screen.getByText('anerrormessage')).toHaveClass('text-red-600');
+    expect(screen.getByText('anerrormessage')).toHaveClass('text-error');
   });
 
   it('handles change events', () => {

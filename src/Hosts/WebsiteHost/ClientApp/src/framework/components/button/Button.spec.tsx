@@ -10,17 +10,17 @@ describe('Button', () => {
     renderWithTestingProviders(<Button>Click me</Button>);
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass('bg-primary', 'text-white');
+    expect(button).toHaveClass('bg-brand-primary', 'text-white');
   });
 
-  it('when primary, then renders', () => {
-    renderWithTestingProviders(<Button variant="primary">Primary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-primary');
+  it('when brand-primary, then renders', () => {
+    renderWithTestingProviders(<Button variant="brand-primary">brand-primary</Button>);
+    expect(screen.getByRole('button')).toHaveClass('bg-brand-primary');
   });
 
-  it('when secondary, then renders', () => {
-    renderWithTestingProviders(<Button variant="secondary">Secondary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-secondary');
+  it('when brand-secondary, then renders', () => {
+    renderWithTestingProviders(<Button variant="brand-secondary">Secondary</Button>);
+    expect(screen.getByRole('button')).toHaveClass('bg-brand-secondary');
   });
 
   it('when outline, then renders', () => {
@@ -30,19 +30,19 @@ describe('Button', () => {
 
   it('when ghost, then renders', () => {
     renderWithTestingProviders(<Button variant="ghost">Ghost</Button>);
-    expect(screen.getByRole('button')).toHaveClass('text-gray-700');
+    expect(screen.getByRole('button')).toHaveClass('text-neutral-700');
   });
 
   it('when danger, then renders', () => {
     renderWithTestingProviders(<Button variant="danger">Danger</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-red-600');
+    expect(screen.getByRole('button')).toHaveClass('bg-red-700');
   });
 
   it('handles disabled state correctly', () => {
     renderWithTestingProviders(<Button disabled>Disabled</Button>);
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
-    expect(button).toHaveClass('disabled:opacity-50', 'disabled:cursor-not-allowed');
+    expect(button).toHaveClass('disabled:opacity-60', 'disabled:cursor-not-allowed');
   });
 
   it('handles loading state correctly', () => {

@@ -10,7 +10,7 @@ export function ThemeToggle() {
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label="Toggle theme"
       title={`Toggle ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className="p-2 rounded-md bg-gray-500 dark:bg-gray-500 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+      className="p-2 rounded-md bg-neutral-500 dark:bg-neutral-500 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-600"
     >
       {theme === 'dark' ? '☀️' : '🌙'}
     </button>

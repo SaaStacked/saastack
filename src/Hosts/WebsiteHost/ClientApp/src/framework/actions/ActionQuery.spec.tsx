@@ -2,12 +2,13 @@ import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import React, { act } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EmptyResponse } from '../api/apiHost1';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
+import { useActionCommand } from './ActionCommand.ts';
 import { useActionQuery } from './ActionQuery';
 import { ApiResponse } from './Actions.ts';
-import { EmptyResponse } from '../api/apiHost1';
-import { useActionCommand } from './ActionCommand.ts';
+
 
 interface UntenantedRequestData {
   name?: string;
@@ -63,9 +64,7 @@ describe('useActionQuery', () => {
 
   describe('given a successful untenanted request', () => {
     const mockSuccessfulRequest = vi.fn(
-      async (
-        _requestData: UntenantedRequestData
-      ): Promise<ApiResponse<TestResponse>> => {
+      async (_requestData: UntenantedRequestData): Promise<ApiResponse<TestResponse>> => {
         // Add a small delay to test loading states
         await new Promise((resolve) => setTimeout(resolve, 50));
         return {
@@ -135,9 +134,7 @@ describe('useActionQuery', () => {
 
   describe('given a successful tenanted request', () => {
     const mockSuccessfulRequest = vi.fn(
-      async (
-        _requestData: UntenantedRequestData
-      ): Promise<ApiResponse<TestResponse>> => {
+      async (_requestData: UntenantedRequestData): Promise<ApiResponse<TestResponse>> => {
         // Add a small delay to test loading states
         await new Promise((resolve) => setTimeout(resolve, 50));
         return {
@@ -230,14 +227,13 @@ describe('useActionQuery', () => {
         errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       };
       const mockFailedRequest = vi.fn(
-        async (
-          _requestData: UntenantedRequestData
-        ):Promise<ApiResponse<EmptyResponse>> => Promise.reject({
-          data: undefined,
-           error,
-          request: {} as Request,
-          response: { ok: false, status: 400 } as Response
-        })
+        async (_requestData: UntenantedRequestData): Promise<ApiResponse<EmptyResponse>> =>
+          Promise.reject({
+            data: undefined,
+            error,
+            request: {} as Request,
+            response: { ok: false, status: 400 } as Response
+          })
       );
 
       const anyAction = () =>
@@ -276,14 +272,13 @@ describe('useActionQuery', () => {
         errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       };
       const mockFailedRequest = vi.fn(
-        async (
-          _requestData: UntenantedRequestData
-        ):Promise<ApiResponse<EmptyResponse>> => Promise.resolve({
-          data: undefined,
-           error,
-          request: {} as Request,
-          response: { ok: false, status: 400 } as Response
-        })
+        async (_requestData: UntenantedRequestData): Promise<ApiResponse<EmptyResponse>> =>
+          Promise.resolve({
+            data: undefined,
+            error,
+            request: {} as Request,
+            response: { ok: false, status: 400 } as Response
+          })
       );
 
       const anyAction = () =>
@@ -324,10 +319,7 @@ describe('useActionQuery', () => {
     it('when rejects JavaScript error, then return unexpected error', async () => {
       const error = new Error('anerror');
       const mockFailedRequest = vi.fn(
-        async (
-          _requestData: UntenantedRequestData
-        ):Promise<ApiResponse<EmptyResponse>> =>
-          Promise.reject(error)
+        async (_requestData: UntenantedRequestData): Promise<ApiResponse<EmptyResponse>> => Promise.reject(error)
       );
 
       const action = () =>
@@ -364,12 +356,10 @@ describe('useActionQuery', () => {
         errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       };
       const mockFailedRequest = vi.fn(
-        async (
-          _requestData: UntenantedRequestData
-        ):Promise<ApiResponse<EmptyResponse>> =>
+        async (_requestData: UntenantedRequestData): Promise<ApiResponse<EmptyResponse>> =>
           Promise.reject({
             data: undefined,
-             error,
+            error,
             request: {} as Request,
             response: { ok: false, status: 500 } as Response
           })
@@ -380,7 +370,7 @@ describe('useActionQuery', () => {
           request: mockFailedRequest,
           isTenanted: false,
           transform: (x) => x,
-          cacheKey: ['acachekey'],
+          cacheKey: ['acachekey']
         });
 
       const { result } = renderHook(() => anyAction(), {
@@ -408,11 +398,9 @@ describe('useActionQuery', () => {
         errors: [{ rule: 'arule', reason: 'areason', value: 'avalue' }]
       };
       const mockFailedRequest = vi.fn(
-        async (
-          _requestData: UntenantedRequestData
-        ):Promise<ApiResponse<EmptyResponse>> => ({
+        async (_requestData: UntenantedRequestData): Promise<ApiResponse<EmptyResponse>> => ({
           data: undefined,
-           error,
+          error,
           request: {} as Request,
           response: { ok: false, status: 500 } as Response
         })
@@ -423,7 +411,7 @@ describe('useActionQuery', () => {
           request: mockFailedRequest,
           isTenanted: false,
           transform: (x) => x,
-          cacheKey: ['acachekey'],
+          cacheKey: ['acachekey']
         });
 
       const { result } = renderHook(() => anyAction(), {

@@ -10,7 +10,13 @@ import PageAction, { PageActionRef } from '../../../framework/components/page/Pa
 import { RoutePaths } from '../../../framework/constants.ts';
 import { recorder } from '../../../framework/recorder.ts';
 import { LoginSsoAction, LoginSsoErrors } from '../actions/loginSso.ts';
-import { generateCodeChallenge, generateCodeVerifier, generateOAuth2State, storePKCEParameters, validatePKCEParametersFromStorage } from '../utils/OAuth2Security.ts';
+import {
+  generateCodeChallenge,
+  generateCodeVerifier,
+  generateOAuth2State,
+  storePKCEParameters,
+  validatePKCEParametersFromStorage
+} from '../utils/OAuth2Security.ts';
 
 
 interface SsoLoginPageProps {
@@ -166,9 +172,7 @@ function HandleAuthorizationError({ translate, providerName, oAuth2Error, oAuth2
           title={translate('pages.identity.sso_login.errors.oauth2', { provider: providerName, error })}
           message={oAuth2ErrorDescription}
         />
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.sso_login.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.sso_login.links.home')}</Link>
       </div>
     </FormPage>
   );
@@ -206,9 +210,7 @@ function HandleAuthentication({
               })}
               message={errorMessage}
             />
-            <Link to={RoutePaths.Home} className="btn btn-secondary">
-              {translate('pages.identity.sso_login.links.home')}
-            </Link>
+            <Link to={RoutePaths.Home}>{translate('pages.identity.sso_login.links.home')}</Link>
           </div>
         </FormPage>
       );
@@ -244,9 +246,7 @@ function HandleAuthentication({
         ref={authenticateTrigger}
       />
       <div className="text-center space-y-4">
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.sso_login.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.sso_login.links.home')}</Link>
       </div>
     </FormPage>
   );

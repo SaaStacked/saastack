@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './Tabs.tsx';
 
+
 const meta: Meta<typeof Tabs> = {
   title: 'Components/Navigation/Tabs',
   component: Tabs,
@@ -30,7 +31,7 @@ export const Default: Story = {
         id: 'dashboard',
         label: 'Dashboard',
         content: (
-          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Dashboard Content</h3>
             <p>This is the dashboard tab content. It shows when the dashboard tab is active.</p>
           </div>
@@ -40,7 +41,7 @@ export const Default: Story = {
         id: 'settings',
         label: 'Settings',
         content: (
-          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Settings Content</h3>
             <p>This is the settings tab content. Configure your preferences here.</p>
           </div>
@@ -50,7 +51,7 @@ export const Default: Story = {
         id: 'profile',
         label: 'Profile',
         content: (
-          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Profile Content</h3>
             <p>This is the profile tab content. View and edit your profile information.</p>
           </div>
@@ -120,7 +121,7 @@ export const RealWorldExample: Story = {
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Request for Service</h2>
             <p className="mb-4">Create and manage service requests.</p>
-            <button className="px-4 py-2 bg-primary text-white rounded-md">New Request</button>
+            <button className="px-4 py-2 bg-brand-primary text-white rounded-md">New Request</button>
           </div>
         )
       },

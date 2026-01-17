@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
 /*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 /*noinspection CssInvalidAtRule*/
@@ -7,35 +7,146 @@
 /*noinspection CssInvalidAtRule*/
 @theme {
     --font-sans: 'Noto Sans', system-ui;
-    --color-primary: var(--color-blue-600);
-    --color-primary-light: var(--color-blue-500);
-    --color-primary-dark: var(--color-blue-700);
-    --color-secondary: var(--color-slate-600);
-    --color-secondary-light: var(--color-slate-500);
-    --color-secondary-dark: var(--color-slate-700);
-    --color-accent: var(--color-emerald-500);
-    --color-accent-light: var(--color-emerald-200);
-    --color-accent-dark: var(--color-emerald-800);
+
+    /*
+    We define some specific semantic colors and map them to tailwind colors.
+    EXTEND: Modify the base tailwind colors to suit your needs.
+     */
+    --color-brand-primary: var(--color-emerald-500);
+    --color-brand-primary-50: var(--color-emerald-50);
+    --color-brand-primary-100: var(--color-emerald-100);
+    --color-brand-primary-200: var(--color-emerald-200);
+    --color-brand-primary-300: var(--color-emerald-300);
+    --color-brand-primary-400: var(--color-emerald-400);
+    --color-brand-primary-500: var(--color-emerald-500);
+    --color-brand-primary-600: var(--color-emerald-600);
+    --color-brand-primary-700: var(--color-emerald-700);
+    --color-brand-primary-800: var(--color-emerald-800);
+    --color-brand-primary-900: var(--color-emerald-900);
+    --color-brand-primary-950: var(--color-emerald-950);
+
+    --color-brand-secondary: var(--color-slate-500);
+    --color-brand-secondary-50: var(--color-slate-50);
+    --color-brand-secondary-100: var(--color-slate-100);
+    --color-brand-secondary-200: var(--color-slate-200);
+    --color-brand-secondary-300: var(--color-slate-300);
+    --color-brand-secondary-400: var(--color-slate-400);
+    --color-brand-secondary-500: var(--color-slate-500);
+    --color-brand-secondary-600: var(--color-slate-600);
+    --color-brand-secondary-700: var(--color-slate-700);
+    --color-brand-secondary-800: var(--color-slate-800);
+    --color-brand-secondary-900: var(--color-slate-900);
+    --color-brand-secondary-950: var(--color-slate-950);
+
+    /* Anything that needs a gray/neutral tone (i.e. text colors, borders, disabled, etc.) */
+    --color-neutral: #737373FF;
+    --color-neutral-50: #FAFAFAFF;
+    --color-neutral-100: #F5F5F5FF;
+    --color-neutral-200: #E5E5E5FF;
+    --color-neutral-300: #D4D4D4FF;
+    --color-neutral-400: #A1A1A1FF;
+    --color-neutral-500: #737373FF;
+    --color-neutral-600: #525252FF;
+    --color-neutral-700: #404040FF;
+    --color-neutral-800: #262626FF;
+    --color-neutral-900: #171717FF;
+    --color-neutral-950: #0A0A0AFF;
+
+    /* UI Info states */
+    --color-info: var(--color-slate-500);
+    --color-info-50: var(--color-slate-50);
+    --color-info-100: var(--color-slate-100);
+    --color-info-200: var(--color-slate-200);
+    --color-info-300: var(--color-slate-300);
+    --color-info-400: var(--color-slate-400);
+    --color-info-500: var(--color-slate-500);
+    --color-info-600: var(--color-slate-600);
+    --color-info-700: var(--color-slate-700);
+    --color-info-800: var(--color-slate-800);
+    --color-info-900: var(--color-slate-900);
+    --color-info-950: var(--color-slate-950);
+
+    /* UI Error states */
+    --color-error: var(--color-red-500);
+    --color-error-50: var(--color-red-50);
+    --color-error-100: var(--color-red-100);
+    --color-error-200: var(--color-red-200);
+    --color-error-300: var(--color-red-300);
+    --color-error-400: var(--color-red-400);
+    --color-error-500: var(--color-red-500);
+    --color-error-600: var(--color-red-600);
+    --color-error-700: var(--color-red-700);
+    --color-error-800: var(--color-red-800);
+    --color-error-900: var(--color-red-900);
+    --color-error-950: var(--color-red-950);
+
+    /* UI Success states */
+    --color-success: var(--color-green-500);
+    --color-success-50: var(--color-green-50);
+    --color-success-100: var(--color-green-100);
+    --color-success-200: var(--color-green-200);
+    --color-success-300: var(--color-green-300);
+    --color-success-400: var(--color-green-400);
+    --color-success-500: var(--color-green-500);
+    --color-success-600: var(--color-green-600);
+    --color-success-700: var(--color-green-700);
+    --color-success-800: var(--color-green-800);
+    --color-success-900: var(--color-green-900);
+    --color-success-950: var(--color-green-950);
+
+    /* UI Warning states */
+    --color-warning: var(--color-amber-500);
+    --color-warning-50: var(--color-amber-50);
+    --color-warning-100: var(--color-amber-100);
+    --color-warning-200: var(--color-amber-200);
+    --color-warning-300: var(--color-amber-300);
+    --color-warning-400: var(--color-amber-400);
+    --color-warning-500: var(--color-amber-500);
+    --color-warning-600: var(--color-amber-600);
+    --color-warning-700: var(--color-amber-700);
+    --color-warning-800: var(--color-amber-800);
+    --color-warning-900: var(--color-amber-900);
+    --color-warning-950: var(--color-amber-950);
 }
 
 /*noinspection CssInvalidAtRule*/
 @variant dark (&:is(.dark *));
 
 @layer base {
-    /* Default light theme */
+
     :root {
         color-scheme: light;
-        background-color: var(--color-gray-200);
-        color: var(--color-gray-900);
+        background-color: var(--color-white);
+        color: var(--color-neutral-900);
     }
 
     .dark {
         color-scheme: dark;
-        background-color: var(--color-gray-900);
-        color: var(--color-gray-50);
+        background-color: var(--color-neutral-900);
+        color: var(--color-neutral-50);
+    }
+
+    body {
+        @apply font-sans antialiased;
     }
 
     a {
-        @apply text-primary hover:text-primary/80 visited:text-purple-400 dark:visited:text-purple-300 underline;
+        @apply text-brand-primary-600 hover:text-brand-primary-700 visited:text-brand-secondary-600 dark:visited:text-brand-secondary-400 underline;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-medium text-brand-primary-900 dark:text-brand-primary-100;
+    }
+
+    h1 {
+        @apply text-3xl;
+    }
+
+    h2 {
+        @apply text-2xl;
+    }
+
+    h3 {
+        @apply text-xl;
     }
 }

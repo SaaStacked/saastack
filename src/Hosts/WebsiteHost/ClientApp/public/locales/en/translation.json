@@ -93,7 +93,7 @@
       },
       "home_authenticated": {
         "links": {
-          "search_cars": "Find a Car",
+          "search_cars": "Search Cars",
           "reserve_car": "Reserve Car"
         }
       }
@@ -553,12 +553,13 @@
       "new": {
         "title": "New Organization",
         "links": {
-          "organizations": "Back to Organizations"
+          "organizations": "Back to Organizations",
+          "logout": "Logout"
         },
         "messages": {
           "confirmation": {
             "title": "Organization Created",
-            "message": "Your organization has been created, but you will first need to logout and sign in again to access it."
+            "message": "Your organization has been created, but you will first need to <1>{{logout}}</1> and then sign back in to access it."
           }
         },
         "errors": {

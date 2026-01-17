@@ -15,7 +15,7 @@ export const CredentialsRegisterRedirect: React.FC = () => {
       </h2>
       <p>{translate('pages.identity.credentials_register_redirect.confirmation_message.message')}</p>
       <div className="flex justify-center">
-        <Icon symbol="email" size={96} color="accent" />
+        <Icon symbol="email" size={96} color="brand-secondary" />
       </div>
       <h3 className="text-2xl font-bold text-center mt-4">
         {translate('pages.identity.credentials_register_redirect.instructions.title')}:
@@ -31,9 +31,7 @@ export const CredentialsRegisterRedirect: React.FC = () => {
         <p>{translate('pages.identity.credentials_register_redirect.troubleshoot.answer')}</p>
       </div>
       <div className="text-center">
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.credentials_register_redirect.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_register_redirect.links.home')}</Link>
       </div>
     </FormPage>
   );

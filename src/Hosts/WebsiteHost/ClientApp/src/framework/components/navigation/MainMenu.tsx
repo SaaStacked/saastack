@@ -40,7 +40,7 @@ export const MainMenu: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-b-accent">
+    <nav className="bg-white dark:bg-neutral-800 shadow-sm border-b border-neutral-200 dark:border-neutral-700">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2">
@@ -124,16 +124,16 @@ function MobileDropdownMenu({ isMobileMenuOpen, setIsMobileMenuOpen, navItems, i
   return (
     <>
       {isMobileMenuOpen && (
-        <div className="md:hidden pb-4 border-t border-gray-200 dark:border-gray-600">
+        <div className="md:hidden pb-4 border-t border-neutral-200 dark:border-neutral-600">
           <div className="flex flex-col space-y-2 pt-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                className={`px-3 py-2 text-sm font-medium transition-colors rounded-md ${
                   isActive(item.path)
-                    ? 'text-primary dark:text-primary-light bg-blue-50 dark:bg-blue-900/20'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-brand-primary-700 dark:text-brand-primary-400 bg-brand-primary-50 dark:bg-brand-primary-900/20'
+                    : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -152,13 +152,13 @@ function BrandText({ translate }: NavigationProps) {
     <>
       <Link to={RoutePaths.Home} className="hidden md:flex items-center space-x-2 no-underline hover:no-underline">
         <img src="/images/logo.png" alt={translate('components.navigation.main_menu.logo')} className="w-8 h-8" />
-        <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
+        <span className="font-bold text-xl text-neutral-900 dark:text-neutral-100">
           {translate('components.navigation.main_menu.logo')}
         </span>
       </Link>
 
       <Link to={RoutePaths.Home} className="md:hidden no-underline hover:no-underline">
-        <span className="font-bold text-xl text-gray-900 dark:text-gray-100">
+        <span className="font-medium text-xl text-neutral-900 dark:text-neutral-100">
           {translate('components.navigation.main_menu.logo')}
         </span>
       </Link>
@@ -177,7 +177,7 @@ function DesktopNavLinks({ navItems, isActive }: NavigationProps) {
             className={`px-3 py-2 text-sm font-medium transition-colors ${
               isActive(item.path)
                 ? 'text-primary dark:text-primary-light border-b-2 border-primary dark:border-primary-light'
-                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100'
             }`}
           >
             {item.label}
@@ -205,47 +205,48 @@ function UserAvatar({
       <div className="relative">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="flex items-center space-x-2 p-2 rounded-full hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-all duration-150"
         >
           {profile.avatarUrl ? (
             <img
-              className="w-10 h-10 rounded-full border-1 object-cover border-gray-200 dark:border-gray-600"
+              className="w-10 h-10 rounded-full border-1 object-cover border-neutral-200 dark:border-neutral-600"
               src={profile.avatarUrl}
               alt={displayName}
             />
           ) : (
-            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-              <span className="text-md font-medium text-white">{avatarLetter}</span>
+            <div className="w-8 h-8 bg-brand-primary-600 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium text-white">{avatarLetter}</span>
             </div>
           )}
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-600 z-50">
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-md shadow-lg border border-neutral-200 dark:border-neutral-600 z-50">
             <div className="py-1">
               <Link
+                className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors rounded-md mx-1"
                 to={RoutePaths.UserProfile}
-                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
                 {translate('components.navigation.main_menu.links.profile')}
               </Link>
               <Link
+                className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors rounded-md mx-1"
                 to={RoutePaths.Organizations}
-                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(false)}
               >
                 {translate('components.navigation.main_menu.links.organizations')}
               </Link>
-              <button
+              <Link
+                className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors rounded-md mx-1"
+                to={RoutePaths.Home}
                 onClick={() => {
                   setIsDropdownOpen(false);
                   logout();
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {translate('components.navigation.main_menu.links.logout')}
-              </button>
+              </Link>
             </div>
           </div>
         )}
@@ -264,10 +265,15 @@ function OrganizationAvatar({ organization }: { organization?: Organization }) {
         <img
           src={avatarUrl}
           alt={orgName}
-          className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600"
+          className="w-10 h-10 rounded-full object-cover border border-neutral-200 dark:border-neutral-600"
         />
       ) : (
-        <Icon className="w-10 h-10 rounded-full object-cover bg-gray-200" symbol="company" size={36} color="gray-400" />
+        <Icon
+          className="w-10 h-10 rounded-full object-cover bg-neutral-200"
+          symbol="company"
+          size={36}
+          color="neutral-400"
+        />
       )}
     </Link>
   );

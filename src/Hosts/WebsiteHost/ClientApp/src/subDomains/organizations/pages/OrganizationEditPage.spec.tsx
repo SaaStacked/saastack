@@ -3,7 +3,12 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult } from '../../../framework/actions/Actions';
-import { ChangeOrganizationPatchResponse, ChangeOrganizationRequest, OrganizationOwnership, UserProfileClassification } from '../../../framework/api/apiHost1';
+import {
+  ChangeOrganizationPatchResponse,
+  ChangeOrganizationRequest,
+  OrganizationOwnership,
+  UserProfileClassification
+} from '../../../framework/api/apiHost1';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
 import { OrganizationEditPage } from './OrganizationEditPage';
 import { TenantRoles } from './Organizations';
@@ -77,7 +82,7 @@ const mockListMembersAction: ActionResult<any, any, any> = {
   lastRequestValues: undefined
 };
 
-const mockChangeOrganizationAction: ActionResult<ChangeOrganizationRequest, any,ChangeOrganizationPatchResponse> = {
+const mockChangeOrganizationAction: ActionResult<ChangeOrganizationRequest, any, ChangeOrganizationPatchResponse> = {
   execute: vi.fn(),
   isSuccess: false,
   lastSuccessResponse: undefined,
@@ -233,7 +238,7 @@ describe('OrganizationEditPage', () => {
   it('renders page title', () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
 
-    expect(screen.getByText('pages.organizations.edit.title')).toBeInTheDocument();
+    expect(screen.getByText('anorganizationname')).toBeInTheDocument();
   });
 
   it('renders all tabs', () => {
@@ -260,7 +265,7 @@ describe('Details Tab', () => {
 
     expect(screen.getByDisplayValue('anorganizationname')).toBeInTheDocument();
   });
-  
+
   it('when change name, updates organization', async () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
     expect(screen.getByText('pages.organizations.edit.tabs.details.title')).toBeInTheDocument();
@@ -269,9 +274,7 @@ describe('Details Tab', () => {
     fireEvent.change(nameInput, { target: { value: 'anewname' } });
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.details.form.submit.label'));
 
-    await waitFor(() =>
-      expect(mockChangeOrganizationAction.execute).toHaveBeenCalled()
-    );
+    await waitFor(() => expect(mockChangeOrganizationAction.execute).toHaveBeenCalled());
   });
 });
 
@@ -302,9 +305,7 @@ describe('Members Tab', () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.title'));
 
-    expect(
-      screen.queryByText('pages.organizations.edit.tabs.members.invite_form.toggle.show')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('pages.organizations.edit.tabs.members.invite_form.toggle.show')).not.toBeInTheDocument();
   });
 });
 
@@ -344,12 +345,12 @@ describe('Member card', () => {
         classification: UserProfileClassification.PERSON
       }
     ];
-    
+
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.title'));
 
     await waitFor(() => expect(screen.getByText('afirstname1 alastname1')).toBeInTheDocument());
-    
+
     expect(screen.getByTestId('member_icon_icon_symbol_user')).toBeInTheDocument();
   });
 
@@ -379,11 +380,11 @@ describe('Invite form', () => {
     mockListMembersAction.isSuccess = true;
     mockListMembersAction.lastSuccessResponse = mockMembers;
   });
-  
+
   it('when click invite button, shows invite form', async () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.title'));
-    
+
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.invite_form.toggle.show'));
 
     await waitFor(() =>
@@ -397,7 +398,7 @@ describe('Invite form', () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.title'));
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.invite_form.toggle.show'));
-    
+
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.members.invite_form.toggle.cancel'));
 
     await waitFor(() =>

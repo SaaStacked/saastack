@@ -25,7 +25,7 @@ const meta: Meta<typeof ButtonAction> = {
     },
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'outline', 'ghost', 'danger']
+      options: ['brand-primary', 'brand-secondary', 'outline', 'ghost', 'danger']
     },
     busyLabel: {
       control: 'text'

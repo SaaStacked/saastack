@@ -110,10 +110,10 @@ export function useActionQuery<
         }
 
         if (onSuccess) {
-          const requestData = currentRequestDataRef.current ?? {} as TRequestData;
+          const requestData = currentRequestDataRef.current ?? ({} as TRequestData);
           onSuccess(
             requestData,
-            response.data ?? {} as TTransformedResponse,
+            response.data ?? ({} as TTransformedResponse),
             response.response.status,
             response.response.headers
           );

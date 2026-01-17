@@ -1,5 +1,6 @@
 import React, { AllHTMLAttributes } from 'react';
 import { createComponentId, toClasses } from '../Components';
+import Icon from '../icon/Icon.tsx';
 
 
 type HTMLSelectProps = AllHTMLAttributes<HTMLSelectElement>;
@@ -58,15 +59,15 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     ref
   ) => {
     const baseClasses =
-      'w-full border-0 rounded-sm bg-gray-100 dark:bg-gray-800 outline-none text-sm text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-500 dark:placeholder-gray-400';
+      'w-full border-0 rounded-sm bg-neutral-100 dark:bg-neutral-900 outline-none text-sm text-neutral-900 dark:text-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed placeholder-neutral-500 dark:placeholder-neutral-400';
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'p-0 text-sm',
       lg: 'px-4 py-3 text-base'
     };
     const stateClasses = errorMessage
-      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-      : 'border-gray-300 focus:border-primary focus:ring-primary';
+      ? 'border-error focus:border-error focus:ring-error'
+      : 'border-neutral-300 focus:border-brand-primary focus:ring-brand-primary';
     const widthClass = fullWidth ? 'w-full' : '';
     const classes = toClasses([baseClasses, sizeClasses[size], stateClasses, widthClass, className]);
     const componentId = createComponentId('select', id);
@@ -76,18 +77,18 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       <div className={`flex flex-col gap-1`} data-testid={`${componentId}_wrapper`}>
         <div className="flex flex-col">
           <div
-            className={`border rounded-sm p-3 transition-colors ${errorMessage ? 'border-red-300 focus-within:border-red-500' : 'border-gray-300 focus-within:border-primary'}`}
+            className={`border rounded-sm p-3 transition-colors ${errorMessage ? 'border-error focus-within:border-error-700' : 'border-neutral-300 focus-within:border-brand-primary'}`}
           >
             {labelText && (
               <label
-                className={`block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1`}
+                className={`block text-xs font-medium text-neutral-700 dark:text-neutral-400 mb-1`}
                 data-testid={`${componentId}_label`}
                 htmlFor={componentId}
                 aria-labelledby={componentId}
               >
                 {`${labelText}:`}
                 {required && (
-                  <span className="text-red-500 ml-1" data-testid={`${componentId}_required`}>
+                  <span className="text-error ml-1" data-testid={`${componentId}_required`}>
                     *
                   </span>
                 )}
@@ -121,12 +122,13 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           </div>
           <div className="mt-1 h-6 flex items-start">
             {errorMessage && (
-              <p className="text-xs text-red-600 break-words" data-testid={`${componentId}_error`}>
+              <div className="text-xs text-error break-words" data-testid={`${componentId}_error`}>
+                <Icon className="pr-1" size={12} color="error" symbol="exclamation-circle" />
                 {errorMessage}
-              </p>
+              </div>
             )}
             {hintText && !errorMessage && (
-              <p className="text-xs text-gray-500 break-words" data-testid={`${componentId}_hint`}>
+              <p className="text-xs text-neutral-500 break-words" data-testid={`${componentId}_hint`}>
                 {hintText}
               </p>
             )}

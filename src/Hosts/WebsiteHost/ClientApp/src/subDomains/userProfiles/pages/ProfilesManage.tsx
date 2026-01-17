@@ -87,22 +87,22 @@ const AccountTab: React.FC<{
   const { t: translate } = useTranslation();
   return (
     <div className="space-y-6">
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+      <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
               {translate('pages.profiles.manage.tabs.account.form.fields.display_name.label')}
             </label>
-            <p className="text-gray-900 dark:text-gray-100">{currentProfile.displayName}</p>
+            <p className="text-neutral-900 dark:text-neutral-100">{currentProfile.displayName}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
               {translate('pages.profiles.manage.tabs.account.form.fields.email_address.label')}
             </label>
-            <p className="text-gray-900 dark:text-gray-100">{initialProfile.emailAddress}</p>
+            <p className="text-neutral-900 dark:text-neutral-100">{initialProfile.emailAddress}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
               {translate('pages.profiles.manage.tabs.account.form.fields.roles.label')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -114,13 +114,13 @@ const AccountTab: React.FC<{
                 <Tag
                   className="text-xs"
                   label={translate('pages.profiles.manage.tabs.account.form.fields.roles.empty')}
-                  color="gray"
+                  color="neutral"
                 />
               )}
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
               {translate('pages.profiles.manage.tabs.account.form.fields.features.label')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -132,7 +132,7 @@ const AccountTab: React.FC<{
                 <Tag
                   className="text-xs"
                   label={translate('pages.profiles.manage.tabs.account.form.fields.features.empty')}
-                  color="gray"
+                  color="neutral"
                 />
               )}
             </div>
@@ -169,11 +169,11 @@ const ProfileTab: React.FC<{
     <>
       <div className="mb-6">
         <div className="flex flex-col items-center">
-          <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700  flex items-center justify-center">
+          <div className="w-40 h-40 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700  flex items-center justify-center">
             {currentProfile.avatarUrl ? (
               <img className="w-full h-full  object-cover" src={currentProfile.avatarUrl} alt={displayName} />
             ) : (
-              <span className="text-gray-400 text-5xl leading-none" data-testid="avatar_letter">
+              <span className="text-neutral-400 text-5xl leading-none" data-testid="avatar_letter">
                 {avatarLetter}
               </span>
             )}

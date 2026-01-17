@@ -52,9 +52,7 @@ export const PasswordResetRequestPage: React.FC = () => {
           </Link>
         </p>
         <p>
-          <Link to={RoutePaths.Home} className="btn btn-secondary">
-            {translate('pages.identity.credentials_password_reset_initiate.links.home')}
-          </Link>
+          <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_password_reset_initiate.links.home')}</Link>
         </p>
       </div>
     </FormPage>

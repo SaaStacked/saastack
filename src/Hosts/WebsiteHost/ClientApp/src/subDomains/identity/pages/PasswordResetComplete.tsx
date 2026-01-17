@@ -55,7 +55,7 @@ export const PasswordResetCompletePage: React.FC = () => {
             <Link to={RoutePaths.PasswordReset} className="btn btn-primary mr-4">
               {translate('pages.identity.credentials_password_reset_complete.links.request_reset')}
             </Link>
-            <Link to={RoutePaths.Home} className="btn btn-secondary">
+            <Link to={RoutePaths.Home}>
               {translate('pages.identity.credentials_password_reset_complete.links.home')}
             </Link>
           </div>
@@ -86,9 +86,7 @@ function HandleMissingToken({ translate }: Pick<HandlerProps, 'translate'>) {
         <Link to={RoutePaths.PasswordReset} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_password_reset_complete.links.request_reset')}
         </Link>
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.credentials_password_reset_complete.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_password_reset_complete.links.home')}</Link>
       </div>
     </FormPage>
   );
@@ -173,7 +171,7 @@ function HandleVerifySuccess({ translate, token }: HandlerProps) {
             />
             <div className="text-center">
               <p>
-                <Link to={RoutePaths.CredentialsLogin} className="btn btn-secondary">
+                <Link to={RoutePaths.CredentialsLogin}>
                   {translate('pages.identity.credentials_password_reset_complete.links.login')}
                 </Link>
               </p>
@@ -197,9 +195,7 @@ function HandleCompleted({ translate }: HandlerProps) {
         <Link to={RoutePaths.CredentialsLogin} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_password_reset_complete.links.login')}
         </Link>
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.credentials_password_reset_complete.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_password_reset_complete.links.home')}</Link>
       </div>
     </FormPage>
   );

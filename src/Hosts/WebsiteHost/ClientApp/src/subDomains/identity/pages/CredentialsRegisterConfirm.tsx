@@ -11,7 +11,10 @@ import Icon from '../../../framework/components/icon/Icon.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
 import UnhandledError from '../../../framework/components/unhandledError/UnhandledError.tsx';
 import { RoutePaths } from '../../../framework/constants.ts';
-import { ConfirmPersonCredentialRegistrationAction, ConfirmPersonCredentialRegistrationErrors } from '../actions/confirmPersonCredentialRegistration.ts';
+import {
+  ConfirmPersonCredentialRegistrationAction,
+  ConfirmPersonCredentialRegistrationErrors
+} from '../actions/confirmPersonCredentialRegistration.ts';
 import { ResendPersonCredentialRegistrationConfirmationAction } from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
 
 
@@ -51,9 +54,7 @@ export const CredentialsRegisterConfirm: React.FC = () => {
             />
           </PageAction>
           <div className="text-center mt-4">
-            <Link to={RoutePaths.Home} className="btn btn-secondary">
-              {translate('pages.identity.credentials_register_confirm.links.home')}
-            </Link>
+            <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_register_confirm.links.home')}</Link>
           </div>
         </FormPage>
       ) : (
@@ -82,12 +83,10 @@ function HandleMissingToken({ translate }: Pick<HandlerProps, 'translate'>) {
       <Alert
         id="error_token_missing"
         type="error"
-        message={translate('pages.identity.credentials_register_confirm.states.confirming.invalid.message')}
+        message={translate('pages.identity.credentials_register_confirm.states.invalid.message')}
       />
       <div className="text-center mt-4">
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.credentials_register_confirm.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_register_confirm.links.home')}</Link>
       </div>
     </FormPage>
   );
@@ -103,9 +102,7 @@ function HandleConfirmSuccess({ translate }: HandlerProps) {
         <Link to={RoutePaths.CredentialsLogin} className="btn btn-primary mr-4">
           {translate('pages.identity.credentials_register_confirm.links.login')}
         </Link>
-        <Link to={RoutePaths.Home} className="btn btn-secondary">
-          {translate('pages.identity.credentials_register_confirm.links.home')}
-        </Link>
+        <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_register_confirm.links.home')}</Link>
       </div>
     </FormPage>
   );
@@ -139,7 +136,7 @@ function HandleConfirmError({ translate, lastExpectedError, lastUnexpectedError,
                     'pages.identity.credentials_register_confirm.states.resending.errors.token_expired'
                   )
                 }}
-                variant="secondary"
+                variant="brand-secondary"
               >
                 <Icon symbol="repeat" size={16} color="white" />
                 {resendConfirmation.isSuccess && (

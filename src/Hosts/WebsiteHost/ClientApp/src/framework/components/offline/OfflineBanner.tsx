@@ -44,15 +44,15 @@ export function OfflineBanner() {
   }
 
   const baseClasses =
-    'relative top-0 left-0 right-0 z-50 bg-red-500 dark:bg-red-800 p-1 rounded-b-xl transform transition-transform duration-1000 ease-in-out';
+    'relative top-0 left-0 right-0 z-50 bg-error dark:bg-error-700 p-1 rounded-b-xl transform transition-transform duration-1000 ease-in-out';
   const translateClasses = isVisible ? 'translate-y-0' : '-translate-y-full';
   const classes = toClasses([baseClasses, translateClasses]);
 
   return (
     <div className={classes}>
       <div className="container mx-auto max-w-4xl text-sm text-right">
-        <span className="text-gray-200 dark:text-gray-300">{translate('components.offline.error')}</span>
-        <span className="hidden sm:inline text-gray-200 dark:text-gray-300">
+        <span className="text-neutral-200 dark:text-neutral-300">{translate('components.offline.error')}</span>
+        <span className="hidden sm:inline text-neutral-200 dark:text-neutral-300">
           :&nbsp;{translate('components.offline.reason')}&nbsp;&nbsp;
         </span>
       </div>

@@ -6,7 +6,11 @@ import { ActionResult } from '../../actions/Actions.ts';
 import Alert from '../alert/Alert.tsx';
 import { createComponentId, toClasses } from '../Components.ts';
 import UnhandledError from '../unhandledError/UnhandledError.tsx';
-import { FormActionContext, FormActionRequiredFieldsContext, FormActionValidationContext } from './FormActionContexts.tsx';
+import {
+  FormActionContext,
+  FormActionRequiredFieldsContext,
+  FormActionValidationContext
+} from './FormActionContexts.tsx';
 
 
 interface FormActionProps<TRequestData = any, ExpectedErrorCode extends string = any, TResponse = any> {
@@ -58,7 +62,7 @@ function FormAction<TRequestData = any, ExpectedErrorCode extends string = any, 
   });
   formContext.isSubmitted = validation.formState.isSubmitted;
   const requiredFormFields = validationSchema ? getRequiredFields(validationSchema) : [];
-  const baseClasses = 'bg-white dark:bg-gray-800 p-2 rounded-lg transition-all';
+  const baseClasses = 'bg-white dark:bg-neutral-800 p-2 rounded-lg transition-all';
   const classes = toClasses([baseClasses, className]);
   const isFormDisabled =
     disabled ||

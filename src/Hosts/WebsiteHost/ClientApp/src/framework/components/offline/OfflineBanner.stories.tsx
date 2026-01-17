@@ -43,7 +43,7 @@ export const GoOfflineOnline: Story = {
 
     return (
       <OfflineServiceContext.Provider value={{ offlineService: mockService }}>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
           <OfflineBanner />
           <div className="p-8">
             <button

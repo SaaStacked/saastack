@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import Select from './Select';
 
+
 const mockOptions = [
   { value: 'anoption1', label: 'avalue1' },
   { value: 'anoption2', label: 'avalue2' },
@@ -64,16 +65,16 @@ describe('Select', () => {
     render(<Select errorMessage="anerrormessage" options={mockOptions} />);
 
     const select = screen.getByRole('combobox');
-    expect(select).toHaveClass('border-red-300', 'focus:border-red-500');
+    expect(select).toHaveClass('border-error', 'focus:border-error');
     expect(screen.getByText('anerrormessage')).toBeInTheDocument();
-    expect(screen.getByText('anerrormessage')).toHaveClass('text-red-600');
+    expect(screen.getByText('anerrormessage')).toHaveClass('text-error');
   });
 
   it('shows help text when provided', () => {
     render(<Select hintText="ahint" options={mockOptions} />);
 
     expect(screen.getByText('ahint')).toBeInTheDocument();
-    expect(screen.getByText('ahint')).toHaveClass('text-gray-500');
+    expect(screen.getByText('ahint')).toHaveClass('text-neutral-500');
   });
 
   it('prioritizes error message over help text', () => {

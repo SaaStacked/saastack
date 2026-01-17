@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Tag from './Tag';
 
+
 const meta: Meta<typeof Tag> = {
   title: 'Components/Tag',
   component: Tag,
@@ -12,9 +13,11 @@ const meta: Meta<typeof Tag> = {
     color: {
       control: 'select',
       options: [
-        'primary',
-        'secondary',
-        'accent',
+        'brand-primary',
+        'brand-secondary',
+        'success',
+        'warning',
+        'info',
         'red',
         'orange',
         'amber',
@@ -54,26 +57,26 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: 'Default Tag',
-    color: 'primary'
+    color: 'brand-primary'
   }
 };
 
 export const AllSizes: Story = {
   render: () => (
     <div>
-      <Tag className="text-xs" label="X Small" color="primary" />
-      <Tag className="text-sm" label="Small" color="primary" />
-      <Tag className="text-base" label="Base" color="primary" />
-      <Tag className="text-lg" label="Large" color="primary" />
-      <Tag className="text-xl" label="X Large" color="primary" />
-      <Tag className="text-2xl" label="2X Large" color="primary" />
-      <Tag className="text-3xl" label="3X Large" color="primary" />
-      <Tag className="text-4xl" label="4X Large" color="primary" />
-      <Tag className="text-5xl" label="5X Large" color="primary" />
-      <Tag className="text-6xl" label="6X Large" color="primary" />
-      <Tag className="text-7xl" label="7X Large" color="primary" />
-      <Tag className="text-8xl" label="8X Large" color="primary" />
-      <Tag className="text-9xl" label="9X Large" color="primary" />
+      <Tag className="text-xs" label="X Small" color="brand-primary" />
+      <Tag className="text-sm" label="Small" color="brand-primary" />
+      <Tag className="text-base" label="Base" color="brand-primary" />
+      <Tag className="text-lg" label="Large" color="brand-primary" />
+      <Tag className="text-xl" label="X Large" color="brand-primary" />
+      <Tag className="text-2xl" label="2X Large" color="brand-primary" />
+      <Tag className="text-3xl" label="3X Large" color="brand-primary" />
+      <Tag className="text-4xl" label="4X Large" color="brand-primary" />
+      <Tag className="text-5xl" label="5X Large" color="brand-primary" />
+      <Tag className="text-6xl" label="6X Large" color="brand-primary" />
+      <Tag className="text-7xl" label="7X Large" color="brand-primary" />
+      <Tag className="text-8xl" label="8X Large" color="brand-primary" />
+      <Tag className="text-9xl" label="9X Large" color="brand-primary" />
     </div>
   )
 };
@@ -81,9 +84,11 @@ export const AllSizes: Story = {
 export const AllColors: Story = {
   render: () => (
     <div className="grid grid-cols-4 gap-4 max-w-4xl">
-      <Tag label="Primary" color="primary" />
-      <Tag label="Secondary" color="secondary" />
-      <Tag label="Accent" color="accent" />
+      <Tag label="Brand-Primary" color="brand-primary" />
+      <Tag label="Brand-Secondary" color="brand-secondary" />
+      <Tag label="Success" color="success" />
+      <Tag label="Warning" color="warning" />
+      <Tag label="Info" color="info" />
       <Tag label="Red" color="red" />
       <Tag label="Orange" color="orange" />
       <Tag label="Amber" color="amber" />

@@ -8,7 +8,7 @@ export interface ButtonProps {
   id?: string;
   children?: React.ReactNode;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'brand-primary' | 'brand-secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   busy?: boolean;
@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   children,
   id,
   type = 'button',
-  variant = 'primary',
+  variant = 'brand-primary',
   size = 'md',
   disabled = false,
   busy = false,
@@ -35,21 +35,22 @@ const Button: React.FC<ButtonProps> = ({
   title
 }) => {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center font-medium rounded-full transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm';
   const variantClasses = {
-    primary: `${type === 'submit' ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary/90'} text-white focus:ring-primary`,
-    secondary: 'bg-secondary text-white hover:bg-secondary/90 focus:ring-secondary',
+    'brand-primary': 'bg-brand-primary text-white hover:bg-brand-primary/90 focus:ring-brand-primary',
+    'brand-secondary': 'bg-brand-secondary text-white hover:bg-brand-secondary/90 focus:ring-brand-secondary',
     outline:
-      'border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-primary',
-    ghost: 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
+      'border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:ring-brand-primary-500',
+    ghost:
+      'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 focus:ring-brand-primary-500 shadow-none',
+    danger: 'bg-red-700 text-white hover:bg-red-800 focus:ring-red-500 border border-transparent'
   };
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
+    sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base'
   };
-  const widthClass = fullWidth ? 'w-full' : '';
+  const widthClass = fullWidth ? 'w-full' : 'w-fit';
   const classes = toClasses([baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className]);
   let onClickTarget = onClick;
   let navigate = useNavigate();

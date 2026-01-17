@@ -17,7 +17,7 @@ export interface ButtonActionProps<TRequestData = any, ExpectedErrorCode extends
   expectedErrorMessages?: Record<ExpectedErrorCode, string>;
   onSuccess?: (params: { requestData?: TRequestData; response: TResponse }) => void;
   label?: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'brand-primary' | 'brand-secondary' | 'outline' | 'ghost' | 'danger';
   busyLabel?: string;
   completeLabel?: string;
   title?: string;

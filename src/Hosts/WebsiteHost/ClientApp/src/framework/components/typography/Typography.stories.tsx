@@ -72,14 +72,16 @@ export const WeightsAndColors: Story = {
           </div>
           <div>
             <h2 className="text-2xl font-bold mb-4">Text Colors</h2>
-            <p className="text-base text-primary">Primary color text</p>
-            <p className="text-base text-secondary">Secondary color text</p>
-            <p className="text-base text-gray-900">Dark gray text</p>
-            <p className="text-base text-gray-700">Medium gray text</p>
-            <p className="text-base text-gray-500">Light gray text</p>
-            <p className="text-base text-red-600">Error/danger text</p>
-            <p className="text-base text-green-600">Success text</p>
-            <p className="text-base text-yellow-600">Warning text</p>
+            <p className="text-base text-brand-primary">Primary color text</p>
+            <p className="text-base text-brand-secondary">Secondary color text</p>
+            <p className="text-base text-info-600">Info text</p>
+            <p className="text-base text-success-600">Success text</p>
+            <p className="text-base text-error-600">Error/danger text</p>
+            <p className="text-base text-warning-600">Warning text</p>
+            <p className="text-base text-neutral">Neutral text</p>
+            <p className="text-base text-neutral-900">Dark neutral text</p>
+            <p className="text-base text-neutral-700">Medium neutral text</p>
+            <p className="text-base text-neutral-500">Light neutral text</p>
           </div>
         </div>
       </section>

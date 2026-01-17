@@ -118,9 +118,7 @@ export const CredentialsRegisterPage: React.FC = () => {
           </Link>
         </p>
         <p>
-          <Link to={RoutePaths.Home} className="btn btn-secondary">
-            {translate('pages.identity.credentials_register.links.home')}
-          </Link>
+          <Link to={RoutePaths.Home}>{translate('pages.identity.credentials_register.links.home')}</Link>
         </p>
       </div>
     </FormPage>

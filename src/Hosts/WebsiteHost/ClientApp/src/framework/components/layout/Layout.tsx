@@ -3,8 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { MainMenuExcludedRoutes } from '../../../App.tsx';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import { toClasses } from '../Components.ts';
+import { BrandBar } from '../navigation/BrandBar.tsx';
 import { MainMenu } from '../navigation/MainMenu.tsx';
 import { Footer } from './Footer.tsx';
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -42,8 +44,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const classes = toClasses([baseClasses, widthClasses]);
 
   return (
-    <div className="min-h-screen font-sans bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      {shouldShowMainMenu && <MainMenu />}
+    <div className="min-h-screen font-sans bg-neutral-200 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
+      {shouldShowMainMenu ? <MainMenu /> : <BrandBar />}
       <main ref={mainRef} className={classes}>
         {children}
       </main>

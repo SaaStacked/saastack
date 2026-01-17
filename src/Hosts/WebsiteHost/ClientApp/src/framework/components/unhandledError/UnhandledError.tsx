@@ -5,6 +5,7 @@ import { ProblemDetails } from '../../api/apiHost1';
 import { createComponentId } from '../Components.ts';
 import Tag from '../tag/Tag.tsx';
 
+
 interface UnhandledErrorProps {
   id?: string;
   error?: ErrorResponse;
@@ -41,13 +42,13 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
   const componentId = createComponentId('unhandled_error', id);
   return (
     <div
-      className="border border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-2 max-w-4xl"
+      className="border border-error dark:border-error-700 bg-error-300/20 dark:bg-error-700/20 rounded-lg p-2 max-w-4xl"
       data-testid={componentId}
       id={componentId}
     >
       <div className="mb-4">
         <div className="flex items-center mb-2">
-          <div className="w-10 h-10 text-red-600 dark:text-red-400 mr-3">
+          <div className="w-10 h-10 text-error-600 mr-3">
             <svg fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -56,48 +57,46 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
               />
             </svg>
           </div>
-          <h1 className="text-lg font-bold text-red-800 dark:text-red-200">
+          <h1 className="text-base font-semibold text-error-600 dark:text-error-300">
             {translate('components.unhandled_error.title')}
           </h1>
         </div>
-        <p className="text-sm text-red-700 dark:text-red-300 mb-4">
-          {translate('components.unhandled_error.subtitle')}
-        </p>
+        <p className="mb-4 text-xs text-error-800">{translate('components.unhandled_error.subtitle')}</p>
       </div>
 
       {!isExpanded ? (
         <button
+          className="flex items-center text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
           type="button"
           onClick={() => setIsExpanded(true)}
-          className="flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
         >
           <span className="mr-1 text-xs">+</span>
           <span className="text-xs">{translate('components.unhandled_error.links.details')}</span>
         </button>
       ) : (
         <div
-          className="bg-white dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-md p-4"
+          className="bg-white dark:bg-neutral-800 border border-error-300 dark:border-error-700 rounded-md p-4"
           id={`${componentId}_details`}
           data-testid={`${componentId}_details`}
         >
-          <h4 className="text-xs text-gray-900 dark:text-gray-100 mb-3">
+          <h4 className="text-xs text-neutral-900 dark:text-neutral-100 mb-3">
             {translate('components.unhandled_error.links.details')}
           </h4>
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs text-gray-700 dark:text-gray-300">
+              <span className="text-xs text-neutral-700 dark:text-neutral-300">
                 {translate('components.unhandled_error.status')}:
               </span>
-              <Tag className="text-sm" label="HTTP" color="rose">
+              <Tag className="text-sm" label="HTTP" color="error">
                 <span className="ml-1 mr-1" data-testid={`${componentId}_details_statusCode`}>
                   {statusCode}
                 </span>
               </Tag>
               {errorCode && (
                 <>
-                  <span className="text-xs text-gray-600 dark:text-gray-400">-</span>
+                  <span className="text-xs text-neutral-600 dark:text-neutral-400">-</span>
                   <span
-                    className="text-xs text-gray-900 dark:text-gray-100 font-medium"
+                    className="text-xs text-neutral-900 dark:text-neutral-100 font-medium"
                     data-testid={`${componentId}_details_errorCode`}
                   >
                     {errorCode}
@@ -108,11 +107,11 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
 
             {errorMessage && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-700 dark:text-gray-300">
+                <span className="text-xs text-neutral-700 dark:text-neutral-300">
                   {translate('components.unhandled_error.message')}:
                 </span>
                 <span
-                  className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                  className="inline-flex items-center px-2 py-1 rounded text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200"
                   data-testid={`${componentId}_details_errorMessage`}
                 >
                   {errorMessage}
@@ -121,13 +120,13 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
             )}
             {moreDetails.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-700 dark:text-gray-300">
+                <span className="text-xs text-neutral-700 dark:text-neutral-300">
                   {translate('components.unhandled_error.more_details')}:
                 </span>
                 {moreDetails.map((detail, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2 py-1 rounded text-xs font-mono bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                    className="inline-flex items-center px-2 py-1 rounded text-xs font-mono bg-neutral-50 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200"
                     data-testid={`${componentId}_details_moreDetails`}
                   >
                     {detail}
@@ -139,9 +138,9 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
             <div>
               {(clientStackTrace || serverStackTrace) && !isStackTraceExpanded ? (
                 <button
+                  className="flex items-center text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
                   type="button"
                   onClick={() => setIsStackTraceExpanded(true)}
-                  className="flex items-center text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                 >
                   <span className="mr-1">+</span>
                   <span>{translate('components.unhandled_error.links.more_details')}</span>
@@ -150,11 +149,11 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
                 <div className="mt-1">
                   {clientStackTrace && (
                     <div className="mt-4">
-                      <span className="text-xs text-gray-700 dark:text-gray-300 block mb-2">
+                      <span className="text-xs text-neutral-700 dark:text-neutral-300 block mb-2">
                         {translate('components.unhandled_error.client_stack_trace')}:
                       </span>
                       <pre
-                        className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
+                        className="text-xs font-mono text-neutral-600 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
                         data-testid={`${componentId}_details_clientStackTrace`}
                       >
                         {clientStackTrace}
@@ -163,11 +162,11 @@ export default function UnhandledError({ id, error }: UnhandledErrorProps) {
                   )}
                   {serverStackTrace && (
                     <div className="mt-4">
-                      <span className="text-xs text-gray-700 dark:text-gray-300 block mb-2">
+                      <span className="text-xs text-neutral-700 dark:text-neutral-300 block mb-2">
                         {translate('components.unhandled_error.server_stack_trace')}:
                       </span>
                       <pre
-                        className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
+                        className="text-xs font-mono text-neutral-600 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-40 overflow-y-auto"
                         data-testid={`${componentId}_details_serverStackTrace`}
                       >
                         {serverStackTrace}

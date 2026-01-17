@@ -4,7 +4,6 @@ import { ErrorResponse } from '../../actions/Actions.ts';
 import { ProblemDetails } from '../../api/apiHost1';
 import UnhandledError from './UnhandledError';
 
-
 describe('UnhandledError', () => {
   const unexpectedError: ErrorResponse = {
     data: {
