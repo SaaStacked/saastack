@@ -139,7 +139,7 @@
             "question": "Don't have an account?",
             "text": "Create one"
           },
-          "forgot_password": "Forgot your password?"
+          "forgot_password": "Forgot password?"
         }
       },
       "credentials_register": {
@@ -457,7 +457,7 @@
         "empty": "No organizations found"
       },
       "edit": {
-        "title": "Organization Details",
+        "title": "{{name}} Details",
         "loader": {
           "title": "Loading organization"
         },

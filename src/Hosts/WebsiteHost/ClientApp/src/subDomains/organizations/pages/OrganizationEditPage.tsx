@@ -12,7 +12,8 @@ import {
   OrganizationOwnership,
   UnassignRolesFromOrganizationRequest,
   UserProfileClassification,
-  UserProfileForCaller
+  UserProfileForCaller,
+  type GetOrganizationData
 } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import Button from '../../../framework/components/button/Button.tsx';
@@ -61,18 +62,25 @@ export const OrganizationEditPage: React.FC = () => {
   const organization = getOrganization.lastSuccessResponse
     ? getOrganization.lastSuccessResponse!
     : ({} as Organization);
-  const [currentOrganization, setCurrentOrganization] = useState(organization);
+  const [updatedOrganization, setUpdatedOrganization] = useState(organization);
   const getOrganizationTrigger = useRef<PageActionRef<EmptyRequest>>(null);
 
-  const onOrganizationChange = (organization: Organization) => {
-    setCurrentOrganization(organization);
+  const onOrganizationChange = (updated: Organization) => {
+    setUpdatedOrganization(updated);
     refetchCurrentUser();
   };
 
-  useEffect(() => getOrganizationTrigger.current?.execute(), []);
+  useEffect(() => getOrganizationTrigger.current?.execute({ path: { Id: id! } } as GetOrganizationData), [id]);
+
+  useEffect(() => {
+    if (getOrganization.lastSuccessResponse) {
+      setUpdatedOrganization(getOrganization.lastSuccessResponse);
+    }
+  }, [getOrganization.lastSuccessResponse]);
 
   return (
-    <FormPage title={organization?.name ?? translate('pages.organizations.edit.title')} align="top">
+    <FormPage title={translate('pages.organizations.edit.title', { name: updatedOrganization.name })} align="top">
+      {' '}
       <PageAction
         id="get_organization"
         action={getOrganization}
@@ -91,7 +99,7 @@ export const OrganizationEditPage: React.FC = () => {
               content: (
                 <DetailsTab
                   initialOrganization={organization}
-                  currentOrganization={currentOrganization}
+                  updatedOrganization={updatedOrganization}
                   onOrganizationChange={onOrganizationChange}
                 />
               )
@@ -99,7 +107,7 @@ export const OrganizationEditPage: React.FC = () => {
             {
               id: 'members',
               label: translate('pages.organizations.edit.tabs.members.title'),
-              content: <MembersTab currentOrganization={currentOrganization} />
+              content: <MembersTab currentOrganization={organization} />
             }
           ]}
         />
@@ -113,9 +121,9 @@ export const OrganizationEditPage: React.FC = () => {
 
 const DetailsTab: React.FC<{
   initialOrganization: Organization;
-  currentOrganization: Organization;
+  updatedOrganization: Organization;
   onOrganizationChange: (organization: Organization) => void;
-}> = ({ initialOrganization, currentOrganization, onOrganizationChange }) => {
+}> = ({ initialOrganization, updatedOrganization, onOrganizationChange }) => {
   const { t: translate } = useTranslation();
   const changeOrganization = ChangeOrganizationAction(initialOrganization.id ?? '');
   const changeOrganizationAvatar = ChangeOrganizationAvatarAction(initialOrganization.id);
@@ -128,11 +136,11 @@ const DetailsTab: React.FC<{
     <div className="w-full">
       <div className="flex flex-col items-center">
         <div className="relative">
-          {currentOrganization.avatarUrl ? (
+          {updatedOrganization.avatarUrl ? (
             <img
               className="w-40 h-40 rounded-full object-cover"
-              src={currentOrganization.avatarUrl}
-              alt={currentOrganization.name}
+              src={updatedOrganization.avatarUrl}
+              alt={updatedOrganization.name}
             />
           ) : (
             <div className="w-40 h-40 bg-neutral-200 rounded-full flex items-center justify-center">
@@ -178,7 +186,7 @@ const DetailsTab: React.FC<{
             }}
             ref={changeOrganizationAvatarTrigger}
           />
-          {currentOrganization.avatarUrl && (
+          {updatedOrganization.avatarUrl && (
             <ButtonAction
               className="p-2 rounded-full w-8 h-8"
               id="delete_avatar"
