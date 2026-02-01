@@ -3,15 +3,11 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult } from '../../../framework/actions/Actions';
-import {
-  ChangeOrganizationPatchResponse,
-  ChangeOrganizationRequest,
-  OrganizationOwnership,
-  UserProfileClassification
-} from '../../../framework/api/apiHost1';
+import { ChangeOrganizationPatchResponse, ChangeOrganizationRequest, OrganizationOwnership, UserProfileClassification } from '../../../framework/api/apiHost1';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
 import { OrganizationEditPage } from './OrganizationEditPage';
 import { TenantRoles } from './Organizations';
+
 
 // Mock data
 const mockOrganization = {
@@ -237,7 +233,7 @@ describe('OrganizationEditPage', () => {
   it('renders page title', () => {
     renderWithTestingProviders(<OrganizationEditPage />, ['/organizations/anorganizationid1/edit']);
 
-    expect(screen.getByText('anorganizationname')).toBeInTheDocument();
+    expect(screen.getByText('pages.organizations.edit.title')).toBeInTheDocument();
   });
 
   it('renders all tabs', () => {
