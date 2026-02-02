@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { QueryClientDefaultCacheTimeInMs } from '../providers/AppProviders.tsx';
 import { useOfflineService } from '../providers/OfflineServiceContext.tsx';
 import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
@@ -22,8 +23,10 @@ export interface ActionQueryConfiguration<
   transform: (result: TResponse) => TTransformedResponse;
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
-  // The cache key to use to store the response
+  // The cache keys array to use to store the response
   cacheKey: readonly unknown[] | ((request: TRequestData) => readonly unknown[]);
+  // An optional TTL (in ms) to override the default cachePeriod
+  cachePeriodMs?: number;
 }
 
 // Use this hook for calling @hey-api (fetch) generated endpoints for GET or SEARCH.
@@ -32,6 +35,7 @@ export interface ActionQueryConfiguration<
 // Supports monitoring of requests for displaying loading indicators
 // Supports monitoring of expected errors versus unexpected errors
 // Supports monitoring of online/offline status
+// Supports caching of responses (using cacheKey)
 export function useActionQuery<
   TRequestData = any,
   TResponse = any,
@@ -42,7 +46,7 @@ export function useActionQuery<
 ): ActionResult<TRequestData, ExpectedErrorCode, TTransformedResponse> {
   const { t: translate } = useTranslation();
   const queryClient = useQueryClient();
-  const { request, passThroughErrors, transform: onTransform, isTenanted, cacheKey } = configuration;
+  const { request, passThroughErrors, transform: onTransform, isTenanted, cacheKey, cachePeriodMs } = configuration;
 
   const { onError: handleError, expectedError, unexpectedError, clearErrors } = useApiErrorState(passThroughErrors);
 
@@ -54,11 +58,13 @@ export function useActionQuery<
   const handleErrorRef = useRef(handleError);
   const clearErrorsRef = useRef(clearErrors);
   const cacheKeyRef = useRef(cacheKey);
+  const cachePeriodMsRef = useRef(cachePeriodMs);
   requestRef.current = request;
   onTransformRef.current = onTransform;
   handleErrorRef.current = handleError;
   clearErrorsRef.current = clearErrors;
   cacheKeyRef.current = cacheKey;
+  cachePeriodMsRef.current = cachePeriodMs;
 
   const [currentRequestData, setCurrentRequestData] = useState<TRequestData | undefined>();
   const currentRequestDataRef = useRef<TRequestData | undefined>(currentRequestData ?? ({} as TRequestData));
@@ -108,7 +114,8 @@ export function useActionQuery<
               throw new Error(translate('actions.errors.offline'));
             }
           },
-          retry: false
+          retry: false,
+          staleTime: cachePeriodMs ?? QueryClientDefaultCacheTimeInMs
         })
         .then((apiResponse: ApiResponse<TResponse>) => {
           setIsPending(false);

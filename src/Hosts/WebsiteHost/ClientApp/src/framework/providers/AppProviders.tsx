@@ -8,7 +8,7 @@ import { CurrentUserProvider } from './CurrentUserContext';
 import { OfflineServiceProvider } from './OfflineServiceContext.tsx';
 import { ThemeProvider } from './ThemeContext.tsx';
 
-export const QueryClientDefaultCacheTimeInMs: number = 1000 * 60;
+export const QueryClientDefaultCacheTimeInMs: number = 1000 * 30; // 30 seconds
 
 interface AppProvidersProps {
   children: React.ReactNode;

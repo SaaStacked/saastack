@@ -46,7 +46,7 @@ You can update those definitions at any time by running `npm run update:apis` to
 
 ### Actions
 
-Generally speaking, we do not call the generated Fetch services directly, but instead we wrap them in a `useQuery` or `useMutation` hook, that provides additional functionality, such as error handling, loading states, caching etc.
+Generally speaking, we do not call the generated Fetch services directly, but instead we wrap them in a hook, that provides additional functionality, such as error handling, loading states, caching etc.
 
 These actions can be use directly in code anywhere. But they can also be attached to forms using 'Action-enabled' components, such as (using the `<FormAction/>` component), behind buttons (using the `<ButtonAction/>`), and anywhere on pages (using the `<PageAction/>` component).
 
@@ -62,21 +62,21 @@ This is the recommended approach to build your pages because these 'Action-enabl
 
 ### Caching
 
-We use [TanStack Query](https://tanstack.com/query/v4) and `useQuery` and `useMutation` hooks for caching and managing data fetching from backend APIs.
+We use [TanStack Query](https://tanstack.com/query/v4) and `QueryClient` directly for caching and managing data fetching from backend APIs.
 
-The way it works is that you define a 'query key' for each query to the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `useQuery` to cache the successful response against that key in its cache.
+The way it works is that you define an array of 'query keys' for each query in the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `QueryClient` to cache the successful response against that key in its cache.
 
-While that key has a cached response, repeated requests to `useQuery` for the same data do not need to go to the backend - and are served locally from the cache.
+While that key has a cached response, repeated requests to the same `ActionQuery`, for the same data, does not need to go to the backend - and are served locally from the cache.
 
-These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 10 seconds.
+These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 30 seconds.
 
-> Short cache times (TTLs) are necessary since this client cannot guarantee that it will be the only consumer of the backend data collections. Other clients may have changed the backend data at the same time, and the cached responses in this client will be now be stale (relative to the backend), thus they need to be forced to be refreshed. Long TTLs (like minutes) are not appropriate for this kind of system. Short TTLs can still offer many benefits for clients.
+> Short cache times (TTLs) are recommended since this client cannot guarantee that it will be the only consumer of the backend data collections. Other clients may have changed the backend data at the same time, and the cached responses in this client will be now be stale (relative to the backend), thus they need to be forced to be refreshed. Long TTLs (like minutes) are not appropriate for this kind of system. Short TTLs can still offer many benefits for clients.
 
 These cached responses can be forced to be invalidated, and are best invalidated when the data that could be cached is updated by the JS App explicitly.
 
-When this client forces a change in that data, it can invalidate the cache for that query key, and the next request for that data will go to the backend.
+When this client forces a change in that data (using `useMutation`), it can invalidate the cache for that query key (or any number of keys), and the next request for that data will go to the backend.
 
-When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keys to invalidate in the `invalidateCacheKeys` property, and TanStack Query will invalidate all queries that match that collection of keys.
+When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keys to invalidate in the `invalidateCacheKeys` property, and TanStack Query will invalidate all queries matching that collection of keys.
 
 To do this, we define some very simple cache key definitions in files like `src/subDomains/endUsers/actions/responseCache.ts`. Where we define a cumulative set of keys that can be used to invalidate the various caches that that specific subdomain manages.
 
@@ -86,8 +86,8 @@ Assuming the following definition:
 const resourceCacheKeys = {
   all: ['resources'] as const,
   resource: {
-    query: (resourceId: string) => [`resources.${resourceId}`] as const, //uses a single cache key for this specific resource (unique id) 
-    mutate: (resourceId: string) => [...resourceCacheKeys.all, `resources.${resourceId}`] as const // invalidates the specific resource, and the whole collection of all resources
+    query: (resourceId: string) => ['resources', resourceId] as const, //uses a single cache key for this specific resource (unique id) 
+    mutate: (resourceId: string) => [...resourceCacheKeys.all, 'resourceId'] as const // invalidates the specific resource, and the whole collection of all resources
   }
 }; 
 ```
