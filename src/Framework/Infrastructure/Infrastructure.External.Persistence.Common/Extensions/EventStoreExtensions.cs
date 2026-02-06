@@ -40,8 +40,10 @@ public static class EventStoreExtensions
     }
 
     /// <summary>
-    ///     Verifies that the version of the latest event produced by the aggregate is the next event in the stream of events
-    ///     from the store, with no version gaps between them. IN other words, they are contiguous
+    ///     Verifies that the version of the latest event (produced by the aggregate) is the next event in the stream of events
+    ///     (read from the store).
+    ///     There must be no version gaps between them.
+    ///     In other words, all events in the stream are contiguous (no gaps) and no repeats
     /// </summary>
     public static Result<Error> VerifyContiguousCheck(this IEventStore eventStore, string streamName,
         Optional<int> latestStoredEventVersion, int nextEventVersion)
@@ -52,7 +54,7 @@ public static class EventStoreExtensions
             {
                 var storeType = eventStore.GetType().Name;
                 return Error.EntityExists(
-                    Resources.EventStore_ConcurrencyVerificationFailed_StreamReset.Format(storeType, streamName));
+                    Resources.EventStore_VerifyContiguousCheck_StreamReset.Format(storeType, streamName));
             }
 
             return Result.Ok;
@@ -63,8 +65,16 @@ public static class EventStoreExtensions
         {
             var storeType = eventStore.GetType().Name;
             return Error.EntityExists(
-                Resources.EventStore_ConcurrencyVerificationFailed_MissingUpdates.Format(storeType, streamName,
+                Resources.EventStore_VerifyContiguousCheck_MissingVersions.Format(storeType, streamName,
                     expectedNextVersion, nextEventVersion));
+        }
+
+        if (nextEventVersion < expectedNextVersion)
+        {
+            var storeType = eventStore.GetType().Name;
+            return Error.EntityExists(
+                Resources.EventStore_VerifyContiguousCheck_VersionCollision.Format(storeType, streamName,
+                    nextEventVersion, latestStoredEventVersion));
         }
 
         return Result.Ok;

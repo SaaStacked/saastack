@@ -60,13 +60,16 @@
     <data name="AnyStore_MissingContentType" xml:space="preserve">
         <value>ContentType cannot be empty</value>
     </data>
-    <data name="EventStore_ConcurrencyVerificationFailed_StreamReset" xml:space="preserve">
+    <data name="EventStore_VerifyContiguousCheck_StreamReset" xml:space="preserve">
         <value>{0} could not write new events to event stream: {1}, another process may have cleared the stream?</value>
     </data>
-    <data name="EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated" xml:space="preserve">
-        <value>{0} could not write new events to event stream: {1}, another process has updated the stream at the same time, since version {2}</value>
+    <data name="EventStore_VerifyContiguousCheck_VersionCollision" xml:space="preserve">
+        <value>{0} could not write new events to event stream: {1}, another process has updated the stream to version {2}, since version {3}</value>
     </data>
-    <data name="EventStore_ConcurrencyVerificationFailed_MissingUpdates" xml:space="preserve">
+    <data name="EventStore_VerifyContiguousCheck_MissingVersions" xml:space="preserve">
         <value>{0} could not write new events to event stream: {1}, events between version {2} and version {3} have not been entered into stream yet</value>
+    </data>
+    <data name="EventStore_Concurrency_StreamCollisionDetected" xml:space="preserve">
+        <value>{0} could not write new events to event stream: {1}, another process is updating the stream to version {2}</value>
     </data>
 </root>

@@ -23,7 +23,7 @@ public class EventStoreExtensionsSpec
         var result = _eventStore.Object.VerifyContiguousCheck("astreamname", Optional<int>.None, 10);
 
         result.Should().BeError(ErrorCode.EntityExists,
-            Resources.EventStore_ConcurrencyVerificationFailed_StreamReset.Format("IEventStoreProxy", "astreamname"));
+            Resources.EventStore_VerifyContiguousCheck_StreamReset.Format("IEventStoreProxy", "astreamname"));
     }
 
     [Fact]
@@ -36,19 +36,23 @@ public class EventStoreExtensionsSpec
     }
 
     [Fact]
-    public void WhenVerifyContiguousCheckAndFirstVersionIsSameAsStored_ThenPasses()
+    public void WhenVerifyContiguousCheckAndFirstVersionIsSameAsStored_ThenReturnsError()
     {
         var result = _eventStore.Object.VerifyContiguousCheck("astreamname", 2, 2);
 
-        result.Should().BeSuccess();
+        result.Should().BeError(ErrorCode.EntityExists,
+            Resources.EventStore_VerifyContiguousCheck_VersionCollision.Format("IEventStoreProxy", "astreamname",
+                2, 2));
     }
 
     [Fact]
-    public void WhenVerifyContiguousCheckAndFirstVersionIsBeforeStored_ThenPasses()
+    public void WhenVerifyContiguousCheckAndFirstVersionIsBeforeStored_ThenReturnsError()
     {
         var result = _eventStore.Object.VerifyContiguousCheck("astreamname", 2, 1);
 
-        result.Should().BeSuccess();
+        result.Should().BeError(ErrorCode.EntityExists,
+            Resources.EventStore_VerifyContiguousCheck_VersionCollision.Format("IEventStoreProxy", "astreamname",
+                1, 2));
     }
 
     [Fact]
@@ -57,7 +61,7 @@ public class EventStoreExtensionsSpec
         var result = _eventStore.Object.VerifyContiguousCheck("astreamname", 1, 3);
 
         result.Should().BeError(ErrorCode.EntityExists,
-            Resources.EventStore_ConcurrencyVerificationFailed_MissingUpdates.Format("IEventStoreProxy", "astreamname",
+            Resources.EventStore_VerifyContiguousCheck_MissingVersions.Format("IEventStoreProxy", "astreamname",
                 2, 3));
     }
 

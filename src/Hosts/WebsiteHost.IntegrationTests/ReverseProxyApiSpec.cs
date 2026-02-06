@@ -45,11 +45,13 @@ public class ReverseProxyApiSpec : WebsiteSpec<Program, ApiHost1.Program>
     [Fact]
     public async Task WhenRequestAStaticFile_ThenDoesNotReverseProxy()
     {
+        const long favIconSizeInBytes = 115254L; // Must match your current favicon.ico file
+        
         var result = await HttpApi.GetAsync("favicon.ico");
 
         result.Content.Headers.ContentType!.MediaType.Should().Be("image/x-icon");
         var stream = await result.Content.ReadAsStreamAsync();
-        stream.Length.Should().Be(115254L);
+        stream.Length.Should().Be(favIconSizeInBytes);
     }
 
     [Fact]

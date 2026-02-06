@@ -1,4 +1,5 @@
 ﻿#if TESTINGONLY
+using AsyncKeyedLock;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces;
@@ -15,6 +16,7 @@ namespace Infrastructure.External.Persistence.TestingOnly.ApplicationServices;
 partial class LocalMachineJsonFileStore : IEventStore
 {
     private static string? _cachedContainerName;
+    private static readonly AsyncKeyedLocker<string> EventStoreSection = new();
 
     public async Task<Result<string, Error>> AddEventsAsync<TAggregateRoot>(string aggregateRootId,
         List<EventSourcedChangeEvent> events, CancellationToken cancellationToken)
@@ -36,26 +38,31 @@ partial class LocalMachineJsonFileStore : IEventStore
             return @checked.Error;
         }
 
-        foreach (var @event in events)
+        var containerName = GetEventStoreContainerPath<TAggregateRoot>(aggregateRootId);
+        var container = EnsureContainer(containerName);
+        // We need to lock access to the EventStore table, to prevent concurrent writes to the table for different streams.
+        using (await EventStoreSection.LockAsync(containerName, cancellationToken))
         {
-            var entity = @event.ToJsonRecord<TAggregateRoot>(streamName);
-
-            var container = EnsureContainer(GetEventStoreContainerPath<TAggregateRoot>(aggregateRootId));
-            var version = @event.Version;
-            var filename = $"version_{version:D3}";
-            var added = await container.WriteExclusiveAsync(filename, entity.ToFileProperties(), cancellationToken);
-            if (added.IsFailure)
+            foreach (var @event in events)
             {
-                if (added.Error.Is(ErrorCode.EntityExists))
-                {
-                    var storeType = GetType().Name;
-                    return Error.EntityExists(
-                        Resources
-                            .EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated
-                            .Format(storeType, streamName, version));
-                }
+                var entity = @event.ToJsonRecord<TAggregateRoot>(streamName);
 
-                return added.Error;
+                var version = @event.Version;
+                var filename = $"version_{version:D3}";
+                var added = await container.WriteExclusiveAsync(filename, entity.ToFileProperties(), cancellationToken);
+                if (added.IsFailure)
+                {
+                    if (added.Error.Is(ErrorCode.EntityExists))
+                    {
+                        var storeType = GetType().Name;
+                        return Error.EntityExists(
+                            Resources
+                                .EventStore_Concurrency_StreamCollisionDetected
+                                .Format(storeType, streamName, version));
+                    }
+
+                    return added.Error;
+                }
             }
         }
 
@@ -161,12 +168,6 @@ partial class LocalMachineJsonFileStore : IEventStore
 
 internal static class LocalMachineJsonFileEventStoreConversionExtensions
 {
-    public static string GetEventStreamName<TAggregateRoot>(this string aggregateRootId)
-    {
-        var aggregateName = EventStoreExtensions.GetAggregateName<TAggregateRoot>();
-        return $"{aggregateName}_{aggregateRootId}";
-    }
-    
     public static EventSourcedChangeEvent FromJsonRecord<TAggregateRoot>(this QueryEntity entity,
         IEventSourcedChangeEventMigrator migrator)
         where TAggregateRoot : class, IEventingAggregateRoot
@@ -179,6 +180,12 @@ internal static class LocalMachineJsonFileEventStoreConversionExtensions
 
         return migrator.FromEventStoreJson<TAggregateRoot>(eventId, eventVersion, eventJson, eventTypeFullName,
             lastPersistedAtUtc);
+    }
+
+    public static string GetEventStreamName<TAggregateRoot>(this string aggregateRootId)
+    {
+        var aggregateName = EventStoreExtensions.GetAggregateName<TAggregateRoot>();
+        return $"{aggregateName}_{aggregateRootId}";
     }
 
     public static CommandEntity ToJsonRecord<TAggregateRoot>(this EventSourcedChangeEvent @event, string streamName)

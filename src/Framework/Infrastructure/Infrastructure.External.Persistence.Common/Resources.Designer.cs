@@ -150,29 +150,38 @@ namespace Infrastructure.External.Persistence.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, events between version {2} and version {3} have not been entered into stream yet.
+        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process is updating the stream to version {2}.
         /// </summary>
-        public static string EventStore_ConcurrencyVerificationFailed_MissingUpdates {
+        public static string EventStore_Concurrency_StreamCollisionDetected {
             get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_MissingUpdates", resourceCulture);
+                return ResourceManager.GetString("EventStore_Concurrency_StreamCollisionDetected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process has updated the stream at the same time, since version {2}.
+        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, events between version {2} and version {3} have not been entered into stream yet.
         /// </summary>
-        public static string EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated {
+        public static string EventStore_VerifyContiguousCheck_MissingVersions {
             get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated", resourceCulture);
+                return ResourceManager.GetString("EventStore_VerifyContiguousCheck_MissingVersions", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process may have cleared the stream?.
         /// </summary>
-        public static string EventStore_ConcurrencyVerificationFailed_StreamReset {
+        public static string EventStore_VerifyContiguousCheck_StreamReset {
             get {
-                return ResourceManager.GetString("EventStore_ConcurrencyVerificationFailed_StreamReset", resourceCulture);
+                return ResourceManager.GetString("EventStore_VerifyContiguousCheck_StreamReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} could not write new events to event stream: {1}, another process has updated the stream to version {2}, since version {3}.
+        /// </summary>
+        public static string EventStore_VerifyContiguousCheck_VersionCollision {
+            get {
+                return ResourceManager.GetString("EventStore_VerifyContiguousCheck_VersionCollision", resourceCulture);
             }
         }
         

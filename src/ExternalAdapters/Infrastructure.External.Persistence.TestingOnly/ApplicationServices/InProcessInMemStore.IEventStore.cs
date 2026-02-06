@@ -55,7 +55,7 @@ partial class InProcessInMemStore : IEventStore
             {
                 var storeType = GetType().Name;
                 return Error.EntityExists(
-                    Resources.EventStore_ConcurrencyVerificationFailed_StreamAlreadyUpdated
+                    Resources.EventStore_Concurrency_StreamCollisionDetected
                         .Format(storeType, streamName, version));
             }
         }
