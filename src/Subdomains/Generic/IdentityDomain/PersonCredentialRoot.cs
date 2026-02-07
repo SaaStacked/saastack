@@ -138,16 +138,6 @@ public sealed class PersonCredentialRoot : AggregateRootBase
             return mfaAuthenticators.Error;
         }
 
-        if (Registration.HasValue)
-        {
-            var isEmailUnique = _emailAddressService.EnsureUniqueAsync(Registration.Value.EmailAddress, UserId, CancellationToken.None)
-                .GetAwaiter().GetResult();
-            if (!isEmailUnique)
-            {
-                return Error.RuleViolation(Resources.PersonCredentialRoot_EmailNotUnique);
-            }
-        }
-
         if (!Registration.HasValue
             && Password.IsResetInitiated)
         {
@@ -893,6 +883,13 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
     public Result<Error> SetRegistrationDetails(EmailAddress emailAddress, PersonDisplayName displayName)
     {
+        var isEmailUnique = _emailAddressService.EnsureUniqueAsync(emailAddress, UserId, CancellationToken.None)
+            .GetAwaiter().GetResult();
+        if (!isEmailUnique)
+        {
+            return Error.RuleViolation(Resources.PersonCredentialRoot_EmailNotUnique);
+        }
+        
         return RaiseChangeEvent(
             IdentityDomain.Events.PersonCredentials.RegistrationChanged(Id, emailAddress, displayName));
     }

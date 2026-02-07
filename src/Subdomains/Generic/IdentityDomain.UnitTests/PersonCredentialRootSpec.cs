@@ -146,11 +146,25 @@ public class PersonCredentialRootSpec
     }
 
     [Fact]
-    public void WhenSetRegistrationDetails_ThenSetsRegistration()
+    public void WhenSetRegistrationDetailsAndRegisteredButEmailNotUnique_ThenReturnsErrors()
     {
-        _personCredential.SetRegistrationDetails(EmailAddress.Create("auser@company.com").Value,
+        _emailAddressService.Setup(eas =>
+                eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var result = _personCredential.SetRegistrationDetails(EmailAddress.Create("auser@company.com").Value,
             PersonDisplayName.Create("adisplayname").Value);
 
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.PersonCredentialRoot_EmailNotUnique);
+    }
+    
+    [Fact]
+    public void WhenSetRegistrationDetails_ThenSetsRegistration()
+    {
+        var result = _personCredential.SetRegistrationDetails(EmailAddress.Create("auser@company.com").Value,
+            PersonDisplayName.Create("adisplayname").Value);
+
+        result.Should().BeSuccess();
         _personCredential.Registration.Value.EmailAddress.Should().Be(EmailAddress.Create("auser@company.com").Value);
         _personCredential.Registration.Value.Name.Should().Be(PersonDisplayName.Create("adisplayname").Value);
         _personCredential.Events.Last().Should().BeOfType<RegistrationChanged>();
@@ -459,19 +473,6 @@ public class PersonCredentialRootSpec
         _personCredential.CompletePasswordReset(_personCredential.Password.ResetToken, "anewpassword");
         _passwordHasherService.Verify(ph => ph.ValidatePassword("apassword", true));
         _passwordHasherService.Verify(ph => ph.ValidatePassword("anewpassword", false));
-    }
-
-    [Fact]
-    public void WhenEnsureInvariantsAndRegisteredButEmailNotUnique_ThenReturnsErrors()
-    {
-        _personCredential.SetRegistrationDetails(EmailAddress.Create("auser@company.com").Value,
-            PersonDisplayName.Create("adisplayname").Value);
-        _emailAddressService.Setup(eas => eas.EnsureUniqueAsync(It.IsAny<EmailAddress>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
-
-        var result = _personCredential.EnsureInvariants();
-
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.PersonCredentialRoot_EmailNotUnique);
     }
 
     [Fact]
