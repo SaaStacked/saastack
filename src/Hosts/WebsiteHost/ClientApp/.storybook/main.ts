@@ -1,10 +1,11 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import { mergeConfig } from 'vite';
 
+
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   staticDirs: ['../public'],
-  addons: ['@storybook/addon-links', '@storybook/addon-msw', '@storybook/addon-postcss'],
+  addons: ['msw-storybook-addon'],
   core: {
     builder: '@storybook/builder-vite'
   },
