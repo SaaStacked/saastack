@@ -59,7 +59,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     ref
   ) => {
     const baseClasses =
-      'w-full border-0 rounded-sm bg-neutral-100 dark:bg-neutral-900 outline-none text-sm text-neutral-900 dark:text-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed placeholder-neutral-500 dark:placeholder-neutral-400';
+      'w-full border-0 rounded-sm bg-neutral-100 dark:bg-neutral-800 outline-none text-sm text-neutral-900 dark:text-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed placeholder-neutral-500 dark:placeholder-neutral-400';
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'p-0 text-sm',
@@ -77,7 +77,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       <div className={`flex flex-col gap-1`} data-testid={`${componentId}_wrapper`}>
         <div className="flex flex-col">
           <div
-            className={`border rounded-sm p-3 transition-colors ${errorMessage ? 'border-error focus-within:border-error-700' : 'border-white dark:border-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700 focus-within:border-brand-primary'}`}
+            className={`border rounded-sm p-3 transition-colors ${errorMessage ? 'border-error focus-within:border-error-700' : 'border-white dark:border-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700 focus-within:border-brand-primary dark:focus-within:border-brand-primary'}`}
           >
             {labelText && (
               <label

@@ -73,7 +73,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className={`flex flex-col gap-1`} data-testid={`${componentId}_wrapper`}>
         <div className="flex flex-col">
           <div
-            className={`border rounded-md p-3 transition-all duration-150 ${errorMessage ? 'border-error focus-within:border-error-700' : 'border-white dark:border-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700 focus-within:border-brand-primary'}`}
+            className={`border rounded-md p-3 transition-all duration-150 ${errorMessage ? 'border-error focus-within:border-error-700' : 'border-white dark:border-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700 focus-within:border-brand-primary dark:focus-within:border-brand-primary'}`}
           >
             {labelText && (
               <label
