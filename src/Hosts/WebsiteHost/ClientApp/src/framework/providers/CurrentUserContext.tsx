@@ -50,7 +50,7 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
     if (profileHasDefaultOrganization()) {
       getOrganization({ path: { Id: callerProfile!.defaultOrganizationId } } as GetOrganizationData);
     }
-  }, [callerProfile?.defaultOrganizationId, isProfileSuccess, isOrganizationSuccess]);
+  }, [callerProfile?.defaultOrganizationId, isProfileSuccess]);
 
   // If we have an error fetching the current user profile,
   // and we're not already logging out, then log out now to remove any authenticated state (i.e. cookies).
