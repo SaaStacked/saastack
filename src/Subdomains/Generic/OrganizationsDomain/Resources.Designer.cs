@@ -150,15 +150,6 @@ namespace OrganizationsDomain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must be an billing administrator to perform this action.
-        /// </summary>
-        internal static string OrganizationRoot_NotBillingAdmin {
-            get {
-                return ResourceManager.GetString("OrganizationRoot_NotBillingAdmin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Must be the owner of the billing subscription or be an billing administrator to perform this action.
         /// </summary>
         internal static string OrganizationRoot_NotBillingSubscriberNorBillingAdmin {
@@ -173,15 +164,6 @@ namespace OrganizationsDomain {
         internal static string OrganizationRoot_RegisterShared_AlreadyRegistered {
             get {
                 return ResourceManager.GetString("OrganizationRoot_RegisterShared_AlreadyRegistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The email address &apos;{0}&apos; is not allowed for a shared organization, as it represents a non-business email address.
-        /// </summary>
-        internal static string OrganizationRoot_RegisterShared_DisallowedEmailDomain {
-            get {
-                return ResourceManager.GetString("OrganizationRoot_RegisterShared_DisallowedEmailDomain", resourceCulture);
             }
         }
         

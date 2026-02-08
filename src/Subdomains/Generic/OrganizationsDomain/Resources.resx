@@ -63,9 +63,6 @@
     <data name="OrganizationRoot_DeleteOrganization_MembersStillExist" xml:space="preserve">
         <value>Cannot delete this organization while any others members still exist. They must be removed from the organization first</value>
     </data>
-    <data name="OrganizationRoot_NotBillingAdmin" xml:space="preserve">
-        <value>Must be an billing administrator to perform this action</value>
-    </data>
     <data name="OrganizationRoot_CanTransferBillingSubscription_TransfereeNotBillingAdmin" xml:space="preserve">
         <value>Must be an billing administrator to have the subscription transferred</value>
     </data>
@@ -92,9 +89,6 @@
     </data>
     <data name="OrganizationRoot_MissingCreatorEmailAddress" xml:space="preserve">
         <value>CreatorEmailAddress is required to register a shared organization</value>
-    </data>
-    <data name="OrganizationRoot_RegisterShared_DisallowedEmailDomain" xml:space="preserve">
-        <value>The email address '{0}' is not allowed for a shared organization, as it represents a non-business email address</value>
     </data>
     <data name="OrganizationRoot_RegisterShared_EmailDomainReserved" xml:space="preserve">
         <value>The email domain '{0}' is already registered by another organization</value>

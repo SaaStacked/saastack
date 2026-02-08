@@ -75,7 +75,7 @@ public class OrganizationsApplicationSpec
     }
 
     [Fact]
-    public async Task WhenCreateSharedOrganizationAsyncForPerson_ThenReturnsSharedOrganization()
+    public async Task WhenCreateSharedOrganizationAsyncForCompanyEmailPerson_ThenReturnsSharedOrganization()
     {
         _caller.Setup(c => c.CallerId)
             .Returns("acallerid");
@@ -112,11 +112,62 @@ public class OrganizationsApplicationSpec
             org.Name == "aname"
             && org.Ownership == OrganizationOwnership.Shared
             && org.CreatedById == "acallerid"
+            && org.EmailDomain.ValueOrDefault == "company.com"
             && org.Settings.Properties.Count == 2
             && org.Settings.Properties["aname"].Value.As<string>() == "avalue"
             && org.Settings.Properties["aname"].IsEncrypted == false
             && org.Settings.Properties[nameof(OrganizationRoot.EmailDomain)].Value.As<string>() == "company.com"
             && org.Settings.Properties[nameof(OrganizationRoot.EmailDomain)].IsEncrypted == false
+        ), It.IsAny<CancellationToken>()));
+        _tenantSettingsService.Verify(tss =>
+            tss.CreateForTenantAsync(_caller.Object, "anid", It.IsAny<CancellationToken>()));
+        _userProfilesService.Verify(ups =>
+            ups.GetProfilePrivateAsync(_caller.Object, "acallerid", It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenCreateSharedOrganizationAsyncForPersonalEmailPerson_ThenDoesNotSetEmailDomain()
+    {
+        _caller.Setup(c => c.CallerId)
+            .Returns("acallerid");
+        _endUsersService.Setup(eus => eus.GetUserPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EndUser
+            {
+                Id = "acallerid",
+                Classification = EndUserClassification.Person
+            });
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "acallerid",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                },
+                DisplayName = "adisplayname",
+                UserId = "auserid",
+                Classification = UserProfileClassification.Person,
+                EmailAddress = "auser@personal.com"
+            });
+
+        var result =
+            await _application.CreateSharedOrganizationAsync(_caller.Object, "aname", CancellationToken.None);
+
+        result.Value.Name.Should().Be("aname");
+        result.Value.Ownership.Should().Be(Application.Resources.Shared.OrganizationOwnership.Shared);
+        result.Value.CreatedById.Should().Be("acallerid");
+        _repository.Verify(rep => rep.SaveAsync(It.Is<OrganizationRoot>(org =>
+            org.Name == "aname"
+            && org.Ownership == OrganizationOwnership.Shared
+            && org.CreatedById == "acallerid"
+            && org.EmailDomain.HasValue == false
+            && org.Settings.Properties.Count == 1
+            && org.Settings.Properties["aname"].Value.As<string>() == "avalue"
+            && org.Settings.Properties["aname"].IsEncrypted == false
+            && !org.Settings.Properties.ContainsKey(nameof(OrganizationRoot.EmailDomain))
         ), It.IsAny<CancellationToken>()));
         _tenantSettingsService.Verify(tss =>
             tss.CreateForTenantAsync(_caller.Object, "anid", It.IsAny<CancellationToken>()));

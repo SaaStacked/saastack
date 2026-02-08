@@ -22,7 +22,7 @@ public delegate Task<Result<Error>> DeleteAction(Identifier deleterId);
 
 public sealed class OrganizationRoot : AggregateRootBase
 {
-    private static readonly IReadOnlySet<string> DisallowedEmailProviderDomains = new HashSet<string>
+    private static readonly IReadOnlySet<string> PersonalEmailProviderDomains = new HashSet<string>
     {
         // Major free email services
         "gmail.com",
@@ -71,7 +71,8 @@ public sealed class OrganizationRoot : AggregateRootBase
         "fastmail.com",
         "hushmail.com",
         "inbox.com",
-        "email.com"
+        "email.com",
+        "personal.com"
     };
     private readonly IOrganizationEmailDomainService _emailDomainService;
     private readonly ITenantSettingService _tenantSettingService;
@@ -516,7 +517,7 @@ public sealed class OrganizationRoot : AggregateRootBase
 
         var otherMembers = Memberships.Members
             .Select(m => m.UserId)
-            .Except(new[] { deleterId })
+            .Except([deleterId])
             .ToList();
         if (otherMembers.HasAny())
         {
@@ -579,12 +580,13 @@ public sealed class OrganizationRoot : AggregateRootBase
         }
 
         var emailDomain = creatorEmailAddress.Value.GetEmailDomain();
-        if (DisallowedEmailProviderDomains.ContainsIgnoreCase(emailDomain))
+        if (PersonalEmailProviderDomains.ContainsIgnoreCase(emailDomain))
         {
-            return Error.PreconditionViolation(
-                Resources.OrganizationRoot_RegisterShared_DisallowedEmailDomain.Format(emailDomain));
+            // Personal email addresses will not set an email domain
+            return Result.Ok;
         }
 
+        // Company email addresses
         var isUnique = await _emailDomainService.EnsureUniqueAsync(emailDomain, Id, cancellationToken);
         if (!isUnique)
         {
