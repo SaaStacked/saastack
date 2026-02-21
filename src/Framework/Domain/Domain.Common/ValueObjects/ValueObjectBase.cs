@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Common;
 using Common.Extensions;
 using Domain.Interfaces.ValueObjects;
@@ -139,6 +141,28 @@ public abstract partial class ValueObjectBase<TValueObject> : IValueObject
             .ToList();
     }
 
+    protected static Dictionary<string, Optional<string>> RehydrateToStringDictionary(string hydratedValue)
+    {
+        return Rehydrate<Dictionary<string, object>>(hydratedValue)
+            .ToDictionary(pair => pair.Key, pair =>
+            {
+                if (pair.Value.NotExists())
+                {
+                    return Optional<string>.None;
+                }
+
+                var value = pair.Value.ToString();
+                if (value.NotExists())
+                {
+                    return Optional<string>.None;
+                }
+
+                return value.Equals(NullValue)
+                    ? Optional<string>.None
+                    : new Optional<string>(value);
+            });
+    }
+
     private static object DehydrateInternal(object? value)
     {
         if (value is null)
@@ -161,7 +185,6 @@ public abstract partial class ValueObjectBase<TValueObject> : IValueObject
             //Unpack any Optional wrappers
             return DehydrateInternal(descriptor.ContainedValue);
         }
-        
 
         if (value is IDehydratableValueObject valueObject)
         {
@@ -177,6 +200,40 @@ public abstract partial class ValueObjectBase<TValueObject> : IValueObject
                 .ToList();
         }
 
+        if (IsDictionaryOfStringKeyAndValueObjectValue(value, out var dictionary))
+        {
+            return dictionary
+                .ToDictionary(pair => pair.Key, pair => pair.Value.Dehydrate());
+        }
+
         return value;
+
+        static bool IsDictionaryOfStringKeyAndValueObjectValue(object? value,
+            [NotNullWhen(true)] out IDictionary<string, IDehydratableValueObject>? dictionary)
+        {
+            dictionary = null;
+            if (value.NotExists())
+            {
+                return false;
+            }
+
+            var isDictionary = value.GetType().GetInterfaces().Any(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == typeof(IDictionary<,>) &&
+                i.GetGenericArguments()[0] == typeof(string) &&
+                typeof(IDehydratableValueObject).IsAssignableFrom(i.GetGenericArguments()[1]));
+            if (!isDictionary)
+            {
+                return false;
+            }
+
+            var plainDictionary = (value as IDictionary)!;
+            dictionary = plainDictionary.Keys.Cast<string>()
+                .Where(key =>
+                    key.Exists() && plainDictionary[key].Exists() && plainDictionary[key] is IDehydratableValueObject)
+                .ToDictionary(key => key, key => (IDehydratableValueObject)plainDictionary[key]!);
+
+            return true;
+        }
     }
 }
