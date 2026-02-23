@@ -52,6 +52,20 @@ export const useFormatters = () => {
       return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(date);
     },
 
+    formatTime: (date: Date | null | undefined, options?: Intl.DateTimeFormatOptions): string => {
+      if (!date) {
+        return '-';
+      }
+
+      const defaultOptions: Intl.DateTimeFormatOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: timezone
+      };
+
+      return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(date);
+    },
+
     formatDateTime: (date: Date | null | undefined): string => {
       if (!date) {
         return '-';

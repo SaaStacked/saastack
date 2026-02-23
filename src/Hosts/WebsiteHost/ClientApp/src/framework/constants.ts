@@ -1,5 +1,6 @@
 import { UserProfileClassification, UserProfileForCaller } from './api/apiHost1';
 
+
 export const anonymousUserId = 'xxx_anonymous0000000000000';
 export const anonymousUser = {
   id: anonymousUserId,
@@ -65,4 +66,5 @@ export namespace RoutePaths {
   export const Organizations = '/organizations';
   export const OrganizationsNew = '/organizations/new';
   export const OrganizationsEdit = '/organizations/:id';
+  export const OrganizationOnboarding = '/onboarding';
 }

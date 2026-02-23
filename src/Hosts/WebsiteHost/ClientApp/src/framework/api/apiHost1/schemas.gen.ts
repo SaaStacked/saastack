@@ -28,6 +28,79 @@ export const APIKeySchema = {
     additionalProperties: false
 } as const;
 
+export const ApiHealthCheckResponseSchema = {
+    required: [
+        'health'
+    ],
+    type: 'object',
+    properties: {
+        health: {
+            $ref: '#/components/schemas/ApiHostHealth'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ApiHostHealthSchema = {
+    required: [
+        'name',
+        'status'
+    ],
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string'
+        },
+        status: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ApiStatisticsSchema = {
+    required: [
+        'apiVersion',
+        'baseUrl',
+        'methods',
+        'name',
+        'total'
+    ],
+    type: 'object',
+    properties: {
+        apiVersion: {
+            type: 'string'
+        },
+        baseUrl: {
+            type: 'string'
+        },
+        methods: {
+            $ref: '#/components/schemas/MethodGroupStatistics'
+        },
+        name: {
+            type: 'string'
+        },
+        total: {
+            type: 'integer',
+            format: 'int32'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ApiStatisticsResponseSchema = {
+    required: [
+        'statistics'
+    ],
+    type: 'object',
+    properties: {
+        statistics: {
+            $ref: '#/components/schemas/ApiStatistics'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const AssignPlatformRolesRequestSchema = {
     required: [
         'id'
@@ -567,6 +640,14 @@ export const ChangeSubscriptionPlanRequestSchema = {
             nullable: true
         }
     },
+    additionalProperties: false
+} as const;
+
+export const CompleteOnboardingWorkflowRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
     additionalProperties: false
 } as const;
 
@@ -1295,6 +1376,34 @@ export const EndUserStatusSchema = {
     type: 'string'
 } as const;
 
+export const EndpointStatisticSchema = {
+    required: [
+        'description',
+        'path',
+        'tags'
+    ],
+    type: 'object',
+    properties: {
+        description: {
+            type: 'string'
+        },
+        path: {
+            type: 'string'
+        },
+        tags: {
+            type: 'array',
+            items: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const EventNotificationSchema = {
     required: [
         'aggregateTypeFullName',
@@ -1709,6 +1818,19 @@ export const GetOAuth2ClientWithSecretsResponseSchema = {
     additionalProperties: false
 } as const;
 
+export const GetOnboardingResponseSchema = {
+    required: [
+        'workflow'
+    ],
+    type: 'object',
+    properties: {
+        workflow: {
+            $ref: '#/components/schemas/OrganizationOnboardingWorkflow'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GetOrganizationResponseSchema = {
     required: [
         'organization'
@@ -1785,6 +1907,19 @@ export const GetProfileResponseSchema = {
     additionalProperties: false
 } as const;
 
+export const GetSharedOrganizationForCallerEmailDomainResponseSchema = {
+    required: [
+        'organization'
+    ],
+    type: 'object',
+    properties: {
+        organization: {
+            $ref: '#/components/schemas/Organization'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GetSubscriptionResponseSchema = {
     required: [
         'subscription'
@@ -1819,23 +1954,6 @@ export const GetUserInfoForCallerResponseSchema = {
     properties: {
         user: {
             $ref: '#/components/schemas/OpenIdConnectUserInfo'
-        }
-    },
-    additionalProperties: false
-} as const;
-
-export const HealthCheckResponseSchema = {
-    required: [
-        'name',
-        'status'
-    ],
-    type: 'object',
-    properties: {
-        name: {
-            type: 'string'
-        },
-        status: {
-            type: 'string'
         }
     },
     additionalProperties: false
@@ -1884,6 +2002,20 @@ export const ImageSchema = {
         },
         id: {
             type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const InitiateOnboardingWorkflowRequestSchema = {
+    required: [
+        'id',
+        'workflow'
+    ],
+    type: 'object',
+    properties: {
+        workflow: {
+            $ref: '#/components/schemas/OrganizationOnboardingWorkflowSchema'
         }
     },
     additionalProperties: false
@@ -2384,6 +2516,60 @@ export const MembershipSchema = {
     additionalProperties: false
 } as const;
 
+export const MethodGroupEndpointStatisticsSchema = {
+    required: [
+        'total'
+    ],
+    type: 'object',
+    properties: {
+        endpoints: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/EndpointStatistic'
+            }
+        },
+        total: {
+            type: 'integer',
+            format: 'int32'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const MethodGroupStatisticsSchema = {
+    required: [
+        'deletes',
+        'gets',
+        'patches',
+        'posts',
+        'puts',
+        'total'
+    ],
+    type: 'object',
+    properties: {
+        deletes: {
+            $ref: '#/components/schemas/MethodGroupEndpointStatistics'
+        },
+        gets: {
+            $ref: '#/components/schemas/MethodGroupEndpointStatistics'
+        },
+        patches: {
+            $ref: '#/components/schemas/MethodGroupEndpointStatistics'
+        },
+        posts: {
+            $ref: '#/components/schemas/MethodGroupEndpointStatistics'
+        },
+        puts: {
+            $ref: '#/components/schemas/MethodGroupEndpointStatistics'
+        },
+        total: {
+            type: 'integer',
+            format: 'int32'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const MigrateSubscriptionRequestSchema = {
     required: [
         'id'
@@ -2417,6 +2603,39 @@ export const MigrateSubscriptionResponseSchema = {
     properties: {
         subscription: {
             $ref: '#/components/schemas/Subscription'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const MoveBackWorkflowStepRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
+    additionalProperties: false
+} as const;
+
+export const MoveForwardWorkflowStepRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
+    properties: {
+        nextStepId: {
+            type: 'string',
+            nullable: true
+        },
+        values: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            },
+            nullable: true
         }
     },
     additionalProperties: false
@@ -3003,6 +3222,7 @@ export const OrganizationSchema = {
         'createdById',
         'id',
         'name',
+        'onboardingStatus',
         'ownership'
     ],
     type: 'object',
@@ -3021,6 +3241,9 @@ export const OrganizationSchema = {
         },
         id: {
             type: 'string'
+        },
+        onboardingStatus: {
+            $ref: '#/components/schemas/OrganizationOnboardingStatus'
         }
     },
     additionalProperties: false
@@ -3083,6 +3306,295 @@ export const OrganizationMemberSchema = {
         },
         id: {
             type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingBranchConditionSchemaSchema = {
+    required: [
+        'field',
+        'operator',
+        'value'
+    ],
+    type: 'object',
+    properties: {
+        field: {
+            type: 'string'
+        },
+        operator: {
+            $ref: '#/components/schemas/OrganizationOnboardingBranchConditionSchemaOperator'
+        },
+        value: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingBranchConditionSchemaOperatorSchema = {
+    enum: [
+        'equals',
+        'contains',
+        'greaterThan',
+        'lessThan'
+    ],
+    type: 'string'
+} as const;
+
+export const OrganizationOnboardingBranchSchemaSchema = {
+    required: [
+        'condition',
+        'id',
+        'label',
+        'nextStepId'
+    ],
+    type: 'object',
+    properties: {
+        condition: {
+            $ref: '#/components/schemas/OrganizationOnboardingBranchConditionSchema'
+        },
+        label: {
+            type: 'string'
+        },
+        nextStepId: {
+            type: 'string'
+        },
+        id: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingStateSchema = {
+    required: [
+        'completedWeight',
+        'currentStep',
+        'pathAhead',
+        'pathTaken',
+        'progressPercentage',
+        'startedAt',
+        'status',
+        'totalWeight',
+        'values'
+    ],
+    type: 'object',
+    properties: {
+        completedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        completedBy: {
+            type: 'string'
+        },
+        completedWeight: {
+            type: 'integer',
+            format: 'int32'
+        },
+        currentStep: {
+            $ref: '#/components/schemas/OrganizationOnboardingStep'
+        },
+        pathAhead: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/OrganizationOnboardingStep'
+            }
+        },
+        pathTaken: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/OrganizationOnboardingStep'
+            }
+        },
+        progressPercentage: {
+            type: 'integer',
+            format: 'int32'
+        },
+        startedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        status: {
+            $ref: '#/components/schemas/OrganizationOnboardingStatus'
+        },
+        totalWeight: {
+            type: 'integer',
+            format: 'int32'
+        },
+        values: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingStatusSchema = {
+    enum: [
+        'notStarted',
+        'inProgress',
+        'complete'
+    ],
+    type: 'string'
+} as const;
+
+export const OrganizationOnboardingStepSchema = {
+    required: [
+        'id',
+        'title',
+        'values',
+        'weight'
+    ],
+    type: 'object',
+    properties: {
+        enteredAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        id: {
+            type: 'string'
+        },
+        lastUpdatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string'
+        },
+        values: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        },
+        weight: {
+            type: 'integer',
+            format: 'int32'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingStepSchemaSchema = {
+    required: [
+        'id',
+        'title',
+        'type',
+        'weight'
+    ],
+    type: 'object',
+    properties: {
+        branches: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/OrganizationOnboardingBranchSchema'
+            }
+        },
+        description: {
+            type: 'string'
+        },
+        initialValues: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        },
+        nextStepId: {
+            type: 'string'
+        },
+        title: {
+            type: 'string'
+        },
+        type: {
+            $ref: '#/components/schemas/OrganizationOnboardingStepSchemaType'
+        },
+        weight: {
+            type: 'integer',
+            format: 'int32'
+        },
+        id: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingStepSchemaTypeSchema = {
+    enum: [
+        'start',
+        'normal',
+        'branch',
+        'end'
+    ],
+    type: 'string'
+} as const;
+
+export const OrganizationOnboardingWorkflowSchema = {
+    required: [
+        'id',
+        'initiatedById',
+        'organizationId',
+        'workflow'
+    ],
+    type: 'object',
+    properties: {
+        initiatedById: {
+            type: 'string'
+        },
+        organizationId: {
+            type: 'string'
+        },
+        state: {
+            $ref: '#/components/schemas/OrganizationOnboardingState'
+        },
+        workflow: {
+            $ref: '#/components/schemas/OrganizationOnboardingWorkflowSchema'
+        },
+        id: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const OrganizationOnboardingWorkflowSchemaSchema = {
+    required: [
+        'endStepId',
+        'name',
+        'startStepId',
+        'steps'
+    ],
+    type: 'object',
+    properties: {
+        endStepId: {
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        },
+        startStepId: {
+            type: 'string'
+        },
+        steps: {
+            type: 'object',
+            additionalProperties: {
+                $ref: '#/components/schemas/OrganizationOnboardingStepSchema'
+            }
         }
     },
     additionalProperties: false
@@ -3735,6 +4247,14 @@ export const ResetCredentialMfaRequestSchema = {
             nullable: true
         }
     },
+    additionalProperties: false
+} as const;
+
+export const ResetCurrentWorkflowRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
     additionalProperties: false
 } as const;
 
@@ -4575,6 +5095,27 @@ export const UnavailabilitySchema = {
     additionalProperties: false
 } as const;
 
+export const UpdateCurrentWorkflowStepRequestSchema = {
+    required: [
+        'id',
+        'values'
+    ],
+    type: 'object',
+    properties: {
+        values: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const UpdateImageRequestSchema = {
     required: [
         'id'
@@ -4670,7 +5211,7 @@ export const UserProfileSchema = {
             type: 'string'
         },
         emailAddress: {
-            type: 'string'
+            $ref: '#/components/schemas/UserProfileEmailAddress'
         },
         locale: {
             type: 'string'
@@ -4698,6 +5239,31 @@ export const UserProfileClassificationSchema = {
     enum: [
         'person',
         'machine'
+    ],
+    type: 'string'
+} as const;
+
+export const UserProfileEmailAddressSchema = {
+    required: [
+        'address',
+        'classification'
+    ],
+    type: 'object',
+    properties: {
+        address: {
+            type: 'string'
+        },
+        classification: {
+            $ref: '#/components/schemas/UserProfileEmailAddressClassification'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const UserProfileEmailAddressClassificationSchema = {
+    enum: [
+        'company',
+        'personal'
     ],
     type: 'string'
 } as const;
@@ -4730,7 +5296,7 @@ export const UserProfileForCallerSchema = {
             type: 'string'
         },
         emailAddress: {
-            type: 'string'
+            $ref: '#/components/schemas/UserProfileEmailAddress'
         },
         locale: {
             type: 'string'

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AuthenticateData, AuthenticateErrors, AuthenticateResponses, AuthorizeOAuth2Data, AuthorizeOAuth2Errors, AuthorizeOAuth2Responses, BeffeAnonymousDirectTestingOnlyData, BeffeAnonymousDirectTestingOnlyErrors, BeffeAnonymousDirectTestingOnlyResponses, BeffeAnonymousTestingOnlyData, BeffeAnonymousTestingOnlyErrors, BeffeAnonymousTestingOnlyResponses, BeffeHMacDirectTestingOnlyData, BeffeHMacDirectTestingOnlyErrors, BeffeHMacDirectTestingOnlyResponses, ConsentOAuth2ClientData, ConsentOAuth2ClientErrors, ConsentOAuth2ClientResponses, GetAllFeatureFlagsData, GetAllFeatureFlagsErrors, GetAllFeatureFlagsResponses, GetErrorData, GetErrorResponses, GetFeatureFlagForCallerData, GetFeatureFlagForCallerErrors, GetFeatureFlagForCallerResponses, HealthCheckData, HealthCheckErrors, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, RecordCrashData, RecordCrashErrors, RecordCrashResponses, RecordMeasureData, RecordMeasureErrors, RecordMeasureResponses, RecordPageViewData, RecordPageViewErrors, RecordPageViewResponses, RecordTraceData, RecordTraceErrors, RecordTraceResponses, RecordUseData, RecordUseErrors, RecordUseResponses, RefreshTokenData, RefreshTokenErrors, RefreshTokenResponses } from './types.gen';
+import type { ApiHealthCheckData, ApiHealthCheckErrors, ApiHealthCheckResponses, ApiStatisticsData, ApiStatisticsErrors, ApiStatisticsResponses, AuthenticateData, AuthenticateErrors, AuthenticateResponses, AuthorizeOAuth2Data, AuthorizeOAuth2Errors, AuthorizeOAuth2Responses, BeffeAnonymousDirectTestingOnlyData, BeffeAnonymousDirectTestingOnlyErrors, BeffeAnonymousDirectTestingOnlyResponses, BeffeAnonymousTestingOnlyData, BeffeAnonymousTestingOnlyErrors, BeffeAnonymousTestingOnlyResponses, BeffeHMacDirectTestingOnlyData, BeffeHMacDirectTestingOnlyErrors, BeffeHMacDirectTestingOnlyResponses, ConsentOAuth2ClientData, ConsentOAuth2ClientErrors, ConsentOAuth2ClientResponses, GetAllFeatureFlagsData, GetAllFeatureFlagsErrors, GetAllFeatureFlagsResponses, GetErrorData, GetErrorResponses, GetFeatureFlagForCallerData, GetFeatureFlagForCallerErrors, GetFeatureFlagForCallerResponses, LogoutData, LogoutErrors, LogoutResponses, RecordCrashData, RecordCrashErrors, RecordCrashResponses, RecordMeasureData, RecordMeasureErrors, RecordMeasureResponses, RecordPageViewData, RecordPageViewErrors, RecordPageViewResponses, RecordTraceData, RecordTraceErrors, RecordTraceResponses, RecordUseData, RecordUseErrors, RecordUseResponses, RefreshTokenData, RefreshTokenErrors, RefreshTokenResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -77,9 +77,9 @@ export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(op
 /**
  * Displays the health of the API
  *
- * (request type: HealthCheckRequest)
+ * (request type: ApiHealthCheckRequest)
  */
-export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, HealthCheckErrors, ThrowOnError>({ url: '/api/health', ...options });
+export const apiHealthCheck = <ThrowOnError extends boolean = false>(options?: Options<ApiHealthCheckData, ThrowOnError>) => (options?.client ?? client).get<ApiHealthCheckResponses, ApiHealthCheckErrors, ThrowOnError>({ url: '/api/health', ...options });
 
 export const getError = <ThrowOnError extends boolean = false>(options?: Options<GetErrorData, ThrowOnError>) => (options?.client ?? client).get<GetErrorResponses, unknown, ThrowOnError>({ url: '/error', ...options });
 
@@ -180,6 +180,13 @@ export const recordUse = <ThrowOnError extends boolean = false>(options?: Option
         ...options?.headers
     }
 });
+
+/**
+ * Displays the statistics of the API
+ *
+ * (request type: ApiStatisticsRequest)
+ */
+export const apiStatistics = <ThrowOnError extends boolean = false>(options?: Options<ApiStatisticsData, ThrowOnError>) => (options?.client ?? client).get<ApiStatisticsResponses, ApiStatisticsErrors, ThrowOnError>({ url: '/api/stats', ...options });
 
 /**
  * An example of a request that uses NO authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).

@@ -3,11 +3,15 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult } from '../../../framework/actions/Actions';
-import { ChangeOrganizationPatchResponse, ChangeOrganizationRequest, OrganizationOwnership, UserProfileClassification } from '../../../framework/api/apiHost1';
+import {
+  ChangeOrganizationPatchResponse,
+  ChangeOrganizationRequest,
+  OrganizationOwnership,
+  UserProfileClassification
+} from '../../../framework/api/apiHost1';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
-import { OrganizationEditPage } from './OrganizationEditPage';
+import { OrganizationEditPage } from './OrganizationEdit';
 import { TenantRoles } from './Organizations';
-
 
 // Mock data
 const mockOrganization = {
@@ -77,7 +81,11 @@ const mockListMembersAction: ActionResult<any, any, any> = {
   lastRequestValues: undefined
 };
 
-const mockChangeOrganizationAction: ActionResult<ChangeOrganizationRequest, any, ChangeOrganizationPatchResponse> = {
+const mockChangeDefaultOrganizationAction: ActionResult<
+  ChangeOrganizationRequest,
+  any,
+  ChangeOrganizationPatchResponse
+> = {
   execute: vi.fn(),
   isSuccess: false,
   lastSuccessResponse: undefined,
@@ -185,8 +193,8 @@ vi.mock('../actions/listMembersForOrganization', () => ({
   }
 }));
 
-vi.mock('../actions/changeOrganization', () => ({
-  ChangeOrganizationAction: () => mockChangeOrganizationAction
+vi.mock('../actions/changeDefaultOrganization', () => ({
+  ChangeDefaultOrganizationAction: () => mockChangeDefaultOrganizationAction
 }));
 
 vi.mock('../actions/changeOrganizationAvatar', () => ({
@@ -269,7 +277,7 @@ describe('Details Tab', () => {
     fireEvent.change(nameInput, { target: { value: 'anewname' } });
     fireEvent.click(screen.getByText('pages.organizations.edit.tabs.details.form.submit.label'));
 
-    await waitFor(() => expect(mockChangeOrganizationAction.execute).toHaveBeenCalled());
+    await waitFor(() => expect(mockChangeDefaultOrganizationAction.execute).toHaveBeenCalled());
   });
 });
 

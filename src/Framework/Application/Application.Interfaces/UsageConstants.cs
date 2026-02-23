@@ -53,6 +53,8 @@ public static class UsageConstants
         public const string UsedById = "UserId";
         public const string UserAgent = "UserAgent";
         public const string UserIdOverride = "UserIdOverride";
+        public const string OnboardingStepId = "StepId";
+        public const string EmailClassification = "EmailClassification";
     }
 
     public static class Events
@@ -92,6 +94,9 @@ public static class UsageConstants
                 public const string UserPasswordMfaEnabled = "User MFA Enabled";
                 public const string UserPasswordReset = "User Password Reset";
                 public const string UserProfileChanged = "User Profile Updated";
+                public const string OrganizationOnboardingStarted = "Onboarding Started";
+                public const string OrganizationOnboardingCompleted = "Onboarding Completed";
+                public const string OrganizationOnboardingStepChanged = "Onboarding Step Taken";
             }
         }
 

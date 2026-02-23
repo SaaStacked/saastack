@@ -14,6 +14,8 @@ public class Organization : IIdentifiableResource
     public OrganizationOwnership Ownership { get; set; }
 
     public required string Id { get; set; }
+
+    public required OrganizationOnboardingStatus OnboardingStatus { get; set; }
 }
 
 [UsedImplicitly]
@@ -26,6 +28,13 @@ public enum OrganizationOwnership
 {
     Shared = 0,
     Personal = 1
+}
+
+public enum OrganizationOnboardingStatus
+{
+    NotStarted = 0,
+    InProgress = 1,
+    Complete = 2
 }
 
 public class OrganizationMember : IIdentifiableResource

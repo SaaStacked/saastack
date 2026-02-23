@@ -4,6 +4,27 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | string & {};
 };
 
+export type ApiHealthCheckResponse = {
+    health: ApiHostHealth;
+};
+
+export type ApiHostHealth = {
+    name: string;
+    status: string;
+};
+
+export type ApiStatistics = {
+    apiVersion: string;
+    baseUrl: string;
+    methods: MethodGroupStatistics;
+    name: string;
+    total: number;
+};
+
+export type ApiStatisticsResponse = {
+    statistics: ApiStatistics;
+};
+
 export type AuthenticateRequest = {
     authCode?: string | null;
     codeVerifier?: string | null;
@@ -74,6 +95,12 @@ export type EmptyResponse = {
     [key: string]: never;
 };
 
+export type EndpointStatistic = {
+    description: string;
+    path: string;
+    tags: Array<string>;
+};
+
 export type FeatureFlag = {
     isEnabled: boolean;
     name: string;
@@ -87,13 +114,22 @@ export type GetFeatureFlagResponse = {
     flag: FeatureFlag;
 };
 
-export type HealthCheckResponse = {
-    name: string;
-    status: string;
-};
-
 export type LogoutRequest = {
     [key: string]: never;
+};
+
+export type MethodGroupEndpointStatistics = {
+    endpoints?: Array<EndpointStatistic>;
+    total: number;
+};
+
+export type MethodGroupStatistics = {
+    deletes: MethodGroupEndpointStatistics;
+    gets: MethodGroupEndpointStatistics;
+    patches: MethodGroupEndpointStatistics;
+    posts: MethodGroupEndpointStatistics;
+    puts: MethodGroupEndpointStatistics;
+    total: number;
 };
 
 export const OAuth2ResponseType = {
@@ -438,14 +474,14 @@ export type GetFeatureFlagForCallerResponses = {
 
 export type GetFeatureFlagForCallerResponse = GetFeatureFlagForCallerResponses[keyof GetFeatureFlagForCallerResponses];
 
-export type HealthCheckData = {
+export type ApiHealthCheckData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/api/health';
 };
 
-export type HealthCheckErrors = {
+export type ApiHealthCheckErrors = {
     /**
      * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
      */
@@ -484,16 +520,16 @@ export type HealthCheckErrors = {
     500: ProblemDetails;
 };
 
-export type HealthCheckError = HealthCheckErrors[keyof HealthCheckErrors];
+export type ApiHealthCheckError = ApiHealthCheckErrors[keyof ApiHealthCheckErrors];
 
-export type HealthCheckResponses = {
+export type ApiHealthCheckResponses = {
     /**
      * OK
      */
-    200: HealthCheckResponse;
+    200: ApiHealthCheckResponse;
 };
 
-export type HealthCheckResponse2 = HealthCheckResponses[keyof HealthCheckResponses];
+export type ApiHealthCheckResponse2 = ApiHealthCheckResponses[keyof ApiHealthCheckResponses];
 
 export type GetErrorData = {
     body?: never;
@@ -909,6 +945,65 @@ export type RecordUseResponses = {
 };
 
 export type RecordUseResponse = RecordUseResponses[keyof RecordUseResponses];
+
+export type ApiStatisticsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        Details?: boolean;
+    };
+    url: '/api/stats';
+};
+
+export type ApiStatisticsErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ApiStatisticsError = ApiStatisticsErrors[keyof ApiStatisticsErrors];
+
+export type ApiStatisticsResponses = {
+    /**
+     * OK
+     */
+    200: ApiStatisticsResponse;
+};
+
+export type ApiStatisticsResponse2 = ApiStatisticsResponses[keyof ApiStatisticsResponses];
 
 export type BeffeAnonymousDirectTestingOnlyData = {
     body?: BeffeAnonymousDirectTestingOnlyRequest;

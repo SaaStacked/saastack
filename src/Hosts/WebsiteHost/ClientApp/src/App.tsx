@@ -25,10 +25,12 @@ import { PasswordResetCompletePage } from './subDomains/identity/pages/PasswordR
 import { PasswordResetRequestPage } from './subDomains/identity/pages/PasswordResetInitiate.tsx';
 import { PasswordResetRedirectPage } from './subDomains/identity/pages/PasswordResetRedirect.tsx';
 import { SsoLoginPage } from './subDomains/identity/pages/SsoLoginPage.tsx';
-import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEditPage.tsx';
-import { OrganizationNewPage } from './subDomains/organizations/pages/OrganizationNewPage.tsx';
-import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManagePage.tsx';
+import { OrganizationEditPage } from './subDomains/organizations/pages/OrganizationEdit.tsx';
+import { OrganizationNewPage } from './subDomains/organizations/pages/OrganizationNew.tsx';
+import { OrganizationOnboardingPage } from './subDomains/organizations/pages/OrganizationOnboarding.tsx';
+import { OrganizationsManagePage } from './subDomains/organizations/pages/OrganizationsManage.tsx';
 import { ProfilesManagePage } from './subDomains/userProfiles/pages/ProfilesManage.tsx';
+
 
 const AuthenticatedOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) =>
   isAuthenticated ? <Outlet /> : <Navigate to={RoutePaths.Home} replace />;
@@ -39,6 +41,7 @@ const AnonymousOnlyRoutes: React.FC<{ isAuthenticated: boolean }> = ({ isAuthent
 export const MainMenuExcludedRoutes = [
   // Authenticated only routes
   RoutePaths.OAuth2ConsentClient,
+  RoutePaths.OrganizationOnboarding,
 
   // Anonymous only routes
   RoutePaths.CredentialsLogin,
@@ -68,6 +71,7 @@ const PageTitles: Record<string, string | { key: string; params: any }> = {
   [RoutePaths.Organizations]: 'pages.organizations.manage.title',
   [RoutePaths.OrganizationsNew]: 'pages.organizations.new.title',
   [RoutePaths.OrganizationsEdit]: 'pages.organizations.edit.title',
+  [RoutePaths.OrganizationOnboarding]: 'pages.organizations.onboarding.title',
 
   // Anonymous only routes
   [RoutePaths.CredentialsLogin]: 'pages.identity.credentials_login.title',
@@ -106,7 +110,7 @@ const App: React.FC = () => {
     }
   }, [location, ready, translate]);
 
-  if (isExecuting || ready === false) {
+  if (isExecuting || !ready) {
     return <Loader type="page" message="Loading" />;
   }
 
@@ -124,6 +128,7 @@ const App: React.FC = () => {
             <Route path={RoutePaths.Organizations} element={<OrganizationsManagePage />} />
             <Route path={RoutePaths.OrganizationsNew} element={<OrganizationNewPage />} />
             <Route path={RoutePaths.OrganizationsEdit} element={<OrganizationEditPage />} />
+            <Route path={RoutePaths.OrganizationOnboarding} element={<OrganizationOnboardingPage />} />
           </Route>
 
           {/* Anonymous only routes */}

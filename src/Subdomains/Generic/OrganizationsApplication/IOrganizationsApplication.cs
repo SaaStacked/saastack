@@ -52,4 +52,7 @@ public partial interface IOrganizationsApplication
 
     Task<Result<Organization, Error>> UnInviteMemberFromOrganizationAsync(ICallerContext caller, string id,
         string userId, CancellationToken cancellationToken);
+
+    Task<Result<Organization, Error>> GetSharedOrganizationForCallerEmailDomainAsync(ICallerContext caller,
+        CancellationToken cancellationToken);
 }

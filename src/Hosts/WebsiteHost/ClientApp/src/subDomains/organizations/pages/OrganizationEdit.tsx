@@ -31,28 +31,17 @@ import Tag from '../../../framework/components/tag/Tag.tsx';
 import { RoutePaths } from '../../../framework/constants.ts';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { UploadAvatarErrors } from '../../userProfiles/actions/changeProfileAvatar.ts';
-import {
-  AssignRolesToOrganizationAction,
-  AssignRolesToOrganizationErrorCodes
-} from '../actions/assignRolesToOrganization.ts';
-import { ChangeOrganizationAction } from '../actions/changeOrganization.ts';
-import {
-  ChangeOrganizationAvatarAction,
-  ChangeOrganizationAvatarRequest
-} from '../actions/changeOrganizationAvatar.ts';
+import { AssignRolesToOrganizationAction, AssignRolesToOrganizationErrorCodes } from '../actions/assignRolesToOrganization.ts';
+import { ChangeDefaultOrganizationAction } from '../actions/changeDefaultOrganization.ts';
+import { ChangeOrganizationAvatarAction, ChangeOrganizationAvatarRequest } from '../actions/changeOrganizationAvatar.ts';
 import { DeleteOrganizationAvatarAction } from '../actions/deleteOrganizationAvatar.ts';
 import { GetOrganizationAction, OrganizationErrorCodes } from '../actions/getOrganization.ts';
-import {
-  InviteMemberToOrganizationAction,
-  InviteMemberToOrganizationErrorCodes
-} from '../actions/inviteMemberToOrganization.ts';
-import {
-  ListMembersForOrganizationAction,
-  ListMembersForOrganizationErrorCodes
-} from '../actions/listMembersForOrganization.ts';
+import { InviteMemberToOrganizationAction, InviteMemberToOrganizationErrorCodes } from '../actions/inviteMemberToOrganization.ts';
+import { ListMembersForOrganizationAction, ListMembersForOrganizationErrorCodes } from '../actions/listMembersForOrganization.ts';
 import { UnAssignRolesFromOrganizationAction } from '../actions/unAssignRolesFromOrganization.ts';
 import { UnInviteMemberFromOrganizationAction } from '../actions/unInviteMemberFromOrganization.ts';
 import { formatRoleName, TenantRoles } from './Organizations.ts';
+
 
 export const OrganizationEditPage: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -125,7 +114,7 @@ const DetailsTab: React.FC<{
   onOrganizationChange: (organization: Organization) => void;
 }> = ({ initialOrganization, updatedOrganization, onOrganizationChange }) => {
   const { t: translate } = useTranslation();
-  const changeOrganization = ChangeOrganizationAction(initialOrganization.id ?? '');
+  const changeOrganization = ChangeDefaultOrganizationAction(initialOrganization.id ?? '');
   const changeOrganizationAvatar = ChangeOrganizationAvatarAction(initialOrganization.id);
   const deleteOrganizationAvatar = DeleteOrganizationAvatarAction(initialOrganization.id);
   const changeOrganizationAvatarTrigger = useRef<PageActionRef<ChangeOrganizationAvatarRequest>>(null);

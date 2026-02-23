@@ -1,4 +1,5 @@
 // Keep up to date with Domain.Interfaces.Authorization.TenantRoles
+
 export enum TenantRoles {
   Member = 'tnt_mem',
   Owner = 'tnt_own',

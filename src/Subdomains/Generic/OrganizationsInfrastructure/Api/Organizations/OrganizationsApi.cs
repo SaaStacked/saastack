@@ -129,6 +129,19 @@ public class OrganizationsApi : IWebApiService
     }
 #endif
 
+    public async Task<ApiGetResult<Organization, GetSharedOrganizationForCallerEmailDomainResponse>>
+        GetSharedOrganizationForCallerEmailDomain(GetSharedOrganizationForCallerEmailDomainRequest request,
+            CancellationToken cancellationToken)
+    {
+        var organization =
+            await _organizationsApplication.GetSharedOrganizationForCallerEmailDomainAsync(_callerFactory.Create(),
+                cancellationToken);
+
+        return () =>
+            organization.HandleApplicationResult<Organization, GetSharedOrganizationForCallerEmailDomainResponse>(org =>
+                new GetSharedOrganizationForCallerEmailDomainResponse { Organization = org });
+    }
+
     public async Task<ApiPostResult<Organization, InviteMemberToOrganizationResponse>> InviteMember(
         InviteMemberToOrganizationRequest request,
         CancellationToken cancellationToken)

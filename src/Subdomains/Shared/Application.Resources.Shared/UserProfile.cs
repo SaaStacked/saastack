@@ -13,7 +13,7 @@ public class UserProfile : IIdentifiableResource
 
     public required string DisplayName { get; set; }
 
-    public string? EmailAddress { get; set; }
+    public UserProfileEmailAddress? EmailAddress { get; set; }
 
     public string? Locale { get; set; }
 
@@ -26,6 +26,19 @@ public class UserProfile : IIdentifiableResource
     public required string UserId { get; set; }
 
     public required string Id { get; set; }
+}
+
+public class UserProfileEmailAddress
+{
+    public required string Address { get; set; }
+
+    public required UserProfileEmailAddressClassification Classification { get; set; }
+}
+
+public enum UserProfileEmailAddressClassification
+{
+    Company = 0,
+    Personal = 1
 }
 
 public class UserProfileForCaller : UserProfileWithDefaultMembership

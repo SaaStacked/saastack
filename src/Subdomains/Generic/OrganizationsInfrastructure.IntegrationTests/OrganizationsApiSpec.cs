@@ -851,8 +851,41 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members2.Content.Value.Members[0].Roles.Should().ContainInOrder(TenantRoles.BillingAdmin.Name,
             TenantRoles.Owner.Name, TenantRoles.Member.Name);
     }
-    
-    
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAndSharedOrgNotExists_ThenReturnsNotFound()
+    {
+        var login = await LoginUserAsync();
+
+        var result2 = await Api.GetAsync(new GetSharedOrganizationForCallerEmailDomainRequest(),
+            req => req.SetJWTBearerToken(login.AccessToken));
+
+        result2.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAndSharedOrgExists_ThenReturnsSharedOrganization()
+    {
+        var login = await LoginUserAsync();
+
+        var result = await Api.PostAsync(new CreateOrganizationRequest
+        {
+            Name = "aname"
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        var organizationId = result.Content.Value.Organization.Id;
+        result.Content.Value.Organization.CreatedById.Should().Be(login.User.Id);
+        result.Content.Value.Organization.Name.Should().Be("aname");
+        result.Content.Value.Organization.Ownership.Should().Be(OrganizationOwnership.Shared);
+
+        login = await ReAuthenticateUserAsync(login);
+        login.DefaultOrganizationId.Should().Be(organizationId);
+
+        var result2 = await Api.GetAsync(new GetSharedOrganizationForCallerEmailDomainRequest(),
+            req => req.SetJWTBearerToken(login.AccessToken));
+
+        result2.Content.Value.Organization.Id.Should().Be(organizationId);
+    }
 
     private static string CreateRandomEmailAddress()
     {

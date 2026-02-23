@@ -12,6 +12,27 @@ export type ApiKey = {
     id: string;
 };
 
+export type ApiHealthCheckResponse = {
+    health: ApiHostHealth;
+};
+
+export type ApiHostHealth = {
+    name: string;
+    status: string;
+};
+
+export type ApiStatistics = {
+    apiVersion: string;
+    baseUrl: string;
+    methods: MethodGroupStatistics;
+    name: string;
+    total: number;
+};
+
+export type ApiStatisticsResponse = {
+    statistics: ApiStatistics;
+};
+
 export type AssignPlatformRolesRequest = {
     roles?: Array<string> | null;
 };
@@ -156,6 +177,10 @@ export type ChangeProfileRequest = {
 
 export type ChangeSubscriptionPlanRequest = {
     planId?: string | null;
+};
+
+export type CompleteOnboardingWorkflowRequest = {
+    [key: string]: never;
 };
 
 export type CompletePasswordResetRequest = {
@@ -374,6 +399,12 @@ export const EndUserStatus = { UNREGISTERED: 'unregistered', REGISTERED: 'regist
 
 export type EndUserStatus = typeof EndUserStatus[keyof typeof EndUserStatus];
 
+export type EndpointStatistic = {
+    description: string;
+    path: string;
+    tags: Array<string>;
+};
+
 export type EventNotification = {
     aggregateTypeFullName: string;
     eventJsonData: string;
@@ -492,6 +523,10 @@ export type GetOAuth2ClientWithSecretsResponse = {
     client: OAuth2ClientWithSecrets;
 };
 
+export type GetOnboardingResponse = {
+    workflow: OrganizationOnboardingWorkflow;
+};
+
 export type GetOrganizationResponse = {
     organization: Organization;
 };
@@ -515,6 +550,10 @@ export type GetProfileResponse = {
     profile: UserProfile;
 };
 
+export type GetSharedOrganizationForCallerEmailDomainResponse = {
+    organization: Organization;
+};
+
 export type GetSubscriptionResponse = {
     subscription: SubscriptionWithPlan;
 };
@@ -525,11 +564,6 @@ export type GetTenantedTestingOnlyResponse = {
 
 export type GetUserInfoForCallerResponse = {
     user: OpenIdConnectUserInfo;
-};
-
-export type HealthCheckResponse = {
-    name: string;
-    status: string;
 };
 
 export type Identity = {
@@ -544,6 +578,10 @@ export type Image = {
     filename?: string;
     url: string;
     id: string;
+};
+
+export type InitiateOnboardingWorkflowRequest = {
+    workflow: OrganizationOnboardingWorkflowSchema;
 };
 
 export type InitiatePasswordResetRequest = {
@@ -682,6 +720,20 @@ export type Membership = {
     id: string;
 };
 
+export type MethodGroupEndpointStatistics = {
+    endpoints?: Array<EndpointStatistic>;
+    total: number;
+};
+
+export type MethodGroupStatistics = {
+    deletes: MethodGroupEndpointStatistics;
+    gets: MethodGroupEndpointStatistics;
+    patches: MethodGroupEndpointStatistics;
+    posts: MethodGroupEndpointStatistics;
+    puts: MethodGroupEndpointStatistics;
+    total: number;
+};
+
 export type MigrateSubscriptionRequest = {
     providerName?: string | null;
     providerState?: {
@@ -691,6 +743,17 @@ export type MigrateSubscriptionRequest = {
 
 export type MigrateSubscriptionResponse = {
     subscription: Subscription;
+};
+
+export type MoveBackWorkflowStepRequest = {
+    [key: string]: never;
+};
+
+export type MoveForwardWorkflowStepRequest = {
+    nextStepId?: string | null;
+    values?: {
+        [key: string]: string;
+    } | null;
 };
 
 export type NotifyDomainEventRequest = {
@@ -861,6 +924,7 @@ export type Organization = {
     name: string;
     ownership: OrganizationOwnership;
     id: string;
+    onboardingStatus: OrganizationOnboardingStatus;
 };
 
 export type OrganizationMember = {
@@ -874,6 +938,102 @@ export type OrganizationMember = {
     roles: Array<string>;
     userId: string;
     id: string;
+};
+
+export type OrganizationOnboardingBranchConditionSchema = {
+    field: string;
+    operator: OrganizationOnboardingBranchConditionSchemaOperator;
+    value: string;
+};
+
+export const OrganizationOnboardingBranchConditionSchemaOperator = {
+    EQUALS: 'equals',
+    CONTAINS: 'contains',
+    GREATER_THAN: 'greaterThan',
+    LESS_THAN: 'lessThan'
+} as const;
+
+export type OrganizationOnboardingBranchConditionSchemaOperator = typeof OrganizationOnboardingBranchConditionSchemaOperator[keyof typeof OrganizationOnboardingBranchConditionSchemaOperator];
+
+export type OrganizationOnboardingBranchSchema = {
+    condition: OrganizationOnboardingBranchConditionSchema;
+    label: string;
+    nextStepId: string;
+    id: string;
+};
+
+export type OrganizationOnboardingState = {
+    completedAt?: Date;
+    completedBy?: string;
+    completedWeight: number;
+    currentStep: OrganizationOnboardingStep;
+    pathAhead: Array<OrganizationOnboardingStep>;
+    pathTaken: Array<OrganizationOnboardingStep>;
+    progressPercentage: number;
+    startedAt: Date;
+    status: OrganizationOnboardingStatus;
+    totalWeight: number;
+    values: {
+        [key: string]: string;
+    };
+};
+
+export const OrganizationOnboardingStatus = {
+    NOT_STARTED: 'notStarted',
+    IN_PROGRESS: 'inProgress',
+    COMPLETE: 'complete'
+} as const;
+
+export type OrganizationOnboardingStatus = typeof OrganizationOnboardingStatus[keyof typeof OrganizationOnboardingStatus];
+
+export type OrganizationOnboardingStep = {
+    enteredAt?: Date;
+    id: string;
+    lastUpdatedAt?: Date;
+    title: string;
+    values: {
+        [key: string]: string;
+    };
+    weight: number;
+};
+
+export type OrganizationOnboardingStepSchema = {
+    branches?: Array<OrganizationOnboardingBranchSchema>;
+    description?: string;
+    initialValues?: {
+        [key: string]: string;
+    };
+    nextStepId?: string;
+    title: string;
+    type: OrganizationOnboardingStepSchemaType;
+    weight: number;
+    id: string;
+};
+
+export const OrganizationOnboardingStepSchemaType = {
+    START: 'start',
+    NORMAL: 'normal',
+    BRANCH: 'branch',
+    END: 'end'
+} as const;
+
+export type OrganizationOnboardingStepSchemaType = typeof OrganizationOnboardingStepSchemaType[keyof typeof OrganizationOnboardingStepSchemaType];
+
+export type OrganizationOnboardingWorkflow = {
+    initiatedById: string;
+    organizationId: string;
+    state?: OrganizationOnboardingState;
+    workflow: OrganizationOnboardingWorkflowSchema;
+    id: string;
+};
+
+export type OrganizationOnboardingWorkflowSchema = {
+    endStepId: string;
+    name: string;
+    startStepId: string;
+    steps: {
+        [key: string]: OrganizationOnboardingStepSchema;
+    };
 };
 
 export const OrganizationOwnership = { SHARED: 'shared', PERSONAL: 'personal' } as const;
@@ -1084,6 +1244,10 @@ export type ResendPersonCredentialRegistrationConfirmationRequest = {
 
 export type ResetCredentialMfaRequest = {
     userId?: string | null;
+};
+
+export type ResetCurrentWorkflowRequest = {
+    [key: string]: never;
 };
 
 export type ScheduleMaintenanceCarRequest = {
@@ -1347,6 +1511,12 @@ export type Unavailability = {
     id: string;
 };
 
+export type UpdateCurrentWorkflowStepRequest = {
+    values: {
+        [key: string]: string;
+    };
+};
+
 export type UpdateImageRequest = {
     description?: string | null;
 };
@@ -1373,7 +1543,7 @@ export type UserProfile = {
     avatarUrl?: string;
     classification: UserProfileClassification;
     displayName: string;
-    emailAddress?: string;
+    emailAddress?: UserProfileEmailAddress;
     locale?: string;
     name: PersonName;
     phoneNumber?: string;
@@ -1386,12 +1556,21 @@ export const UserProfileClassification = { PERSON: 'person', MACHINE: 'machine' 
 
 export type UserProfileClassification = typeof UserProfileClassification[keyof typeof UserProfileClassification];
 
+export type UserProfileEmailAddress = {
+    address: string;
+    classification: UserProfileEmailAddressClassification;
+};
+
+export const UserProfileEmailAddressClassification = { COMPANY: 'company', PERSONAL: 'personal' } as const;
+
+export type UserProfileEmailAddressClassification = typeof UserProfileEmailAddressClassification[keyof typeof UserProfileEmailAddressClassification];
+
 export type UserProfileForCaller = {
     address: ProfileAddress;
     avatarUrl?: string;
     classification: UserProfileClassification;
     displayName: string;
-    emailAddress?: string;
+    emailAddress?: UserProfileEmailAddress;
     locale?: string;
     name: PersonName;
     phoneNumber?: string;
@@ -5345,14 +5524,14 @@ export type GetFeatureFlagForCallerResponses = {
 
 export type GetFeatureFlagForCallerResponse = GetFeatureFlagForCallerResponses[keyof GetFeatureFlagForCallerResponses];
 
-export type HealthCheckData = {
+export type ApiHealthCheckData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/health';
 };
 
-export type HealthCheckErrors = {
+export type ApiHealthCheckErrors = {
     /**
      * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
      */
@@ -5391,16 +5570,16 @@ export type HealthCheckErrors = {
     500: ProblemDetails;
 };
 
-export type HealthCheckError = HealthCheckErrors[keyof HealthCheckErrors];
+export type ApiHealthCheckError = ApiHealthCheckErrors[keyof ApiHealthCheckErrors];
 
-export type HealthCheckResponses = {
+export type ApiHealthCheckResponses = {
     /**
      * OK
      */
-    200: HealthCheckResponse;
+    200: ApiHealthCheckResponse;
 };
 
-export type HealthCheckResponse2 = HealthCheckResponses[keyof HealthCheckResponses];
+export type ApiHealthCheckResponse2 = ApiHealthCheckResponses[keyof ApiHealthCheckResponses];
 
 export type GetIdentityForCallerData = {
     body?: never;
@@ -7184,6 +7363,714 @@ export type GetUserInfoForCallerResponses = {
 
 export type GetUserInfoForCallerResponse2 = GetUserInfoForCallerResponses[keyof GetUserInfoForCallerResponses];
 
+export type CompleteOnboardingWorkflowPatchData = {
+    body?: CompleteOnboardingWorkflowRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/complete';
+};
+
+export type CompleteOnboardingWorkflowPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The onboarding process has already been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type CompleteOnboardingWorkflowPatchError = CompleteOnboardingWorkflowPatchErrors[keyof CompleteOnboardingWorkflowPatchErrors];
+
+export type CompleteOnboardingWorkflowPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type CompleteOnboardingWorkflowPatchResponse = CompleteOnboardingWorkflowPatchResponses[keyof CompleteOnboardingWorkflowPatchResponses];
+
+export type CompleteOnboardingWorkflowPutData = {
+    body?: CompleteOnboardingWorkflowRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/complete';
+};
+
+export type CompleteOnboardingWorkflowPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The onboarding process has already been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type CompleteOnboardingWorkflowPutError = CompleteOnboardingWorkflowPutErrors[keyof CompleteOnboardingWorkflowPutErrors];
+
+export type CompleteOnboardingWorkflowPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type CompleteOnboardingWorkflowPutResponse = CompleteOnboardingWorkflowPutResponses[keyof CompleteOnboardingWorkflowPutResponses];
+
+export type GetOnboardingWorkflowData = {
+    body?: never;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding';
+};
+
+export type GetOnboardingWorkflowErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * The onboarding process has not yet been initiated
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type GetOnboardingWorkflowError = GetOnboardingWorkflowErrors[keyof GetOnboardingWorkflowErrors];
+
+export type GetOnboardingWorkflowResponses = {
+    /**
+     * OK
+     */
+    200: GetOnboardingResponse;
+};
+
+export type GetOnboardingWorkflowResponse = GetOnboardingWorkflowResponses[keyof GetOnboardingWorkflowResponses];
+
+export type UpdateCurrentWorkflowStepPatchData = {
+    body?: UpdateCurrentWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding';
+};
+
+export type UpdateCurrentWorkflowStepPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type UpdateCurrentWorkflowStepPatchError = UpdateCurrentWorkflowStepPatchErrors[keyof UpdateCurrentWorkflowStepPatchErrors];
+
+export type UpdateCurrentWorkflowStepPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type UpdateCurrentWorkflowStepPatchResponse = UpdateCurrentWorkflowStepPatchResponses[keyof UpdateCurrentWorkflowStepPatchResponses];
+
+export type UpdateCurrentWorkflowStepPutData = {
+    body?: UpdateCurrentWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding';
+};
+
+export type UpdateCurrentWorkflowStepPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type UpdateCurrentWorkflowStepPutError = UpdateCurrentWorkflowStepPutErrors[keyof UpdateCurrentWorkflowStepPutErrors];
+
+export type UpdateCurrentWorkflowStepPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type UpdateCurrentWorkflowStepPutResponse = UpdateCurrentWorkflowStepPutResponses[keyof UpdateCurrentWorkflowStepPutResponses];
+
+export type MoveBackWorkflowStepPatchData = {
+    body?: MoveBackWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/back';
+};
+
+export type MoveBackWorkflowStepPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The current step is the first step. Or, the workflow has been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type MoveBackWorkflowStepPatchError = MoveBackWorkflowStepPatchErrors[keyof MoveBackWorkflowStepPatchErrors];
+
+export type MoveBackWorkflowStepPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type MoveBackWorkflowStepPatchResponse = MoveBackWorkflowStepPatchResponses[keyof MoveBackWorkflowStepPatchResponses];
+
+export type MoveBackWorkflowStepPutData = {
+    body?: MoveBackWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/back';
+};
+
+export type MoveBackWorkflowStepPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The current step is the first step. Or, the workflow has been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type MoveBackWorkflowStepPutError = MoveBackWorkflowStepPutErrors[keyof MoveBackWorkflowStepPutErrors];
+
+export type MoveBackWorkflowStepPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type MoveBackWorkflowStepPutResponse = MoveBackWorkflowStepPutResponses[keyof MoveBackWorkflowStepPutResponses];
+
+export type MoveForwardWorkflowStepPatchData = {
+    body?: MoveForwardWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/next';
+};
+
+export type MoveForwardWorkflowStepPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The current step is the last step. Or, the workflow has been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type MoveForwardWorkflowStepPatchError = MoveForwardWorkflowStepPatchErrors[keyof MoveForwardWorkflowStepPatchErrors];
+
+export type MoveForwardWorkflowStepPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type MoveForwardWorkflowStepPatchResponse = MoveForwardWorkflowStepPatchResponses[keyof MoveForwardWorkflowStepPatchResponses];
+
+export type MoveForwardWorkflowStepPutData = {
+    body?: MoveForwardWorkflowStepRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/next';
+};
+
+export type MoveForwardWorkflowStepPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * The current step is the last step. Or, the workflow has been completed
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type MoveForwardWorkflowStepPutError = MoveForwardWorkflowStepPutErrors[keyof MoveForwardWorkflowStepPutErrors];
+
+export type MoveForwardWorkflowStepPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type MoveForwardWorkflowStepPutResponse = MoveForwardWorkflowStepPutResponses[keyof MoveForwardWorkflowStepPutResponses];
+
+export type InitiateOnboardingWorkflowData = {
+    body?: InitiateOnboardingWorkflowRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/initiate';
+};
+
+export type InitiateOnboardingWorkflowErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * The onboarding process has already been initiated
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type InitiateOnboardingWorkflowError = InitiateOnboardingWorkflowErrors[keyof InitiateOnboardingWorkflowErrors];
+
+export type InitiateOnboardingWorkflowResponses = {
+    /**
+     * Created
+     */
+    201: GetOnboardingResponse;
+};
+
+export type InitiateOnboardingWorkflowResponse = InitiateOnboardingWorkflowResponses[keyof InitiateOnboardingWorkflowResponses];
+
+export type ResetCurrentWorkflowPatchData = {
+    body?: ResetCurrentWorkflowRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/reset';
+};
+
+export type ResetCurrentWorkflowPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ResetCurrentWorkflowPatchError = ResetCurrentWorkflowPatchErrors[keyof ResetCurrentWorkflowPatchErrors];
+
+export type ResetCurrentWorkflowPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type ResetCurrentWorkflowPatchResponse = ResetCurrentWorkflowPatchResponses[keyof ResetCurrentWorkflowPatchResponses];
+
+export type ResetCurrentWorkflowPutData = {
+    body?: ResetCurrentWorkflowRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/organizations/{Id}/onboarding/reset';
+};
+
+export type ResetCurrentWorkflowPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ResetCurrentWorkflowPutError = ResetCurrentWorkflowPutErrors[keyof ResetCurrentWorkflowPutErrors];
+
+export type ResetCurrentWorkflowPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetOnboardingResponse;
+};
+
+export type ResetCurrentWorkflowPutResponse = ResetCurrentWorkflowPutResponses[keyof ResetCurrentWorkflowPutResponses];
+
 export type GetDiscoveryDocumentData = {
     body?: never;
     path?: never;
@@ -7948,6 +8835,63 @@ export type GetOrganizationSettingsResponses = {
 };
 
 export type GetOrganizationSettingsResponse2 = GetOrganizationSettingsResponses[keyof GetOrganizationSettingsResponses];
+
+export type GetSharedOrganizationForCallerEmailDomainData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/organizations/shared-email';
+};
+
+export type GetSharedOrganizationForCallerEmailDomainErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * No organization has been created for the email domain of the caller
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type GetSharedOrganizationForCallerEmailDomainError = GetSharedOrganizationForCallerEmailDomainErrors[keyof GetSharedOrganizationForCallerEmailDomainErrors];
+
+export type GetSharedOrganizationForCallerEmailDomainResponses = {
+    /**
+     * OK
+     */
+    200: GetSharedOrganizationForCallerEmailDomainResponse;
+};
+
+export type GetSharedOrganizationForCallerEmailDomainResponse2 = GetSharedOrganizationForCallerEmailDomainResponses[keyof GetSharedOrganizationForCallerEmailDomainResponses];
 
 export type ListMembersForOrganizationData = {
     body?: never;
@@ -8916,6 +9860,65 @@ export type SendSmsResponses = {
 };
 
 export type SendSmsResponse = SendSmsResponses[keyof SendSmsResponses];
+
+export type ApiStatisticsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        Details?: boolean;
+    };
+    url: '/stats';
+};
+
+export type ApiStatisticsErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ApiStatisticsError = ApiStatisticsErrors[keyof ApiStatisticsErrors];
+
+export type ApiStatisticsResponses = {
+    /**
+     * OK
+     */
+    200: ApiStatisticsResponse;
+};
+
+export type ApiStatisticsResponse2 = ApiStatisticsResponses[keyof ApiStatisticsResponses];
 
 export type CancelSubscriptionData = {
     body?: never;

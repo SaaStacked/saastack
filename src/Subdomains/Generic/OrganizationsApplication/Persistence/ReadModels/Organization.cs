@@ -1,6 +1,7 @@
 using Application.Persistence.Common;
 using Common;
 using Domain.Shared.Organizations;
+using OrganizationsDomain;
 using QueryAny;
 
 namespace OrganizationsApplication.Persistence.ReadModels;
@@ -21,6 +22,10 @@ public class Organization : ReadModelEntity
     public Optional<string> EmailDomain { get; set; }
 
     public Optional<string> Name { get; set; }
+
+    public Optional<string> OnboardingId { get; set; }
+
+    public Optional<OnboardingStatus> OnboardingStatus { get; set; }
 
     public Optional<OrganizationOwnership> Ownership { get; set; }
 

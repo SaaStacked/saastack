@@ -6,8 +6,7 @@ import {
 } from '../../../framework/api/apiHost1';
 import organizationCacheKeys from './responseCache.ts';
 
-
-export const ChangeOrganizationAction = (id: string) =>
+export const ChangeDefaultOrganizationAction = (id: string) =>
   useActionCommand<ChangeOrganizationRequest, ChangeOrganizationPatchResponse>({
     request: (request) =>
       changeOrganizationPatch({
@@ -18,5 +17,5 @@ export const ChangeOrganizationAction = (id: string) =>
           Id: id
         }
       }),
-    invalidateCacheKeys: organizationCacheKeys.organization.mutate(id)
+    invalidateCacheKeys: organizationCacheKeys.organization.switch(id)
   });

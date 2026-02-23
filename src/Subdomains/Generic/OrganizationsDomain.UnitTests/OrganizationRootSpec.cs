@@ -70,6 +70,8 @@ public class OrganizationRootSpec
         _org.Ownership.Should().Be(OrganizationOwnership.Shared);
         _org.Settings.Should().Be(Settings.Empty);
         _org.HostRegion.Should().Be(DatacenterLocations.Local);
+        _org.OnboardingStatus.Should().Be(OnboardingStatus.NotStarted);
+        _org.OnboardingId.Should().Be(Optional<Identifier>.None);
     }
 
     [Fact]
@@ -734,5 +736,86 @@ public class OrganizationRootSpec
         _org.Events.Last().Should().BeOfType<SettingCreated>();
         _emailDomainService.Verify(eds =>
             eds.EnsureUniqueAsync("company.com", _org.Id, It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public void WhenStartOnboardingByNonOwner_ThenReturnsError()
+    {
+        var result = _org.StartOnboarding("aninitiatorid".ToId(), Roles.Empty);
+
+        result.Should().BeError(ErrorCode.RoleViolation, Resources.OrganizationRoot_UserNotOrgOwner);
+    }
+
+    [Fact]
+    public void WhenStartOnboardingByOwnerAndAlreadyStarted_ThenReturnsError()
+    {
+        _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        var result = _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeError(ErrorCode.PreconditionViolation,
+            Resources.OrganizationRoot_OnboardingAlreadyInProgress);
+    }
+
+    [Fact]
+    public void WhenStartOnboardingByOwnerAndAlreadyEnded_ThenReturnsError()
+    {
+        _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+        _org.EndOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        var result = _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeError(ErrorCode.PreconditionViolation, Resources.OrganizationRoot_OnboardingAlreadyComplete);
+    }
+
+    [Fact]
+    public void WhenStartOnboardingByOwnerAndNotStarted_ThenStarts()
+    {
+        var result = _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeSuccess();
+        _org.OnboardingStatus.Should().Be(OnboardingStatus.InProgress);
+        _org.Events.Last().Should().BeOfType<OnboardingStarted>();
+    }
+
+    [Fact]
+    public void WhenEndOnboardingByNonOwner_ThenReturnsError()
+    {
+        var result = _org.EndOnboarding("aninitiatorid".ToId(), Roles.Empty);
+
+        result.Should().BeError(ErrorCode.RoleViolation, Resources.OrganizationRoot_UserNotOrgOwner);
+    }
+
+    [Fact]
+    public void WhenEndOnboardingByOwnerAndAlreadyEnded_ThenReturnsError()
+    {
+        _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+        _org.EndOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        var result = _org.EndOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeError(ErrorCode.PreconditionViolation, Resources.OrganizationRoot_OnboardingAlreadyComplete);
+    }
+
+    [Fact]
+    public void WhenEndOnboardingByOwnerAndNotInProgress_ThenEnds()
+    {
+        var result = _org.EndOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeSuccess();
+        _org.OnboardingStatus.Should().Be(OnboardingStatus.Complete);
+        _org.Events.Last().Should().BeOfType<OnboardingEnded>();
+    }
+
+    [Fact]
+    public void WhenEndOnboardingByOwnerAndInProgress_ThenEnds()
+    {
+        _org.StartOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        var result = _org.EndOnboarding("aninitiatorid".ToId(), Roles.Create(TenantRoles.Owner).Value);
+
+        result.Should().BeSuccess();
+        _org.OnboardingStatus.Should().Be(OnboardingStatus.Complete);
+        _org.Events.Last().Should().BeOfType<OnboardingEnded>();
     }
 }

@@ -34,6 +34,8 @@ public class OrganizationProjection : IReadModelProjection
                         dto.CreatedById = e.CreatedById;
                         dto.RegisteredRegion = e.HostRegion;
                         dto.BillingSubscriberId = e.CreatedById; // a useful intermediary default
+                        dto.OnboardingId = Optional<string>.None;
+                        dto.OnboardingStatus = OnboardingStatus.NotStarted;
                     },
                     cancellationToken);
 
@@ -106,6 +108,30 @@ public class OrganizationProjection : IReadModelProjection
             case Deleted e:
                 return await _organizations.HandleDeleteAsync(e.RootId, cancellationToken);
 
+            case OnboardingStarted e:
+                return await _organizations.HandleUpdateAsync(e.RootId,
+                    dto =>
+                    {
+                        dto.OnboardingId = e.OnboardingId;
+                        dto.OnboardingStatus = OnboardingStatus.InProgress;
+                    },
+                    cancellationToken);
+
+            case OnboardingEnded e:
+                return await _organizations.HandleUpdateAsync(e.RootId,
+                    dto => { dto.OnboardingStatus = OnboardingStatus.Complete; },
+                    cancellationToken);
+
+#if TESTINGONLY
+            case OnboardingReset e:
+                return await _organizations.HandleUpdateAsync(e.RootId,
+                    dto =>
+                    {
+                        dto.OnboardingId = Optional<string>.None;
+                        dto.OnboardingStatus = OnboardingStatus.NotStarted;
+                    },
+                    cancellationToken);
+#endif
             default:
                 return false;
         }

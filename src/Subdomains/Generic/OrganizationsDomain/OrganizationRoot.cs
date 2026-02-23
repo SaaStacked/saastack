@@ -92,6 +92,10 @@ public sealed class OrganizationRoot : AggregateRootBase
 
     public DisplayName Name { get; private set; } = DisplayName.Empty;
 
+    public Optional<Identifier> OnboardingId { get; private set; }
+
+    public OnboardingStatus OnboardingStatus { get; private set; } = OnboardingStatus.NotStarted;
+
     public OrganizationOwnership Ownership { get; private set; }
 
     public Settings Settings { get; private set; } = Settings.Empty;
@@ -132,6 +136,7 @@ public sealed class OrganizationRoot : AggregateRootBase
                 Ownership = created.Ownership;
                 CreatedById = created.CreatedById.ToId();
                 HostRegion = DatacenterLocations.FindOrDefault(created.HostRegion);
+                OnboardingStatus = OnboardingStatus.NotStarted;
                 return Result.Ok;
             }
 
@@ -283,6 +288,34 @@ public sealed class OrganizationRoot : AggregateRootBase
                     changed.FromSubscriberId, changed.ToSubscriberId);
                 return Result.Ok;
             }
+
+            case OnboardingStarted started:
+            {
+                OnboardingStatus = OnboardingStatus.InProgress;
+                OnboardingId = started.OnboardingId.ToId();
+                Recorder.TraceDebug(null, "Organization {Id} started onboarding, with id {OnboardingId}", Id,
+                    OnboardingId);
+                return Result.Ok;
+            }
+
+            case OnboardingEnded _:
+            {
+                OnboardingStatus = OnboardingStatus.Complete;
+                Recorder.TraceDebug(null, "Organization {Id} ended onboarding, with id {OnboardingId}", Id,
+                    OnboardingId);
+                return Result.Ok;
+            }
+
+#if TESTINGONLY
+            case OnboardingReset _:
+            {
+                OnboardingStatus = OnboardingStatus.NotStarted;
+                OnboardingId = Optional<Identifier>.None;
+                Recorder.TraceDebug(null, "Organization {Id} reset onboarding, with id {OnboardingId}", Id,
+                    OnboardingId);
+                return Result.Ok;
+            }
+#endif
 
             default:
                 return HandleUnKnownStateChangedEvent(@event);
@@ -481,6 +514,21 @@ public sealed class OrganizationRoot : AggregateRootBase
         return await onDelete(deleterId);
     }
 
+    public Result<Error> EndOnboarding(Identifier onboardingId, Roles initiatorRoles)
+    {
+        if (!IsOwner(initiatorRoles))
+        {
+            return Error.RoleViolation(Resources.OrganizationRoot_UserNotOrgOwner);
+        }
+
+        if (OnboardingStatus == OnboardingStatus.Complete)
+        {
+            return Error.PreconditionViolation(Resources.OrganizationRoot_OnboardingAlreadyComplete);
+        }
+
+        return RaiseChangeEvent(OrganizationsDomain.Events.OnboardingEnded(Id, onboardingId));
+    }
+
     public Result<Error> ForceRemoveAvatar(Identifier deleterId)
     {
         if (IsNotServiceAccount(deleterId))
@@ -596,6 +644,30 @@ public sealed class OrganizationRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(OrganizationsDomain.Events.MembershipRemoved(Id, userId));
+    }
+
+    public Result<Error> StartOnboarding(Identifier onboardingId, Roles initiatorRoles)
+    {
+        if (!IsOwner(initiatorRoles))
+        {
+            return Error.RoleViolation(Resources.OrganizationRoot_UserNotOrgOwner);
+        }
+
+        switch (OnboardingStatus)
+        {
+            case OnboardingStatus.Complete:
+                return Error.PreconditionViolation(Resources.OrganizationRoot_OnboardingAlreadyComplete);
+
+            case OnboardingStatus.InProgress:
+                return Error.PreconditionViolation(Resources.OrganizationRoot_OnboardingAlreadyInProgress);
+
+            case OnboardingStatus.NotStarted:
+            default:
+                // desired
+                break;
+        }
+
+        return RaiseChangeEvent(OrganizationsDomain.Events.OnboardingStarted(Id, onboardingId));
     }
 
     public Result<Error> SubscribeBilling(Identifier subscriptionId, Identifier subscriberId)
@@ -755,4 +827,24 @@ public sealed class OrganizationRoot : AggregateRootBase
         return IsBillingSubscriber(userId)
                || roles.HasRole(TenantRoles.BillingAdmin);
     }
+
+#if TESTINGONLY
+    public Result<Error> ResetOnboarding()
+    {
+        switch (OnboardingStatus)
+        {
+            case OnboardingStatus.NotStarted:
+                return Result.Ok;
+
+            case OnboardingStatus.InProgress:
+            case OnboardingStatus.Complete:
+
+            default:
+                // desired
+                break;
+        }
+
+        return RaiseChangeEvent(OrganizationsDomain.Events.OnboardingReset(Id));
+    }
+#endif
 }

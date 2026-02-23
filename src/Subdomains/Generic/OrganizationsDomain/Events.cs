@@ -1,9 +1,11 @@
 using Common;
 using Domain.Common.ValueObjects;
 using Domain.Events.Shared.Organizations;
+using Domain.Events.Shared.Organizations.Onboarding;
 using Domain.Shared;
 using Domain.Shared.Organizations;
 using Created = Domain.Events.Shared.Organizations.Created;
+using Deleted = Domain.Events.Shared.Organizations.Deleted;
 using MembershipAdded = Domain.Events.Shared.Organizations.MembershipAdded;
 using MembershipRemoved = Domain.Events.Shared.Organizations.MembershipRemoved;
 
@@ -111,6 +113,29 @@ public static class Events
         };
     }
 
+    public static OnboardingEnded OnboardingEnded(Identifier id, Identifier onboardingId)
+    {
+        return new OnboardingEnded(id)
+        {
+            OnboardingId = onboardingId
+        };
+    }
+
+    public static OnboardingStarted OnboardingStarted(Identifier id, Identifier onboardingId)
+    {
+        return new OnboardingStarted(id)
+        {
+            OnboardingId = onboardingId
+        };
+    }
+
+#if TESTINGONLY
+    public static OnboardingReset OnboardingReset(Identifier id)
+    {
+        return new OnboardingReset(id);
+    }
+#endif
+
     public static RoleAssigned RoleAssigned(Identifier id, Identifier assignerId, Identifier userId, Role role)
     {
         return new RoleAssigned(id)
@@ -155,5 +180,60 @@ public static class Events
             ToType = toType,
             IsEncrypted = isEncrypted
         };
+    }
+
+    public static class Onboarding
+    {
+        public static Completed Completed(Identifier id, Identifier organizationId, string completedBy)
+        {
+            return new Completed(id)
+            {
+                OrganizationId = organizationId,
+                CompletedBy = completedBy
+            };
+        }
+
+        public static Domain.Events.Shared.Organizations.Onboarding.Created Created(Identifier id,
+            Identifier organizationId,
+            Identifier initiatedBy)
+        {
+            return new Domain.Events.Shared.Organizations.Onboarding.Created(id)
+            {
+                OrganizationId = organizationId,
+                InitiatedById = initiatedBy
+            };
+        }
+
+        public static StepStateChanged StepStateChanged(Identifier id,
+            Identifier organizationId, string stepId, StringNameValues values)
+        {
+            return new StepStateChanged(id)
+            {
+                OrganizationId = organizationId,
+                CurrentStepId = stepId,
+                Values = new Dictionary<string, string>(values.Items)
+            };
+        }
+
+        public static StepNavigated StepNavigated(Identifier id, Identifier organizationId, string fromStepId,
+            string toStepId, Identifier navigatedById)
+        {
+            return new StepNavigated(id)
+            {
+                OrganizationId = organizationId,
+                FromStepId = fromStepId,
+                ToStepId = toStepId,
+                NavigatedById = navigatedById
+            };
+        }
+
+#if TESTINGONLY
+        // ReSharper disable once MemberHidesStaticFromOuterClass
+        public static Domain.Events.Shared.Organizations.Onboarding.Deleted Deleted(Identifier id,
+            Identifier deletedById)
+        {
+            return new Domain.Events.Shared.Organizations.Onboarding.Deleted(id, deletedById);
+        }
+#endif
     }
 }

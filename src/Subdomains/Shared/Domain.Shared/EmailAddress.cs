@@ -43,9 +43,12 @@ public sealed class EmailAddress : SingleValueObjectBase<EmailAddress, string>
     ///     Returns the email domain of the specified <see cref="emailAddress" />.
     /// </summary>
     [SkipImmutabilityCheck]
-    public string GetEmailDomain()
+    public EmailDomain GetEmailDomain()
     {
-        return Value.Split('@')[1];
+        var domainPart = Value.Split('@')[1];
+        var domain = EmailDomain.Create(domainPart);
+
+        return domain.Value; // assume cannot be invalid
     }
 
     [SkipImmutabilityCheck]

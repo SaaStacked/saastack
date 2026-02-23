@@ -21,6 +21,7 @@ namespace OrganizationsApplication;
 
 public partial class OrganizationsApplication : IOrganizationsApplication
 {
+    private readonly IOrganizationEmailDomainService _emailDomainService;
     private readonly IEndUsersService _endUsersService;
     private readonly IIdentifierFactory _identifierFactory;
     private readonly IImagesService _imagesService;
@@ -30,12 +31,12 @@ public partial class OrganizationsApplication : IOrganizationsApplication
     private readonly ITenantSettingService _tenantSettingService;
     private readonly ITenantSettingsService _tenantSettingsService;
     private readonly IUserProfilesService _userProfilesService;
-    private readonly IOrganizationEmailDomainService _emailDomainService;
 
     public OrganizationsApplication(IRecorder recorder, IIdentifierFactory identifierFactory,
         ITenantSettingsService tenantSettingsService, ITenantSettingService tenantSettingService,
         IEndUsersService endUsersService, IImagesService imagesService, ISubscriptionsService subscriptionService,
-        IUserProfilesService userProfilesService, IOrganizationEmailDomainService emailDomainService, IOrganizationRepository repository)
+        IUserProfilesService userProfilesService, IOrganizationEmailDomainService emailDomainService,
+        IOrganizationRepository repository)
     {
         _recorder = recorder;
         _identifierFactory = identifierFactory;
@@ -410,6 +411,60 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         return settings.ToSettings();
     }
 
+    public async Task<Result<Organization, Error>> GetSharedOrganizationForCallerEmailDomainAsync(ICallerContext caller,
+        CancellationToken cancellationToken)
+    {
+        if (!caller.IsAuthenticated)
+        {
+            return Error.NotAuthenticated();
+        }
+
+        var profile = await _userProfilesService.GetProfilePrivateAsync(caller, caller.CallerId, cancellationToken);
+        if (profile.IsFailure)
+        {
+            return profile.Error;
+        }
+
+        var emailAddress = profile.Value.EmailAddress;
+        if (emailAddress.NotExists())
+        {
+            return Error.EntityNotFound();
+        }
+
+        var email = EmailAddress.Create(emailAddress.Address);
+        if (email.IsFailure)
+        {
+            return email.Error;
+        }
+
+        var emailDomain = email.Value.GetEmailDomain();
+        if (emailDomain.Classification != EmailAddressClassification.Company)
+        {
+            return Error.EntityNotFound();
+        }
+
+        var retrieved = await _repository.FindByEmailDomainAsync(emailDomain.Domain, cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        if (!retrieved.Value.HasValue)
+        {
+            return Error.EntityNotFound();
+        }
+
+        var org = retrieved.Value.Value;
+        if (org.Ownership != OrganizationOwnership.Shared)
+        {
+            return Error.EntityNotFound();
+        }
+
+        _recorder.TraceInformation(caller.ToCall(),
+            "Retrieved organization: {Id} for caller email domain: {EmailDomain}", org.Id, emailDomain.Domain);
+        return org.ToOrganization();
+    }
+
     public async Task<Result<Organization, Error>> InviteMemberToOrganizationAsync(ICallerContext caller, string id,
         string? userId, string? emailAddress, CancellationToken cancellationToken)
     {
@@ -606,7 +661,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
             emailAddress = email.Value;
         }
 
-        var created = OrganizationRoot.Create(_recorder, _identifierFactory,_tenantSettingService, _emailDomainService,
+        var created = OrganizationRoot.Create(_recorder, _identifierFactory, _tenantSettingService, _emailDomainService,
             ownership, creatorId.ToId(), emailAddress, classification, displayName.Value, DatacenterLocations.Local);
         if (created.IsFailure)
         {
@@ -723,6 +778,7 @@ internal static class OrganizationConversionExtensions
             Ownership = organization.Ownership.ToEnumOrDefault(
                 Application.Resources.Shared.OrganizationOwnership.Shared),
             AvatarUrl = organization.Avatar.ToNullable(org => org.Url),
+            OnboardingStatus = organization.OnboardingStatus.ToEnumOrDefault(OrganizationOnboardingStatus.NotStarted)
         };
     }
 
