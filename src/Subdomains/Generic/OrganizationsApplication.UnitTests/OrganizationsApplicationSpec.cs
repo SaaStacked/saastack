@@ -99,7 +99,11 @@ public class OrganizationsApplicationSpec
                 DisplayName = "adisplayname",
                 UserId = "auserid",
                 Classification = UserProfileClassification.Person,
-                EmailAddress = "auser@company.com"
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Company
+                }
             });
 
         var result =
@@ -150,7 +154,11 @@ public class OrganizationsApplicationSpec
                 DisplayName = "adisplayname",
                 UserId = "auserid",
                 Classification = UserProfileClassification.Person,
-                EmailAddress = "auser@personal.com"
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@personal.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                }
             });
 
         var result =
@@ -420,7 +428,11 @@ public class OrganizationsApplicationSpec
                         {
                             Id = "aprofileid",
                             UserId = "auserid",
-                            EmailAddress = "anemailaddress",
+                            EmailAddress = new UserProfileEmailAddress
+                            {
+                                Address = "anemailaddress",
+                                Classification = UserProfileEmailAddressClassification.Personal
+                            },
                             Name = new PersonName
                             {
                                 FirstName = "anemailaddress"
@@ -478,7 +490,11 @@ public class OrganizationsApplicationSpec
                         {
                             Id = "aprofileid",
                             UserId = "auserid",
-                            EmailAddress = "anemailaddress",
+                            EmailAddress = new UserProfileEmailAddress
+                            {
+                                Address = "anemailaddress",
+                                Classification = UserProfileEmailAddressClassification.Personal
+                            },
                             Name = new PersonName
                             {
                                 FirstName = "afirstname",

@@ -133,7 +133,7 @@ public class MfaApiSpec
             result.Content.Value.Authenticator.RecoveryCodes.Should().NotBeEmpty();
             result.Content.Value.Authenticator.OobCode.Should().NotBeNullOrEmpty();
             result.Content.Value.Authenticator.BarCodeUri.Should().BeNull();
-            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress);
+            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress!.Address);
             _userNotificationsService.LastMfaOobCode.Should().NotBeEmpty();
 
             var authenticators = await GetAuthenticators(mfaToken);
@@ -345,7 +345,7 @@ public class MfaApiSpec
 
             result.Content.Value.Challenge.Type.Should().Be(CredentialMfaAuthenticatorType.OobEmail);
             result.Content.Value.Challenge.OobCode.Should().NotBeNullOrEmpty();
-            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress);
+            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress!.Address);
             _userNotificationsService.LastMfaOobCode.Should().NotBeEmpty();
         }
 
@@ -548,7 +548,7 @@ public class MfaApiSpec
         {
             var failedAuth = await Api.PostAsync(new AuthenticateCredentialRequest
             {
-                Username = login.Profile!.EmailAddress,
+                Username = login.Profile!.EmailAddress!.Address,
                 Password = PasswordForPerson
             });
 
@@ -723,7 +723,7 @@ public class MfaApiSpec
             result.Content.Value.Authenticator.RecoveryCodes.Should().NotBeEmpty();
             result.Content.Value.Authenticator.OobCode.Should().NotBeNullOrEmpty();
             result.Content.Value.Authenticator.BarCodeUri.Should().BeNull();
-            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress);
+            _userNotificationsService.LastMfaOobEmailRecipient.Should().Be(login.Profile!.EmailAddress!.Address);
             _userNotificationsService.LastMfaOobCode.Should().NotBeEmpty();
 
             var authenticators = await GetAuthenticators(login);

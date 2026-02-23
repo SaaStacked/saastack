@@ -22,58 +22,6 @@ public delegate Task<Result<Error>> DeleteAction(Identifier deleterId);
 
 public sealed class OrganizationRoot : AggregateRootBase
 {
-    private static readonly IReadOnlySet<string> PersonalEmailProviderDomains = new HashSet<string>
-    {
-        // Major free email services
-        "gmail.com",
-        "googlemail.com",
-        "outlook.com",
-        "hotmail.com",
-        "live.com",
-        "msn.com",
-        "yahoo.com",
-        "ymail.com",
-        "aol.com",
-        "icloud.com",
-        "me.com",
-        "mac.com",
-
-        // International free email services
-        "mail.com",
-        "gmx.com",
-        "gmx.net",
-        "web.de",
-        "mail.ru",
-        "yandex.com",
-        "yandex.ru",
-        "qq.com",
-        "163.com",
-        "126.com",
-        "sina.com",
-        "sohu.com",
-        "naver.com",
-        "daum.net",
-        "hanmail.net",
-        "rediffmail.com",
-        "protonmail.com",
-        "pm.me",
-        "tutanota.com",
-        "zoho.com",
-
-        // Temporary/disposable email services
-        "guerrillamail.com",
-        "mailinator.com",
-        "10minutemail.com",
-        "tempmail.com",
-        "throwaway.email",
-
-        // Other common personal email domains
-        "fastmail.com",
-        "hushmail.com",
-        "inbox.com",
-        "email.com",
-        "personal.com"
-    };
     private readonly IOrganizationEmailDomainService _emailDomainService;
     private readonly ITenantSettingService _tenantSettingService;
 
@@ -580,18 +528,18 @@ public sealed class OrganizationRoot : AggregateRootBase
         }
 
         var emailDomain = creatorEmailAddress.Value.GetEmailDomain();
-        if (PersonalEmailProviderDomains.ContainsIgnoreCase(emailDomain))
+        if (emailDomain.Classification == EmailAddressClassification.Personal)
         {
             // Personal email addresses will not set an email domain
             return Result.Ok;
         }
 
         // Company email addresses
-        var isUnique = await _emailDomainService.EnsureUniqueAsync(emailDomain, Id, cancellationToken);
+        var isUnique = await _emailDomainService.EnsureUniqueAsync(emailDomain.Domain, Id, cancellationToken);
         if (!isUnique)
         {
             return Error.EntityExists(
-                Resources.OrganizationRoot_RegisterShared_EmailDomainReserved.Format(emailDomain));
+                Resources.OrganizationRoot_RegisterShared_EmailDomainReserved.Format(emailDomain.Domain));
         }
 
         if (EmailDomain.HasValue)
@@ -599,7 +547,7 @@ public sealed class OrganizationRoot : AggregateRootBase
             return Error.EntityExists(Resources.OrganizationRoot_RegisterShared_EmailDomainAlreadyRegistered);
         }
 
-        var emailDomainSetting = Setting.Create(emailDomain, false);
+        var emailDomainSetting = Setting.Create(emailDomain.Domain, false);
         if (emailDomainSetting.IsFailure)
         {
             return emailDomainSetting.Error;

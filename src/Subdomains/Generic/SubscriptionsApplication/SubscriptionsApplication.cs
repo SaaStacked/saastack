@@ -502,7 +502,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             Id = buyerId.ToString(),
             Name = profile.Name,
             PhoneNumber = profile.PhoneNumber,
-            EmailAddress = profile.EmailAddress!,
+            EmailAddress = profile.EmailAddress!.Address,
             Address = profile.Address,
             Subscriber = new Subscriber
             {

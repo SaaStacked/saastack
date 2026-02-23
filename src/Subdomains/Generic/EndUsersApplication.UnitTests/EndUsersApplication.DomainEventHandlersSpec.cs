@@ -225,7 +225,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
             Id = "anorganizationid2",
             Name = "anorganizationname",
             CreatedById = "auserid",
-            Ownership = Application.Resources.Shared.OrganizationOwnership.Shared
+            Ownership = Application.Resources.Shared.OrganizationOwnership.Shared,
+            OnboardingStatus = OrganizationOnboardingStatus.NotStarted
         };
         _organizationsService.Setup(ups =>
                 ups.FindSharedOrganizationByEmailDomainPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),

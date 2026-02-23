@@ -117,7 +117,11 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             .ReturnsAsync(new UserProfile
             {
                 DisplayName = "adisplayname",
-                EmailAddress = "anemailaddress",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Classification = UserProfileClassification.Person,
                 Name = new PersonName
@@ -168,7 +172,11 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             .ReturnsAsync(new UserProfile
             {
                 DisplayName = "adisplayname",
-                EmailAddress = "anemailaddress",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Classification = UserProfileClassification.Person,
                 Name = new PersonName
@@ -220,7 +228,11 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             .ReturnsAsync(new UserProfile
             {
                 DisplayName = "adisplayname",
-                EmailAddress = "anemailaddress",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Classification = UserProfileClassification.Person,
                 Name = new PersonName

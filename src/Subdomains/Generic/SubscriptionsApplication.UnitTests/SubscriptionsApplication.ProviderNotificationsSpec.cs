@@ -153,7 +153,11 @@ public class SubscriptionsApplicationProviderNotificationsSpec
                 },
                 UserId = "auserid",
                 Id = "aprofileid",
-                EmailAddress = "auser@company.com"
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                }
             });
         _billingProvider.Setup(bp =>
                 bp.GatewayService.RestoreBuyerAsync(It.IsAny<ICallerContext>(), It.IsAny<SubscriptionBuyer>(),

@@ -151,7 +151,7 @@ public partial class UserProfilesApplication : IUserProfilesApplication
                 return phoned.Error;
             }
         }
-        
+
         if (timezone.HasValue())
         {
             var tz = Timezone.Create(Timezones.FindOrDefault(timezone));
@@ -447,7 +447,12 @@ internal static class UserProfileConversionExtensions
             UserId = profile.UserId,
             Name = profile.Name.ToName(),
             DisplayName = profile.DisplayName.ValueOrDefault!,
-            EmailAddress = profile.EmailAddress.ValueOrDefault?.Address,
+            EmailAddress = profile.EmailAddress.ToNullable(em => new UserProfileEmailAddress
+            {
+                Address = em.Address,
+                Classification = em.GetEmailDomain().Classification
+                    .ToEnumOrDefault(UserProfileEmailAddressClassification.Personal)
+            }),
             PhoneNumber = profile.PhoneNumber.ValueOrDefault!,
             Address = profile.Address.ToAddress(),
             Timezone = profile.Timezone.Code.ToString(),

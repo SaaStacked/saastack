@@ -238,7 +238,7 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
                 && profile.Exists())
             {
                 var notified = await _userNotificationsService.NotifyPasswordRegistrationRepeatCourtesyAsync(caller,
-                    userId, profile.EmailAddress!, profile.DisplayName, profile.Timezone,
+                    userId, profile.EmailAddress!.Address, profile.DisplayName, profile.Timezone,
                     profile.Address.CountryCode,
                     UserNotificationConstants.EmailTags.RegistrationRepeatCourtesy, cancellationToken);
                 if (notified.IsFailure)
@@ -518,7 +518,7 @@ internal static class NativeIdentityServerCredentialsServiceConversionExtensions
             { UsageConstants.Properties.UserIdOverride, user.Id },
             { UsageConstants.Properties.Name, profile.Name.FullName() }
         };
-        if (profile.EmailAddress.HasValue())
+        if (profile.EmailAddress.Exists() && profile.EmailAddress.Address.HasValue())
         {
             context.Add(UsageConstants.Properties.EmailAddress, profile.EmailAddress);
         }

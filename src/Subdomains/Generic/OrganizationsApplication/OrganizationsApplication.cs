@@ -229,7 +229,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
 
         var profile = retrievedProfile.Value;
         var created = await CreateOrganizationInternalAsync(caller, user.Id,
-            user.Classification.ToEnumOrDefault(UserClassification.Person), name, profile.EmailAddress,
+            user.Classification.ToEnumOrDefault(UserClassification.Person), name, profile.EmailAddress?.Address,
             OrganizationOwnership.Shared, cancellationToken);
         if (created.IsFailure)
         {
@@ -344,7 +344,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         }
 
         var emailDomain = email.Value.GetEmailDomain();
-        var retrieved = await _repository.FindByEmailDomainAsync(emailDomain, cancellationToken);
+        var retrieved = await _repository.FindByEmailDomainAsync(emailDomain.Domain, cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error;
@@ -705,7 +705,7 @@ internal static class OrganizationConversionExtensions
         };
         if (membership.Profile.Exists())
         {
-            dto.EmailAddress = membership.Profile.EmailAddress;
+            dto.EmailAddress = membership.Profile.EmailAddress?.Address;
             dto.Name = membership.Profile.Name;
             dto.Classification = membership.Profile.Classification;
         }

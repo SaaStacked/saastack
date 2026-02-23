@@ -132,7 +132,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Timezone = "atimezone",
                 Address =
                 {
@@ -199,7 +203,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Timezone = "atimezone",
                 Address =
                 {
@@ -254,7 +262,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Timezone = "atimezone",
                 Address =
                 {
@@ -307,7 +319,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "anotheruser@company.com"
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anotheruser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                }
             }.ToOptional());
         _invitationRepository.Setup(rep =>
                 rep.FindInvitedGuestByEmailAddressAsync(It.IsAny<EmailAddress>(), It.IsAny<CancellationToken>()))
@@ -350,7 +366,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "anotheruser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anotheruser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Address =
                 {
                     CountryCode = "acountrycode"
@@ -373,7 +393,7 @@ public class EndUsersApplicationSpec
         result.Value.Classification.Should().Be(EndUserClassification.Person);
         result.Value.Roles.Should().BeEmpty();
         result.Value.Features.Should().BeEmpty();
-        result.Value.Profile!.EmailAddress.Should().Be("anotheruser@company.com");
+        result.Value.Profile!.EmailAddress!.Address.Should().Be("anotheruser@company.com");
         result.Value.Profile.Name.FirstName.Should().Be("afirstname");
         result.Value.Profile.Name.LastName.Should().Be("alastname");
         result.Value.Profile.Timezone.Should().Be("atimezone");
@@ -412,7 +432,11 @@ public class EndUsersApplicationSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Timezone = "atimezone",
                 Address =
                 {

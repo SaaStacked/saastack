@@ -349,7 +349,7 @@ public class OpenIdConnectApiSpec
             var nonce = idTokenClaims.Single(c => c.Type == AuthenticationConstants.Claims.ForNonce).Value;
             nonce.Should().Be("anonce");
             var email = idTokenClaims.Single(c => c.Type == AuthenticationConstants.Claims.ForEmail).Value;
-            email.Should().Be(login.Profile!.EmailAddress);
+            email.Should().Be(login.Profile!.EmailAddress!.Address);
             var name = idTokenClaims.Single(c => c.Type == AuthenticationConstants.Claims.ForFullName).Value;
             name.Should().Be($"{login.Profile!.Name.FirstName} {login.Profile!.Name.LastName}");
         }
@@ -785,7 +785,7 @@ public class OpenIdConnectApiSpec
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Content.Value.User.Sub.Should().Be(login.User.Id);
             result.Content.Value.User.Name.Should().Be(login.Profile!.Name.FullName());
-            result.Content.Value.User.Email.Should().Be(login.Profile!.EmailAddress);
+            result.Content.Value.User.Email.Should().Be(login.Profile!.EmailAddress!.Address);
             result.Content.Value.User.EmailVerified.Should().BeTrue();
             result.Content.Value.User.GivenName.Should().Be(login.Profile!.Name.FirstName);
             result.Content.Value.User.FamilyName.Should().Be(login.Profile!.Name.LastName);

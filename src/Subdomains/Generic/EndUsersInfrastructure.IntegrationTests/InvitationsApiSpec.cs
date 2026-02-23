@@ -290,7 +290,7 @@ public class InvitationsApiSpec : WebApiSpec<Program>
         }, req => req.SetJWTBearerToken(login.AccessToken));
         var token = _userNotificationService.LastGuestInvitationToken!;
 
-        var existingEmailAddress = login.Profile!.EmailAddress!;
+        var existingEmailAddress = login.Profile!.EmailAddress!.Address;
         var result = await Api.PostAsync(new RegisterPersonCredentialRequest
         {
             InvitationToken = token,

@@ -326,7 +326,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     protected async Task<LoginDetails> ReAuthenticateUserAsync(LoginDetails details,
         string password = PasswordForPerson)
     {
-        return await ReAuthenticateUserAsync(details.User, details.Profile!.EmailAddress!, password);
+        return await ReAuthenticateUserAsync(details.User, details.Profile!.EmailAddress!.Address, password);
     }
 
     protected async Task<LoginDetails> ReAuthenticateUserAsync(EndUser user,

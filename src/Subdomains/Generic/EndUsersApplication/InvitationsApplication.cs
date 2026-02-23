@@ -297,7 +297,7 @@ internal static class InvitationConversionExtensions
         {
             return new Invitation
             {
-                EmailAddress = profile.EmailAddress!,
+                EmailAddress = profile.EmailAddress!.Address,
                 FirstName = profile.Name.FirstName,
                 LastName = profile.Name.LastName
             };

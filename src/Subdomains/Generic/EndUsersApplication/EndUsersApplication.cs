@@ -373,7 +373,8 @@ public partial class EndUsersApplication : IEndUsersApplication
                 var unregisteredUserProfile = existingUser.Value.Profile;
                 if (unregisteredUserProfile.NotExists()
                     || unregisteredUserProfile.Classification != UserProfileClassification.Person
-                    || unregisteredUserProfile.EmailAddress.HasNoValue())
+                    || unregisteredUserProfile.EmailAddress.NotExists()
+                    || unregisteredUserProfile.EmailAddress.Address.HasNoValue())
                 {
                     return Error.EntityNotFound(Resources.EndUsersApplication_NotPersonProfile);
                 }
@@ -694,7 +695,7 @@ internal static class EndUserConversionExtensions
             { UsageConstants.Properties.UserIdOverride, user.Id },
             { UsageConstants.Properties.TenantIdOverride, membership.OrganizationId.Value }
         };
-        if (profile.EmailAddress.HasValue())
+        if (profile.EmailAddress.Exists() && profile.EmailAddress.Address.HasValue())
         {
             context.Add(UsageConstants.Properties.EmailAddress, profile.EmailAddress);
         }
@@ -704,11 +705,17 @@ internal static class EndUserConversionExtensions
 
     public static UserProfile ToUnregisteredUserProfile(this MembershipJoinInvitation membership)
     {
+        var emailDomain = EmailAddress.Create(membership.InvitedEmailAddress.Value).Value.GetEmailDomain();
         var dto = new UserProfile
         {
             Id = membership.UserId.Value,
             UserId = membership.UserId.Value,
-            EmailAddress = membership.InvitedEmailAddress.Value,
+            EmailAddress = new UserProfileEmailAddress
+            {
+                Address = membership.InvitedEmailAddress.Value,
+                Classification =
+                    emailDomain.Classification.ToEnumOrDefault(UserProfileEmailAddressClassification.Personal)
+            },
             DisplayName = membership.InvitedEmailAddress.Value,
             Name = new PersonName
             {

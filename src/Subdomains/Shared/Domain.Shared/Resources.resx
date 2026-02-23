@@ -69,4 +69,10 @@
     <data name="Locale_InvalidLocale" xml:space="preserve">
         <value>The Locale is invalid</value>
     </data>
+    <data name="StringNameValues_InvalidValue" xml:space="preserve">
+        <value>This list of strings contains value '{0}', but its value is null</value>
+    </data>
+    <data name="EmailDomain_InvalidDomain" xml:space="preserve">
+        <value>The email Domain is not valid</value>
+    </data>
 </root>
