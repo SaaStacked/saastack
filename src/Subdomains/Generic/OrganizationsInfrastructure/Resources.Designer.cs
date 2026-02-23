@@ -78,6 +78,60 @@ namespace OrganizationsInfrastructure {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;Field&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchConditionSchemaValidator_InvalidField {
+            get {
+                return ResourceManager.GetString("BranchConditionSchemaValidator_InvalidField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Value&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchConditionSchemaValidator_InvalidValue {
+            get {
+                return ResourceManager.GetString("BranchConditionSchemaValidator_InvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Condition&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchSchemaValidator_InvalidCondition {
+            get {
+                return ResourceManager.GetString("BranchSchemaValidator_InvalidCondition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Id&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchSchemaValidator_InvalidId {
+            get {
+                return ResourceManager.GetString("BranchSchemaValidator_InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Label&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchSchemaValidator_InvalidLabel {
+            get {
+                return ResourceManager.GetString("BranchSchemaValidator_InvalidLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;NextStepId&apos; is either missing or invalid.
+        /// </summary>
+        internal static string BranchSchemaValidator_InvalidNextStepId {
+            get {
+                return ResourceManager.GetString("BranchSchemaValidator_InvalidNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Name&apos; is invalid.
         /// </summary>
         internal static string ChangeOrganizationRequestValidator_InvalidName {
@@ -92,6 +146,15 @@ namespace OrganizationsInfrastructure {
         internal static string CreateOrganizationRequestValidator_InvalidName {
             get {
                 return ResourceManager.GetString("CreateOrganizationRequestValidator_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Workflow&apos; is either missing or invalid.
+        /// </summary>
+        internal static string InitiateOnboardingWorkflowRequestValidator_InvalidWorkflow {
+            get {
+                return ResourceManager.GetString("InitiateOnboardingWorkflowRequestValidator_InvalidWorkflow", resourceCulture);
             }
         }
         
@@ -119,6 +182,195 @@ namespace OrganizationsInfrastructure {
         internal static string InviteOrganizationMemberRequestValidator_MissingUserIdAndEmail {
             get {
                 return ResourceManager.GetString("InviteOrganizationMemberRequestValidator_MissingUserIdAndEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;NextStepId&apos; is invalid.
+        /// </summary>
+        internal static string MoveToWorkflowStepRequestValidator_InvalidNextStepId {
+            get {
+                return ResourceManager.GetString("MoveToWorkflowStepRequestValidator_InvalidNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; branch &apos;{1}&apos; cannot reference a non-existent step &apos;{2}&apos; as next step.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_AnyBranchNextStepUndefined {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_AnyBranchNextStepUndefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; cannot reference a non-existent step &apos;{1}&apos; as next step.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_AnyStepNextStepUndefined {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_AnyStepNextStepUndefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workflow contains a cycle involving step &apos;{0}&apos;.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_CycleDetected {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_CycleDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End step &apos;{0}&apos; cannot have a next step or branches.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_EndStepHasOutgoingEdges {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_EndStepHasOutgoingEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End step &apos;{0}&apos; must have a weight of 0, but has weight {1}.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_EndStepMustHaveZeroWeight {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_EndStepMustHaveZeroWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linear workflow (without branches) must have a total weight of 100, but has total weight {0}.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_LinearWorkflowWeightMustBe100 {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_LinearWorkflowWeightMustBe100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workflow can only have one &apos;End&apos; node, found: {0}.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_MultipleEndNodes {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_MultipleEndNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workflow can only have one &apos;Start&apos; node, found: {0}.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_MultipleStartNodes {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_MultipleStartNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start step &apos;{0}&apos; cannot be referenced by other steps.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_StartStepHasIncomingEdges {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_StartStepHasIncomingEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; has no path to the &apos;End&apos; step.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_StepCannotReachEnd {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_StepCannotReachEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; is not reachable on any path from the start step.
+        /// </summary>
+        internal static string OnboardingWorkflowGraphService_Validate_StepNotReachableFromStart {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflowGraphService_Validate_StepNotReachableFromStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Id&apos; is either missing or invalid.
+        /// </summary>
+        internal static string StepSchemaValidator_InvalidId {
+            get {
+                return ResourceManager.GetString("StepSchemaValidator_InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;NextStepId&apos; is invalid.
+        /// </summary>
+        internal static string StepSchemaValidator_InvalidNextStepId {
+            get {
+                return ResourceManager.GetString("StepSchemaValidator_InvalidNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Title&apos; is either missing or invalid.
+        /// </summary>
+        internal static string StepSchemaValidator_InvalidTitle {
+            get {
+                return ResourceManager.GetString("StepSchemaValidator_InvalidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Weight&apos; must be between 0 and 100.
+        /// </summary>
+        internal static string StepSchemaValidator_InvalidWeight {
+            get {
+                return ResourceManager.GetString("StepSchemaValidator_InvalidWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Values&apos; is either missing or empty.
+        /// </summary>
+        internal static string UpdateCurrentWorkflowStepRequestValidator_InvalidValues {
+            get {
+                return ResourceManager.GetString("UpdateCurrentWorkflowStepRequestValidator_InvalidValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;EndStepId&apos; is either missing or invalid.
+        /// </summary>
+        internal static string WorkflowSchemaValidator_InvalidEndStepId {
+            get {
+                return ResourceManager.GetString("WorkflowSchemaValidator_InvalidEndStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Name&apos; is either missing or invalid.
+        /// </summary>
+        internal static string WorkflowSchemaValidator_InvalidName {
+            get {
+                return ResourceManager.GetString("WorkflowSchemaValidator_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;StartStepId&apos; is either missing or invalid.
+        /// </summary>
+        internal static string WorkflowSchemaValidator_InvalidStartStepId {
+            get {
+                return ResourceManager.GetString("WorkflowSchemaValidator_InvalidStartStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Steps&apos; is either missing or empty.
+        /// </summary>
+        internal static string WorkflowSchemaValidator_InvalidSteps {
+            get {
+                return ResourceManager.GetString("WorkflowSchemaValidator_InvalidSteps", resourceCulture);
             }
         }
     }

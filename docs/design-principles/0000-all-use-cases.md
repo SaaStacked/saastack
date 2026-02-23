@@ -221,6 +221,17 @@ Organizations are the primary way that users are grouped together on the platfor
 10. List all members of the organization
 11. Delete the organization (must be no remaining members) <sup>$$$</sup>
 
+#### Onboarding
+
+Onboarding is the process of bringing any user into the platform (once registered). And is the opportunity to guide the user to self-serve setting up their organization/tenancy the way they like, following guidance provided by the product.
+
+1. Initiate the onboarding process, and define the specific workflow for the specific user (email classification) and organization (ownership)
+2. Navigate forwards through the custom workflow
+3. Navigate backwards, from the current step in the workflow
+4. Update the custom properties/state of the current step (based on user's actions)
+5. Complete (and dismiss) the onboarding process
+6. Retrieve the status of the onboarding workflow.
+
 ### Event Notifications
 
 Event Notifications are the way that subdomains can listen to each other in a loosely-coupled way. A "producing" subdomain produces "domain_events" which are stored on a message bus. This API provides an endpoint to consume those "domain_events".

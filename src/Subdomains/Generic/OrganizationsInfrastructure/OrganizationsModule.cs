@@ -4,7 +4,6 @@ using Application.Persistence.Interfaces;
 using Application.Services.Shared;
 using Common;
 using Common.Configuration;
-using Domain.Common.Identity;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
 using Infrastructure.Common.DomainServices;
@@ -18,6 +17,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrganizationsApplication;
+using OrganizationsApplication.ApplicationServices;
 using OrganizationsApplication.Persistence;
 using OrganizationsDomain;
 using OrganizationsDomain.DomainServices;
@@ -40,7 +40,8 @@ public class OrganizationsModule : ISubdomainModule
 
     public Dictionary<Type, string> EntityPrefixes => new()
     {
-        { typeof(OrganizationRoot), "org" }
+        { typeof(OrganizationRoot), "org" },
+        { typeof(OrganizationOnboardingRoot), "onbrd" }
     };
 
     public Assembly InfrastructureAssembly => typeof(OrganizationsModule).Assembly;
@@ -57,21 +58,24 @@ public class OrganizationsModule : ISubdomainModule
                         .GetRequiredServiceForPlatform<IConfigurationSettings>()
                         .GetString(TenantSettingService.EncryptionServiceSecretSettingName))));
                 services.AddPerHttpRequest<IOrganizationEmailDomainService, OrganizationEmailDomainService>();
-                services.AddPerHttpRequest<IOrganizationsApplication>(c =>
-                    new OrganizationsApplication.OrganizationsApplication(c.GetRequiredService<IRecorder>(),
-                        c.GetRequiredService<IIdentifierFactory>(),
-                        c.GetRequiredService<ITenantSettingsService>(),
-                        c.GetRequiredService<ITenantSettingService>(),
-                        c.GetRequiredService<IEndUsersService>(),
-                        c.GetRequiredService<IImagesService>(),
-                        c.GetRequiredService<ISubscriptionsService>(),
-                        c.GetRequiredService<IUserProfilesService>(),
-                        c.GetRequiredService<IOrganizationEmailDomainService>(),
-                        c.GetRequiredService<IOrganizationRepository>()));
+                services
+                    .AddPerHttpRequest<IOrganizationsApplication, OrganizationsApplication.OrganizationsApplication>();
                 services.AddPerHttpRequest<IOrganizationRepository>(c =>
                     new OrganizationRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredService<IEventSourcingDddCommandStore<OrganizationRoot>>(),
+                        c.GetRequiredServiceForPlatform<IDataStore>()));
+                services.AddPerHttpRequest<IOnboardingApplication, OnboardingApplication>();
+                services.AddPerHttpRequest<ICustomOnboardingWorkflowService, CustomOnboardingWorkflowService>();
+                services.AddPerHttpRequest<IOnboardingWorkflowService, OnboardingWorkflowGraphService>();
+                services.AddPerHttpRequest<IOnboardingCustomWorkflowRepository>(c =>
+                    new OnboardingCustomWorkflowRepository(c.GetRequiredService<IRecorder>(),
+                        c.GetRequiredService<IDomainFactory>(),
+                        c.GetRequiredServiceForPlatform<IDataStore>()));
+                services.AddPerHttpRequest<IOnboardingRepository>(c =>
+                    new OnboardingRepository(c.GetRequiredService<IRecorder>(),
+                        c.GetRequiredService<IDomainFactory>(),
+                        c.GetRequiredService<IEventSourcingDddCommandStore<OrganizationOnboardingRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services
                     .AddPerHttpRequest<IDomainEventNotificationConsumer>(c =>
@@ -82,6 +86,10 @@ public class OrganizationsModule : ISubdomainModule
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()),
                     _ => new OrganizationNotifier());
+                services.RegisterEventing<OrganizationOnboardingRoot, OrganizationOnboardingProjection>(c =>
+                    new OrganizationOnboardingProjection(c.GetRequiredService<IRecorder>(),
+                        c.GetRequiredService<IDomainFactory>(),
+                        c.GetRequiredServiceForPlatform<IDataStore>()));
 
                 services.AddPerHttpRequest<IOrganizationsService>(c =>
                     new OrganizationsInProcessServiceClient(c.LazyGetRequiredService<IOrganizationsApplication>()));

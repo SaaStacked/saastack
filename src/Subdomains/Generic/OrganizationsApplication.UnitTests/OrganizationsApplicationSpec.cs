@@ -62,7 +62,8 @@ public class OrganizationsApplicationSpec
         _subscriptionsService = new Mock<ISubscriptionsService>();
         _userProfilesService = new Mock<IUserProfilesService>();
         _emailDomainService = new Mock<IOrganizationEmailDomainService>();
-        _emailDomainService.Setup(eds => eds.EnsureUniqueAsync(It.IsAny<string>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+        _emailDomainService.Setup(eds =>
+                eds.EnsureUniqueAsync(It.IsAny<string>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         _repository = new Mock<IOrganizationRepository>();
         _repository.Setup(ar => ar.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()))
@@ -961,5 +962,182 @@ public class OrganizationsApplicationSpec
         result.Value.Value.Name.Should().Be("aname");
         result.Value.Value.Ownership.Should().Be(Application.Resources.Shared.OrganizationOwnership.Shared);
         _repository.Verify(rep => rep.FindByEmailDomainAsync("company.com", It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsyncAndCallerNotAuthenticated_ThenReturnsError()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(false);
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.NotAuthenticated);
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsyncAndNoEmailAddress_ThenReturnsError()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(true);
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "aprofileid",
+                UserId = "auserid",
+                EmailAddress = null,
+                DisplayName = "adisplayname",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                }
+            });
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityNotFound);
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsyncAndNotCompanyEmailDomain_ThenReturnsError()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(true);
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "aprofileid",
+                UserId = "auserid",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@personal.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
+                DisplayName = "adisplayname",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                }
+            });
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityNotFound);
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsyncAndOrganizationNotFound_ThenReturnsError()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(true);
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "aprofileid",
+                UserId = "auserid",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Company
+                },
+                DisplayName = "adisplayname",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                }
+            });
+        _repository.Setup(rep =>
+                rep.FindByEmailDomainAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<OrganizationRoot>.None);
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityNotFound);
+        _repository.Verify(rep =>
+            rep.FindByEmailDomainAsync("company.com", It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsyncAndIsNotShared_ThenReturnsError()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(true);
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "aprofileid",
+                UserId = "auserid",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Company
+                },
+                DisplayName = "adisplayname",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                }
+            });
+        var org = OrganizationRoot.Create(_recorder.Object, _idFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object, OrganizationOwnership.Personal, "auserid".ToId(),
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _repository.Setup(rep =>
+                rep.FindByEmailDomainAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org.ToOptional());
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityNotFound);
+        _repository.Verify(rep =>
+            rep.FindByEmailDomainAsync("company.com", It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenGetSharedOrganizationForCallerEmailDomainAsync_ThenReturnsOrganization()
+    {
+        _caller.Setup(cc => cc.IsAuthenticated)
+            .Returns(true);
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new UserProfile
+            {
+                Id = "aprofileid",
+                UserId = "auserid",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Company
+                },
+                DisplayName = "adisplayname",
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                }
+            });
+        var org = OrganizationRoot.Create(_recorder.Object, _idFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
+            OrganizationOwnership.Shared, "auserid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _repository.Setup(rep =>
+                rep.FindByEmailDomainAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org.ToOptional());
+
+        var result = await _application.GetSharedOrganizationForCallerEmailDomainAsync(_caller.Object,
+            CancellationToken.None);
+
+        result.Should().BeSuccess();
+        result.Value.Id.Should().Be("anid");
+        _repository.Verify(rep =>
+            rep.FindByEmailDomainAsync("company.com", It.IsAny<CancellationToken>()));
     }
 }

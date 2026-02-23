@@ -17,4 +17,14 @@ public static class Validations
             "image/gif"
         ];
     }
+
+    public static class Onboarding
+    {
+        public static class Workflow
+        {
+            public static readonly Validation Name = CommonValidations.DescriptiveName();
+            public static readonly Validation StepTitle = CommonValidations.DescriptiveName();
+            public static readonly Validation StepId = new(@"^[\w\d\.]{4,25}$", 4, 25);
+        }
+    }
 }

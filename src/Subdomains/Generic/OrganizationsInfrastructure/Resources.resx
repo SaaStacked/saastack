@@ -45,4 +45,88 @@
     <data name="AssignRolesToOrganizationRequestValidator_InvalidRole" xml:space="preserve">
         <value>The 'Role' is invalid</value>
     </data>
+    <data name="MoveToWorkflowStepRequestValidator_InvalidNextStepId" xml:space="preserve">
+        <value>The 'NextStepId' is invalid</value>
+    </data>
+    <data name="UpdateCurrentWorkflowStepRequestValidator_InvalidValues" xml:space="preserve">
+        <value>The 'Values' is either missing or empty</value>
+    </data>
+    <data name="InitiateOnboardingWorkflowRequestValidator_InvalidWorkflow" xml:space="preserve">
+        <value>The 'Workflow' is either missing or invalid</value>
+    </data>
+    <data name="WorkflowSchemaValidator_InvalidName" xml:space="preserve">
+        <value>The 'Name' is either missing or invalid</value>
+    </data>
+    <data name="WorkflowSchemaValidator_InvalidStartStepId" xml:space="preserve">
+        <value>The 'StartStepId' is either missing or invalid</value>
+    </data>
+    <data name="WorkflowSchemaValidator_InvalidEndStepId" xml:space="preserve">
+        <value>The 'EndStepId' is either missing or invalid</value>
+    </data>
+    <data name="WorkflowSchemaValidator_InvalidSteps" xml:space="preserve">
+        <value>The 'Steps' is either missing or empty</value>
+    </data>
+    <data name="StepSchemaValidator_InvalidId" xml:space="preserve">
+        <value>The 'Id' is either missing or invalid</value>
+    </data>
+    <data name="StepSchemaValidator_InvalidTitle" xml:space="preserve">
+        <value>The 'Title' is either missing or invalid</value>
+    </data>
+    <data name="StepSchemaValidator_InvalidWeight" xml:space="preserve">
+        <value>The 'Weight' must be between 0 and 100</value>
+    </data>
+    <data name="StepSchemaValidator_InvalidNextStepId" xml:space="preserve">
+        <value>The 'NextStepId' is invalid</value>
+    </data>
+    <data name="BranchSchemaValidator_InvalidId" xml:space="preserve">
+        <value>The 'Id' is either missing or invalid</value>
+    </data>
+    <data name="BranchSchemaValidator_InvalidLabel" xml:space="preserve">
+        <value>The 'Label' is either missing or invalid</value>
+    </data>
+    <data name="BranchSchemaValidator_InvalidNextStepId" xml:space="preserve">
+        <value>The 'NextStepId' is either missing or invalid</value>
+    </data>
+    <data name="BranchSchemaValidator_InvalidCondition" xml:space="preserve">
+        <value>The 'Condition' is either missing or invalid</value>
+    </data>
+    <data name="BranchConditionSchemaValidator_InvalidField" xml:space="preserve">
+        <value>The 'Field' is either missing or invalid</value>
+    </data>
+    <data name="BranchConditionSchemaValidator_InvalidValue" xml:space="preserve">
+        <value>The 'Value' is either missing or invalid</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_AnyStepNextStepUndefined" xml:space="preserve">
+        <value>Step '{0}' cannot reference a non-existent step '{1}' as next step</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_AnyBranchNextStepUndefined" xml:space="preserve">
+        <value>Step '{0}' branch '{1}' cannot reference a non-existent step '{2}' as next step</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_MultipleStartNodes" xml:space="preserve">
+        <value>Workflow can only have one 'Start' node, found: {0}</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_MultipleEndNodes" xml:space="preserve">
+        <value>Workflow can only have one 'End' node, found: {0}</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_EndStepHasOutgoingEdges" xml:space="preserve">
+        <value>End step '{0}' cannot have a next step or branches</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_StartStepHasIncomingEdges" xml:space="preserve">
+        <value>Start step '{0}' cannot be referenced by other steps</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_StepNotReachableFromStart" xml:space="preserve">
+        <value>Step '{0}' is not reachable on any path from the start step</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_StepCannotReachEnd" xml:space="preserve">
+        <value>Step '{0}' has no path to the 'End' step</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_CycleDetected" xml:space="preserve">
+        <value>Workflow contains a cycle involving step '{0}'</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_EndStepMustHaveZeroWeight" xml:space="preserve">
+        <value>End step '{0}' must have a weight of 0, but has weight {1}</value>
+    </data>
+    <data name="OnboardingWorkflowGraphService_Validate_LinearWorkflowWeightMustBe100" xml:space="preserve">
+        <value>Linear workflow (without branches) must have a total weight of 100, but has total weight {0}</value>
+    </data>
 </root>

@@ -123,6 +123,15 @@ namespace Domain.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email Domain is not valid.
+        /// </summary>
+        internal static string EmailDomain_InvalidDomain {
+            get {
+                return ResourceManager.GetString("EmailDomain_InvalidDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Feature value is invalid.
         /// </summary>
         internal static string Features_InvalidFeature {
@@ -182,6 +191,15 @@ namespace Domain.Shared {
         internal static string Roles_InvalidRole {
             get {
                 return ResourceManager.GetString("Roles_InvalidRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This list of strings contains value &apos;{0}&apos;, but its value is null.
+        /// </summary>
+        internal static string StringNameValues_InvalidValue {
+            get {
+                return ResourceManager.GetString("StringNameValues_InvalidValue", resourceCulture);
             }
         }
         
