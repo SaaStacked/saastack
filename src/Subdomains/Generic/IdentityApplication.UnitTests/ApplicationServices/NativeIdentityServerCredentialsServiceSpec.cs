@@ -570,7 +570,11 @@ public class NativeIdentityServerCredentialsServiceSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "anotheruser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anotheruser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Address =
                 {
                     CountryCode = "acountrycode"

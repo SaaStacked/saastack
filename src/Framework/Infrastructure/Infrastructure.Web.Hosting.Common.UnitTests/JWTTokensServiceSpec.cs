@@ -186,7 +186,11 @@ public class JWTTokensServiceSpec
             {
                 CountryCode = "acountrycode"
             },
-            EmailAddress = "anemailaddress",
+            EmailAddress = new UserProfileEmailAddress
+            {
+                Address = "anemailaddress",
+                Classification = UserProfileEmailAddressClassification.Personal
+            },
             PhoneNumber = "aphonenumber",
             Timezone = "atimezone",
             Locale = "alocale",

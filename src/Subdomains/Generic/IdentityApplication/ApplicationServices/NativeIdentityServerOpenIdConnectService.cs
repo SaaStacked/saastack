@@ -510,10 +510,10 @@ public class NativeIdentityServerOpenIdConnectService : IIdentityServerOpenIdCon
                 ? profile.Name.FullName()
                 : null,
             Email = scopes.ContainsIgnoreCase(OAuth2Constants.Scopes.Email)
-                ? profile.EmailAddress
+                ? profile.EmailAddress?.Address
                 : null,
             EmailVerified = scopes.ContainsIgnoreCase(OAuth2Constants.Scopes.Email)
-                ? profile.EmailAddress.HasValue()
+                ? profile.EmailAddress.Exists()
                 : null,
             GivenName = scopes.ContainsIgnoreCase(OAuth2Constants.Scopes.Profile)
                 ? profile.Name.FirstName

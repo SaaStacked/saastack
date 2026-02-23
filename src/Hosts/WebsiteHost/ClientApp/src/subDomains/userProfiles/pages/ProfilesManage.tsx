@@ -99,7 +99,7 @@ const AccountTab: React.FC<{
             <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
               {translate('pages.profiles.manage.tabs.account.form.fields.email_address.label')}
             </label>
-            <p className="text-neutral-900 dark:text-neutral-100">{initialProfile.emailAddress}</p>
+            <p className="text-neutral-900 dark:text-neutral-100">{initialProfile.emailAddress?.address}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">

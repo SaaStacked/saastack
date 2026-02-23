@@ -264,7 +264,11 @@ public class SubscriptionsApplicationSpec
                 },
                 Classification = UserProfileClassification.Person,
                 DisplayName = "adisplayname",
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Name = new PersonName
                 {
                     FirstName = "afirstname"
@@ -566,7 +570,11 @@ public class SubscriptionsApplicationSpec
                 Id = "aprofileid",
                 UserId = "abuyerid",
                 Classification = UserProfileClassification.Person,
-                EmailAddress = "anemailaddress",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Name = new PersonName
                 {
                     FirstName = "afirstname"
@@ -714,7 +722,11 @@ public class SubscriptionsApplicationSpec
                 },
                 Classification = UserProfileClassification.Person,
                 DisplayName = "adisplayname",
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 Name = new PersonName
                 {
                     FirstName = "afirstname"

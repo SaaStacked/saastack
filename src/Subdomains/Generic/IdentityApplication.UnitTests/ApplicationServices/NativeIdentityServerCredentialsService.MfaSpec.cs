@@ -82,12 +82,16 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "auser@company.com"
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                }
             });
         _userNotificationsService = new Mock<IUserNotificationsService>();
         _settings = new Mock<IConfigurationSettings>();
         _settings.Setup(s => s.Platform.GetString(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns((string?)null!);
+            .Returns((string)null!);
         _settings.Setup(s => s.Platform.GetNumber(It.IsAny<string>(), It.IsAny<double>()))
             .Returns(5);
         _emailAddressService = new Mock<IEmailAddressService>();
@@ -752,10 +756,10 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
 
         result.Should().BeSuccess();
         result.Value.Tokens!.UserId.Should().Be("auserid");
-        result.Value.Tokens!.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.Tokens!.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.Tokens!.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.Tokens!.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.Tokens.AccessToken.Value.Should().Be("anaccesstoken");
+        result.Value.Tokens.RefreshToken.Value.Should().Be("arefreshtoken");
+        result.Value.Tokens.AccessToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.Tokens.RefreshToken.ExpiresOn.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == Optional<string>.None

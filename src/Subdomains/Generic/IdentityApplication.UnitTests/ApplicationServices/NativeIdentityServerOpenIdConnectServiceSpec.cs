@@ -1283,7 +1283,11 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                     Line1 = "aline1",
                     CountryCode = "acountrycode"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Timezone = "atimezone",
                 AvatarUrl = "anavatarurl"
@@ -1361,7 +1365,11 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                     Line1 = "aline1",
                     CountryCode = "acountrycode"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Timezone = "atimezone",
                 AvatarUrl = "anavatarurl"
@@ -1443,7 +1451,11 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                     Line1 = "aline1",
                     CountryCode = "acountrycode"
                 },
-                EmailAddress = "auser@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "auser@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 PhoneNumber = "aphonenumber",
                 Timezone = "atimezone",
                 AvatarUrl = "anavatarurl"

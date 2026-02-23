@@ -72,7 +72,9 @@ public class UserProfileApiSpec : WebApiSpec<Program>
         result.Content.Value.Profile.Roles.Should().OnlyContain(role => role == PlatformRoles.Standard.Name);
         result.Content.Value.Profile.Features.Should()
             .ContainInOrder(PlatformFeatures.PaidTrial.Name, PlatformFeatures.Basic.Name);
-        result.Content.Value.Profile.EmailAddress.Should().Be("auser@company.com");
+        result.Content.Value.Profile.EmailAddress!.Address.Should().Be("auser@company.com");
+        result.Content.Value.Profile.EmailAddress.Classification.Should()
+            .Be(UserProfileEmailAddressClassification.Company);
         result.Content.Value.Profile.Locale.Should().Be("en-AU");
         result.Content.Value.Profile.PhoneNumber.Should().BeNull();
         result.Content.Value.Profile.Address.Line1.Should().BeEmpty();

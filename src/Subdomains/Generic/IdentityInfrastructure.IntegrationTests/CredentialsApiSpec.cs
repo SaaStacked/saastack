@@ -254,7 +254,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         var result = await Api.PostAsync(new AuthenticateCredentialRequest
         {
-            Username = login.Profile!.EmailAddress,
+            Username = login.Profile!.EmailAddress!.Address,
             Password = PasswordForPerson
         });
 
@@ -341,7 +341,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var emailAddress = login.Profile!.EmailAddress!;
+        var emailAddress = login.Profile!.EmailAddress!.Address;
         var result = await Api.PostAsync(new InitiatePasswordResetRequest
         {
             EmailAddress = emailAddress
@@ -359,7 +359,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         await Api.PostAsync(new InitiatePasswordResetRequest
         {
-            EmailAddress = login.Profile!.EmailAddress!
+            EmailAddress = login.Profile!.EmailAddress!.Address
         });
 
         var token = _userNotificationsService.LastPasswordResetToken;
@@ -371,7 +371,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        _userNotificationsService.LastPasswordResetEmailRecipient.Should().Be(login.Profile.EmailAddress);
+        _userNotificationsService.LastPasswordResetEmailRecipient.Should().Be(login.Profile.EmailAddress!.Address);
         _userNotificationsService.LastPasswordResetToken.Should().NotBe(token);
     }
 
@@ -382,7 +382,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
 
         await Api.PostAsync(new InitiatePasswordResetRequest
         {
-            EmailAddress = login.Profile!.EmailAddress!
+            EmailAddress = login.Profile!.EmailAddress!.Address
         });
 
         var token = _userNotificationsService.LastPasswordResetToken;
@@ -413,7 +413,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         var login = await LoginUserAsync();
         LockAccountWithFailedLogins(login);
 
-        var emailAddress = login.Profile!.EmailAddress!;
+        var emailAddress = login.Profile!.EmailAddress!.Address;
         await Api.PostAsync(new InitiatePasswordResetRequest
         {
             EmailAddress = emailAddress
@@ -436,7 +436,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var emailAddress = login.Profile!.EmailAddress!;
+        var emailAddress = login.Profile!.EmailAddress!.Address;
         await Api.PostAsync(new InitiatePasswordResetRequest
         {
             EmailAddress = emailAddress
@@ -457,7 +457,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     private void LockAccountWithFailedLogins(LoginDetails login,
         int wrongAttempts = Validations.Credentials.Login.DefaultMaxFailedPasswordAttempts)
     {
-        var emailAddress = login.Profile!.EmailAddress!;
+        var emailAddress = login.Profile!.EmailAddress!.Address;
         Repeat.Times(() => Try.Safely(() => Api.PostAsync(new AuthenticateCredentialRequest
         {
             Username = emailAddress,

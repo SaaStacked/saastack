@@ -209,9 +209,9 @@ public static class ClaimExtensions
 
         if (authScopes.ContainsIgnoreCase(OAuth2Constants.Scopes.Email))
         {
-            if (profile.EmailAddress.HasValue())
+            if (profile.EmailAddress.Exists() && profile.EmailAddress.Address.HasValue())
             {
-                claims.Add(new Claim(AuthenticationConstants.Claims.ForEmail, profile.EmailAddress));
+                claims.Add(new Claim(AuthenticationConstants.Claims.ForEmail, profile.EmailAddress.Address));
                 claims.Add(new Claim(AuthenticationConstants.Claims.ForEmailVerified, true.ToString()));
             }
         }

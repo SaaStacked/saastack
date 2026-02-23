@@ -35,7 +35,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
 
         var result = await Api.GetAsync(new GetOrganizationRequest
         {
-            Id = login.DefaultOrganizationId!
+            Id = login.DefaultOrganizationId
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
         result.Content.Value.Organization.CreatedById.Should().Be(login.User.Id);
@@ -71,7 +71,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].IsOwner.Should().BeTrue();
         members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[0].UserId.Should().Be(login.User.Id);
-        members.Content.Value.Members[0].EmailAddress.Should().Be(login.Profile!.EmailAddress);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(login.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
         members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
@@ -136,7 +136,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -164,7 +164,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].IsOwner.Should().BeTrue();
         members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
-        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
         members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
@@ -174,7 +174,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[1].IsOwner.Should().BeFalse();
         members.Content.Value.Members[1].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[1].UserId.Should().Be(loginB.User.Id);
-        members.Content.Value.Members[1].EmailAddress.Should().Be(loginB.Profile!.EmailAddress);
+        members.Content.Value.Members[1].EmailAddress.Should().Be(loginB.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[1].Name.FirstName.Should().Be("personb");
         members.Content.Value.Members[1].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[1].Classification.Should().Be(UserProfileClassification.Person);
@@ -205,7 +205,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         var loginA = await LoginUserAsync();
         var loginB = await LoginUserAsync(LoginUser.PersonB);
 
-        var organizationId = loginA.DefaultOrganizationId!;
+        var organizationId = loginA.DefaultOrganizationId;
         var result = await Api.PutAsync(new ChangeOrganizationAvatarRequest
             {
                 Id = organizationId
@@ -231,7 +231,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -249,7 +249,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var organizationId = login.DefaultOrganizationId!;
+        var organizationId = login.DefaultOrganizationId;
         var result = await Api.PutAsync(new ChangeOrganizationAvatarRequest
             {
                 Id = organizationId
@@ -264,7 +264,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var organizationId = login.DefaultOrganizationId!;
+        var organizationId = login.DefaultOrganizationId;
         await Api.PutAsync(new ChangeOrganizationAvatarRequest
             {
                 Id = organizationId
@@ -284,7 +284,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var organizationId = login.DefaultOrganizationId!;
+        var organizationId = login.DefaultOrganizationId;
         var result = await Api.PutAsync(new ChangeOrganizationRequest
         {
             Id = organizationId,
@@ -337,7 +337,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].IsOwner.Should().BeTrue();
         members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
-        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
         members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
@@ -361,7 +361,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -388,7 +388,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].IsOwner.Should().BeTrue();
         members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
-        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
         members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
@@ -421,7 +421,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -474,7 +474,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         members.Content.Value.Members[0].IsOwner.Should().BeTrue();
         members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
         members.Content.Value.Members[0].UserId.Should().Be(loginA.User.Id);
-        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(loginA.Profile!.EmailAddress!.Address);
         members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
         members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
         members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
@@ -498,7 +498,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -539,7 +539,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -587,7 +587,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
         await Api.PostAsync(new InviteMemberToOrganizationRequest
         {
             Id = organizationId,
-            Email = loginB.Profile!.EmailAddress
+            Email = loginB.Profile!.EmailAddress!.Address
         }, req => req.SetJWTBearerToken(loginA.AccessToken));
 
         await PropagateDomainEventsAsync();
@@ -692,7 +692,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
     {
         var login = await LoginUserAsync();
 
-        var organizationId = login.DefaultOrganizationId!;
+        var organizationId = login.DefaultOrganizationId;
         var organization = await Api.PutAsync(new ChangeOrganizationAvatarRequest
             {
                 Id = organizationId
@@ -764,7 +764,7 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
             TenantRoles.Owner.Name, TenantRoles.Member.Name);
         members2.Content.Value.Members[1].UserId.Should().Be(loginB.User.Id);
         members2.Content.Value.Members[1].IsOwner.Should().BeFalse();
-        members2.Content.Value.Members[1].EmailAddress.Should().Be(loginB.Profile!.EmailAddress);
+        members2.Content.Value.Members[1].EmailAddress.Should().Be(loginB.Profile!.EmailAddress!.Address);
         members2.Content.Value.Members[1].Roles.Should().ContainInOrder(TenantRoles.Member.Name);
     }
 

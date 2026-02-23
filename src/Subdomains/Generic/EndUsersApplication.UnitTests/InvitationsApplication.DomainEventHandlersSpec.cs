@@ -99,7 +99,11 @@ public class InvitationsApplicationDomainEventHandlersSpec
                     FirstName = "afirstname",
                     LastName = "alastname"
                 },
-                EmailAddress = "aninvitee@company.com",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "aninvitee@company.com",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
                 UserId = "aninviteeid",
                 Id = "aprofileid"
             }.ToOptional());

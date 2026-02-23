@@ -116,9 +116,9 @@ public partial class NativeIdentityServerCredentialsService
 
         static Optional<EmailAddress> DeriveEmailAddress(UserProfile userProfile)
         {
-            if (userProfile.EmailAddress.HasValue())
+            if (userProfile.EmailAddress.Exists() && userProfile.EmailAddress.Address.HasValue())
             {
-                var email = EmailAddress.Create(userProfile.EmailAddress);
+                var email = EmailAddress.Create(userProfile.EmailAddress.Address);
                 if (email.IsFailure)
                 {
                     return Optional<EmailAddress>.None;
