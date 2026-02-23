@@ -38,12 +38,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     return () => window.removeEventListener('resize', checkContentHeight);
   }, [children]);
 
-  const baseClasses = `px-4 py-8 ${shouldShowMainMenu ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`;
+  const baseClasses = `px-4 py-8 grow-1 ${shouldShowMainMenu ? 'pt-4' : ''} ${needsBottomPadding ? 'pb-48' : ''}`;
   const widthClasses = 'container mx-auto max-w-4xl lg:max-w-none';
   const classes = toClasses([baseClasses, widthClasses]);
 
   return (
-    <div className="min-h-screen font-sans bg-neutral-200 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
+    <div className="flex flex-col min-h-screen font-sans bg-neutral-200 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
       {shouldShowMainMenu ? <MainMenu /> : <BrandBar />}
       <main ref={mainRef} className={classes}>
         {children}

@@ -22,8 +22,8 @@ function FormPage({
   width = 'default',
   'title-align': titleAlign = 'center'
 }: CardProps) {
-  const baseClasses = 'container flex items-center justify-center';
-  const sizeClasses = align === 'top' ? 'min-h-screen items-start pt-16' : 'min-h-screen items-center';
+  const baseClasses = 'flex items-center justify-center';
+  const sizeClasses = align === 'top' ? 'items-start pt-16' : 'items-center';
   const widthClasses = {
     default: 'w-11/12 md:w-3/5',
     wide: 'w-11/12 md:w-4/5',
