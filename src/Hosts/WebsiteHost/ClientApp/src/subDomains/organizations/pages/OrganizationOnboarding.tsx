@@ -8,7 +8,8 @@ import {
   InitiateOnboardingWorkflowRequest,
   MoveBackWorkflowStepRequest,
   MoveForwardWorkflowStepRequest,
-  OrganizationOnboardingStatus
+  OrganizationOnboardingStatus,
+  OrganizationOnboardingWorkflow
 } from '../../../framework/api/apiHost1';
 import ButtonAction from '../../../framework/components/button/ButtonAction.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
@@ -21,6 +22,7 @@ import { InitiateOnboardingWorkflowAction } from '../actions/initiateOnboardingW
 import { MoveBackWorkflowStepAction } from '../actions/moveBackWorkflowStep.ts';
 import { MoveForwardWorkflowStepAction } from '../actions/moveForwardWorkflowStep.ts';
 import { customWorkflow, shouldBeOnboarding, shouldInitiateOnboarding } from './Onboarding.ts';
+
 
 export function OrganizationOnboardingPage() {
   const { t: translate } = useTranslation();
@@ -70,45 +72,24 @@ export function OrganizationOnboardingPage() {
           ref={getOnboardingTrigger}
           loadingMessage={translate('pages.organizations.onboarding.loader')}
         >
-          <OnboardingWorkflow workflow={getOnboarding.lastSuccessResponse} />
+          <OnboardingWorkflow workflow={getOnboarding.lastSuccessResponse!} />
         </PageAction>
       )}
     </FormPage>
   );
 }
 
-interface OnboardingWorkflowContentProps {
-  workflow: any;
+interface OnboardingWorkflowProps {
+  workflow: OrganizationOnboardingWorkflow;
 }
 
-function OnboardingWorkflow({ workflow }: OnboardingWorkflowContentProps) {
-  const { t: translate } = useTranslation();
-  const navigate = useNavigate();
+function OnboardingWorkflow({ workflow }: OnboardingWorkflowProps) {
   const [currentWorkflow, setCurrentWorkflow] = useState(workflow);
-
-  const moveForward = MoveForwardWorkflowStepAction(currentWorkflow.organizationId);
-  const moveBack = MoveBackWorkflowStepAction(currentWorkflow.organizationId);
-  const complete = CompleteOnboardingWorkflowAction(currentWorkflow.organizationId);
-
   const currentStep = currentWorkflow.state?.currentStep;
-  const isFirstStep = currentStep?.id === currentWorkflow.workflow.startStepId;
-  const isLastStep = currentStep?.id === currentWorkflow.workflow.endStepId;
-  const progressPercentage = currentWorkflow.state?.progressPercentage || 0;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Progress bar */}
-      <div className="mb-8">
-        <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2.5">
-          <div
-            className="bg-brand-primary-600 h-2.5 rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2 text-center">
-          {Math.round(progressPercentage)}% {translate('pages.organizations.onboarding.labels.complete')}
-        </p>
-      </div>
+    <div className="w-full max-w-4xl mx-auto">
+      <ProgressBar workflow={currentWorkflow} />
 
       {/* Current step content */}
       <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-8 mb-6">
@@ -118,52 +99,160 @@ function OnboardingWorkflow({ workflow }: OnboardingWorkflowContentProps) {
         </p>
       </div>
 
-      {/* Navigation buttons */}
-      <div className="flex justify-between items-center">
-        <div>
-          {!isFirstStep && (
-            <ButtonAction
-              id="onboarding_back"
-              action={moveBack}
-              requestData={{}}
-              variant="outline"
-              label={translate('pages.organizations.onboarding.labels.back')}
-              onSuccess={(params: { requestData?: MoveBackWorkflowStepRequest; response: GetOnboardingResponse }) =>
-                setCurrentWorkflow(params.response.workflow)
-              }
-            />
-          )}
+      <NavigationButtons workflow={currentWorkflow} setCurrentWorkflow={setCurrentWorkflow} />
+    </div>
+  );
+}
+
+interface NavigationButtonsProps {
+  workflow: OrganizationOnboardingWorkflow;
+  setCurrentWorkflow: (workflow: OrganizationOnboardingWorkflow) => void;
+}
+
+function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsProps) {
+  const { t: translate } = useTranslation();
+  const navigate = useNavigate();
+
+  const moveForward = MoveForwardWorkflowStepAction(workflow.organizationId);
+  const moveBack = MoveBackWorkflowStepAction(workflow.organizationId);
+  const complete = CompleteOnboardingWorkflowAction(workflow.organizationId);
+
+  const currentStep = workflow.state?.currentStep;
+  const isFirstStep = currentStep?.id === workflow.workflow.startStepId;
+  const isLastStep = currentStep?.id === workflow.workflow.endStepId;
+
+  return <div className="flex justify-between items-center">
+    <div>
+      {!isFirstStep && <ButtonAction
+          id="onboarding_back"
+          action={moveBack}
+          requestData={{}}
+          variant="outline"
+          label={translate('pages.organizations.onboarding.labels.back')}
+          onSuccess={(params: { requestData?: MoveBackWorkflowStepRequest; response: GetOnboardingResponse }) =>
+            setCurrentWorkflow(params.response.workflow)
+          }
+        />}
+    </div>
+    <div className="flex gap-3">
+      {isLastStep ? <ButtonAction
+          id="onboarding_finish"
+          action={complete}
+          requestData={{}}
+          variant="brand-primary"
+          label={translate('pages.organizations.onboarding.labels.finish')}
+          onSuccess={(params: {
+            requestData?: CompleteOnboardingWorkflowRequest;
+            response: GetOnboardingResponse;
+          }) => {
+            setCurrentWorkflow(params.response.workflow);
+            navigate(RoutePaths.Home);
+          }}
+        /> : <ButtonAction
+          id="onboarding_next"
+          action={moveForward}
+          requestData={{}}
+          variant="brand-primary"
+          label={translate('pages.organizations.onboarding.labels.next')}
+          onSuccess={(params: { requestData?: MoveForwardWorkflowStepRequest; response: GetOnboardingResponse }) =>
+            setCurrentWorkflow(params.response.workflow)
+          }
+        />}
+    </div>
+  </div>;
+}
+
+
+export function ProgressBar({ workflow }: OnboardingWorkflowProps) {
+  const { t: translate } = useTranslation();
+  const currentStepId = workflow.state?.currentStep.id;
+  const allSteps = Object.entries(workflow.workflow.steps || {}).map(([id, step]: [string, any]) => ({
+    id,
+    title: step.title,
+    description: step.description,
+    weight: step.weight
+  }));
+
+  const progressPercentage = workflow.state?.progressPercentage || 0;
+  const currentStepIndex = allSteps.findIndex(step => step.id === currentStepId);
+
+  // Calculate cumulative positions based on weight
+  const totalWeight = allSteps.reduce((sum, step) => sum + step.weight, 0);
+  let cumulativeWeight = 0;
+  const stepsWithPositions = allSteps.map(step => {
+    const position = totalWeight > 0 ? (cumulativeWeight / totalWeight) * 100 : 0;
+    cumulativeWeight += step.weight;
+    return { ...step, position };
+  });
+
+  return (
+    <div className="mb-6">
+      <div className="relative" style={{ paddingLeft: '12px', paddingRight: '12px', minHeight: '80px', paddingBottom: '40px' }}>
+        {/* Progress line container */}
+        <div className="absolute top-2 left-3 right-3 flex items-center" style={{ zIndex: 0 }}>
+          <div className="flex-1 relative">
+            <div className="h-2 border-2 border-neutral-100 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-800"></div>
+            <div
+              className="absolute top-0.5 left-0 h-1 bg-success-600 border-neutral-400 dark:border-neutral-900 transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="flex gap-3">
-          {isLastStep ? (
-            <ButtonAction
-              id="onboarding_finish"
-              action={complete}
-              requestData={{}}
-              variant="brand-primary"
-              label={translate('pages.organizations.onboarding.labels.finish')}
-              onSuccess={(params: {
-                requestData?: CompleteOnboardingWorkflowRequest;
-                response: GetOnboardingResponse;
-              }) => {
-                setCurrentWorkflow(params.response.workflow);
-                navigate(RoutePaths.Home);
-              }}
-            />
-          ) : (
-            <ButtonAction
-              id="onboarding_next"
-              action={moveForward}
-              requestData={{}}
-              variant="brand-primary"
-              label={translate('pages.organizations.onboarding.labels.next')}
-              onSuccess={(params: { requestData?: MoveForwardWorkflowStepRequest; response: GetOnboardingResponse }) =>
-                setCurrentWorkflow(params.response.workflow)
-              }
-            />
-          )}
-        </div>
+
+        {/* Step circles positioned by weight */}
+        {stepsWithPositions.map((step, index) => {
+          const isCompleted = index < currentStepIndex;
+          const isCurrent = step.id === currentStepId;
+
+          return <div
+            key={step.id}
+            className="absolute flex flex-col items-center"
+            style={{
+              left: `${step.position}%`,
+              top: 0,
+              transform: 'translateX(-50%)',
+              zIndex: 1
+            }}
+          >
+            {/* Circle */}
+            <div
+              className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 border-2 ${
+                isCompleted || isCurrent
+                  ? 'bg-success-600 text-white border-neutral-100 dark:border-neutral-600'
+                  : 'bg-neutral-100 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 text-neutral-400'
+              } ${isCurrent ? 'ring-4 ring-success-300 dark:ring-success-900' : ''}`}
+            >
+              {isCompleted ? <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg> : <span className="text-sm font-semibold">{index + 1}</span>}
+            </div>
+
+            {/* Label */}
+            <div className="mt-3 text-center max-w-[120px]">
+              <p
+                className={`text-xs font-medium ${
+                  isCurrent
+                    ? 'text-success-600 dark:text-success-400'
+                    : isCompleted
+                      ? 'text-neutral-700 dark:text-neutral-300'
+                      : 'text-neutral-400 dark:text-neutral-500'
+                }`}
+              >
+                {step.title}
+              </p>
+            </div>
+          </div>;
+        })}
       </div>
+
+      {/* Progress percentage */}
+      <p className="text-xs text-neutral-600 dark:text-neutral-400 text-center">
+        {Math.round(progressPercentage)}% {translate('pages.organizations.onboarding.labels.complete')}
+      </p>
     </div>
   );
 }
