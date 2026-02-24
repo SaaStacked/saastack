@@ -43,8 +43,10 @@ public sealed class EmailDomain : ValueObjectBase<EmailDomain>
         "daum.net",
         "hanmail.net",
         "rediffmail.com",
+        "proton.me",
         "protonmail.com",
         "pm.me",
+        "protonmail.ch",
         "tutanota.com",
         "zoho.com",
 

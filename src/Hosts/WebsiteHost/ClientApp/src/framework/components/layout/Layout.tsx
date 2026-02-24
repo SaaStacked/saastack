@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MainMenuExcludedRoutes } from '../../../App.tsx';
+import { OnboardingReminder } from '../../../subDomains/organizations/components/OnboardingReminder.tsx';
 import { useCurrentUser } from '../../providers/CurrentUserContext';
 import { toClasses } from '../Components.ts';
 import { BrandBar } from '../navigation/BrandBar.tsx';
 import { MainMenu } from '../navigation/MainMenu.tsx';
 import { Footer } from './Footer.tsx';
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -49,6 +51,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
       <Footer />
+      <OnboardingReminder />
     </div>
   );
 };

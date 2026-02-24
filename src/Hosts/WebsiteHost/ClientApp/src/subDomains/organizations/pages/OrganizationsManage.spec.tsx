@@ -7,7 +7,7 @@ import { OrganizationOwnership } from '../../../framework/api/apiHost1';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
 import { GetOrganizationAction } from '../actions/getOrganization.ts';
 import { TenantRoles } from './Organizations';
-import { OrganizationsManagePage } from './OrganizationsManagePage';
+import { OrganizationsManagePage } from './OrganizationsManage';
 
 const mockOrganization1 = {
   id: 'anorganizationid1',

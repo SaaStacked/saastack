@@ -1,9 +1,23 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
+import { RoutePaths } from '../../../framework/constants.ts';
+import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
+import { shouldBeOnboarding } from '../../organizations/pages/Onboarding.ts';
 
 export function HomeAuthenticatedPage() {
   const { t: translate } = useTranslation();
+  const navigate = useNavigate();
+  const { organization } = useCurrentUser();
+
+  // Redirect to onboarding if necessary
+  useEffect(() => {
+    if (shouldBeOnboarding(organization)) {
+      navigate(RoutePaths.OrganizationOnboarding);
+    }
+  }, [organization?.onboardingStatus, navigate]);
+
   return (
     <FormPage>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
