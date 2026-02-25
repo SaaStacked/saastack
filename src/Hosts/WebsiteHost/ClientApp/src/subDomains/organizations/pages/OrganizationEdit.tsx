@@ -6,14 +6,14 @@ import z from 'zod';
 import {
   AssignRolesToOrganizationRequest,
   ChangeOrganizationRequest,
+  type GetOrganizationData,
   GetOrganizationResponse,
   Organization,
   OrganizationMember,
   OrganizationOwnership,
   UnassignRolesFromOrganizationRequest,
   UserProfileClassification,
-  UserProfileForCaller,
-  type GetOrganizationData
+  UserProfileForCaller
 } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import Button from '../../../framework/components/button/Button.tsx';
@@ -35,7 +35,7 @@ import {
   AssignRolesToOrganizationAction,
   AssignRolesToOrganizationErrorCodes
 } from '../actions/assignRolesToOrganization.ts';
-import { ChangeOrganizationAction } from '../actions/changeOrganization.ts';
+import { ChangeDefaultOrganizationAction } from '../actions/changeDefaultOrganization.ts';
 import {
   ChangeOrganizationAvatarAction,
   ChangeOrganizationAvatarRequest
@@ -125,7 +125,7 @@ const DetailsTab: React.FC<{
   onOrganizationChange: (organization: Organization) => void;
 }> = ({ initialOrganization, updatedOrganization, onOrganizationChange }) => {
   const { t: translate } = useTranslation();
-  const changeOrganization = ChangeOrganizationAction(initialOrganization.id ?? '');
+  const changeOrganization = ChangeDefaultOrganizationAction(initialOrganization.id ?? '');
   const changeOrganizationAvatar = ChangeOrganizationAvatarAction(initialOrganization.id);
   const deleteOrganizationAvatar = DeleteOrganizationAvatarAction(initialOrganization.id);
   const changeOrganizationAvatarTrigger = useRef<PageActionRef<ChangeOrganizationAvatarRequest>>(null);
