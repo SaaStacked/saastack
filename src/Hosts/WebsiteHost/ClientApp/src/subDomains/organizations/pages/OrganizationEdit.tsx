@@ -6,14 +6,14 @@ import z from 'zod';
 import {
   AssignRolesToOrganizationRequest,
   ChangeOrganizationRequest,
-  type GetOrganizationData,
   GetOrganizationResponse,
   Organization,
   OrganizationMember,
   OrganizationOwnership,
   UnassignRolesFromOrganizationRequest,
   UserProfileClassification,
-  UserProfileForCaller
+  UserProfileForCaller,
+  type GetOrganizationData
 } from '../../../framework/api/apiHost1';
 import { EmptyRequest } from '../../../framework/api/EmptyRequest.ts';
 import Button from '../../../framework/components/button/Button.tsx';
@@ -31,28 +31,17 @@ import Tag from '../../../framework/components/tag/Tag.tsx';
 import { RoutePaths } from '../../../framework/constants.ts';
 import { useCurrentUser } from '../../../framework/providers/CurrentUserContext.tsx';
 import { UploadAvatarErrors } from '../../userProfiles/actions/changeProfileAvatar.ts';
-import {
-  AssignRolesToOrganizationAction,
-  AssignRolesToOrganizationErrorCodes
-} from '../actions/assignRolesToOrganization.ts';
+import { AssignRolesToOrganizationAction, AssignRolesToOrganizationErrorCodes } from '../actions/assignRolesToOrganization.ts';
 import { ChangeDefaultOrganizationAction } from '../actions/changeDefaultOrganization.ts';
-import {
-  ChangeOrganizationAvatarAction,
-  ChangeOrganizationAvatarRequest
-} from '../actions/changeOrganizationAvatar.ts';
+import { ChangeOrganizationAvatarAction, ChangeOrganizationAvatarRequest } from '../actions/changeOrganizationAvatar.ts';
 import { DeleteOrganizationAvatarAction } from '../actions/deleteOrganizationAvatar.ts';
 import { GetOrganizationAction, OrganizationErrorCodes } from '../actions/getOrganization.ts';
-import {
-  InviteMemberToOrganizationAction,
-  InviteMemberToOrganizationErrorCodes
-} from '../actions/inviteMemberToOrganization.ts';
-import {
-  ListMembersForOrganizationAction,
-  ListMembersForOrganizationErrorCodes
-} from '../actions/listMembersForOrganization.ts';
+import { InviteMemberToOrganizationAction, InviteMemberToOrganizationErrorCodes } from '../actions/inviteMemberToOrganization.ts';
+import { ListMembersForOrganizationAction, ListMembersForOrganizationErrorCodes } from '../actions/listMembersForOrganization.ts';
 import { UnAssignRolesFromOrganizationAction } from '../actions/unAssignRolesFromOrganization.ts';
 import { UnInviteMemberFromOrganizationAction } from '../actions/unInviteMemberFromOrganization.ts';
 import { formatRoleName, TenantRoles } from './Organizations.ts';
+
 
 export const OrganizationEditPage: React.FC = () => {
   const { t: translate } = useTranslation();

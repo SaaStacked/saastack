@@ -24,7 +24,7 @@ public static class Validations
         {
             public static readonly Validation Name = CommonValidations.DescriptiveName();
             public static readonly Validation StepTitle = CommonValidations.DescriptiveName();
-            public static readonly Validation StepId = new(@"^[\w\d\.]{4,25}$", 4, 25);
+            public static readonly Validation StepId = new(@"^[\w\d\.]{3,25}$", 3, 25);
         }
     }
 }

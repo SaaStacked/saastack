@@ -17,8 +17,14 @@ const organizationCacheKeys = {
       all: ['organizations', 'onboarding'] as const,
       query: (organizationId: string) =>
         [...organizationCacheKeys.organization.onboarding.all, organizationId] as const,
-      mutate: (organizationId: string) =>
-        [...organizationCacheKeys.organization.onboarding.all, organizationId] as const
+      navigate: (organizationId: string) =>
+        [...organizationCacheKeys.organization.onboarding.all, organizationId] as const,
+      complete: (organizationId: string) =>
+        [
+          ...userProfileCacheKeys.me,
+          ...organizationCacheKeys.organization.mutate(organizationId),
+          ...organizationCacheKeys.organization.onboarding.navigate(organizationId)
+        ] as const
     }
   }
 };

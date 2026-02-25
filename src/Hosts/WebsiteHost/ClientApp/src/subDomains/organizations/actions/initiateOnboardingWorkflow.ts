@@ -1,10 +1,7 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
-import {
-  GetOnboardingResponse,
-  initiateOnboardingWorkflow,
-  InitiateOnboardingWorkflowRequest
-} from '../../../framework/api/apiHost1';
+import { GetOnboardingResponse, initiateOnboardingWorkflow, InitiateOnboardingWorkflowRequest } from '../../../framework/api/apiHost1';
 import organizationCacheKeys from './responseCache';
+
 
 export const InitiateOnboardingWorkflowAction = (organizationId: string) =>
   useActionCommand<InitiateOnboardingWorkflowRequest, GetOnboardingResponse>({
@@ -13,5 +10,5 @@ export const InitiateOnboardingWorkflowAction = (organizationId: string) =>
         path: { Id: organizationId },
         body: request
       }),
-    invalidateCacheKeys: organizationCacheKeys.organization.onboarding.mutate(organizationId)
+    invalidateCacheKeys: organizationCacheKeys.organization.onboarding.navigate(organizationId)
   });

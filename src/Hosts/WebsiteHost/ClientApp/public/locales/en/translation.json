@@ -582,11 +582,28 @@
         "states": {
           "initiated": "Onboarding initiated successfully"
         },
+        "steps": {
+          "start": {
+            "title": "Welcome",
+            "description": "Let's begin your onboarding journey"
+          },
+          "setup": {
+            "title": "Configure",
+            "description": "Let's configure some settings"
+          },
+          "end": {
+            "title": "Finished!",
+            "description": "All done!. Just click 'Finish' to start using the product"
+          }
+        },
         "labels": {
-          "complete": "Completed",
+          "progress_complete": "completed",
           "next": "Next >>",
           "back": "<< Back",
           "finish": "Finish"
+        },
+        "errors": {
+          "invalid_step": "You cannot move forwards from this step, or backwards to the previous step"
         }
       }
     },

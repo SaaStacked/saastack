@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import {
   Organization,
   OrganizationOnboardingStatus,
@@ -6,7 +5,7 @@ import {
   OrganizationOnboardingWorkflowSchema,
   OrganizationOwnership
 } from '../../../framework/api/apiHost1';
-import { RoutePaths } from '../../../framework/constants.ts';
+
 
 // Should be onboarding if:
 // 1. Organization exists
@@ -20,24 +19,15 @@ export const shouldBeOnboarding = (organization?: Organization) =>
 export const shouldInitiateOnboarding = (organization?: Organization) =>
   shouldBeOnboarding(organization) && organization!.onboardingStatus === OrganizationOnboardingStatus.NOT_STARTED;
 
-// Show reminder if:
-// 1. Onboarding is InProgress
-// 4. User is viewing some other route than the onboarding page
-export const shouldShowOnboardingReminder = (organization?: Organization) => {
-  const location = useLocation();
-
-  return shouldBeOnboarding(organization) && location.pathname !== RoutePaths.OrganizationOnboarding;
-};
-
 export const customWorkflow = (): OrganizationOnboardingWorkflowSchema => ({
-  name: 'Getting Started',
-  startStepId: 'welcome',
-  endStepId: 'complete',
+  name: 'AllUsers',
+  startStepId: 'start',
+  endStepId: 'end',
   steps: {
-    welcome: {
-      id: 'welcome',
-      title: 'Welcome',
-      description: 'Welcome to your onboarding journey',
+    start: {
+      id: 'start',
+      title: 'start',
+      description: 'Start of the onboarding journey',
       type: OrganizationOnboardingStepSchemaType.START,
       weight: 40,
       nextStepId: 'setup',
@@ -46,18 +36,18 @@ export const customWorkflow = (): OrganizationOnboardingWorkflowSchema => ({
     },
     setup: {
       id: 'setup',
-      title: 'Setup',
-      description: 'Configure your preferences',
+      title: 'setup',
+      description: 'A middle step',
       type: OrganizationOnboardingStepSchemaType.NORMAL,
       weight: 60,
-      nextStepId: 'complete',
+      nextStepId: 'end',
       branches: [],
       initialValues: {}
     },
-    complete: {
-      id: 'complete',
-      title: 'That&apos;s it!',
-      description: 'Click the Finish button and start using the product!',
+    end: {
+      id: 'end',
+      title: 'end',
+      description: 'The last step',
       type: OrganizationOnboardingStepSchemaType.END,
       weight: 0,
       branches: [],
