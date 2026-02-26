@@ -60,11 +60,263 @@ namespace OrganizationsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name of the schema is invalid.
+        /// </summary>
+        internal static string BranchConditionschema_InvalidName {
+            get {
+                return ResourceManager.GetString("BranchConditionschema_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        /// </summary>
+        internal static string BranchConditionschema_InvalidValue {
+            get {
+                return ResourceManager.GetString("BranchConditionschema_InvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id is missing or invalid.
+        /// </summary>
+        internal static string BranchSchema_InvalidId {
+            get {
+                return ResourceManager.GetString("BranchSchema_InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label is missing or invalid.
+        /// </summary>
+        internal static string BranchSchema_InvalidLabel {
+            get {
+                return ResourceManager.GetString("BranchSchema_InvalidLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NextStepId is missing or invalid.
+        /// </summary>
+        internal static string BranchSchema_InvalidNextStepId {
+            get {
+                return ResourceManager.GetString("BranchSchema_InvalidNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate a completed workflow.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_AlreadyCompleted {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_AlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate backward from &apos;Start&apos; step &apos;{0}&apos;.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_BackwardFromStart {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_BackwardFromStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate forward from &apos;End&apos; step &apos;{0}&apos;.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_ForwardFromEnd {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_ForwardFromEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate from step &apos;{0}&apos; since it is not the current step. &apos;{1}&apos; is the current step.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_NotFromCurrentStep {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_NotFromCurrentStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown current step &apos;{0}&apos;.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_UnknownCurrentStep {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_UnknownCurrentStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown next step &apos;{0}&apos;.
+        /// </summary>
+        internal static string CurrentStepState_NavigateToStep_UnknownNextStep {
+            get {
+                return ResourceManager.GetString("CurrentStepState_NavigateToStep_UnknownNextStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot remove last step when there are no steps.
+        /// </summary>
+        internal static string Journey_RemoveLast_NoSteps {
+            get {
+                return ResourceManager.GetString("Journey_RemoveLast_NoSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot replace last step when there are no steps.
+        /// </summary>
+        internal static string Journey_ReplaceLastStep_NoSteps {
+            get {
+                return ResourceManager.GetString("Journey_ReplaceLastStep_NoSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed weight &apos;{0}&apos; must be more than zero, and less than Total weight.
+        /// </summary>
+        internal static string OnboardingState_InvalidCompletedWeight {
+            get {
+                return ResourceManager.GetString("OnboardingState_InvalidCompletedWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StepId is missing or invalid.
+        /// </summary>
+        internal static string OnboardingState_InvalidCurrentStepId {
+            get {
+                return ResourceManager.GetString("OnboardingState_InvalidCurrentStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total weight must be more than zero.
+        /// </summary>
+        internal static string OnboardingState_InvalidTotalWeight {
+            get {
+                return ResourceManager.GetString("OnboardingState_InvalidTotalWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complete status requires a completed time stamp.
+        /// </summary>
+        internal static string OnboardingState_RequiresCompletedDate {
+            get {
+                return ResourceManager.GetString("OnboardingState_RequiresCompletedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EndStepId is missing or invalid.
+        /// </summary>
+        internal static string OnboardingWorkflow_InvalidEndStepId {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflow_InvalidEndStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workflow name is missing or invalid.
+        /// </summary>
+        internal static string OnboardingWorkflow_InvalidName {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflow_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StartStepId is missing or invalid.
+        /// </summary>
+        internal static string OnboardingWorkflow_InvalidStartStepId {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflow_InvalidStartStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workflow must have at least one step.
+        /// </summary>
+        internal static string OnboardingWorkflow_NoSteps {
+            get {
+                return ResourceManager.GetString("OnboardingWorkflow_NoSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name is invalid.
         /// </summary>
         internal static string OrganizationDisplayName_InvalidName {
             get {
                 return ResourceManager.GetString("OrganizationDisplayName_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding is already been completed.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_AlreadyCompleted {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_AlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot go back from the first step in the workflow.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_MoveBackward_AtStartStep {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_MoveBackward_AtStartStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot go forward from the last step in the workflow.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_MoveForward_AtEndStep {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_MoveForward_AtEndStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate to unknown step &apos;{0}&apos; in the workflow.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_Navigate_UnknownStep {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_Navigate_UnknownStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot navigate to this unreachable step &apos;{0}&apos; in the workflow.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_Navigate_UnreachableStep {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_Navigate_UnreachableStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding has not been started.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_NotStarted {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_NotStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be an organization owner to onboard.
+        /// </summary>
+        internal static string OrganizationOnboardingRoot_UserNotOrgOwner {
+            get {
+                return ResourceManager.GetString("OrganizationOnboardingRoot_UserNotOrgOwner", resourceCulture);
             }
         }
         
@@ -155,6 +407,24 @@ namespace OrganizationsDomain {
         internal static string OrganizationRoot_NotBillingSubscriberNorBillingAdmin {
             get {
                 return ResourceManager.GetString("OrganizationRoot_NotBillingSubscriberNorBillingAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding has already ended.
+        /// </summary>
+        internal static string OrganizationRoot_OnboardingAlreadyComplete {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_OnboardingAlreadyComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding cannot be restarted, it is already in progress.
+        /// </summary>
+        internal static string OrganizationRoot_OnboardingAlreadyInProgress {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_OnboardingAlreadyInProgress", resourceCulture);
             }
         }
         
@@ -272,6 +542,213 @@ namespace OrganizationsDomain {
         internal static string Setting_InvalidValueType {
             get {
                 return ResourceManager.GetString("Setting_InvalidValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step Id is missing or invalid.
+        /// </summary>
+        internal static string Step_InvalidStepId {
+            get {
+                return ResourceManager.GetString("Step_InvalidStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step Title is missing or invalid.
+        /// </summary>
+        internal static string Step_InvalidTitle {
+            get {
+                return ResourceManager.GetString("Step_InvalidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight must be greater than 0 and less than 100.
+        /// </summary>
+        internal static string Step_InvalidWeight {
+            get {
+                return ResourceManager.GetString("Step_InvalidWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Branch steps cannot have a NextStepId, they must use branches to define next steps.
+        /// </summary>
+        internal static string StepSchema_BranchStepCannotHaveNextStepId {
+            get {
+                return ResourceManager.GetString("StepSchema_BranchStepCannotHaveNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Branch steps must have at least one branch.
+        /// </summary>
+        internal static string StepSchema_BranchStepWithoutBranchDefinition {
+            get {
+                return ResourceManager.GetString("StepSchema_BranchStepWithoutBranchDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id is missing or invalid.
+        /// </summary>
+        internal static string StepSchema_InvalidId {
+            get {
+                return ResourceManager.GetString("StepSchema_InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NextStepId is missing or invalid.
+        /// </summary>
+        internal static string StepSchema_InvalidNextStepId {
+            get {
+                return ResourceManager.GetString("StepSchema_InvalidNextStepId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title is missing or invalid.
+        /// </summary>
+        internal static string StepSchema_InvalidTitle {
+            get {
+                return ResourceManager.GetString("StepSchema_InvalidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight must be greater than 0 and less than 100.
+        /// </summary>
+        internal static string StepSchema_InvalidWeight {
+            get {
+                return ResourceManager.GetString("StepSchema_InvalidWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only branch steps can have branches.
+        /// </summary>
+        internal static string StepSchema_NonBranchStepWithBranchDefinition {
+            get {
+                return ResourceManager.GetString("StepSchema_NonBranchStepWithBranchDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A &apos;{0}&apos; step must include a NextStepId.
+        /// </summary>
+        internal static string StepSchema_NonTerminatingNodeWithoutNextStep {
+            get {
+                return ResourceManager.GetString("StepSchema_NonTerminatingNodeWithoutNextStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_CreateStateStep_UnknownStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_CreateStateStep_UnknownStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot move forward from end step.
+        /// </summary>
+        internal static string WorkflowSchema_DetermineNextStep_EndStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_DetermineNextStep_EndStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; has no next step defined.
+        /// </summary>
+        internal static string WorkflowSchema_DetermineNextStep_NoNextStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_DetermineNextStep_NoNextStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_DetermineNextStep_UnknownCurrentStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_DetermineNextStep_UnknownCurrentStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End node must have type &apos;{0}&apos;.
+        /// </summary>
+        internal static string WorkflowSchema_EndNodeIncorrectType {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_EndNodeIncorrectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_EndStepMissingFromSteps {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_EndStepMissingFromSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start node must have type &apos;{0}&apos;.
+        /// </summary>
+        internal static string WorkflowSchema_StartNodeIncorrectType {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_StartNodeIncorrectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_StartStepMissingFromSteps {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_StartStepMissingFromSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; does not exist on this branch, from step &apos;{1}&apos;.
+        /// </summary>
+        internal static string WorkflowSchema_ValidateMove_InvalidBranchStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_ValidateMove_InvalidBranchStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; is not directly reachable from step &apos;{1}&apos;.
+        /// </summary>
+        internal static string WorkflowSchema_ValidateMove_NotDirectlyReachable {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_ValidateMove_NotDirectlyReachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_ValidateMove_UnknownFromStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_ValidateMove_UnknownFromStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step &apos;{0}&apos; not found in workflow.
+        /// </summary>
+        internal static string WorkflowSchema_ValidateMove_UnknownToStep {
+            get {
+                return ResourceManager.GetString("WorkflowSchema_ValidateMove_UnknownToStep", resourceCulture);
             }
         }
     }

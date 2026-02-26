@@ -96,4 +96,163 @@
     <data name="OrganizationRoot_UnInviteMember_Creator" xml:space="preserve">
         <value>Cannot remove the creator of an organization</value>
     </data>
+    <data name="OrganizationRoot_OnboardingAlreadyInProgress" xml:space="preserve">
+        <value>Onboarding cannot be restarted, it is already in progress</value>
+    </data>
+    <data name="OrganizationRoot_OnboardingAlreadyComplete" xml:space="preserve">
+        <value>Onboarding has already ended</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_UserNotOrgOwner" xml:space="preserve">
+        <value>Must be an organization owner to onboard</value>
+    </data>
+    <data name="OnboardingWorkflow_NoSteps" xml:space="preserve">
+        <value>Workflow must have at least one step</value>
+    </data>
+    <data name="OnboardingWorkflow_InvalidName" xml:space="preserve">
+        <value>Workflow name is missing or invalid</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_AlreadyCompleted" xml:space="preserve">
+        <value>Onboarding is already been completed</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_NotStarted" xml:space="preserve">
+        <value>Onboarding has not been started</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_MoveBackward_AtStartStep" xml:space="preserve">
+        <value>Cannot go back from the first step in the workflow</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_MoveForward_AtEndStep" xml:space="preserve">
+        <value>Cannot go forward from the last step in the workflow</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_Navigate_UnknownStep" xml:space="preserve">
+        <value>Cannot navigate to unknown step '{0}' in the workflow</value>
+    </data>
+    <data name="OrganizationOnboardingRoot_Navigate_UnreachableStep" xml:space="preserve">
+        <value>Cannot navigate to this unreachable step '{0}' in the workflow</value>
+    </data>
+    <data name="Journey_ReplaceLastStep_NoSteps" xml:space="preserve">
+        <value>Cannot replace last step when there are no steps</value>
+    </data>
+    <data name="Journey_RemoveLast_NoSteps" xml:space="preserve">
+        <value>Cannot remove last step when there are no steps</value>
+    </data>
+    <data name="OnboardingState_RequiresCompletedDate" xml:space="preserve">
+        <value>Complete status requires a completed time stamp</value>
+    </data>
+    <data name="OnboardingState_InvalidCurrentStepId" xml:space="preserve">
+        <value>StepId is missing or invalid</value>
+    </data>
+    <data name="OnboardingState_InvalidTotalWeight" xml:space="preserve">
+        <value>Total weight must be more than zero</value>
+    </data>
+    <data name="OnboardingState_InvalidCompletedWeight" xml:space="preserve">
+        <value>Completed weight '{0}' must be more than zero, and less than Total weight</value>
+    </data>
+    <data name="Step_InvalidStepId" xml:space="preserve">
+        <value>Step Id is missing or invalid</value>
+    </data>
+    <data name="Step_InvalidTitle" xml:space="preserve">
+        <value>Step Title is missing or invalid</value>
+    </data>
+    <data name="Step_InvalidWeight" xml:space="preserve">
+        <value>Weight must be greater than 0 and less than 100</value>
+    </data>
+    <data name="BranchConditionschema_InvalidName" xml:space="preserve">
+        <value>Name of the schema is invalid</value>
+    </data>
+    <data name="BranchConditionschema_InvalidValue" xml:space="preserve">
+        <value>Value cannot be null</value>
+    </data>
+    <data name="BranchSchema_InvalidId" xml:space="preserve">
+        <value>Id is missing or invalid</value>
+    </data>
+    <data name="BranchSchema_InvalidNextStepId" xml:space="preserve">
+        <value>NextStepId is missing or invalid</value>
+    </data>
+    <data name="BranchSchema_InvalidLabel" xml:space="preserve">
+        <value>Label is missing or invalid</value>
+    </data>
+    <data name="StepSchema_InvalidId" xml:space="preserve">
+        <value>Id is missing or invalid</value>
+    </data>
+    <data name="StepSchema_InvalidTitle" xml:space="preserve">
+        <value>Title is missing or invalid</value>
+    </data>
+    <data name="StepSchema_InvalidWeight" xml:space="preserve">
+        <value>Weight must be greater than 0 and less than 100</value>
+    </data>
+    <data name="StepSchema_InvalidNextStepId" xml:space="preserve">
+        <value>NextStepId is missing or invalid</value>
+    </data>
+    <data name="StepSchema_BranchStepWithoutBranchDefinition" xml:space="preserve">
+        <value>Branch steps must have at least one branch</value>
+    </data>
+    <data name="StepSchema_BranchStepCannotHaveNextStepId" xml:space="preserve">
+        <value>Branch steps cannot have a NextStepId, they must use branches to define next steps</value>
+    </data>
+    <data name="StepSchema_NonBranchStepWithBranchDefinition" xml:space="preserve">
+        <value>Only branch steps can have branches</value>
+    </data>
+    <data name="StepSchema_NonTerminatingNodeWithoutNextStep" xml:space="preserve">
+        <value>A '{0}' step must include a NextStepId</value>
+    </data>
+    <data name="OnboardingWorkflow_InvalidStartStepId" xml:space="preserve">
+        <value>StartStepId is missing or invalid</value>
+    </data>
+    <data name="OnboardingWorkflow_InvalidEndStepId" xml:space="preserve">
+        <value>EndStepId is missing or invalid</value>
+    </data>
+    <data name="WorkflowSchema_StartStepMissingFromSteps" xml:space="preserve">
+        <value>Start step '{0}' not found in workflow</value>
+    </data>
+    <data name="WorkflowSchema_EndStepMissingFromSteps" xml:space="preserve">
+        <value>End step '{0}' not found in workflow</value>
+    </data>
+    <data name="WorkflowSchema_StartNodeIncorrectType" xml:space="preserve">
+        <value>Start node must have type '{0}'</value>
+    </data>
+    <data name="WorkflowSchema_EndNodeIncorrectType" xml:space="preserve">
+        <value>End node must have type '{0}'</value>
+    </data>
+    <data name="WorkflowSchema_DetermineNextStep_UnknownCurrentStep" xml:space="preserve">
+        <value>Step '{0}' not found in workflow</value>
+    </data>
+    <data name="WorkflowSchema_DetermineNextStep_EndStep" xml:space="preserve">
+        <value>Cannot move forward from end step</value>
+    </data>
+    <data name="WorkflowSchema_DetermineNextStep_NoNextStep" xml:space="preserve">
+        <value>Step '{0}' has no next step defined</value>
+    </data>
+    <data name="WorkflowSchema_CreateStateStep_UnknownStep" xml:space="preserve">
+        <value>Step '{0}' not found in workflow</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_NotFromCurrentStep" xml:space="preserve">
+        <value>Cannot navigate from step '{0}' since it is not the current step. '{1}' is the current step</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_UnknownNextStep" xml:space="preserve">
+        <value>Unknown next step '{0}'</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_UnknownCurrentStep" xml:space="preserve">
+        <value>Unknown current step '{0}'</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_ForwardFromEnd" xml:space="preserve">
+        <value>Cannot navigate forward from 'End' step '{0}'</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_BackwardFromStart" xml:space="preserve">
+        <value>Cannot navigate backward from 'Start' step '{0}'</value>
+    </data>
+    <data name="CurrentStepState_NavigateToStep_AlreadyCompleted" xml:space="preserve">
+        <value>Cannot navigate a completed workflow</value>
+    </data>
+    <data name="WorkflowSchema_ValidateMove_UnknownFromStep" xml:space="preserve">
+        <value>Step '{0}' not found in workflow</value>
+    </data>
+    <data name="WorkflowSchema_ValidateMove_UnknownToStep" xml:space="preserve">
+        <value>Step '{0}' not found in workflow</value>
+    </data>
+    <data name="WorkflowSchema_ValidateMove_InvalidBranchStep" xml:space="preserve">
+        <value>Step '{0}' does not exist on this branch, from step '{1}'</value>
+    </data>
+    <data name="WorkflowSchema_ValidateMove_NotDirectlyReachable" xml:space="preserve">
+        <value>Step '{0}' is not directly reachable from step '{1}'</value>
+    </data>
 </root>
