@@ -720,6 +720,11 @@ public sealed class OrganizationRoot : AggregateRootBase
             return Error.RoleViolation(Resources.OrganizationRoot_UninviteMember_BillingSubscriber);
         }
 
+        if (IsCreator(uninvitedId))
+        {
+            return Error.RuleViolation(Resources.OrganizationRoot_UnInviteMember_Creator);
+        }
+
         if (Ownership == OrganizationOwnership.Personal)
         {
             return Error.RuleViolation(Resources.OrganizationRoot_UnInviteMember_PersonalOrg);
@@ -774,6 +779,11 @@ public sealed class OrganizationRoot : AggregateRootBase
     private bool IsMember(Identifier userId)
     {
         return Memberships.HasMember(userId);
+    }
+
+    private bool IsCreator(Identifier userId)
+    {
+        return userId == CreatedById;
     }
 
     private bool IsBillingSubscriber(Identifier userId)

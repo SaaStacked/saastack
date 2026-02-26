@@ -204,6 +204,15 @@ namespace OrganizationsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot remove the creator of an organization.
+        /// </summary>
+        internal static string OrganizationRoot_UnInviteMember_Creator {
+            get {
+                return ResourceManager.GetString("OrganizationRoot_UnInviteMember_Creator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot remove any members from a &apos;Personal&apos; organization.
         /// </summary>
         internal static string OrganizationRoot_UnInviteMember_PersonalOrg {

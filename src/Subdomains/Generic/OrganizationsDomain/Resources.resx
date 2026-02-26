@@ -93,4 +93,7 @@
     <data name="OrganizationRoot_RegisterShared_EmailDomainReserved" xml:space="preserve">
         <value>The email domain '{0}' is already registered by another organization</value>
     </data>
+    <data name="OrganizationRoot_UnInviteMember_Creator" xml:space="preserve">
+        <value>Cannot remove the creator of an organization</value>
+    </data>
 </root>

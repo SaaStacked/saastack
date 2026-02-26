@@ -756,7 +756,7 @@ public class OrganizationsApplicationSpec
     }
 
     [Fact]
-    public async Task WhenUnInviteMemberFromOrganizationAsync_ThenRemovesMembership()
+    public async Task WhenUnInviteMemberFromOrganizationAsyncForCreator_ThenRemovesMembership()
     {
         _caller.Setup(cc => cc.Roles)
             .Returns(new ICallerContext.CallerRoles([], [TenantRoles.Owner]));
@@ -770,7 +770,7 @@ public class OrganizationsApplicationSpec
             .ReturnsAsync(org);
 
         var result =
-            await _application.UnInviteMemberFromOrganizationAsync(_caller.Object, "anid", "auserid",
+            await _application.UnInviteMemberFromOrganizationAsync(_caller.Object, "anid", "aninviterid",
                 CancellationToken.None);
 
         result.Should().BeSuccess();

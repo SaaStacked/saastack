@@ -181,6 +181,15 @@ public class OrganizationRootSpec
     }
 
     [Fact]
+    public void WhenUnInviteMemberAndOwner_ThenReturnsError()
+    {
+        var result = _org.UnInviteMember("aremoverid".ToId(), Roles.Create(TenantRoles.Owner).Value,
+            "acreatorid".ToId());
+
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.OrganizationRoot_UnInviteMember_Creator);
+    }
+
+    [Fact]
     public void WhenUnInviteMemberAndBillingSubscriber_ThenReturnsError()
     {
         _org.SubscribeBilling("asubscriptionid".ToId(), "asubscriberid".ToId());
