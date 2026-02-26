@@ -1,10 +1,14 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
-import { GetOnboardingResponse, moveBackWorkflowStepPut, MoveBackWorkflowStepRequest } from '../../../framework/api/apiHost1';
+import {
+  GetOnboardingResponse,
+  moveBackWorkflowStepPut,
+  MoveBackWorkflowStepRequest
+} from '../../../framework/api/apiHost1';
 import organizationCacheKeys from './responseCache';
 
 
 export enum OnboardingNavigationErrorCodes {
-  invalid_step = 'invalid_step'
+  invalid_direction = 'invalid_direction'
 }
 
 export const MoveBackWorkflowStepAction = (organizationId: string) =>
@@ -15,7 +19,7 @@ export const MoveBackWorkflowStepAction = (organizationId: string) =>
         body: request
       }),
     passThroughErrors: {
-      405: OnboardingNavigationErrorCodes.invalid_step
+      405: OnboardingNavigationErrorCodes.invalid_direction
     },
     invalidateCacheKeys: organizationCacheKeys.organization.onboarding.navigate(organizationId)
   });

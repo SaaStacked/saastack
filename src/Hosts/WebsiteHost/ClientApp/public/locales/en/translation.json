@@ -603,7 +603,7 @@
           "finish": "Finish"
         },
         "errors": {
-          "invalid_step": "You cannot move forwards from this step, or backwards to the previous step"
+          "invalid_direction": "You cannot move forwards from this step, or backwards to the previous step"
         }
       }
     },

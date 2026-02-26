@@ -89,13 +89,18 @@ function OnboardingWorkflow({ workflow }: OnboardingWorkflowProps) {
   const { t: translate } = useTranslation();
   const [currentWorkflow, setCurrentWorkflow] = useState(workflow);
   const currentStep = currentWorkflow.state?.currentStep!;
+  const currentStepId = currentStep.id;
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto" data-testid="onboarding_workflow">
       <ProgressBar workflow={currentWorkflow} />
 
       {/* Current step content */}
-      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-8 mb-6">
+      <div
+        className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-8 mb-6"
+        key={currentStepId}
+        data-testid={`onboarding_step_${currentStepId}`}
+      >
         <h2 className="text-2xl font-bold mb-4 text-neutral-900 dark:text-neutral-100">
           {translate(`pages.organizations.onboarding.steps.${currentStep.id}.title`)}
         </h2>
@@ -128,7 +133,7 @@ function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsPr
   const isLastStep = currentStep?.id === workflow.workflow.endStepId;
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center" id="onboarding_navigation">
       <div>
         {!isFirstStep && (
           <ButtonAction
@@ -136,8 +141,8 @@ function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsPr
             action={moveBack}
             requestData={{}}
             expectedErrorMessages={{
-              [OnboardingNavigationErrorCodes.invalid_step]: translate(
-                'pages.organizations.onboarding.errors.invalid_step'
+              [OnboardingNavigationErrorCodes.invalid_direction]: translate(
+                'pages.organizations.onboarding.errors.invalid_direction'
               )
             }}
             onSuccess={(params: { requestData?: MoveBackWorkflowStepRequest; response: GetOnboardingResponse }) =>
@@ -151,7 +156,7 @@ function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsPr
       <div className="flex gap-3">
         {isLastStep ? (
           <ButtonAction
-            id="onboarding_finish"
+            id="onboarding_complete"
             action={complete}
             requestData={{}}
             onSuccess={(params: {
@@ -171,8 +176,8 @@ function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsPr
             action={moveForward}
             requestData={{}}
             expectedErrorMessages={{
-              [OnboardingNavigationErrorCodes.invalid_step]: translate(
-                'pages.organizations.onboarding.errors.invalid_step'
+              [OnboardingNavigationErrorCodes.invalid_direction]: translate(
+                'pages.organizations.onboarding.errors.invalid_direction'
               )
             }}
             onSuccess={(params: { requestData?: MoveForwardWorkflowStepRequest; response: GetOnboardingResponse }) =>
@@ -210,7 +215,7 @@ export function ProgressBar({ workflow }: OnboardingWorkflowProps) {
   });
 
   return (
-    <div className="mb-6">
+    <div className="mb-6" id="onboarding_progress">
       <div
         className="relative"
         style={{ paddingLeft: '12px', paddingRight: '12px', minHeight: '80px', paddingBottom: '40px' }}
@@ -264,7 +269,7 @@ export function ProgressBar({ workflow }: OnboardingWorkflowProps) {
               </div>
 
               {/* Label */}
-              <div className="mt-3 text-center max-w-[120px]">
+              <div className="mt-3 text-center max-w-[120px]" data-testid={`onboarding_step_${step.id}_label`}>
                 <p
                   className={`text-xs font-medium ${
                     isCurrent
