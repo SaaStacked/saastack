@@ -1,9 +1,14 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
 import { LogoutAction } from '../../subDomains/identity/actions/logout.ts';
-import { GetOrganizationAction } from '../../subDomains/organizations/actions/getOrganization.ts';
+import {
+  GetOrganizationAction,
+  OrganizationErrorCodes
+} from '../../subDomains/organizations/actions/getOrganization.ts';
 import { GetProfileForCallerAction } from '../../subDomains/userProfiles/actions/getProfileForCaller.ts';
 import { GetOrganizationData, Organization, UserProfileForCaller } from '../api/apiHost1';
+import { refreshToken } from '../api/websiteHost';
 import { anonymousUser } from '../constants.ts';
+import { recorder } from '../recorder.ts';
 
 interface CurrentUserProviderProps {
   children?: ReactNode;
@@ -38,7 +43,8 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
     execute: getOrganization,
     lastSuccessResponse: organization,
     isSuccess: isOrganizationSuccess,
-    isExecuting: isOrganizationExecuting
+    isExecuting: isOrganizationExecuting,
+    lastExpectedError: organizationExpectedError
   } = GetOrganizationAction();
 
   const { execute: logout, isExecuting: isLoggingOut, isSuccess: isLogoutSuccess } = LogoutAction();
@@ -49,8 +55,22 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
   useEffect(() => {
     if (profileHasDefaultOrganization()) {
       getOrganization({ path: { Id: callerProfile!.defaultOrganizationId } } as GetOrganizationData);
+      // Handle temporary 403 error on organization fetch - may occur after SSO authentication for the first time
+      if (organizationExpectedError?.code === OrganizationErrorCodes.forbidden) {
+        recorder.traceDebug('CurrentUserProvider: 403 on default organization fetch, refreshing token and retrying');
+        setTimeout(
+          () =>
+            refreshToken().then(async res => {
+              if (res.response.ok) {
+                recorder.traceDebug('CurrentUserProvider: Token refreshed, retrying organization fetch');
+                getOrganization({ path: { Id: callerProfile!.defaultOrganizationId } } as GetOrganizationData);
+              }
+            }),
+          2000
+        );
+      }
     }
-  }, [callerProfile?.defaultOrganizationId, isProfileSuccess]);
+  }, [callerProfile?.defaultOrganizationId, isProfileSuccess, organizationExpectedError]);
 
   // If we have an error fetching the current user profile,
   // and we're not already logging out, then log out now to remove any authenticated state (i.e. cookies).
