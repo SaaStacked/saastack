@@ -129,4 +129,7 @@
     <data name="OnboardingWorkflowGraphService_Validate_LinearWorkflowWeightMustBe100" xml:space="preserve">
         <value>Linear workflow (without branches) must have a total weight of 100, but has total weight {0}</value>
     </data>
+    <data name="OnboardingApplication_OnboardingAlreadyInitiated" xml:space="preserve">
+        <value />
+    </data>
 </root>

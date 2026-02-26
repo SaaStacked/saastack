@@ -30,4 +30,7 @@
     <data name="OrganizationsApplication_CreateSharedOrganization_NotPerson" xml:space="preserve">
         <value>User is not a person</value>
     </data>
+    <data name="OnboardingApplication_OnboardingAlreadyInitiated" xml:space="preserve">
+        <value>Onboarding for this Organizaiton has already been initiated</value>
+    </data>
 </root>

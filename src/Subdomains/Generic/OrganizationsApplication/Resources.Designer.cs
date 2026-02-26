@@ -60,6 +60,15 @@ namespace OrganizationsApplication {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Onboarding for this Organizaiton has already been initiated.
+        /// </summary>
+        internal static string OnboardingApplication_OnboardingAlreadyInitiated {
+            get {
+                return ResourceManager.GetString("OnboardingApplication_OnboardingAlreadyInitiated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no &apos;UserId&apos; nor &apos;Email&apos;.
         /// </summary>
         internal static string OrganizationApplication_InvitedNoUserNorEmail {

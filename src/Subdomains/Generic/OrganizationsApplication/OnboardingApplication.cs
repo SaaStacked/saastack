@@ -2,6 +2,7 @@ using Application.Common.Extensions;
 using Application.Interfaces;
 using Application.Resources.Shared;
 using Application.Services.Shared;
+using AsyncKeyedLock;
 using Common;
 using Common.Extensions;
 using Domain.Common.Identity;
@@ -16,6 +17,7 @@ namespace OrganizationsApplication;
 
 public class OnboardingApplication : IOnboardingApplication
 {
+    private static readonly AsyncKeyedLocker<string> InitiateOnboardingSection = new();
     private readonly ICustomOnboardingWorkflowService _customOnboardingWorkflowService;
     private readonly IIdentifierFactory _identifierFactory;
     private readonly IOnboardingRepository _onboardingRepository;
@@ -142,67 +144,90 @@ public class OnboardingApplication : IOnboardingApplication
             return retrievedOrganization.Error;
         }
 
+        // Since we are synchronizing the organization onboarding state and the onboarding aggregate, in this unit of work,
+        // we need a reliable way to prevent two callers executing the same process in a race condition.
+        // Otherwise, we may end up with duplicate workflows, duplicate onboarding aggregates for the same organization
         var organization = retrievedOrganization.Value;
-        var savedWorkflow =
-            await _customOnboardingWorkflowService.SaveWorkflowAsync(organizationId.ToId(), workflow,
-                cancellationToken);
-        if (savedWorkflow.IsFailure)
+        using (await InitiateOnboardingSection.LockAsync(organizationId, cancellationToken))
         {
-            return savedWorkflow.Error;
-        }
-
-        var created = OrganizationOnboardingRoot.Create(_recorder, _identifierFactory,
-            _workflowService, organizationId.ToId());
-        if (created.IsFailure)
-        {
-            return created.Error;
-        }
-
-        var onboarding = created.Value;
-        var saved = await _onboardingRepository.SaveAsync(onboarding, cancellationToken);
-        if (saved.IsFailure)
-        {
-            return saved.Error;
-        }
-
-        onboarding = saved.Value;
-        var initiatorRoles = Roles.Create(caller.Roles.Tenant);
-        if (initiatorRoles.IsFailure)
-        {
-            return initiatorRoles.Error;
-        }
-
-        var started = organization.StartOnboarding(onboarding.Id, initiatorRoles.Value);
-        if (started.IsFailure)
-        {
-            return started.Error;
-        }
-
-        var savedOrganization = await _organizationRepository.SaveAsync(organization, cancellationToken);
-        if (savedOrganization.IsFailure)
-        {
-            return savedOrganization.Error;
-        }
-
-        var emailClassification = await GetCallerEmailClassification(caller, cancellationToken);
-        if (emailClassification.IsFailure)
-        {
-            return emailClassification.Error;
-        }
-
-        _recorder.TraceInformation(caller.ToCall(), "Started onboarding {Id} for organization {OrganizationId}",
-            onboarding.Id, organizationId);
-        _recorder.TrackUsage(caller.ToCall(),
-            UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingStarted,
-            new Dictionary<string, object>
+            if (organization.OnboardingStatus != OnboardingStatus.NotStarted)
             {
-                { UsageConstants.Properties.Id, onboarding.OrganizationId },
-                { UsageConstants.Properties.TenantId, organizationId },
-                { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId },
-                { UsageConstants.Properties.EmailClassification, emailClassification }
-            });
+                return Error.EntityExists(Resources.OnboardingApplication_OnboardingAlreadyInitiated);
+            }
 
-        return onboarding.ToWorkflow();
+            var retrievedOnboarding =
+                await _onboardingRepository.FindByOrganizationIdAsync(organizationId.ToId(), cancellationToken);
+            if (retrievedOnboarding.IsFailure)
+            {
+                return retrievedOnboarding.Error;
+            }
+
+            if (retrievedOnboarding.Value.HasValue)
+            {
+                return Error.EntityExists(Resources.OnboardingApplication_OnboardingAlreadyInitiated);
+            }
+
+            var savedWorkflow =
+                await _customOnboardingWorkflowService.SaveWorkflowAsync(organizationId.ToId(), workflow,
+                    cancellationToken);
+            if (savedWorkflow.IsFailure)
+            {
+                return savedWorkflow.Error;
+            }
+
+            var created = OrganizationOnboardingRoot.Create(_recorder, _identifierFactory,
+                _workflowService, organizationId.ToId());
+            if (created.IsFailure)
+            {
+                return created.Error;
+            }
+
+            var onboarding = created.Value;
+            var saved = await _onboardingRepository.SaveAsync(onboarding, cancellationToken);
+            if (saved.IsFailure)
+            {
+                return saved.Error;
+            }
+
+            onboarding = saved.Value;
+            var initiatorRoles = Roles.Create(caller.Roles.Tenant);
+            if (initiatorRoles.IsFailure)
+            {
+                return initiatorRoles.Error;
+            }
+
+            var started = organization.StartOnboarding(onboarding.Id, initiatorRoles.Value);
+            if (started.IsFailure)
+            {
+                return started.Error;
+            }
+
+            var savedOrganization = await _organizationRepository.SaveAsync(organization, cancellationToken);
+            if (savedOrganization.IsFailure)
+            {
+                return savedOrganization.Error;
+            }
+
+            var emailClassification = await GetCallerEmailClassification(caller, cancellationToken);
+            if (emailClassification.IsFailure)
+            {
+                return emailClassification.Error;
+            }
+
+            _recorder.TraceInformation(caller.ToCall(), "Started onboarding {Id} for organization {OrganizationId}",
+                onboarding.Id, organizationId);
+            _recorder.TrackUsage(caller.ToCall(),
+                UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingStarted,
+                new Dictionary<string, object>
+                {
+                    { UsageConstants.Properties.Id, onboarding.OrganizationId },
+                    { UsageConstants.Properties.TenantId, organizationId },
+                    { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId },
+                    { UsageConstants.Properties.EmailClassification, emailClassification }
+                });
+
+            return onboarding.ToWorkflow();
+        }
     }
 
     public async Task<Result<OrganizationOnboardingWorkflow, Error>> MoveBackwardAsync(ICallerContext caller,

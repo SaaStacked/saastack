@@ -57,9 +57,6 @@ public class OnboardingApplicationSpec
                 eds.EnsureUniqueAsync(It.IsAny<string>(), It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         _organizationRepository = new Mock<IOrganizationRepository>();
-        _organizationRepository.Setup(rep =>
-                rep.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((OrganizationRoot root, CancellationToken _) => root);
         _onboardingRepository = new Mock<IOnboardingRepository>();
         _onboardingRepository.Setup(rep =>
                 rep.SaveAsync(It.IsAny<OrganizationOnboardingRoot>(), It.IsAny<CancellationToken>()))
@@ -114,7 +111,7 @@ public class OnboardingApplicationSpec
     }
 
     [Fact]
-    public async Task WhenInitiateOnboardingAsync_ThenStatsOnboarding()
+    public async Task WhenInitiateOnboardingAsyncAndAlreadyExists_ThenReturnsError()
     {
         var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
             _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
@@ -122,9 +119,38 @@ public class OnboardingApplicationSpec
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
-        _organizationRepository.Setup(rep =>
-                rep.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((OrganizationRoot root, CancellationToken _) => root);
+        var workflow = CreateSimpleTwoStepWorkflow();
+        _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
+            .Returns(workflow);
+        var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _workflowService.Object, "anorganizationid".ToId()).Value;
+        _onboardingRepository.Setup(rep =>
+                rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(onboarding.ToOptional());
+
+        var result = await _application.InitiateOnboardingAsync(_caller.Object, "anorganizationid",
+            new OrganizationOnboardingWorkflowSchema(),
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityExists, Resources.OnboardingApplication_OnboardingAlreadyInitiated);
+        _organizationRepository.Verify(rep =>
+            rep.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()), Times.Never);
+        _onboardingRepository.Verify(rep =>
+            rep.SaveAsync(It.IsAny<OrganizationOnboardingRoot>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task WhenInitiateOnboardingAsync_ThenInitiatesOnboarding()
+    {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
+        _onboardingRepository.Setup(rep =>
+                rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Optional<OrganizationOnboardingRoot>.None);
         var workflowSchema = CreateSimpleTwoStepWorkflowSchema();
         var workflow = CreateSimpleTwoStepWorkflow();
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
@@ -387,9 +413,6 @@ public class OnboardingApplicationSpec
         organization.StartOnboarding(onboarding.Id, initiatorRoles);
         _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(organization);
-        _organizationRepository.Setup(rep =>
-                rep.SaveAsync(It.IsAny<OrganizationRoot>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((OrganizationRoot root, CancellationToken _) => root);
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());

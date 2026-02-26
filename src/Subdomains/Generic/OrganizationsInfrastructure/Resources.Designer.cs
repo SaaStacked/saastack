@@ -195,6 +195,15 @@ namespace OrganizationsInfrastructure {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string OnboardingApplication_OnboardingAlreadyInitiated {
+            get {
+                return ResourceManager.GetString("OnboardingApplication_OnboardingAlreadyInitiated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Step &apos;{0}&apos; branch &apos;{1}&apos; cannot reference a non-existent step &apos;{2}&apos; as next step.
         /// </summary>
         internal static string OnboardingWorkflowGraphService_Validate_AnyBranchNextStepUndefined {
