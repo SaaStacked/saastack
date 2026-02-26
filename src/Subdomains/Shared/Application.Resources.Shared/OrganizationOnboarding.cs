@@ -107,11 +107,11 @@ public class OrganizationOnboardingState
 
 public class OrganizationOnboardingStep
 {
-    public required DateTime? EnteredAt { get; set; }
+    public DateTime? EnteredAt { get; set; }
 
     public required string Id { get; set; }
 
-    public required DateTime? LastUpdatedAt { get; set; }
+    public DateTime? LastUpdatedAt { get; set; }
 
     public required string Title { get; set; }
 
