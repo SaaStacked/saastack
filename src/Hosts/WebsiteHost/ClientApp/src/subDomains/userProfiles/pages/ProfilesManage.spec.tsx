@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult } from '../../../framework/actions/Actions';
-import { UserProfileClassification } from '../../../framework/api/apiHost1';
+import { UserProfileClassification, UserProfileEmailAddressClassification } from '../../../framework/api/apiHost1';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
 import { TenantFeatures, TenantRoles } from '../../organizations/pages/Organizations.ts';
 import { PlatformFeatures, PlatformRoles } from './Profiles.ts';
@@ -12,7 +12,10 @@ import { ProfilesManagePage } from './ProfilesManage';
 const mockProfile = {
   userId: 'auserid1',
   id: 'aprofileid1',
-  emailAddress: 'auser@company.com',
+  emailAddress: {
+    address: 'auser@company.com',
+    classification: UserProfileEmailAddressClassification.PERSONAL
+  },
   name: {
     firstName: 'afirstname',
     lastName: 'alastname'
