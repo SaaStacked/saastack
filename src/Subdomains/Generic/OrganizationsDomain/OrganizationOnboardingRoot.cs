@@ -54,12 +54,11 @@ public sealed class OrganizationOnboardingRoot : AggregateRootBase
     private readonly IOnboardingWorkflowService _workflowService;
 
     public static Result<OrganizationOnboardingRoot, Error> Create(IRecorder recorder,
-        IIdentifierFactory idFactory,
-        IOnboardingWorkflowService workflowService,
-        Identifier organizationId)
+        IIdentifierFactory idFactory, IOnboardingWorkflowService workflowService,
+        Identifier organizationId, Identifier initiatedBy)
     {
         var root = new OrganizationOnboardingRoot(recorder, idFactory, workflowService);
-        root.RaiseCreateEvent(OrganizationsDomain.Events.Onboarding.Created(root.Id, organizationId));
+        root.RaiseCreateEvent(OrganizationsDomain.Events.Onboarding.Created(root.Id, organizationId, initiatedBy));
         return root;
     }
 
@@ -77,6 +76,8 @@ public sealed class OrganizationOnboardingRoot : AggregateRootBase
     }
 
     public Identifier OrganizationId { get; private set; } = Identifier.Empty();
+
+    public Identifier InitiatedById { get; private set; } = Identifier.Empty();
 
     public CurrentStepState State { get; private set; } = CurrentStepState.Empty;
 
@@ -109,6 +110,7 @@ public sealed class OrganizationOnboardingRoot : AggregateRootBase
             case Created created:
             {
                 OrganizationId = created.OrganizationId.ToId();
+                InitiatedById = created.InitiatedById.ToId();
                 var workflow = _workflowService.FindWorkflow(OrganizationId);
                 if (workflow.IsFailure)
                 {

@@ -321,6 +321,22 @@ describe('OnboardingWorkflow - Navigation', () => {
           weight: 60,
           values: {}
         },
+        pathTaken: [
+          {
+            id: 'start',
+            title: 'start',
+            weight: 60,
+            values: {}
+          }
+        ],
+        pathAhead: [
+          {
+            id: 'end',
+            title: 'end',
+            weight: 0,
+            values: {}
+          }
+        ],
         progressPercentage: 40
       }
     };
@@ -344,6 +360,21 @@ describe('OnboardingWorkflow - Navigation', () => {
           weight: 0,
           values: {}
         },
+        pathTaken: [
+          {
+            id: 'start',
+            title: 'start',
+            weight: 60,
+            values: {}
+          },
+          {
+            id: 'setup',
+            title: 'setup',
+            weight: 40,
+            values: {}
+          }
+        ],
+        pathAhead: [],
         progressPercentage: 100
       }
     };
@@ -366,7 +397,23 @@ describe('OnboardingWorkflow - Navigation', () => {
           title: 'setup',
           weight: 60,
           values: {}
-        }
+        },
+        pathTaken: [
+          {
+            id: 'start',
+            title: 'start',
+            weight: 60,
+            values: {}
+          }
+        ],
+        pathAhead: [
+          {
+            id: 'end',
+            title: 'end',
+            weight: 0,
+            values: {}
+          }
+        ]
       }
     };
 
@@ -393,7 +440,23 @@ describe('OnboardingWorkflow - Navigation', () => {
           title: 'setup',
           weight: 60,
           values: {}
-        }
+        },
+        pathTaken: [
+          {
+            id: 'start',
+            title: 'start',
+            weight: 60,
+            values: {}
+          }
+        ],
+        pathAhead: [
+          {
+            id: 'end',
+            title: 'end',
+            weight: 0,
+            values: {}
+          }
+        ]
       }
     };
 
@@ -406,7 +469,22 @@ describe('OnboardingWorkflow - Navigation', () => {
           title: 'start',
           weight: 40,
           values: {}
-        }
+        },
+        pathTaken: [],
+        pathAhead: [
+          {
+            id: 'setup',
+            title: 'setup',
+            weight: 60,
+            values: {}
+          },
+          {
+            id: 'end',
+            title: 'end',
+            weight: 0,
+            values: {}
+          }
+        ]
       }
     };
 
@@ -434,6 +512,21 @@ describe('OnboardingWorkflow - Navigation', () => {
           weight: 0,
           values: {}
         },
+        pathTaken: [
+          {
+            id: 'start',
+            title: 'start',
+            weight: 60,
+            values: {}
+          },
+          {
+            id: 'setup',
+            title: 'setup',
+            weight: 40,
+            values: {}
+          }
+        ],
+        pathAhead: [],
         status: OrganizationOnboardingStatus.COMPLETE
       }
     };

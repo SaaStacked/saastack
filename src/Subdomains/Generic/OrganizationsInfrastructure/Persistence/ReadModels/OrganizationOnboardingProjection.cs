@@ -30,6 +30,7 @@ public class OrganizationOnboardingProjection : IReadModelProjection
                 return await _onboardings.HandleCreateAsync(e.RootId, dto =>
                     {
                         dto.OrganizationId = e.OrganizationId;
+                        dto.InitiatedById = e.InitiatedById;
                         dto.Status = OnboardingStatus.InProgress;
                         dto.PreviousStepId = Optional<string>.None;
                         dto.CurrentStepId = Optional<string>.None;

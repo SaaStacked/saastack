@@ -99,7 +99,7 @@ public class OnboardingApplicationSpec
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());
@@ -123,7 +123,7 @@ public class OnboardingApplicationSpec
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());
@@ -183,6 +183,7 @@ public class OnboardingApplicationSpec
 
         result.Should().BeSuccess();
         result.Value.OrganizationId.Should().Be("anorganizationid");
+        result.Value.InitiatedById.Should().Be("acallerid");
         result.Value.Workflow.Name.Should().Be("aname");
         result.Value.State!.CurrentStep.Id.Should().Be("astartstepid");
         result.Value.State!.PathTaken.Should().BeEmpty();
@@ -197,6 +198,7 @@ public class OnboardingApplicationSpec
         _onboardingRepository.Verify(rep =>
             rep.SaveAsync(It.Is<OrganizationOnboardingRoot>(root =>
                 root.OrganizationId == "anorganizationid".ToId()
+                && root.InitiatedById == "acallerid".ToId()
                 && root.State.Status == OnboardingStatus.InProgress
                 && root.State.CurrentStepId == "astartstepid"), It.IsAny<CancellationToken>()));
     }
@@ -226,7 +228,7 @@ public class OnboardingApplicationSpec
             .Returns(Journey.Create(workflow.Journeys.Steps.Select(s => s.Value.ToStep().Value).Skip(2).ToList())
                 .Value);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());
@@ -262,7 +264,7 @@ public class OnboardingApplicationSpec
             .Returns(Journey.Create(workflow.Journeys.Steps.Select(s => s.Value.ToStep().Value).Skip(2).ToList())
                 .Value);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());
@@ -309,7 +311,7 @@ public class OnboardingApplicationSpec
             .Returns(Journey.Create(workflow.Journeys.Steps.Select(s => s.Value.ToStep().Value).Skip(2).ToList())
                 .Value);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         var navigatorRoles = Roles.Create(TenantRoles.Owner).Value;
         onboarding.MoveForward("anavigatorid".ToId(), navigatorRoles, "astepid1");
         _onboardingRepository.Setup(rep =>
@@ -359,7 +361,7 @@ public class OnboardingApplicationSpec
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(onboarding.ToOptional());
@@ -408,7 +410,7 @@ public class OnboardingApplicationSpec
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
         var onboarding = OrganizationOnboardingRoot.Create(_recorder.Object, _identifierFactory.Object,
-            _workflowService.Object, "anorganizationid".ToId()).Value;
+            _workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
         var initiatorRoles = Roles.Create(TenantRoles.Owner).Value;
         organization.StartOnboarding(onboarding.Id, initiatorRoles);
         _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))

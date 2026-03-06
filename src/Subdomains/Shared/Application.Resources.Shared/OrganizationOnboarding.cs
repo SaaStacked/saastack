@@ -27,13 +27,13 @@ public class OrganizationOnboardingStepSchema : IIdentifiableResource
 
     public string? Description { get; set; }
 
+    public Dictionary<string, string>? InitialValues { get; set; } = new();
+
     public string? NextStepId { get; set; }
 
     public string Title { get; set; } = string.Empty;
 
     public OrganizationOnboardingStepSchemaType Type { get; set; } = OrganizationOnboardingStepSchemaType.Normal;
-
-    public Dictionary<string, string>? InitialValues { get; set; } = new();
 
     public int Weight { get; set; }
 
@@ -71,6 +71,8 @@ public enum OrganizationOnboardingBranchConditionSchemaOperator
 
 public class OrganizationOnboardingWorkflow : IIdentifiableResource
 {
+    public required string InitiatedById { get; set; }
+
     public required string OrganizationId { get; set; }
 
     public required OrganizationOnboardingState? State { get; set; }
@@ -115,7 +117,7 @@ public class OrganizationOnboardingStep
 
     public required string Title { get; set; }
 
-    public required int Weight { get; set; }
-
     public required Dictionary<string, string> Values { get; set; }
+
+    public required int Weight { get; set; }
 }

@@ -55,28 +55,26 @@ export function OrganizationOnboardingPage() {
 
   return (
     <FormPage title={translate('pages.organizations.onboarding.title')}>
-      {shouldInitiateOnboarding(organization) ? (
+      {shouldInitiateOnboarding(organization) && (
         <PageAction
           id="initiate_workflow"
           action={initiateAction}
           ref={initiateWorkflowTrigger}
           loadingMessage={translate('pages.organizations.onboarding.loader')}
-          onSuccess={() =>
-            getOnboardingTrigger.current?.execute({ path: { Id: organizationId! } } as GetOnboardingWorkflowData)
-          }
+          onSuccess={() => getOnboardingTrigger.current?.execute()}
         >
           <p>{translate('pages.organizations.onboarding.states.initiated')}</p>
         </PageAction>
-      ) : (
-        <PageAction
-          id="get_onboarding"
-          action={getOnboarding}
-          ref={getOnboardingTrigger}
-          loadingMessage={translate('pages.organizations.onboarding.loader')}
-        >
-          <OnboardingWorkflow workflow={getOnboarding.lastSuccessResponse!} />
-        </PageAction>
       )}
+
+      <PageAction
+        id="get_onboarding"
+        action={getOnboarding}
+        ref={getOnboardingTrigger}
+        loadingMessage={translate('pages.organizations.onboarding.loader')}
+      >
+        <OnboardingWorkflow workflow={getOnboarding.lastSuccessResponse!} />
+      </PageAction>
     </FormPage>
   );
 }
@@ -194,16 +192,18 @@ function NavigationButtons({ workflow, setCurrentWorkflow }: NavigationButtonsPr
 
 export function ProgressBar({ workflow }: OnboardingWorkflowProps) {
   const { t: translate } = useTranslation();
+  const pathTaken = workflow.state?.pathTaken || [];
+  const pathAhead = workflow.state?.pathAhead || [];
   const currentStepId = workflow.state?.currentStep.id;
-  const allSteps = Object.entries(workflow.workflow.steps || {}).map(([id, step]: [string, any]) => ({
-    id,
+  const currentStepIndex = pathTaken.length;
+  const allSteps = [...pathTaken, workflow.state?.currentStep!, ...pathAhead].map(step => ({
+    id: step.id,
     title: step.title,
-    description: step.description,
+    description: step.title,
     weight: step.weight
   }));
 
   const progressPercentage = workflow.state?.progressPercentage || 0;
-  const currentStepIndex = allSteps.findIndex((step) => step.id === currentStepId);
 
   // Calculate step positions based on weight
   const totalWeight = allSteps.reduce((sum, step) => sum + step.weight, 0);

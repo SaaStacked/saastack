@@ -176,7 +176,7 @@ public class OnboardingApplication : IOnboardingApplication
             }
 
             var created = OrganizationOnboardingRoot.Create(_recorder, _identifierFactory,
-                _workflowService, organizationId.ToId());
+                _workflowService, organizationId.ToId(), caller.ToCallerId());
             if (created.IsFailure)
             {
                 return created.Error;
@@ -484,6 +484,7 @@ internal static class OnboardingConversionExtensions
         return new OrganizationOnboardingWorkflow
         {
             Id = onboarding.Id,
+            InitiatedById = onboarding.InitiatedById,
             OrganizationId = onboarding.OrganizationId,
             Workflow = onboarding.Workflow.ToWorkflowSchema(),
             State = onboarding.State.ToState(onboarding.Workflow)

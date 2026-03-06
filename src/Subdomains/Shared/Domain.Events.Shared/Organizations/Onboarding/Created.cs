@@ -16,4 +16,6 @@ public sealed class Created : DomainEvent
     }
 
     public required string OrganizationId { get; set; }
+
+    public required string InitiatedById { get; set; }
 }

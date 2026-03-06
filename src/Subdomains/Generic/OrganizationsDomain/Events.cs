@@ -194,11 +194,13 @@ public static class Events
         }
 
         public static Domain.Events.Shared.Organizations.Onboarding.Created Created(Identifier id,
-            Identifier organizationId)
+            Identifier organizationId,
+            Identifier initiatedBy)
         {
             return new Domain.Events.Shared.Organizations.Onboarding.Created(id)
             {
-                OrganizationId = organizationId
+                OrganizationId = organizationId,
+                InitiatedById = initiatedBy
             };
         }
 

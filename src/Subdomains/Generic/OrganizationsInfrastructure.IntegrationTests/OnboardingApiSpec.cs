@@ -30,6 +30,7 @@ public class OnboardingApiSpec : WebApiSpec<Program>
             Workflow = CreateSimplestWorkflow()
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
+        result.Content.Value.Workflow.InitiatedById.Should().Be(login.User.Id);
         var state = result.Content.Value.Workflow.State!;
         state.Status.Should().Be(OrganizationOnboardingStatus.InProgress);
         state.TotalWeight.Should().Be(100);
@@ -72,6 +73,7 @@ public class OnboardingApiSpec : WebApiSpec<Program>
             Workflow = CreateSimplestWorkflow()
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
+        result.Content.Value.Workflow.InitiatedById.Should().Be(login.User.Id);
         var state = result.Content.Value.Workflow.State!;
         state.Status.Should().Be(OrganizationOnboardingStatus.InProgress);
         state.TotalWeight.Should().Be(100);

@@ -46,13 +46,14 @@ public class OrganizationOnboardingRootSpec
             .Returns(_workflowSchema);
 
         _onboarding = OrganizationOnboardingRoot.Create(recorder.Object, identifierFactory.Object,
-            workflowService.Object, "anorganizationid".ToId()).Value;
+            workflowService.Object, "anorganizationid".ToId(), "aninitiatorid".ToId()).Value;
     }
 
     [Fact]
     public void WhenCreate_ThenOnboardingStarted()
     {
         _onboarding.OrganizationId.Should().Be("anorganizationid".ToId());
+        _onboarding.InitiatedById.Should().Be("aninitiatorid".ToId());
         _onboarding.Workflow.Name.Should().Be(_workflowSchema.Name);
         _onboarding.State.Status.Should().Be(OnboardingStatus.InProgress);
         _onboarding.State.CurrentStepId.Should().Be("astartstepid");
