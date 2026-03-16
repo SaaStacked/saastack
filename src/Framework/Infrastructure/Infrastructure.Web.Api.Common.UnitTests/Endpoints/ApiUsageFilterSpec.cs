@@ -3,7 +3,7 @@ using Common;
 using FluentAssertions;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Common.Endpoints;
-using Infrastructure.Web.Api.Operations.Shared.Health;
+using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -59,7 +59,7 @@ public class ApiUsageFilterSpec
     [Fact]
     public async Task WhenInvokeAndRequestTypeIsIgnoredRequest_ThenDoesNothing()
     {
-        var args = new object[] { "anarg1", new HealthCheckRequest() };
+        var args = new object[] { "anarg1", new ApiHealthCheckRequest() };
         var context = new DefaultEndpointFilterInvocationContext(new DefaultHttpContext(), args);
         var next = new EndpointFilterDelegate(_ => new ValueTask<object?>());
 
@@ -86,19 +86,19 @@ public class ApiUsageFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TrackUsage(It.IsAny<ICallContext?>(), UsageConstants.Events.Api.HttpRequestResponded,
-                It.Is<Dictionary<string, object>>(dic =>
-                    dic.Count == 7
-                    && dic[UsageConstants.Properties.EndPoint].As<string>()
-                    == nameof(GetCallerWithTokenOrAPIKeyTestingOnlyRequest).ToLower()
-                    && dic[UsageConstants.Properties.UsedById].As<string>() == "acallerid"
-                    && dic[UsageConstants.Properties.HttpRoute].As<string>() == "aroute"
-                    && dic[UsageConstants.Properties.HttpPath].As<string>() == "/apath"
-                    && dic[UsageConstants.Properties.HttpMethod].As<string>() == "amethod"
-                    && dic[UsageConstants.Properties.HttpStatusCode].As<int>() == 0
-                    && dic[UsageConstants.Properties.Duration].As<double>() > 0
-                )));
+        _recorder.Verify(rec => rec.TrackUsage(It.IsAny<ICallContext?>(),
+            UsageConstants.Events.Api.HttpRequestResponded,
+            It.Is<Dictionary<string, object>>(dic =>
+                dic.Count == 7
+                && dic[UsageConstants.Properties.EndPoint].As<string>()
+                == nameof(GetCallerWithTokenOrAPIKeyTestingOnlyRequest).ToLower()
+                && dic[UsageConstants.Properties.UsedById].As<string>() == "acallerid"
+                && dic[UsageConstants.Properties.HttpRoute].As<string>() == "aroute"
+                && dic[UsageConstants.Properties.HttpPath].As<string>() == "/apath"
+                && dic[UsageConstants.Properties.HttpMethod].As<string>() == "amethod"
+                && dic[UsageConstants.Properties.HttpStatusCode].As<int>() == 0
+                && dic[UsageConstants.Properties.Duration].As<double>() > 0
+            )));
 #endif
     }
 
@@ -116,18 +116,18 @@ public class ApiUsageFilterSpec
 
         await _filter.InvokeAsync(context, next);
 
-        _recorder.Verify(
-            rec => rec.TrackUsage(It.IsAny<ICallContext?>(), UsageConstants.Events.Api.HttpRequestResponded,
-                It.Is<Dictionary<string, object>>(dic =>
-                    dic.Count == 8
-                    && dic[UsageConstants.Properties.EndPoint].As<string>() == nameof(TestRequest).ToLower()
-                    && dic[UsageConstants.Properties.UsedById].As<string>() == "acallerid"
-                    && dic[UsageConstants.Properties.HttpRoute].As<string>() == "aroute"
-                    && dic[UsageConstants.Properties.HttpPath].As<string>() == "/apath"
-                    && dic[UsageConstants.Properties.HttpMethod].As<string>() == "amethod"
-                    && dic[UsageConstants.Properties.ResourceId].As<string>() == "aresourceid"
-                    && dic[UsageConstants.Properties.HttpStatusCode].As<int>() == 0
-                    && dic[UsageConstants.Properties.Duration].As<double>() > 0
-                )));
+        _recorder.Verify(rec => rec.TrackUsage(It.IsAny<ICallContext?>(),
+            UsageConstants.Events.Api.HttpRequestResponded,
+            It.Is<Dictionary<string, object>>(dic =>
+                dic.Count == 8
+                && dic[UsageConstants.Properties.EndPoint].As<string>() == nameof(TestRequest).ToLower()
+                && dic[UsageConstants.Properties.UsedById].As<string>() == "acallerid"
+                && dic[UsageConstants.Properties.HttpRoute].As<string>() == "aroute"
+                && dic[UsageConstants.Properties.HttpPath].As<string>() == "/apath"
+                && dic[UsageConstants.Properties.HttpMethod].As<string>() == "amethod"
+                && dic[UsageConstants.Properties.ResourceId].As<string>() == "aresourceid"
+                && dic[UsageConstants.Properties.HttpStatusCode].As<int>() == 0
+                && dic[UsageConstants.Properties.Duration].As<double>() > 0
+            )));
     }
 }

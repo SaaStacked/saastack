@@ -85,7 +85,7 @@ public class WebHostOptions : HostOptions
 
     public CORSOption CORS { get; private init; }
 
-    public string HostVersion { get; set; } = "v1";
+    public string HostApiVersion { get; set; } = "v1";
 
     public bool IsBackendForFrontEnd { get; set; }
 

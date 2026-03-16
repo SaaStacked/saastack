@@ -2,7 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using Domain.Interfaces;
 using FluentAssertions;
-using Infrastructure.Web.Api.Operations.Shared.Health;
+using Infrastructure.Hosting.Common;
+using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Infrastructure.Web.Api.Operations.Shared.UserProfiles;
 using Infrastructure.Web.Interfaces;
@@ -64,11 +65,11 @@ public class ReverseProxyApiSpec : WebsiteSpec<Program, ApiHost1.Program>
     [Fact]
     public async Task WhenRequestALocalApi_ThenDoesNotReverseProxy()
     {
-        var result = await HttpApi.GetAsync(new HealthCheckRequest().MakeApiRoute());
+        var result = await HttpApi.GetAsync(new ApiHealthCheckRequest().MakeApiRoute());
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        var name = (await result.Content.ReadFromJsonAsync<HealthCheckResponse>(JsonOptions))!.Name;
-        name.Should().Be(nameof(WebsiteHost));
+        var name = (await result.Content.ReadFromJsonAsync<ApiHealthCheckResponse>(JsonOptions))!.Health.Name;
+        name.Should().Be(HostOptions.BackEndForFrontEndWebHost.HostName);
     }
 
     [Fact]

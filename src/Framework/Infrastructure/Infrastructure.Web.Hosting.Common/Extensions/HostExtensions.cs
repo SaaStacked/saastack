@@ -73,7 +73,7 @@ public static class HostExtensions
         RegisterAuthenticationAuthorization(hostOptions.Authorization, hostOptions.IsMultiTenanted);
         RegisterWireFormats();
         RegisterApiRequests();
-        RegisterApiDocumentation(hostOptions.HostName, hostOptions.HostVersion, hostOptions.UsesApiDocumentation);
+        RegisterApiDocumentation(hostOptions.HostName, hostOptions.HostApiVersion, hostOptions.UsesApiDocumentation);
         RegisterNotifications(hostOptions.UsesNotifications);
         RegisterApplicationServices(hostOptions.HostName, hostOptions.IsBackendForFrontEnd, hostOptions.IsMultiTenanted,
             hostOptions.ReceivesWebhooks);
@@ -107,6 +107,7 @@ public static class HostExtensions
 
         void RegisterSharedServices()
         {
+            services.AddSingleton(hostOptions);
             services.AddAntiforgery();
             services.AddHttpContextAccessor();
 

@@ -1,20 +1,32 @@
+using Application.Resources.Shared;
 using Common;
 using Infrastructure.Web.Api.Interfaces;
-using Infrastructure.Web.Api.Operations.Shared.Health;
+using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
+using Infrastructure.Web.Hosting.Common;
 
 namespace WebsiteHost.Api.Health;
 
 [BaseApiFrom("/api")]
 public sealed class HealthApi : IWebApiService
 {
-    public async Task<ApiResult<string, HealthCheckResponse>> Check(HealthCheckRequest request,
+    private readonly WebHostOptions _webHostOptions;
+
+    public HealthApi(WebHostOptions webHostOptions)
+    {
+        _webHostOptions = webHostOptions;
+    }
+
+    public async Task<ApiResult<string, ApiHealthCheckResponse>> Check(ApiHealthCheckRequest request,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-        return () => new Result<HealthCheckResponse, Error>(new HealthCheckResponse
+        return () => new Result<ApiHealthCheckResponse, Error>(new ApiHealthCheckResponse
         {
-            Name = nameof(WebsiteHost),
-            Status = "OK"
+            Health = new ApiHostHealth
+            {
+                Name = _webHostOptions.HostName,
+                Status = "OK"
+            }
         });
     }
 }

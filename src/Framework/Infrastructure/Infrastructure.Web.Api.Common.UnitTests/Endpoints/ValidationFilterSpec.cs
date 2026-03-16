@@ -4,7 +4,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Web.Api.Common.Endpoints;
 using Infrastructure.Web.Api.Common.Extensions;
-using Infrastructure.Web.Api.Operations.Shared.Health;
+using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
@@ -57,7 +57,7 @@ public class ValidationFilterSpec
     [Fact]
     public async Task WhenInvokeAndRequestTypeIsWrongType_ThenDoesNothing()
     {
-        var args = new object[] { "anarg1", new HealthCheckRequest() };
+        var args = new object[] { "anarg1", new ApiHealthCheckRequest() };
         var context = new DefaultEndpointFilterInvocationContext(_httpContext, args);
 
         await _filter.InvokeAsync(context, _next.Object);

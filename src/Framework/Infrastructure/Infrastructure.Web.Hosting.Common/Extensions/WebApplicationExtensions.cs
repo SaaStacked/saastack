@@ -258,7 +258,7 @@ public static class WebApplicationExtensions
                 app.MapSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    var jsonEndpoint = WebConstants.SwaggerEndpointFormat.Format(hostOptions.HostVersion);
+                    var jsonEndpoint = WebConstants.SwaggerEndpointFormat.Format(hostOptions.HostApiVersion);
                     options.DocumentTitle = hostOptions.HostName;
                     options.SwaggerEndpoint(jsonEndpoint, hostOptions.HostName);
                     options.RoutePrefix = prefix;
