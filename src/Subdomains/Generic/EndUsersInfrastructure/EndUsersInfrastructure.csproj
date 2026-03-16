@@ -10,6 +10,7 @@
         <ProjectReference Include="..\..\..\Framework\Infrastructure\Infrastructure.Web.Api.Common\Infrastructure.Web.Api.Common.csproj" />
         <ProjectReference Include="..\..\Shared\Infrastructure.Web.Api.Operations.Shared\Infrastructure.Web.Api.Operations.Shared.csproj" />
         <ProjectReference Include="..\..\..\Framework\Infrastructure\Infrastructure.Web.Hosting.Common\Infrastructure.Web.Hosting.Common.csproj" />
+        <ProjectReference Include="..\..\Shared\Integration.Events.Shared\Integration.Events.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,7 +21,6 @@
 
     <!-- Runs the source generator (in memory) on build -->
     <ItemGroup>
-        <ProjectReference Include="..\..\Shared\Integration.Events.Shared\Integration.Events.Shared.csproj" />
         <ProjectReference Include="..\..\..\Framework\Tools\Tools.Generators.Web.Api\Tools.Generators.Web.Api.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
