@@ -57,7 +57,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
     }
 
     [Fact]
-    public async Task WhenAuthenticateAndPersonExistsButNotRegisteredYet_ThenIssuesToken()
+    public async Task WhenAuthenticateAndPersonExistsButNotRegisteredYet_ThenRegistersAndIssuesToken()
     {
         var authUserInfo = new SSOAuthUserInfo(new List<AuthToken>(), "auid", "auser@company.com", "afirstname", null,
             Timezones.Default, Locales.Default, CountryCodes.Default);
@@ -129,31 +129,53 @@ public class NativeIdentityServerSingleSignOnServiceSpec
     }
 
     [Fact]
-    public async Task WhenAuthenticateAndPersonIsSuspended_ThenIssuesToken()
+    public async Task
+        WhenAuthenticatePersonNotRegisteredYetAndWaitsForMemberships_ThenRegistersAndIssuesToken()
     {
         var authUserInfo = new SSOAuthUserInfo(new List<AuthToken>(), "auid", "auser@company.com", "afirstname", null,
             Timezones.Default, Locales.Default, CountryCodes.Default);
         _ssoProvidersService.Setup(sps =>
                 sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(authUserInfo);
-        var ssoUser = new SSOUser
-        {
-            Id = "anexistinguserid",
-            ProviderUId = "aprovideruid"
-        };
         _ssoProvidersService.Setup(sps =>
                 sps.FindUserByProviderAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<SSOAuthUserInfo>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ssoUser.ToOptional());
-        _endUsersService.Setup(eus =>
+            .ReturnsAsync(Optional<SSOUser>.None);
+        _endUsersService.Setup(eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EndUserWithProfile
+            {
+                Id = "aregistereduserid"
+            });
+        _endUsersService.SetupSequence(eus =>
                 eus.GetMembershipsPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EndUserWithMemberships
             {
                 Id = "amembershipsuserid",
-                Status = EndUserStatus.Registered,
-                Access = EndUserAccess.Suspended
+                Status = EndUserStatus.Unregistered,
+                Access = EndUserAccess.Enabled,
+                Memberships = []
+            })
+            .ReturnsAsync(new EndUserWithMemberships
+            {
+                Id = "amembershipsuserid",
+                Status = EndUserStatus.Unregistered,
+                Access = EndUserAccess.Enabled,
+                Memberships =
+                [
+                    new Membership
+                    {
+                        Id = "amembershipid",
+                        IsDefault = true,
+                        OrganizationId = "anorganizationid",
+                        UserId = "auserid"
+                    }
+                ]
             });
         var expiresOn = DateTime.UtcNow;
         _authTokensService.Setup(ats => ats.IssueTokensAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
@@ -179,20 +201,16 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
             "anauthcode", null, null, CancellationToken.None);
 
-        result.Should().BeError(ErrorCode.EntityLocked, Resources.SingleSignOnApplication_AccountSuspended);
+        result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
             sps.FindUserByProviderAsync(_caller.Object, "aprovidername", authUserInfo, It.IsAny<CancellationToken>()));
-        _endUsersService.Verify(
-            eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<bool>(),
-                It.IsAny<CancellationToken>()), Times.Never);
         _ssoProvidersService.Verify(
             sps => sps.SaveInfoOnBehalfOfUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<SSOAuthUserInfo>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         _endUsersService.Verify(eus =>
-            eus.GetMembershipsPrivateAsync(_caller.Object, "anexistinguserid", It.IsAny<CancellationToken>()));
+                eus.GetMembershipsPrivateAsync(_caller.Object, "aregistereduserid", It.IsAny<CancellationToken>()),
+            Times.Exactly(2));
         _authTokensService.Verify(
             ats => ats.IssueTokensAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<IReadOnlyList<string>>(), It.IsAny<Dictionary<string, object>?>(),
@@ -281,6 +299,77 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             eus.GetMembershipsPrivateAsync(_caller.Object, "aregistereduserid", It.IsAny<CancellationToken>()));
         _authTokensService.Verify(ats =>
             ats.IssueTokensAsync(_caller.Object, "amembershipsuserid", null, null, It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenAuthenticateAndPersonIsSuspended_ThenIssuesToken()
+    {
+        var authUserInfo = new SSOAuthUserInfo(new List<AuthToken>(), "auid", "auser@company.com", "afirstname", null,
+            Timezones.Default, Locales.Default, CountryCodes.Default);
+        _ssoProvidersService.Setup(sps =>
+                sps.AuthenticateUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(authUserInfo);
+        var ssoUser = new SSOUser
+        {
+            Id = "anexistinguserid",
+            ProviderUId = "aprovideruid"
+        };
+        _ssoProvidersService.Setup(sps =>
+                sps.FindUserByProviderAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<SSOAuthUserInfo>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ssoUser.ToOptional());
+        _endUsersService.Setup(eus =>
+                eus.GetMembershipsPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EndUserWithMemberships
+            {
+                Id = "amembershipsuserid",
+                Status = EndUserStatus.Registered,
+                Access = EndUserAccess.Suspended
+            });
+        var expiresOn = DateTime.UtcNow;
+        _authTokensService.Setup(ats => ats.IssueTokensAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<IReadOnlyList<string>>(), It.IsAny<Dictionary<string, object>?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AuthenticateTokens
+            {
+                UserId = "auserid",
+                AccessToken = new AuthenticationToken
+                {
+                    ExpiresOn = expiresOn,
+                    Type = TokenType.AccessToken,
+                    Value = "anaccesstoken"
+                },
+                RefreshToken = new AuthenticationToken
+                {
+                    ExpiresOn = expiresOn,
+                    Type = TokenType.RefreshToken,
+                    Value = "arefreshtoken"
+                }
+            });
+
+        var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
+            "anauthcode", null, null, CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityLocked, Resources.SingleSignOnApplication_AccountSuspended);
+        _ssoProvidersService.Verify(sps =>
+            sps.FindUserByProviderAsync(_caller.Object, "aprovidername", authUserInfo, It.IsAny<CancellationToken>()));
+        _endUsersService.Verify(
+            eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<bool>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        _ssoProvidersService.Verify(
+            sps => sps.SaveInfoOnBehalfOfUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<SSOAuthUserInfo>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        _endUsersService.Verify(eus =>
+            eus.GetMembershipsPrivateAsync(_caller.Object, "anexistinguserid", It.IsAny<CancellationToken>()));
+        _authTokensService.Verify(
+            ats => ats.IssueTokensAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<IReadOnlyList<string>>(), It.IsAny<Dictionary<string, object>?>(),
+                It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

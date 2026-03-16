@@ -1,10 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using ApiHost1;
 using Application.Interfaces;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common.Extensions;
 using FluentAssertions;
+using Infrastructure.Web.Api.Operations.Shared.EndUsers;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
+using Infrastructure.Web.Common.Extensions;
 using IntegrationTesting.WebApi.Common;
 using IntegrationTesting.WebApi.Common.Stubs;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +17,6 @@ using Xunit;
 #if TESTINGONLY
 using Infrastructure.External.TestingOnly.ApplicationServices;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
-using Infrastructure.Web.Common.Extensions;
 #endif
 
 namespace IdentityInfrastructure.IntegrationTests;
@@ -61,6 +64,35 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
+    public async Task WhenAuthenticateAndNotYetRegistered_ThenReturnsNewTokens()
+    {
+        var result = await AuthenticateWhilePropagatingAsync(() => Api.PostAsync(new AuthenticateSingleSignOnRequest
+        {
+#if TESTINGONLY
+            Provider = FakeSSOAuthenticationProvider.SSOName,
+            AuthCode = FakeOAuth2Service.AuthCode1
+#endif
+        }));
+
+        result.Content.Value.Tokens.UserId.Should().NotBeNullOrEmpty();
+        result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
+        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+            .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
+        result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
+        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+            .BeNear(DateTime.UtcNow.ToNearestSecond()
+                .Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
+        _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
+
+        var memberships = await Api.GetAsync(new ListMembershipsForCallerRequest(),
+            req => req.SetJWTBearerToken(result.Content.Value.Tokens.AccessToken.Value));
+
+        memberships.Content.Value.Memberships.Count.Should().Be(1);
+        memberships.Content.Value.Memberships[0].OrganizationId.Should().NotBeNull();
+        memberships.Content.Value.Memberships[0].Ownership.Should().Be(OrganizationOwnership.Personal);
+    }
+
+    [Fact]
     public async Task
         WhenAuthenticateWithSameEmailAndEndUserAlreadyRegisteredWithPassword_ThenReturnsSameUserNewTokens()
     {
@@ -85,12 +117,13 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
             Token = token!
         });
 
-        await PropagateDomainEventsAsync();
-        var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
+        var result = await AuthenticateWhilePropagatingAsync(() => Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
+#if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = authCode
-        });
+            AuthCode = FakeOAuth2Service.AuthCode1
+#endif
+        }));
 
         result.Content.Value.Tokens.UserId.Should().Be(userId);
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
@@ -106,25 +139,25 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     [Fact]
     public async Task WhenAuthenticateWithSameEmailAndSSOUserAlreadyExists_ThenReturnsSameUserNewTokens()
     {
-        var authenticated = await Api.PostAsync(new AuthenticateSingleSignOnRequest
-        {
+        var authenticated = await AuthenticateWhilePropagatingAsync(() =>
+            Api.PostAsync(new AuthenticateSingleSignOnRequest
+            {
 #if TESTINGONLY
-            Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
+                Provider = FakeSSOAuthenticationProvider.SSOName,
+                AuthCode = FakeOAuth2Service.AuthCode1
 #endif
-        });
+            }));
 
         authenticated.Content.Value.Tokens.UserId.Should().NotBeNullOrEmpty();
         var userId = authenticated.Content.Value.Tokens.UserId;
 
-        await PropagateDomainEventsAsync();
-        var result = await Api.PostAsync(new AuthenticateSingleSignOnRequest
+        var result = await AuthenticateWhilePropagatingAsync(() => Api.PostAsync(new AuthenticateSingleSignOnRequest
         {
 #if TESTINGONLY
             Provider = FakeSSOAuthenticationProvider.SSOName,
             AuthCode = FakeOAuth2Service.AuthCode1
 #endif
-        });
+        }));
 
         result.Content.Value.Tokens.UserId.Should().Be(userId);
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
@@ -139,13 +172,14 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
     [Fact]
     public async Task WhenCallingSecureApiAfterAuthenticate_ThenReturnsResponse()
     {
-        var authenticate = await Api.PostAsync(new AuthenticateSingleSignOnRequest
-        {
+        var authenticate = await AuthenticateWhilePropagatingAsync(() =>
+            Api.PostAsync(new AuthenticateSingleSignOnRequest
+            {
 #if TESTINGONLY
-            Provider = FakeSSOAuthenticationProvider.SSOName,
-            AuthCode = FakeOAuth2Service.AuthCode1
+                Provider = FakeSSOAuthenticationProvider.SSOName,
+                AuthCode = FakeOAuth2Service.AuthCode1
 #endif
-        });
+            }));
 
 #if TESTINGONLY
         var accessToken = authenticate.Content.Value.Tokens.AccessToken.Value;
@@ -156,6 +190,43 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Content.Value.CallerId.Should().Be(authenticate.Content.Value.Tokens.UserId);
 #endif
+    }
+
+    /// <summary>
+    ///     Executes an API call while continuously propagating domain events in the background, until the API call returns
+    /// </summary>
+    [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+    private async Task<TResult> AuthenticateWhilePropagatingAsync<TResult>(Func<Task<TResult>> apiMethod,
+        int propagationDelay = 200)
+    {
+        using var pollingToken = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken.None);
+
+        var apiTask = Task.Run(async () =>
+        {
+            var result = await apiMethod();
+            await pollingToken.CancelAsync();
+            return result;
+        }, pollingToken.Token);
+
+        var pollingTask = Task.Run(async () =>
+        {
+            while (!pollingToken.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    await Task.Delay(propagationDelay, pollingToken.Token);
+                    await PropagateDomainEventsAsync();
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+            }
+        }, pollingToken.Token);
+
+        await Task.WhenAll(apiTask, pollingTask);
+
+        return await apiTask;
     }
 
     private static void OverrideDependencies(IServiceCollection services)

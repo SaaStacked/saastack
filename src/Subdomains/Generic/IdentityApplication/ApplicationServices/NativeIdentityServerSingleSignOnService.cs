@@ -14,6 +14,8 @@ namespace IdentityApplication.ApplicationServices;
 public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSignOnService
 {
     public const string AuthErrorProviderName = "provider";
+    private const int MaxReturnMembershipAttempts = 10;
+    private static readonly TimeSpan RetryMembershipDelay = TimeSpan.FromSeconds(1);
     private readonly IAuthTokensService _authTokensService;
     private readonly IEndUsersService _endUsersService;
     private readonly IRecorder _recorder;
@@ -56,6 +58,7 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
             return existingUser.Error;
         }
 
+        bool hasAutoRegistered;
         string registeredUserId;
         if (!existingUser.Value.HasValue)
         {
@@ -69,6 +72,7 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
                 return autoRegistered.Error;
             }
 
+            hasAutoRegistered = true;
             registeredUserId = autoRegistered.Value.Id;
             _recorder.AuditAgainst(caller.ToCall(), registeredUserId,
                 Audits.SingleSignOnApplication_Authenticate_AccountOnboarded,
@@ -76,11 +80,18 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
         }
         else
         {
+            hasAutoRegistered = false;
             registeredUserId = existingUser.Value.Value.Id;
         }
 
-        var retrievedUser =
-            await _endUsersService.GetMembershipsPrivateAsync(caller, registeredUserId, cancellationToken);
+        // If we have just auto-registered your account, we don't want to proceed just yet and mint a new access_token
+        // without access to their default organization - due to eventual consistency.
+        // And, since the returned access_token determines the user's immediate access to any organizations, we prefer to delay
+        // returning from this operation for a short time, in the hope that the default organization is created before
+        // we proceed to mint the new token. Obviously there is a chance this wait process may not yield the outcome we are after,
+        // and so the delay is necessarily limited in length, and will always return eventually.
+        var retrievedUser = await GetMembershipsUntilFoundOrTimeoutAsync(caller, _endUsersService, registeredUserId,
+            hasAutoRegistered, cancellationToken);
         if (retrievedUser.IsFailure)
         {
             return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
@@ -127,6 +138,48 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
             user.ToLoginUserUsage(providerName, authUserInfo));
 
         return issued.Value;
+
+        static async Task<Result<EndUserWithMemberships, Error>> GetMembershipsUntilFoundOrTimeoutAsync(
+            ICallerContext caller,
+            IEndUsersService endUsersService, string registeredUserId, bool hasAutoRegistered,
+            CancellationToken cancellationToken)
+        {
+            if (hasAutoRegistered)
+            {
+                EndUserWithMemberships user;
+                var attempt = 1;
+                do
+                {
+                    await Task.Delay(RetryMembershipDelay, cancellationToken);
+
+                    var polled =
+                        await endUsersService.GetMembershipsPrivateAsync(caller, registeredUserId, cancellationToken);
+                    if (polled.IsFailure)
+                    {
+                        return polled.Error;
+                    }
+
+                    user = polled.Value;
+                    if (user.Memberships.Count > 0)
+                    {
+                        break;
+                    }
+
+                    attempt++;
+                } while (attempt <= MaxReturnMembershipAttempts);
+
+                return user;
+            }
+
+            var retrievedUser =
+                await endUsersService.GetMembershipsPrivateAsync(caller, registeredUserId, cancellationToken);
+            if (retrievedUser.IsFailure)
+            {
+                return retrievedUser.Error;
+            }
+
+            return retrievedUser.Value;
+        }
     }
 
     public async Task<Result<IReadOnlyList<ProviderAuthenticationTokens>, Error>> GetTokensForUserAsync(
