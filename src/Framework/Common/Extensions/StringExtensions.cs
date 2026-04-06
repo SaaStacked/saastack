@@ -1,26 +1,24 @@
 #if COMMON_PROJECT
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 #endif
 
 #if GENERATORS_WEB_API_PROJECT
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using JetBrains.Annotations;
 #endif
 
-#if GENERATORS_COMMON_PROJECT
 using System.Globalization;
+using System.Text.RegularExpressions;
+#if GENERATORS_COMMON_PROJECT
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -33,7 +31,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 #endif
 
@@ -53,6 +50,46 @@ namespace Common.Extensions;
 #endif
 public static class StringExtensions
 {
+#if COMMON_PROJECT
+    /// <summary>
+    ///     Defines the default deserialization policy for FromJson methods.
+    ///     Is cached here, as an optimization
+    /// </summary>
+    private static readonly JsonSerializerOptions DefaultCamelCase = new()
+    {
+        WriteIndented = false,
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = null, //Implies PascalCase
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        Converters =
+        {
+            new OptionalConverterFactory(),
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+        }
+    };
+
+    /// <summary>
+    ///     Defines the default serialization policy, which can vary by caller.
+    ///     Cannot be cached.
+    /// </summary>
+    private static JsonSerializerOptions DefaultCamelCaseVarying(bool prettyPrint, JsonNamingPolicy? namingPolicy,
+        bool includeNulls)
+    {
+        return new JsonSerializerOptions
+        {
+            WriteIndented = prettyPrint,
+            PropertyNamingPolicy = namingPolicy,
+            DefaultIgnoreCondition = includeNulls
+                ? JsonIgnoreCondition.Never
+                : JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new OptionalConverterFactory(),
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
+        };
+    }
+#endif
 #if COMMON_PROJECT || GENERATORS_WEB_API_PROJECT || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
     /// <summary>
     ///     Defines the casing used in JSON serialization
@@ -104,15 +141,7 @@ public static class StringExtensions
             return default;
         }
 
-        return JsonSerializer.Deserialize<TResult>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters =
-            {
-                new OptionalConverterFactory(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-            }
-        });
+        return JsonSerializer.Deserialize<TResult>(json, DefaultCamelCase);
     }
 #elif GENERATORS_WEB_API_PROJECT || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
     public static TObject FromJson<TObject>(this string json)
@@ -123,7 +152,7 @@ public static class StringExtensions
             return new TObject();
         }
 
-        var deserialized = FromJson(json, typeof(TObject));
+        var deserialized = json.FromJson(typeof(TObject));
         if (deserialized is not null)
         {
             return (TObject)deserialized;
@@ -155,17 +184,10 @@ public static class StringExtensions
     {
         if (json.HasNoValue())
         {
-            return default;
+            return null;
         }
 
-        return JsonSerializer.Deserialize(json, type, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters =
-            {
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-            }
-        });
+        return JsonSerializer.Deserialize(json, type, DefaultCamelCase);
     }
 #endif
 #if COMMON_PROJECT || GENERATORS_WEB_API_PROJECT || GENERATORS_COMMON_PROJECT || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
@@ -192,7 +214,7 @@ public static class StringExtensions
 #if COMMON_PROJECT || ANALYZERS_NONFRAMEWORK
     /// <summary>
     ///     Whether the <see cref="value" /> matches the <see cref="pattern" />
-    ///     Avoid potential DOS attacks where the regex may timeout if too complex
+    ///     Avoid potential DOS attacks where the regex may time out if too complex
     /// </summary>
     public static bool IsMatchWith(this string value, [RegexPattern] string pattern, TimeSpan? timeout = null)
     {
@@ -224,7 +246,7 @@ public static class StringExtensions
 
     /// <summary>
     ///     This method ensures that we apply a timeout to the matching,
-    ///     to avoid potential DOS attacks where a regular expression is used on on outer boundary layer
+    ///     to avoid potential DOS attacks where a regular expression is used on outer boundary layer
     /// </summary>
     public static string ReplaceWith(this string value, [RegexPattern] string pattern, string replacement,
         TimeSpan? timeout = null)
@@ -318,6 +340,26 @@ public static class StringExtensions
         return char.ToLowerInvariant(titleCase[0]) + titleCase.Substring(1);
     }
 #endif
+    /// <summary>
+    ///     Returns the specified <see cref="value" /> in PascalCase. i.e. first letter is upper case
+    /// </summary>
+    public static string ToPascalCase(this string value)
+    {
+        if (value.HasNoValue())
+        {
+            return value;
+        }
+
+        value = Regex.Replace(value, @"([a-z0-9])([A-Z])", "$1 $2");
+        value = value
+            .Replace("_", " ")
+            .Replace("-", " ");
+
+        return value
+            .Split([' '], StringSplitOptions.RemoveEmptyEntries)
+            .Aggregate(string.Empty,
+                (current, part) => current + char.ToUpperInvariant(part[0]) + part.Substring(1));
+    }
 #if COMMON_PROJECT || ANALYZERS_NONFRAMEWORK
     /// <summary>
     ///     Converts the <see cref="value" /> to a floating value
@@ -430,7 +472,7 @@ public static class StringExtensions
 #endif
 #if COMMON_PROJECT
     /// <summary>
-    ///     Converts the object to a json format.
+    ///     Converts the object to a JSON format.
     ///     Supports <see cref="Optional{TValue}" /> types, Enums as strings, and DateTime as ISO8601
     /// </summary>
     public static string? ToJson(this object? value, bool prettyPrint = true, JsonCasing casing = JsonCasing.Pascal,
@@ -441,25 +483,18 @@ public static class StringExtensions
             return null;
         }
 
-        JsonNamingPolicy namingPolicy = null!; // null implies PascalCase
+        JsonNamingPolicy? namingPolicy = null; // null implies PascalCase
         if (casing == JsonCasing.Camel)
         {
             namingPolicy = JsonNamingPolicy.CamelCase;
         }
 
-        return JsonSerializer.Serialize(value, new JsonSerializerOptions
-        {
-            WriteIndented = prettyPrint,
-            PropertyNamingPolicy = namingPolicy,
-            DefaultIgnoreCondition = includeNulls
-                ? JsonIgnoreCondition.Never
-                : JsonIgnoreCondition.WhenWritingNull,
-            Converters =
-            {
-                new OptionalConverterFactory(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-            }
-        });
+        var jsonPolicy =
+            !prettyPrint && namingPolicy == null && includeNulls
+                ? DefaultCamelCase
+                : DefaultCamelCaseVarying(prettyPrint, namingPolicy, includeNulls);
+
+        return JsonSerializer.Serialize(value, jsonPolicy);
     }
 #elif GENERATORS_WEB_API_PROJECT || ANALYZERS_NONFRAMEWORK || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
     public static string? ToJson<TObject>(this TObject? value, bool? prettyPrint = true, JsonCasing casing =
@@ -546,7 +581,6 @@ public static class StringExtensions
         }
     }
 #endif
-#if COMMON_PROJECT || GENERATORS_COMMON_PROJECT
     /// <summary>
     ///     Returns the specified <see cref="value" /> in title-case. i.e. first letter of words are capitalized
     /// </summary>
@@ -556,7 +590,6 @@ public static class StringExtensions
             .ToTitleCase(value)
             .Replace("_", string.Empty);
     }
-#endif
 # if COMMON_PROJECT
     /// <summary>
     ///     Returns the specified <see cref="value" /> including only letters (no numbers, or whitespace)

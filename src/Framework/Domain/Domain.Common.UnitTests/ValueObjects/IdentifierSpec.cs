@@ -1,4 +1,4 @@
-using AutoMapper;
+using Common.Extensions;
 using Domain.Common.ValueObjects;
 using FluentAssertions;
 using Xunit;
@@ -9,17 +9,14 @@ namespace Domain.Common.UnitTests.ValueObjects;
 public class IdentifierSpec
 {
     [Fact]
-    public void WhenAutoMapperMapsIdentifier_ThenMapsToStringValue()
+    public void WhenConvertIdentifier_ThenMapsToStringValue()
     {
         var @object = new TestObject
         {
             StringValue = Identifier.Create("avalue")
         };
 
-        var config = new MapperConfiguration(cfg => cfg.CreateMap<TestObject, TestDto>());
-        var mapper = config.CreateMapper();
-
-        var result = mapper.Map<TestDto>(@object);
+        var result = @object.Convert<TestObject, TestDto>();
 
         result.StringValue.Should().Be("avalue");
     }

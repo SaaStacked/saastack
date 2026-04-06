@@ -1,5 +1,4 @@
 #if COMMON_PROJECT
-using AutoMapper;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 #endif
@@ -15,18 +14,6 @@ namespace Common.Extensions;
 [DebuggerStepThrough]
 public static class ObjectExtensions
 {
-#if COMMON_PROJECT
-    /// <summary>
-    ///     Auto-maps the <see cref="source" /> to a new instance of the <see cref="TTarget" /> instance
-    /// </summary>
-    public static TTarget Convert<TSource, TTarget>(this TSource source)
-    {
-        var configuration = new MapperConfiguration(cfg => cfg.CreateMap<TSource, TTarget>());
-        var mapper = configuration.CreateMapper();
-
-        return mapper.Map<TTarget>(source);
-    }
-#endif
 #if COMMON_PROJECT || GENERATORS_WEB_API_PROJECT || ANALYZERS_NONFRAMEWORK || ANALYZERS_FRAMEWORK || GENERATORS_WORKERS_PROJECT
     /// <summary>
     ///     Whether the object does exist
@@ -100,30 +87,6 @@ public static class ObjectExtensions
     {
         return IsInvalidParameter(value.HasValue, parameterName, null, out error);
     }
-#endif
-#if COMMON_PROJECT
-    /// <summary>
-    ///     Populates the public properties of the <see cref="target" /> instance with the values of matching public properties
-    ///     of the
-    ///     <see cref="source" /> instance, whether those values have default or non-default values.
-    /// </summary>
-    public static void PopulateWith<TType>(this TType target, TType source)
-    {
-        target.PopulateWith(source.ToObjectDictionary());
-    }
-
-    /// <summary>
-    ///     Populates the public properties of the <see cref="target" /> instance with the values of matching properties of the
-    ///     <see cref="source" /> instance, whether those values have default or non-default values.
-    /// </summary>
-    public static void PopulateWith<TType>(this TType target, IReadOnlyDictionary<string, object?> source)
-    {
-        var configuration = new MapperConfiguration(_ => { });
-        var mapper = configuration.CreateMapper();
-
-        mapper.Map(source, target);
-    }
-
 #endif
 #if COMMON_PROJECT || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
     /// <summary>

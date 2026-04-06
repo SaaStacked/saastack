@@ -539,6 +539,62 @@ public class StringExtensionsSpec
     }
 
     [Fact]
+    public void WhenToPascalCaseWithSingleLowercasedWord_ThenCases()
+    {
+        var result = "aword".ToPascalCase();
+
+        result.Should().Be("Aword");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithSingleTitleCasedWord_ThenCases()
+    {
+        var result = "Aword".ToPascalCase();
+
+        result.Should().Be("Aword");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithLowercasedWords_ThenCases()
+    {
+        var result = "aword aword2 aword3".ToPascalCase();
+
+        result.Should().Be("AwordAword2Aword3");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithTitleCasedWords_ThenCases()
+    {
+        var result = "Aword Aword2 Aword3".ToPascalCase();
+
+        result.Should().Be("AwordAword2Aword3");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithCamelCased_ThenCases()
+    {
+        var result = "awordAword2Aword3".ToPascalCase();
+
+        result.Should().Be("AwordAword2Aword3");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithKebabCased_ThenCases()
+    {
+        var result = "aword-aword2-aword3".ToPascalCase();
+
+        result.Should().Be("AwordAword2Aword3");
+    }
+
+    [Fact]
+    public void WhenToPascalCaseWithSnakeCased_ThenCases()
+    {
+        var result = "aword_aword2_aword3".ToPascalCase();
+
+        result.Should().Be("AwordAword2Aword3");
+    }
+
+    [Fact]
     public void WhenToSnakeCaseWithSingleLowercasedWord_ThenCases()
     {
         var result = "aword".ToSnakeCase();
@@ -585,6 +641,7 @@ public class StringExtensionsSpec
 
         result.Should().Be("aword_aword2_aword3");
     }
+    
 
     private class SerializableClass
     {
