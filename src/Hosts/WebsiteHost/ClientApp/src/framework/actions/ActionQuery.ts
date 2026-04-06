@@ -24,7 +24,7 @@ export interface ActionQueryConfiguration<
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
   // The cache keys array to use to store the response
-  cacheKey: readonly unknown[] | ((request: TRequestData) => readonly unknown[]);
+  cacheKey: readonly string[] | ((request: TRequestData) => readonly string[]);
   // An optional TTL (in ms) to override the default cachePeriod
   cachePeriodMs?: number;
 }

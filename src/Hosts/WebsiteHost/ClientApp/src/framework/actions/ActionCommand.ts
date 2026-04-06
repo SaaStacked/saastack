@@ -6,6 +6,8 @@ import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
+export type CacheKeys = string[][] | ([] & { __brand: 'CacheKeys' });
+
 export interface ActionCommandConfiguration<
   TRequestData = any,
   ExpectedErrorCode extends string = '',
@@ -20,7 +22,7 @@ export interface ActionCommandConfiguration<
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
   // The keys in the request cache that we want to invalidate, in the case of successful response
-  invalidateCacheKeys?: readonly unknown[];
+  invalidateCacheKeys?: CacheKeys;
 }
 
 // Use this hook for calling @hey-api (fetch) generated endpoints for POST, PUT, PATCH or DELETE.
@@ -61,12 +63,14 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
     onSuccess: (apiResponse: ApiResponse<TResponse>, requestData: TRequestData) => {
       recorder.traceDebug('ActionCommand: Mutation returned success');
       clearErrors();
-      if (invalidateCacheKeys) {
-        recorder.traceDebug('ActionCommand: clearing cache keys: {Keys}', { invalidateCacheKeys });
-        queryClient.invalidateQueries({
-          queryKey: invalidateCacheKeys,
-          exact: false // we want to support wildcards
-        });
+      if (invalidateCacheKeys && invalidateCacheKeys.length > 0) {
+        for (const cacheKey of invalidateCacheKeys) {
+          recorder.traceDebug('ActionCommand: clearing cache keyset: {Keys}', { cacheKey });
+          queryClient.removeQueries({
+            queryKey: cacheKey,
+            exact: false // we want to support partial matches
+          });
+        }
       }
 
       if (onSuccess) {
@@ -118,7 +122,7 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
     [mutate, configuration.isTenanted]
   );
 
-  const isExecuting = isPending && isError == false && isSuccess == false;
+  const isExecuting = isPending && !isError && !isSuccess;
   const isCompleted = isPending ? undefined : isSuccess ? true : isError ? false : undefined;
   return {
     execute: executeCallback,

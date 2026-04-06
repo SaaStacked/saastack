@@ -16,13 +16,13 @@ We support a mixed mode environment, where you can use the dev server (with hot-
 
 * When you use `npm run dev` it starts a Vite dev server on port 5173, which serves the JavaScript files from the `src` folder.
 * When you use `npm run build` it compiles and bundles the JavaScript files from the `src` folder into a single bundle in the `wwwroot` folder.
-* 
+*
 > Note: some changes to some files (particularly those outside the `src` folder, like `translation.json` and any images), will require  you to run `npm run build` if running the dev server
 
 We are deliberately rendering the `Index.html` page server-side (see: `HomeController.cs`) for security purposes, thus we need to load the correct JavaScript and CSS files into `Index.html` at runtime both locally and in production.
 
-* In 'development' mode, we need to reference the Typescript from the `src` folder of the dev server at: `http://localhost:5173/src/main.tsx` and `http://localhost:5173/src/main.css`.
-* In 'production' mode, we need to reference the vite compiled JavaScript bundle from the `https://app.saastack.com/BSaMLVRv.bundle.js` folder (which is located in the `wwwroot` folder).
+* In 'development' mode, we need to reference the TypeScript from the `src` folder of the dev server at: `http://localhost:5173/src/main.tsx` and `http://localhost:5173/src/main.css`.
+* In 'production' mode, we need to reference the vite compiled JavaScript bundle from the `https://app.critter.com/BSaMLVRv.bundle.js` folder (which is located in the `wwwroot` folder).
 
 
 > Everytime the `npm run build` command is run (as is expected in CI/CD for 'production' builds), the `jsapp.build.json` file is updated with the latest bundle file names, and version.
@@ -31,7 +31,7 @@ We are deliberately rendering the `Index.html` page server-side (see: `HomeContr
 
 When the website is run, the `IJsAppBundler` service is used to load the appropriate JavaScript files.
 It will first check for the existence of the Vite dev server at port 5173, and if it is running, it will load the JavaScript classes from there.
-Otherwise, it will load the JavaScript bundle from the `wwwroot` folder, given the paths from the `jsapp.build.json` file. 
+Otherwise, it will load the JavaScript bundle from the `wwwroot` folder, given the paths from the `jsapp.build.json` file.
 This data is then injected into the `Index.html` page.
 
 ## API Definitions
@@ -64,21 +64,21 @@ This is the recommended approach to build your pages because these 'Action-enabl
 
 We use [TanStack Query](https://tanstack.com/query/v4) and `QueryClient` directly for caching and managing data fetching from backend APIs.
 
-The way it works is that you define an array of 'query keys' for each query in the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `QueryClient` to cache the successful response against that key in its cache.
+The way it works is that you define an array of 'query keys' in the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `QueryClient` to cache the successful response against that combination of keys in its cache, for a default period of time.
 
-While that key has a cached response, repeated requests to the same `ActionQuery`, for the same data, does not need to go to the backend - and are served locally from the cache.
+While that set of keys has a "valid" (alive) cached response, repeated requests to the same `ActionQuery`, for the same data, will respond immediately with teh cached values, and will not need to go to the backend.
 
-These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 30 seconds.
+These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 30 seconds (see: `AppProviders.tsx:QueryClientDefaultCacheTimeInMs`).
 
 > Short cache times (TTLs) are recommended since this client cannot guarantee that it will be the only consumer of the backend data collections. Other clients may have changed the backend data at the same time, and the cached responses in this client will be now be stale (relative to the backend), thus they need to be forced to be refreshed. Long TTLs (like minutes) are not appropriate for this kind of system. Short TTLs can still offer many benefits for clients.
 
-These cached responses can be forced to be invalidated, and are best invalidated when the data that could be cached is updated by the JS App explicitly.
+To prevent cached values going stale, before it automatically invalidates, and after data has been explicitly changed with a mutation API, we need to explicitly invalidate that cached data explicitly.
 
-When this client forces a change in that data (using `useMutation`), it can invalidate the cache for that query key (or any number of keys), and the next request for that data will go to the backend.
+When this client forces a change in that data (using `useMutation`), and we get a successful response, it should invalidate the cache for that query key set (and/or any related keysets). This then forces the next use of `QueryClient` to go to the backend to get the latest data.
 
-When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keys to invalidate in the `invalidateCacheKeys` property, and TanStack Query will invalidate all queries matching that collection of keys.
+When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keysets to invalidate in the `invalidateCacheKeys` property, and TanStack Query will remove all stored queries matching that collection of keysets.
 
-To do this, we define some very simple cache key definitions in files like `src/subDomains/endUsers/actions/responseCache.ts`. Where we define a cumulative set of keys that can be used to invalidate the various caches that that specific subdomain manages.
+We define some very simple cache key definitions in files like `src/subDomains/endUsers/actions/responseCache.ts`. Where we define a cumulative set of keys that can be used to invalidate the various caches that that specific subdomain manages.
 
 Assuming the following definition:
 
@@ -86,8 +86,9 @@ Assuming the following definition:
 const resourceCacheKeys = {
   all: ['resources'] as const,
   resource: {
-    query: (resourceId: string) => ['resources', resourceId] as const, //uses a single cache key for this specific resource (unique id) 
-    mutate: (resourceId: string) => [...resourceCacheKeys.all, 'resourceId'] as const // invalidates the specific resource, and the whole collection of all resources
+    query: (resourceId: string) => ['resources', resourceId], //uses a single cache key for this specific resource (unique id) 
+    mutate: (resourceId: string) => [query(resourceId)] as CacheKeys, // invalidates the specific resource, and the whole collection of all resources
+    clear: (resourceId: string) => [['resources']] as CacheKeys // invalidates all resources, no matter what ID they have
   }
 }; 
 ```
@@ -137,14 +138,14 @@ We have structured the code in a similar way to the backend, in that the web pag
 ## Recording
 
 For all tracing, crash reporting, page views and product usage metrics, you MUST use the `IRecorder` interface.
-This data is relayed to the BEFFE to be persisted in centralised logs along with all other telemetry, and the traces, audits and usages form the backend API.
+This data is relayed to the BEFFE to be persisted in centralized logs along with all other telemetry, and the traces, audits and usages form the backend API.
 
 > You can see this recorded data appear locally, in the output console of the `TestingSubApiHost: TestingStubApiHost-Development` project, when running the `AllHosts` compound configuration.
 
 Since this kind of sensitive data is passed to the BEFFE (from a browser) on the same domain that the JavaScript was loaded from, users cannot block this critical data from being collected with Ad Blockers or private browser sessions in their browsers. This kind of traffic is safe for them.
-This is a major advantage over using 3rd party JavaScript SDKs and libraries to relay information to 3rd party systems, which often use cookies to track users, which can be easily blocked by browsers. We strongly recommend NOT using those kinds of JavaScript SDKs if you can avoid it. 
+This is a major advantage over using 3rd party JavaScript SDKs and libraries to relay information to 3rd party systems, which often use cookies to track users, which can be easily blocked by browsers. We strongly recommend NOT using those kinds of JavaScript SDKs if you can avoid it.
 
-For tracing and error reporting, DO NOT use `console.log()`, `console.warn()` or `console.error()` statements in the JS App code - except in tests. Instead, MUST use the `IRecorder` interface to log messages. and these messages will be relayed to the BEFFE to be persisted in centralised logs along with all other telemetry, and the traces, audits and usages form the backend API.
+For tracing and error reporting, DO NOT use `console.log()`, `console.warn()` or `console.error()` statements in the JS App code - except in tests. Instead, MUST use the `IRecorder` interface to log messages. and these messages will be relayed to the BEFFE to be persisted in centralized logs along with all other telemetry, and the traces, audits and usages form the backend API.
 
 > In `window.isTestingOnly === true` the configured `IRecorder` will echo all calls to `IRecorder` out to the browser console any way. And in production builds, these messages will never be visible to the end user. Their browser console in their developer tools should remain empty.
 
@@ -152,7 +153,7 @@ We recommend the following practices, using the `IRecorder`:
 1. Use `recorder.traceInformation()` for all diagnostic messages of interest to the operation of the system.
 2. Use `recorder.crash()` where you code detects an exceptional error case.
 3. Use `recorder.trackUsage()` to capture all product metrics. All API calls are already tracked in by the backend API, but the backend API cannot track what the user does in the UI (mouse movements, clicks, navigation etc.), nor anything else that the user does in the UI that does not result in an API call. Add appropriate `trackUsage()` calls to capture those UI events. The BEFFE will take care of capturing the user agent properties and other browser metadata.
-4. For page views, use the `recorder.trackPageView()` method. This method is already wired into the React router, so as long as all routes are defined in React router, you should have nothing to do here.  
+4. For page views, use the `recorder.trackPageView()` method. This method is already wired into the React router, so as long as all routes are defined in React router, you should have nothing to do here.
 
 # Feature Flags
 
@@ -185,9 +186,9 @@ The relevant pages from the `Identity` subdomain are all implemented fully. You 
 
 Pages from sample subdomain (`Cars` and `Bookings`) are also implemented, but you will likely want to delete these for your product. They are here only as examples to follow.
 
-We strongly recommend driving your pages using either: `FormAction` for interactive pages, or `PageAction`, and `ButtonAction` for data display pages. 
+We strongly recommend driving your pages using either: `FormAction` for interactive pages, or `PageAction`, and `ButtonAction` for data display pages.
 
-These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application does not work. 
+These components take care of error handling and monitoring of the XHR action to give users visual clues about what is going on. This is the value of using actions to begin with. You will need to take care of these things yourself, if you do NOT use actions. It is a lot of work that is often forgotten until users complain that the application does not work.
 
 > See more on why you should "actions" here: [JavaScript Actions](../../../../docs/design-principles/0200-javascript-actions.md)
 
@@ -204,7 +205,7 @@ To add your own custom classes to Tailwind, utilize the options in `src/main.css
 
 ## Localization
 
-We have set this site to be localised from the start. The user has the ability to change their language at any time, and the site will be displayed in that language.
+We have set this site to be localized from the start. The user has the ability to change their language at any time, and the site will be displayed in that language.
 
 The only language currently supported is English (i.e. `en`), but it is trivial to add more languages, following the guidance from the `i18next` documentation.
 

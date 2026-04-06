@@ -1,14 +1,21 @@
 const organizationCacheKeys = {
-  all: ['organizations'] as const,
-  organization: {
-    query: (organizationId: string) => [...organizationCacheKeys.all, organizationId] as const,
-    mutate: (organizationId: string) => [...organizationCacheKeys.all, organizationId] as const,
-    members: {
-      all: ['organizations', 'members'] as const,
-      query: (organizationId: string) => [...organizationCacheKeys.organization.members.all, organizationId] as const,
-      mutate: (organizationId: string) => [...organizationCacheKeys.organization.members.all, organizationId] as const
-    }
-  }
-};
+  import { CacheKeys } from '../../../framework/actions/ActionCommand.ts';
+  import userProfileCacheKeys from '../../userProfiles/actions/responseCache.ts';
 
-export default organizationCacheKeys;
+  const organizationCacheKeys = {
+    all: ['organizations'],
+    organization: {
+      query: (organizationId: string) => [...organizationCacheKeys.all, organizationId],
+      mutate: (organizationId: string) => [organizationCacheKeys.organization.query(organizationId)] as CacheKeys,
+      switch: (organizationId: string) =>
+        [userProfileCacheKeys.me, organizationCacheKeys.organization.query(organizationId)] as CacheKeys,
+      members: {
+        all: ['organizations', 'members'],
+        query: (organizationId: string) => [...organizationCacheKeys.organization.members.all, organizationId],
+        mutate: (organizationId: string) =>
+          [organizationCacheKeys.organization.members.query(organizationId)] as CacheKeys
+      },
+    }
+  };
+
+  export default organizationCacheKeys;

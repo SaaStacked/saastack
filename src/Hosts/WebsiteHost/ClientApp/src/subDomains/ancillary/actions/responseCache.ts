@@ -1,8 +1,8 @@
 const ancillaryCacheKeys = {
-  all: ['ancillary'] as const,
+  all: ['ancillary'],
   features: {
-    all: ['ancillary', 'features'] as const,
-    query: (name: string) => ['ancillary', 'features', name] as const
+    all: ['ancillary', 'features'],
+    query: (name: string) => [...ancillaryCacheKeys.features.all, name]
   }
 };
 

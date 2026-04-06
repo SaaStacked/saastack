@@ -5,8 +5,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmptyResponse } from '../api/apiHost1';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
-import { useActionCommand } from './ActionCommand';
+import { CacheKeys, useActionCommand } from './ActionCommand';
 import { ApiResponse } from './Actions.ts';
+
 
 interface UntenantedRequestData {
   name?: string;
@@ -89,13 +90,13 @@ describe('useActionCommand', () => {
         passThroughErrors: {
           400: 'BadRequest'
         },
-        invalidateCacheKeys: ['acachekey']
+        invalidateCacheKeys: [['acachekey']] as CacheKeys
       });
 
     beforeEach(() => {
       offlineService.status = 'online';
 
-      vi.spyOn(queryClient, 'invalidateQueries').mockImplementation(() => Promise.resolve());
+      vi.spyOn(queryClient, 'removeQueries').mockImplementation(() => {});
     });
 
     it('when online, should execute and return response', async () => {
@@ -148,7 +149,7 @@ describe('useActionCommand', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['acachekey'], exact: false });
+      expect(queryClient.removeQueries).toHaveBeenCalledWith({ queryKey: ['acachekey'], exact: false });
     });
   });
 
@@ -334,6 +335,68 @@ describe('useActionCommand', () => {
     });
   });
 
+  describe('given successful request', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false
+        }
+      }
+    });
+
+    beforeEach(() => {
+      offlineService.status = 'online';
+    });
+
+    const mockSuccessfulRequest = vi.fn(
+      async (_requestData: UntenantedRequestData): Promise<ApiResponse<TestResponse>> => {
+        // Add a small delay to test loading states
+        await new Promise(resolve => setTimeout(resolve, 50));
+        return {
+          data: { message: 'amessage' },
+          error: undefined,
+          request: {} as Request,
+          response: { ok: true, status: 200 } as Response
+        };
+      }
+    );
+
+    const tenantedAction = () =>
+      useActionCommand({
+        request: mockSuccessfulRequest,
+        isTenanted: true,
+        onSuccess: () => vi.fn(),
+        passThroughErrors: {
+          400: 'BadRequest'
+        },
+        invalidateCacheKeys: []
+      });
+
+    beforeEach(() => {
+      offlineService.status = 'online';
+    });
+
+    it('should call onSuccess callback', async () => {
+      const { result } = renderHook(() => tenantedAction(), {
+        wrapper: ({ children }) => createWrapper({ children, offlineService, queryClient })
+      });
+
+      await act(async () =>
+        result.current.execute(
+          {
+            aname: 'avalue',
+            organizationId: 'anotherorganizationid'
+          } as TenantedRequestData,
+          {
+            onSuccess: rez => expect(rez.response.message).toBe('amessage')
+          }
+        )
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    });
+  });
+
   describe('given no expected errors', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -459,6 +522,155 @@ describe('useActionCommand', () => {
       expect(result.current.lastSuccessResponse).toBeUndefined();
       expect(result.current.lastRequestValues).toStrictEqual({ aname: 'avalue' });
       expect(mockFailedRequest).toHaveBeenCalledWith({ aname: 'avalue' });
+    });
+  });
+});
+
+describe('caching', () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: 0, // immediate collect
+        staleTime: 10000 // 10 seconds
+      }
+    }
+  });
+
+  describe('QueryClient', () => {
+    it('when fetch with cachekey, then caches response', async () => {
+      const cacheKey = ['aresource', 'res_1234567890'] as unknown[];
+      const httpResponse = {
+        message: 'amessage'
+      } as TestResponse;
+
+      const result = await queryClient
+        .fetchQuery({
+          queryKey: cacheKey,
+          queryFn: async () => httpResponse
+        })
+        .then((res: TestResponse) => res);
+
+      expect(result).toEqual(httpResponse);
+      expect(queryClient.getQueryData(cacheKey)).toEqual(httpResponse);
+    });
+
+    it('when fetch with cachekey, then caches response', async () => {
+      const cacheKey = ['aresource', 'res_1234567890'] as unknown[];
+      const httpResponse = {
+        message: 'amessage'
+      } as TestResponse;
+
+      const result = await queryClient
+        .fetchQuery({
+          queryKey: cacheKey,
+          queryFn: async () => httpResponse
+        })
+        .then((res: TestResponse) => res);
+
+      expect(result).toEqual(httpResponse);
+      expect(queryClient.getQueryData(cacheKey)).toEqual(httpResponse);
+    });
+
+    it('when remove exact with cachekey, for single matching entry, then clears matching from cache', async () => {
+      const cacheKey = ['aresource', 'res_1234567890'] as unknown[];
+      const httpResponse = {
+        message: 'amessage'
+      } as TestResponse;
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey,
+          queryFn: async () => httpResponse
+        })
+        .then((res: TestResponse) => res);
+
+      queryClient.removeQueries({ queryKey: cacheKey, exact: true });
+
+      expect(queryClient.getQueryData(cacheKey)).toBeUndefined();
+    });
+
+    it('when remove exact with cachekey, for multiple matching entries, then clears matching only from cache', async () => {
+      const httpResponse1 = {
+        message: 'amessage1'
+      } as TestResponse;
+      const httpResponse2 = {
+        message: 'amessage2'
+      } as TestResponse;
+      const cacheKey1 = ['aresource', 'res_1234567890'] as unknown[];
+      const cacheKey2 = ['aresource', 'res_9876543210'] as unknown[];
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey1,
+          queryFn: async () => httpResponse1
+        })
+        .then((res: TestResponse) => res);
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey2,
+          queryFn: async () => httpResponse2
+        })
+        .then((res: TestResponse) => res);
+
+      queryClient.removeQueries({ queryKey: cacheKey1, exact: true });
+
+      expect(queryClient.getQueryData(cacheKey1)).toBeUndefined();
+      expect(queryClient.getQueryData(cacheKey2)).toEqual(httpResponse2);
+    });
+
+    it('when remove exact with partial cachekey, for multiple matching entries, then clears none from cache', async () => {
+      const httpResponse1 = {
+        message: 'amessage1'
+      } as TestResponse;
+      const httpResponse2 = {
+        message: 'amessage2'
+      } as TestResponse;
+      const cacheKey1 = ['aresource', 'res_1234567890'] as unknown[];
+      const cacheKey2 = ['aresource', 'res_9876543210'] as unknown[];
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey1,
+          queryFn: async () => httpResponse1
+        })
+        .then((res: TestResponse) => res);
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey2,
+          queryFn: async () => httpResponse2
+        })
+        .then((res: TestResponse) => res);
+
+      queryClient.removeQueries({ queryKey: ['aresource'], exact: true });
+
+      expect(queryClient.getQueryData(cacheKey1)).toEqual(httpResponse1);
+      expect(queryClient.getQueryData(cacheKey2)).toEqual(httpResponse2);
+    });
+
+    it('when remove not exact with partial cachekey, for multiple matching entries, then clears all from cache', async () => {
+      const httpResponse1 = {
+        message: 'amessage1'
+      } as TestResponse;
+      const httpResponse2 = {
+        message: 'amessage2'
+      } as TestResponse;
+      const cacheKey1 = ['aresource', 'res_1234567890'] as unknown[];
+      const cacheKey2 = ['aresource', 'res_9876543210'] as unknown[];
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey1,
+          queryFn: async () => httpResponse1
+        })
+        .then((res: TestResponse) => res);
+      await queryClient
+        .fetchQuery({
+          queryKey: cacheKey2,
+          queryFn: async () => httpResponse2
+        })
+        .then((res: TestResponse) => res);
+
+      queryClient.removeQueries({ queryKey: ['aresource'], exact: false });
+
+      expect(queryClient.getQueryData(cacheKey1)).toBeUndefined();
+      expect(queryClient.getQueryData(cacheKey2)).toBeUndefined();
     });
   });
 });

@@ -1,13 +1,16 @@
+import { CacheKeys } from '../../../framework/actions/ActionCommand.ts';
+
+
 const endUserCacheKeys = {
-  all: ['users'] as const,
+  all: ['users'],
   memberships: {
-    all: ['users', 'memberships'] as const,
-    me: ['users', 'memberships', 'me'] as const,
-    mutate: (userId: string) => [...endUserCacheKeys.memberships.all, userId] as const
+    all: ['users', 'memberships'],
+    me: ['users', 'memberships', 'me'],
+    mutate: (userId: string) => [[...endUserCacheKeys.memberships.all, userId]] as CacheKeys
   },
   users: {
-    all: ['users'] as const,
-    me: ['users', 'me'] as const
+    all: ['users'],
+    me: ['users', 'me']
   }
 };
 

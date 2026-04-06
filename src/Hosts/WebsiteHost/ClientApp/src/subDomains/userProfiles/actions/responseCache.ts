@@ -1,8 +1,10 @@
+import { CacheKeys } from '../../../framework/actions/ActionCommand.ts';
+
 const userProfileCacheKeys = {
-  all: ['userProfiles'] as const,
-  me: ['userProfiles', 'me'] as const,
+  all: ['userProfiles'],
+  me: ['userProfiles', 'me'],
   profile: {
-    mutate: (userId: string) => [...userProfileCacheKeys.all, userId] as const
+    mutate: (userId: string) => [[...userProfileCacheKeys.all, userId]] as CacheKeys
   }
 };
 
