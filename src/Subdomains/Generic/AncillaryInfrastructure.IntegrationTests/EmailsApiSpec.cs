@@ -24,16 +24,16 @@ namespace AncillaryInfrastructure.IntegrationTests;
 public class EmailsApiSpec : WebApiSpec<Program>
 {
     private readonly StubEmailDeliveryService _emailDeliveryService;
-    private readonly IEmailMessageQueue _emailMessageQueue;
+    private readonly IEmailMessageQueueRepository _emailMessageRepository;
 
     public EmailsApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
         _emailDeliveryService = setup.GetRequiredService<IEmailDeliveryService>().As<StubEmailDeliveryService>();
         _emailDeliveryService.Reset();
-        _emailMessageQueue = setup.GetRequiredService<IEmailMessageQueue>();
+        _emailMessageRepository = setup.GetRequiredService<IEmailMessageQueueRepository>();
 #if TESTINGONLY
-        _emailMessageQueue.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+        _emailMessageRepository.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif
     }
 
@@ -418,7 +418,7 @@ public class EmailsApiSpec : WebApiSpec<Program>
         var messageId1 = CreateMessageId();
         var messageId2 = CreateMessageId();
         var messageId3 = CreateMessageId();
-        await _emailMessageQueue.PushAsync(call, new EmailMessage
+        await _emailMessageRepository.PushAsync(call, new EmailMessage
         {
             MessageId = messageId1,
             CallId = "acallid",
@@ -434,7 +434,7 @@ public class EmailsApiSpec : WebApiSpec<Program>
                 Tags = ["atag"]
             }
         }, CancellationToken.None);
-        await _emailMessageQueue.PushAsync(call, new EmailMessage
+        await _emailMessageRepository.PushAsync(call, new EmailMessage
         {
             MessageId = messageId2,
             CallId = "acallid",
@@ -450,7 +450,7 @@ public class EmailsApiSpec : WebApiSpec<Program>
                 Tags = ["atag"]
             }
         }, CancellationToken.None);
-        await _emailMessageQueue.PushAsync(call, new EmailMessage
+        await _emailMessageRepository.PushAsync(call, new EmailMessage
         {
             MessageId = messageId3,
             CallId = "acallid",

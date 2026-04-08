@@ -18,23 +18,23 @@ public class DomainEventsApplication : IDomainEventsApplication
     private readonly IEventNotificationRepository _eventNotificationRepository;
     private readonly IDomainEventingConsumerService _domainEventingConsumerService;
 #if TESTINGONLY
-    private readonly IDomainEventingMessageBusTopic _domainEventMessageBusTopic;
+    private readonly IDomainEventingMessageBusRepository _domainEventMessageRepository;
 
     public DomainEventsApplication(IRecorder recorder,
         IEventNotificationRepository eventNotificationRepository,
-        IDomainEventingMessageBusTopic domainEventMessageBusTopic,
+        IDomainEventingMessageBusRepository domainEventMessageRepository,
         IDomainEventingConsumerService domainEventingConsumerService)
     {
         _recorder = recorder;
         _eventNotificationRepository = eventNotificationRepository;
-        _domainEventMessageBusTopic = domainEventMessageBusTopic;
+        _domainEventMessageRepository = domainEventMessageRepository;
         _domainEventingConsumerService = domainEventingConsumerService;
     }
 #else
     public DomainEventsApplication(IRecorder recorder,
         IEventNotificationRepository eventNotificationRepository,
         // ReSharper disable once UnusedParameter.Local
-        IDomainEventingMessageBusTopic domainEventMessageBusTopic,
+        IDomainEventingMessageBusRepository domainEventMessageRepository,
         IDomainEventingConsumerService domainEventingConsumerService)
     {
         _recorder = recorder;
@@ -47,7 +47,7 @@ public class DomainEventsApplication : IDomainEventsApplication
     public async Task<Result<Error>> DrainAllDomainEventsAsync(ICallerContext caller,
         CancellationToken cancellationToken)
     {
-        await DrainAllOnTopicAsync(_recorder, _domainEventingConsumerService, _domainEventMessageBusTopic,
+        await DrainAllOnTopicAsync(_recorder, _domainEventingConsumerService, _domainEventMessageRepository,
             (subscriptionName, message) =>
                 NotifyDomainEventInternalAsync(caller, subscriptionName, message, cancellationToken),
             cancellationToken);

@@ -35,19 +35,19 @@ public class AncillaryApplicationAuditingSpec
         _caller = new Mock<ICallerContext>();
         _caller.Setup(cc => cc.HostRegion)
             .Returns(DatacenterLocations.AustraliaEast);
-        var usageMessageQueue = new Mock<IUsageMessageQueue>();
+        var usageMessageQueue = new Mock<IUsageMessageQueueRepository>();
         var usageDeliveryService = new Mock<IUsageDeliveryService>();
         _auditMessageRepository = new Mock<IAuditMessageQueueRepository>();
         _auditRepository = new Mock<IAuditRepository>();
         _auditRepository.Setup(ar => ar.SaveAsync(It.IsAny<AuditRoot>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((AuditRoot root, CancellationToken _) => root);
-        var emailMessageQueue = new Mock<IEmailMessageQueue>();
+        var emailMessageQueue = new Mock<IEmailMessageQueueRepository>();
         var emailDeliveryService = new Mock<IEmailDeliveryService>();
         var emailDeliveryRepository = new Mock<IEmailDeliveryRepository>();
-        var smsMessageQueue = new Mock<ISmsMessageQueue>();
+        var smsMessageQueue = new Mock<ISmsMessageQueueRepository>();
         var smsDeliveryService = new Mock<ISmsDeliveryService>();
         var smsDeliveryRepository = new Mock<ISmsDeliveryRepository>();
-        var provisioningMessageQueue = new Mock<IProvisioningMessageQueue>();
+        var provisioningMessageQueue = new Mock<IProvisioningMessageQueueRepository>();
         var provisioningDeliveryService = new Mock<IProvisioningNotificationService>();
 
         _application = new AncillaryApplication(recorder.Object, idFactory.Object, usageMessageQueue.Object,

@@ -9,11 +9,11 @@ using Infrastructure.Persistence.Interfaces;
 
 namespace Infrastructure.Persistence.Shared.ApplicationServices;
 
-public class SmsMessageQueue : ISmsMessageQueue
+public class SmsMessageQueueRepository : ISmsMessageQueueRepository
 {
     private readonly MessageQueueStore<SmsMessage> _messageQueue;
 
-    public SmsMessageQueue(IRecorder recorder, IHostSettings hostSettings,
+    public SmsMessageQueueRepository(IRecorder recorder, IHostSettings hostSettings,
         IMessageQueueMessageIdFactory messageQueueMessageIdFactory,
         IQueueStore store)
     {

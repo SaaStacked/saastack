@@ -422,13 +422,13 @@ public static class HostExtensions
         {
             if (usesNotifications)
             {
-                services.AddSingleton<IEmailMessageQueue>(c =>
-                    new EmailMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<IEmailMessageQueueRepository>(c =>
+                    new EmailMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
-                services.AddSingleton<ISmsMessageQueue>(c =>
-                    new SmsMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<ISmsMessageQueueRepository>(c =>
+                    new SmsMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));

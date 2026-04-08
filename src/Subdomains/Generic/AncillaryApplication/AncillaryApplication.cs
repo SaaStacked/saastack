@@ -17,51 +17,51 @@ public partial class AncillaryApplication : IAncillaryApplication
     private readonly IUsageDeliveryService _usageDeliveryService;
     private readonly IProvisioningNotificationService _provisioningNotificationService;
 #if TESTINGONLY
-    private readonly IAuditMessageQueueRepository _auditMessageQueueRepository;
-    private readonly IEmailMessageQueue _emailMessageQueue;
-    private readonly ISmsMessageQueue _smsMessageQueue;
-    private readonly IUsageMessageQueue _usageMessageQueue;
-    private readonly IProvisioningMessageQueue _provisioningMessageQueue;
+    private readonly IAuditMessageQueueRepository _auditMessageRepository;
+    private readonly IEmailMessageQueueRepository _emailMessageRepository;
+    private readonly ISmsMessageQueueRepository _smsMessageRepository;
+    private readonly IUsageMessageQueueRepository _usageMessageRepository;
+    private readonly IProvisioningMessageQueueRepository _provisioningMessageRepository;
 
     public AncillaryApplication(IRecorder recorder, IIdentifierFactory idFactory,
-        IUsageMessageQueue usageMessageQueue, IUsageDeliveryService usageDeliveryService,
-        IAuditMessageQueueRepository auditMessageQueueRepository, IAuditRepository auditRepository,
-        IEmailMessageQueue emailMessageQueue, IEmailDeliveryService emailDeliveryService,
+        IUsageMessageQueueRepository usageMessageRepository, IUsageDeliveryService usageDeliveryService,
+        IAuditMessageQueueRepository auditMessageRepository, IAuditRepository auditRepository,
+        IEmailMessageQueueRepository emailMessageRepository, IEmailDeliveryService emailDeliveryService,
         IEmailDeliveryRepository emailDeliveryRepository,
-        ISmsMessageQueue smsMessageQueue, ISmsDeliveryService smsDeliveryService,
+        ISmsMessageQueueRepository smsMessageRepository, ISmsDeliveryService smsDeliveryService,
         ISmsDeliveryRepository smsDeliveryRepository,
-        IProvisioningMessageQueue provisioningMessageQueue,
+        IProvisioningMessageQueueRepository provisioningMessageRepository,
         IProvisioningNotificationService provisioningNotificationService)
     {
         _recorder = recorder;
         _idFactory = idFactory;
-        _usageMessageQueue = usageMessageQueue;
+        _usageMessageRepository = usageMessageRepository;
         _usageDeliveryService = usageDeliveryService;
-        _auditMessageQueueRepository = auditMessageQueueRepository;
+        _auditMessageRepository = auditMessageRepository;
         _auditRepository = auditRepository;
-        _emailMessageQueue = emailMessageQueue;
+        _emailMessageRepository = emailMessageRepository;
         _emailDeliveryService = emailDeliveryService;
         _emailDeliveryRepository = emailDeliveryRepository;
-        _smsMessageQueue = smsMessageQueue;
+        _smsMessageRepository = smsMessageRepository;
         _smsDeliveryService = smsDeliveryService;
         _smsDeliveryRepository = smsDeliveryRepository;
-        _provisioningMessageQueue = provisioningMessageQueue;
+        _provisioningMessageRepository = provisioningMessageRepository;
         _provisioningNotificationService = provisioningNotificationService;
     }
 #else
     public AncillaryApplication(IRecorder recorder, IIdentifierFactory idFactory,
         // ReSharper disable once UnusedParameter.Local
-        IUsageMessageQueue usageMessageQueue, IUsageDeliveryService usageDeliveryService,
+        IUsageMessageQueueRepository usageMessageQueue, IUsageDeliveryService usageDeliveryService,
         // ReSharper disable once UnusedParameter.Local
         IAuditMessageQueueRepository auditMessageQueueRepository, IAuditRepository auditRepository,
         // ReSharper disable once UnusedParameter.Local
-        IEmailMessageQueue emailMessageQueue, IEmailDeliveryService emailDeliveryService,
+        IEmailMessageQueueRepository emailMessageQueue, IEmailDeliveryService emailDeliveryService,
         IEmailDeliveryRepository emailDeliveryRepository,
         // ReSharper disable once UnusedParameter.Local
-        ISmsMessageQueue smsMessageQueue, ISmsDeliveryService smsDeliveryService,
+        ISmsMessageQueueRepository smsMessageQueue, ISmsDeliveryService smsDeliveryService,
         ISmsDeliveryRepository smsDeliveryRepository,
         // ReSharper disable once UnusedParameter.Local
-        IProvisioningMessageQueue provisioningMessageQueue,
+        IProvisioningMessageQueueRepository provisioningMessageQueue,
         IProvisioningNotificationService provisioningNotificationService)
     {
         _recorder = recorder;

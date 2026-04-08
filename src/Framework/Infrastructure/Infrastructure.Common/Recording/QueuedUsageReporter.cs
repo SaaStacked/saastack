@@ -18,18 +18,19 @@ namespace Infrastructure.Common.Recording;
 public class QueuedUsageReporter : IUsageReporter
 {
     private readonly IHostSettings _hostSettings;
-    private readonly IUsageMessageQueue _queue;
+    private readonly IUsageMessageQueueRepository _repository;
 
     // ReSharper disable once UnusedParameter.Local
     public QueuedUsageReporter(IHostSettings hostSettings, IMessageQueueMessageIdFactory messageIdFactory,
         IQueueStore queueStore)
-        : this(new UsageMessageQueue(NoOpRecorder.Instance, hostSettings, messageIdFactory, queueStore), hostSettings)
+        : this(new UsageMessageQueueRepository(NoOpRecorder.Instance, hostSettings, messageIdFactory, queueStore),
+            hostSettings)
     {
     }
 
-    internal QueuedUsageReporter(IUsageMessageQueue queue, IHostSettings hostSettings)
+    internal QueuedUsageReporter(IUsageMessageQueueRepository repository, IHostSettings hostSettings)
     {
-        _queue = queue;
+        _repository = repository;
         _hostSettings = hostSettings;
     }
 
@@ -58,7 +59,7 @@ public class QueuedUsageReporter : IUsageReporter
                 : string.Empty)
         };
 
-        var queued = await _queue.PushAsync(safeCall, message, cancellationToken);
+        var queued = await _repository.PushAsync(safeCall, message, cancellationToken);
         if (queued.IsFailure)
         {
             return queued.Error;

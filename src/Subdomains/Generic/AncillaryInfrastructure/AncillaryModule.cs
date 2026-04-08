@@ -50,8 +50,8 @@ public class AncillaryModule : ISubdomainModule
                 services.AddPerHttpRequest<IRecordingApplication, RecordingApplication>();
                 services.AddPerHttpRequest<IFeatureFlagsApplication, FeatureFlagsApplication>();
                 services.AddPerHttpRequest<IAncillaryApplication, AncillaryApplication.AncillaryApplication>();
-                services.AddSingleton<IUsageMessageQueue>(c =>
-                    new UsageMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<IUsageMessageQueueRepository>(c =>
+                    new UsageMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
@@ -60,13 +60,13 @@ public class AncillaryModule : ISubdomainModule
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
-                services.AddSingleton<IEmailMessageQueue>(c =>
-                    new EmailMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<IEmailMessageQueueRepository>(c =>
+                    new EmailMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
-                services.AddSingleton<ISmsMessageQueue>(c =>
-                    new SmsMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<ISmsMessageQueueRepository>(c =>
+                    new SmsMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
@@ -97,8 +97,8 @@ public class AncillaryModule : ISubdomainModule
                     c => new SmsDeliveryProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
-                services.AddSingleton<IProvisioningMessageQueue>(c =>
-                    new ProvisioningMessageQueue(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<IProvisioningMessageQueueRepository>(c =>
+                    new ProvisioningMessageQueueRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IHostSettings>(),
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));

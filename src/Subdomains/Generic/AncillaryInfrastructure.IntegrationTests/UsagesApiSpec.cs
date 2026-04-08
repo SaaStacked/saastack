@@ -20,16 +20,16 @@ namespace AncillaryInfrastructure.IntegrationTests;
 public class UsagesApiSpec : WebApiSpec<Program>
 {
     private readonly StubUsageDeliveryService _usageDeliveryService;
-    private readonly IUsageMessageQueue _usageMessageQueue;
+    private readonly IUsageMessageQueueRepository _usageMessageRepository;
 
     public UsagesApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
         _usageDeliveryService = setup.GetRequiredService<IUsageDeliveryService>().As<StubUsageDeliveryService>();
         _usageDeliveryService.Reset();
-        _usageMessageQueue = setup.GetRequiredService<IUsageMessageQueue>();
+        _usageMessageRepository = setup.GetRequiredService<IUsageMessageQueueRepository>();
 #if TESTINGONLY
-        _usageMessageQueue.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+        _usageMessageRepository.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif
     }
 
@@ -69,19 +69,19 @@ public class UsagesApiSpec : WebApiSpec<Program>
     public async Task WhenDrainAllUsagesAndSome_ThenDrains()
     {
         var call = CallContext.CreateCustom("acallid", "acallerid", "atenantid", DatacenterLocations.Local);
-        await _usageMessageQueue.PushAsync(call, new UsageMessage
+        await _usageMessageRepository.PushAsync(call, new UsageMessage
         {
             MessageId = "amessageid1",
             ForId = "aforid1",
             EventName = "aneventname1"
         }, CancellationToken.None);
-        await _usageMessageQueue.PushAsync(call, new UsageMessage
+        await _usageMessageRepository.PushAsync(call, new UsageMessage
         {
             MessageId = "amessageid2",
             ForId = "aforid2",
             EventName = "aneventname2"
         }, CancellationToken.None);
-        await _usageMessageQueue.PushAsync(call, new UsageMessage
+        await _usageMessageRepository.PushAsync(call, new UsageMessage
         {
             MessageId = "amessageid3",
             ForId = "aforid3",

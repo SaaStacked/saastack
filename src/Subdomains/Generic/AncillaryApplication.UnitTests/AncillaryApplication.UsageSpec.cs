@@ -20,7 +20,7 @@ public class AncillaryApplicationUsageSpec
     private readonly AncillaryApplication _application;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IUsageDeliveryService> _usageDeliveryService;
-    private readonly Mock<IUsageMessageQueue> _usageMessageQueue;
+    private readonly Mock<IUsageMessageQueueRepository> _usageMessageRepository;
 
     public AncillaryApplicationUsageSpec()
     {
@@ -29,20 +29,20 @@ public class AncillaryApplicationUsageSpec
         idFactory.Setup(idf => idf.Create(It.IsAny<IIdentifiableEntity>()))
             .Returns(new Result<Identifier, Error>("anid".ToId()));
         _caller = new Mock<ICallerContext>();
-        _usageMessageQueue = new Mock<IUsageMessageQueue>();
+        _usageMessageRepository = new Mock<IUsageMessageQueueRepository>();
         _usageDeliveryService = new Mock<IUsageDeliveryService>();
         var auditMessageRepository = new Mock<IAuditMessageQueueRepository>();
         var auditRepository = new Mock<IAuditRepository>();
-        var emailMessageQueue = new Mock<IEmailMessageQueue>();
+        var emailMessageQueue = new Mock<IEmailMessageQueueRepository>();
         var emailDeliveryService = new Mock<IEmailDeliveryService>();
         var emailDeliveryRepository = new Mock<IEmailDeliveryRepository>();
-        var smsMessageQueue = new Mock<ISmsMessageQueue>();
+        var smsMessageQueue = new Mock<ISmsMessageQueueRepository>();
         var smsDeliveryService = new Mock<ISmsDeliveryService>();
         var smsDeliveryRepository = new Mock<ISmsDeliveryRepository>();
-        var provisioningMessageQueue = new Mock<IProvisioningMessageQueue>();
+        var provisioningMessageQueue = new Mock<IProvisioningMessageQueueRepository>();
         var provisioningDeliveryService = new Mock<IProvisioningNotificationService>();
 
-        _application = new AncillaryApplication(recorder.Object, idFactory.Object, _usageMessageQueue.Object,
+        _application = new AncillaryApplication(recorder.Object, idFactory.Object, _usageMessageRepository.Object,
             _usageDeliveryService.Object, auditMessageRepository.Object, auditRepository.Object,
             emailMessageQueue.Object, emailDeliveryService.Object, emailDeliveryRepository.Object,
             smsMessageQueue.Object, smsDeliveryService.Object, smsDeliveryRepository.Object,
@@ -140,7 +140,7 @@ public class AncillaryApplicationUsageSpec
     [Fact]
     public async Task WhenDrainAllUsagesAsyncAndNoneOnQueue_ThenDoesNotDeliver()
     {
-        _usageMessageQueue.Setup(umr =>
+        _usageMessageRepository.Setup(umr =>
                 umr.PopSingleAsync(It.IsAny<Func<UsageMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -148,7 +148,7 @@ public class AncillaryApplicationUsageSpec
         var result = await _application.DrainAllUsagesAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _usageMessageQueue.Verify(
+        _usageMessageRepository.Verify(
             urs => urs.PopSingleAsync(It.IsAny<Func<UsageMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()));
         _usageDeliveryService.Verify(
@@ -172,7 +172,7 @@ public class AncillaryApplicationUsageSpec
             EventName = "aneventname2"
         };
         var callbackCount = 1;
-        _usageMessageQueue.Setup(umr =>
+        _usageMessageRepository.Setup(umr =>
                 umr.PopSingleAsync(It.IsAny<Func<UsageMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .Callback((Func<UsageMessage, CancellationToken, Task<Result<Error>>> action, CancellationToken _) =>
@@ -196,7 +196,7 @@ public class AncillaryApplicationUsageSpec
         var result = await _application.DrainAllUsagesAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _usageMessageQueue.Verify(
+        _usageMessageRepository.Verify(
             urs => urs.PopSingleAsync(It.IsAny<Func<UsageMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()), Times.Exactly(2));
         _usageDeliveryService.Verify(

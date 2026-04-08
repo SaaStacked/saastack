@@ -18,14 +18,14 @@ namespace AncillaryInfrastructure.IntegrationTests;
 [Collection("API")]
 public class AuditsApiSpec : WebApiSpec<Program>
 {
-    private readonly IAuditMessageQueueRepository _auditMessageQueue;
+    private readonly IAuditMessageQueueRepository _auditMessageRepository;
 
     public AuditsApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
-        _auditMessageQueue = setup.GetRequiredService<IAuditMessageQueueRepository>();
+        _auditMessageRepository = setup.GetRequiredService<IAuditMessageQueueRepository>();
 #if TESTINGONLY
-        _auditMessageQueue.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+        _auditMessageRepository.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif
     }
 
@@ -162,7 +162,7 @@ public class AuditsApiSpec : WebApiSpec<Program>
         var login = await LoginUserAsync(LoginUser.Operator);
         var tenantId = login.DefaultOrganizationId;
         var call = CallContext.CreateCustom("acallid", "acallerid", tenantId, DatacenterLocations.Local);
-        await _auditMessageQueue.PushAsync(call, new AuditMessage
+        await _auditMessageRepository.PushAsync(call, new AuditMessage
         {
             MessageId = "amessageid1",
             TenantId = tenantId,
@@ -170,7 +170,7 @@ public class AuditsApiSpec : WebApiSpec<Program>
             MessageTemplate = "amessagetemplate1",
             Arguments = ["anarg1"]
         }, CancellationToken.None);
-        await _auditMessageQueue.PushAsync(call, new AuditMessage
+        await _auditMessageRepository.PushAsync(call, new AuditMessage
         {
             MessageId = "amessageid2",
             TenantId = tenantId,
@@ -178,7 +178,7 @@ public class AuditsApiSpec : WebApiSpec<Program>
             MessageTemplate = "amessagetemplate2",
             Arguments = ["anarg2"]
         }, CancellationToken.None);
-        await _auditMessageQueue.PushAsync(call, new AuditMessage
+        await _auditMessageRepository.PushAsync(call, new AuditMessage
         {
             MessageId = "amessageid3",
             TenantId = "anothertenantid",

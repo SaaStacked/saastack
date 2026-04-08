@@ -29,7 +29,7 @@ public class DomainEventsApiSpec : WebApiSpec<Program>
     public DomainEventsApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
-        var domainEventingMessageBusTopic = setup.GetRequiredService<IDomainEventingMessageBusTopic>();
+        var domainEventingMessageBusTopic = setup.GetRequiredService<IDomainEventingMessageBusRepository>();
 #if TESTINGONLY
         domainEventingMessageBusTopic.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif

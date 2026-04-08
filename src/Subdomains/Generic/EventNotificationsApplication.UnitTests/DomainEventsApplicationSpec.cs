@@ -20,7 +20,7 @@ public class DomainEventsApplicationSpec
     private readonly DomainEventsApplication _application;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IDomainEventingConsumerService> _domainEventingConsumerService;
-    private readonly Mock<IDomainEventingMessageBusTopic> _domainEventMessageTopic;
+    private readonly Mock<IDomainEventingMessageBusRepository> _domainEventMessageTopic;
     private readonly Mock<IEventNotificationRepository> _domainEventRepository;
 
     public DomainEventsApplicationSpec()
@@ -28,7 +28,7 @@ public class DomainEventsApplicationSpec
         var recorder = new Mock<IRecorder>();
         _caller = new Mock<ICallerContext>();
         _domainEventRepository = new Mock<IEventNotificationRepository>();
-        _domainEventMessageTopic = new Mock<IDomainEventingMessageBusTopic>();
+        _domainEventMessageTopic = new Mock<IDomainEventingMessageBusRepository>();
         _domainEventingConsumerService = new Mock<IDomainEventingConsumerService>();
         _domainEventingConsumerService.Setup(dec => dec.SubscriptionNames)
             .Returns(["asubscription1", "asubscription2"]);

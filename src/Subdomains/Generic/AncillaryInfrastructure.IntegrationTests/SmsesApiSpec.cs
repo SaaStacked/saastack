@@ -24,16 +24,16 @@ namespace AncillaryInfrastructure.IntegrationTests;
 public class SmsesApiSpec : WebApiSpec<Program>
 {
     private readonly StubSmsDeliveryService _smsDeliveryService;
-    private readonly ISmsMessageQueue _smsMessageQueue;
+    private readonly ISmsMessageQueueRepository _smsMessageRepository;
 
     public SmsesApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
         _smsDeliveryService = setup.GetRequiredService<ISmsDeliveryService>().As<StubSmsDeliveryService>();
         _smsDeliveryService.Reset();
-        _smsMessageQueue = setup.GetRequiredService<ISmsMessageQueue>();
+        _smsMessageRepository = setup.GetRequiredService<ISmsMessageQueueRepository>();
 #if TESTINGONLY
-        _smsMessageQueue.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+        _smsMessageRepository.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif
     }
 
@@ -378,7 +378,7 @@ public class SmsesApiSpec : WebApiSpec<Program>
         var messageId1 = CreateMessageId();
         var messageId2 = CreateMessageId();
         var messageId3 = CreateMessageId();
-        await _smsMessageQueue.PushAsync(call, new SmsMessage
+        await _smsMessageRepository.PushAsync(call, new SmsMessage
         {
             MessageId = messageId1,
             CallId = "acallid",
@@ -390,7 +390,7 @@ public class SmsesApiSpec : WebApiSpec<Program>
                 Tags = ["atag"]
             }
         }, CancellationToken.None);
-        await _smsMessageQueue.PushAsync(call, new SmsMessage
+        await _smsMessageRepository.PushAsync(call, new SmsMessage
         {
             MessageId = messageId2,
             CallId = "acallid",
@@ -402,7 +402,7 @@ public class SmsesApiSpec : WebApiSpec<Program>
                 Tags = ["atag"]
             }
         }, CancellationToken.None);
-        await _smsMessageQueue.PushAsync(call, new SmsMessage
+        await _smsMessageRepository.PushAsync(call, new SmsMessage
         {
             MessageId = messageId3,
             CallId = "acallid",

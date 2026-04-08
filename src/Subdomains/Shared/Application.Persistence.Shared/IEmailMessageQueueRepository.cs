@@ -4,7 +4,7 @@ using Common;
 
 namespace Application.Persistence.Shared;
 
-public interface IDomainEventingMessageBusTopic : IMessageBusTopicStore<DomainEventingMessage>, IApplicationRepository
+public interface IEmailMessageQueueRepository : IMessageQueueStore<EmailMessage>, IApplicationRepository
 {
 #if TESTINGONLY
     new Task<Result<Error>> DestroyAllAsync(CancellationToken cancellationToken);

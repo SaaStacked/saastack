@@ -22,7 +22,7 @@ public class AncillaryApplicationProvisioningSpec
     private readonly AncillaryApplication _application;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IProvisioningNotificationService> _provisioningDeliveryService;
-    private readonly Mock<IProvisioningMessageQueue> _provisioningMessageQueue;
+    private readonly Mock<IProvisioningMessageQueueRepository> _provisioningMessageRepository;
 
     public AncillaryApplicationProvisioningSpec()
     {
@@ -31,17 +31,17 @@ public class AncillaryApplicationProvisioningSpec
         idFactory.Setup(idf => idf.Create(It.IsAny<IIdentifiableEntity>()))
             .Returns(new Result<Identifier, Error>("anid".ToId()));
         _caller = new Mock<ICallerContext>();
-        var usageMessageQueue = new Mock<IUsageMessageQueue>();
+        var usageMessageQueue = new Mock<IUsageMessageQueueRepository>();
         var usageDeliveryService = new Mock<IUsageDeliveryService>();
         var auditMessageRepository = new Mock<IAuditMessageQueueRepository>();
         var auditRepository = new Mock<IAuditRepository>();
-        var emailMessageQueue = new Mock<IEmailMessageQueue>();
+        var emailMessageQueue = new Mock<IEmailMessageQueueRepository>();
         var emailDeliveryService = new Mock<IEmailDeliveryService>();
         var emailDeliveryRepository = new Mock<IEmailDeliveryRepository>();
-        var smsMessageQueue = new Mock<ISmsMessageQueue>();
+        var smsMessageQueue = new Mock<ISmsMessageQueueRepository>();
         var smsDeliveryService = new Mock<ISmsDeliveryService>();
         var smsDeliveryRepository = new Mock<ISmsDeliveryRepository>();
-        _provisioningMessageQueue = new Mock<IProvisioningMessageQueue>();
+        _provisioningMessageRepository = new Mock<IProvisioningMessageQueueRepository>();
         _provisioningDeliveryService = new Mock<IProvisioningNotificationService>();
         _provisioningDeliveryService.Setup(pds => pds.NotifyAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<TenantSettings>(), It.IsAny<CancellationToken>()))
@@ -51,7 +51,7 @@ public class AncillaryApplicationProvisioningSpec
             usageDeliveryService.Object, auditMessageRepository.Object, auditRepository.Object,
             emailMessageQueue.Object, emailDeliveryService.Object, emailDeliveryRepository.Object,
             smsMessageQueue.Object, smsDeliveryService.Object, smsDeliveryRepository.Object,
-            _provisioningMessageQueue.Object, _provisioningDeliveryService.Object);
+            _provisioningMessageRepository.Object, _provisioningDeliveryService.Object);
     }
 
 
@@ -108,7 +108,7 @@ public class AncillaryApplicationProvisioningSpec
     [Fact]
     public async Task WhenDrainAllProvisioningsAsyncAndNoneOnQueue_ThenDoesNotDeliver()
     {
-        _provisioningMessageQueue.Setup(umr =>
+        _provisioningMessageRepository.Setup(umr =>
                 umr.PopSingleAsync(It.IsAny<Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -116,7 +116,7 @@ public class AncillaryApplicationProvisioningSpec
         var result = await _application.DrainAllProvisioningsAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _provisioningMessageQueue.Verify(
+        _provisioningMessageRepository.Verify(
             urs => urs.PopSingleAsync(It.IsAny<Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()));
         _provisioningDeliveryService.Verify(
@@ -146,7 +146,7 @@ public class AncillaryApplicationProvisioningSpec
             }
         };
         var callbackCount = 1;
-        _provisioningMessageQueue.Setup(umr =>
+        _provisioningMessageRepository.Setup(umr =>
                 umr.PopSingleAsync(It.IsAny<Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .Callback((Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>> action, CancellationToken _) =>
@@ -170,7 +170,7 @@ public class AncillaryApplicationProvisioningSpec
         var result = await _application.DrainAllProvisioningsAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _provisioningMessageQueue.Verify(
+        _provisioningMessageRepository.Verify(
             urs => urs.PopSingleAsync(It.IsAny<Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()), Times.Exactly(2));
         _provisioningDeliveryService.Verify(

@@ -27,7 +27,7 @@ public class AncillaryApplicationEmailingSpec
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IEmailDeliveryRepository> _emailDeliveryRepository;
     private readonly Mock<IEmailDeliveryService> _emailDeliveryService;
-    private readonly Mock<IEmailMessageQueue> _emailMessageQueue;
+    private readonly Mock<IEmailMessageQueueRepository> _emailMessageRepository;
     private readonly Mock<IIdentifierFactory> _idFactory;
     private readonly Mock<IRecorder> _recorder;
 
@@ -40,11 +40,11 @@ public class AncillaryApplicationEmailingSpec
         _caller = new Mock<ICallerContext>();
         _caller.Setup(cc => cc.HostRegion)
             .Returns(DatacenterLocations.AustraliaEast);
-        var usageMessageQueue = new Mock<IUsageMessageQueue>();
+        var usageMessageQueue = new Mock<IUsageMessageQueueRepository>();
         var usageDeliveryService = new Mock<IUsageDeliveryService>();
         var auditMessageRepository = new Mock<IAuditMessageQueueRepository>();
         var auditRepository = new Mock<IAuditRepository>();
-        _emailMessageQueue = new Mock<IEmailMessageQueue>();
+        _emailMessageRepository = new Mock<IEmailMessageQueueRepository>();
         _emailDeliveryService = new Mock<IEmailDeliveryService>();
         _emailDeliveryService.Setup(eds => eds.SendHtmlAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -58,15 +58,15 @@ public class AncillaryApplicationEmailingSpec
         _emailDeliveryRepository.Setup(edr =>
                 edr.FindByMessageIdAsync(It.IsAny<QueuedMessageId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<EmailDeliveryRoot>.None);
-        var smsMessageQueue = new Mock<ISmsMessageQueue>();
+        var smsMessageQueue = new Mock<ISmsMessageQueueRepository>();
         var smsDeliveryService = new Mock<ISmsDeliveryService>();
         var smsDeliveryRepository = new Mock<ISmsDeliveryRepository>();
-        var provisioningMessageQueue = new Mock<IProvisioningMessageQueue>();
+        var provisioningMessageQueue = new Mock<IProvisioningMessageQueueRepository>();
         var provisioningDeliveryService = new Mock<IProvisioningNotificationService>();
 
         _application = new AncillaryApplication(_recorder.Object, _idFactory.Object, usageMessageQueue.Object,
             usageDeliveryService.Object, auditMessageRepository.Object, auditRepository.Object,
-            _emailMessageQueue.Object, _emailDeliveryService.Object, _emailDeliveryRepository.Object,
+            _emailMessageRepository.Object, _emailDeliveryService.Object, _emailDeliveryRepository.Object,
             smsMessageQueue.Object, smsDeliveryService.Object, smsDeliveryRepository.Object,
             provisioningMessageQueue.Object, provisioningDeliveryService.Object);
     }
@@ -526,7 +526,7 @@ public class AncillaryApplicationEmailingSpec
     [Fact]
     public async Task WhenDrainAllEmailsAsyncAndNoneOnQueue_ThenDoesNotDeliver()
     {
-        _emailMessageQueue.Setup(emq =>
+        _emailMessageRepository.Setup(emq =>
                 emq.PopSingleAsync(It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -534,7 +534,7 @@ public class AncillaryApplicationEmailingSpec
         var result = await _application.DrainAllEmailsAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _emailMessageQueue.Verify(
+        _emailMessageRepository.Verify(
             emq => emq.PopSingleAsync(It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()));
         _emailDeliveryService.Verify(
@@ -580,7 +580,7 @@ public class AncillaryApplicationEmailingSpec
             }
         };
         var callbackCount = 1;
-        _emailMessageQueue.Setup(emq =>
+        _emailMessageRepository.Setup(emq =>
                 emq.PopSingleAsync(It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),
                     It.IsAny<CancellationToken>()))
             .Callback((Func<EmailMessage, CancellationToken, Task<Result<Error>>> action, CancellationToken _) =>
@@ -604,7 +604,7 @@ public class AncillaryApplicationEmailingSpec
         var result = await _application.DrainAllEmailsAsync(_caller.Object, CancellationToken.None);
 
         result.Should().BeSuccess();
-        _emailMessageQueue.Verify(
+        _emailMessageRepository.Verify(
             emq => emq.PopSingleAsync(It.IsAny<Func<EmailMessage, CancellationToken, Task<Result<Error>>>>(),
                 It.IsAny<CancellationToken>()), Times.Exactly(2));
         _emailDeliveryService.Verify(

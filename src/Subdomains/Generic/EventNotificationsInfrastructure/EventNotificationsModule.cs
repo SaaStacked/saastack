@@ -38,8 +38,8 @@ public class EventNotificationsModule : ISubdomainModule
         {
             return (_, _, services) =>
             {
-                services.AddSingleton<IDomainEventingMessageBusTopic>(c =>
-                    new DomainEventingMessageBusTopic(c.GetRequiredService<IRecorder>(),
+                services.AddSingleton<IDomainEventingMessageBusRepository>(c =>
+                    new DomainEventingMessageBusRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IMessageBusTopicMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IMessageBusStore>()));
                 services.AddSingleton<IDomainEventingSubscriberService>(c =>

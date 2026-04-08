@@ -12,19 +12,19 @@ namespace Infrastructure.Shared.ApplicationServices;
 /// </summary>
 public class QueuingEmailSchedulingService : IEmailSchedulingService
 {
-    private readonly IEmailMessageQueue _queue;
+    private readonly IEmailMessageQueueRepository _repository;
     private readonly IRecorder _recorder;
 
-    public QueuingEmailSchedulingService(IRecorder recorder, IEmailMessageQueue queue)
+    public QueuingEmailSchedulingService(IRecorder recorder, IEmailMessageQueueRepository repository)
     {
         _recorder = recorder;
-        _queue = queue;
+        _repository = repository;
     }
 
     public async Task<Result<Error>> ScheduleHtmlEmail(ICallerContext caller, HtmlEmail email,
         CancellationToken cancellationToken)
     {
-        var queued = await _queue.PushAsync(caller.ToCall(), new EmailMessage
+        var queued = await _repository.PushAsync(caller.ToCall(), new EmailMessage
         {
             Html = new QueuedEmailHtmlMessage
             {
@@ -53,7 +53,7 @@ public class QueuingEmailSchedulingService : IEmailSchedulingService
     public async Task<Result<Error>> ScheduleTemplatedEmail(ICallerContext caller, TemplatedEmail email,
         CancellationToken cancellationToken)
     {
-        var queued = await _queue.PushAsync(caller.ToCall(), new EmailMessage
+        var queued = await _repository.PushAsync(caller.ToCall(), new EmailMessage
         {
             Template = new QueuedEmailTemplatedMessage
             {

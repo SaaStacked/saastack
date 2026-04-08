@@ -9,16 +9,17 @@ using Infrastructure.Persistence.Interfaces;
 
 namespace Infrastructure.Persistence.Shared.ApplicationServices;
 
-public class UsageMessageQueue : IUsageMessageQueue
+public class ProvisioningMessageQueueRepository : IProvisioningMessageQueueRepository
 {
-    private readonly MessageQueueStore<UsageMessage> _messageQueue;
+    private readonly MessageQueueStore<ProvisioningMessage> _messageQueue;
 
-    public UsageMessageQueue(IRecorder recorder, IHostSettings hostSettings,
+    public ProvisioningMessageQueueRepository(IRecorder recorder, IHostSettings hostSettings,
         IMessageQueueMessageIdFactory messageQueueMessageIdFactory,
         IQueueStore store)
     {
         _messageQueue =
-            new MessageQueueStore<UsageMessage>(recorder, hostSettings, messageQueueMessageIdFactory, store);
+            new MessageQueueStore<ProvisioningMessage>(recorder, hostSettings, messageQueueMessageIdFactory,
+                store);
     }
 
 #if TESTINGONLY
@@ -43,13 +44,13 @@ public class UsageMessageQueue : IUsageMessageQueue
 #endif
 
     public Task<Result<bool, Error>> PopSingleAsync(
-        Func<UsageMessage, CancellationToken, Task<Result<Error>>> onMessageReceivedAsync,
+        Func<ProvisioningMessage, CancellationToken, Task<Result<Error>>> onMessageReceivedAsync,
         CancellationToken cancellationToken)
     {
         return _messageQueue.PopSingleAsync(onMessageReceivedAsync, cancellationToken);
     }
 
-    public Task<Result<UsageMessage, Error>> PushAsync(ICallContext call, UsageMessage message,
+    public Task<Result<ProvisioningMessage, Error>> PushAsync(ICallContext call, ProvisioningMessage message,
         CancellationToken cancellationToken)
     {
         return _messageQueue.PushAsync(call, message, cancellationToken);

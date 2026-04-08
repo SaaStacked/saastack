@@ -9,29 +9,29 @@ using Infrastructure.Persistence.Interfaces;
 
 namespace Infrastructure.Persistence.Shared.ApplicationServices;
 
-public class DomainEventingMessageBusTopic : IDomainEventingMessageBusTopic
+public class DomainEventingMessageBusRepository : IDomainEventingMessageBusRepository
 {
-    private readonly MessageBusTopicStore<DomainEventingMessage> _messageBusTopic;
+    private readonly MessageBusTopicStore<DomainEventingMessage> _busTopic;
 
-    public DomainEventingMessageBusTopic(IRecorder recorder,
+    public DomainEventingMessageBusRepository(IRecorder recorder,
         IMessageBusTopicMessageIdFactory messageBusTopicMessageIdFactory,
         IMessageBusStore store)
     {
-        _messageBusTopic = new MessageBusTopicStore<DomainEventingMessage>(recorder,
+        _busTopic = new MessageBusTopicStore<DomainEventingMessage>(recorder,
             EventingConstants.Topics.DomainEvents, messageBusTopicMessageIdFactory, store);
     }
 
 #if TESTINGONLY
     public Task<Result<long, Error>> CountAsync(string subscriptionName, CancellationToken cancellationToken)
     {
-        return _messageBusTopic.CountAsync(subscriptionName, cancellationToken);
+        return _busTopic.CountAsync(subscriptionName, cancellationToken);
     }
 #endif
 
 #if TESTINGONLY
     public Task<Result<Error>> DestroyAllAsync(CancellationToken cancellationToken)
     {
-        return _messageBusTopic.DestroyAllAsync(cancellationToken);
+        return _busTopic.DestroyAllAsync(cancellationToken);
     }
 #endif
 
@@ -47,13 +47,13 @@ public class DomainEventingMessageBusTopic : IDomainEventingMessageBusTopic
         Func<DomainEventingMessage, CancellationToken, Task<Result<Error>>> onMessageReceivedAsync,
         CancellationToken cancellationToken)
     {
-        return _messageBusTopic.ReceiveSingleAsync(subscriptionName, onMessageReceivedAsync, cancellationToken);
+        return _busTopic.ReceiveSingleAsync(subscriptionName, onMessageReceivedAsync, cancellationToken);
     }
 #endif
 
     public Task<Result<DomainEventingMessage, Error>> SendAsync(ICallContext call, DomainEventingMessage message,
         CancellationToken cancellationToken)
     {
-        return _messageBusTopic.SendAsync(call, message, cancellationToken);
+        return _busTopic.SendAsync(call, message, cancellationToken);
     }
 }

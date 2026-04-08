@@ -20,14 +20,14 @@ namespace AncillaryInfrastructure.IntegrationTests;
 [Collection("API")]
 public class ProvisioningsApiSpec : WebApiSpec<Program>
 {
-    private readonly IProvisioningMessageQueue _provisioningMessageQueue;
+    private readonly IProvisioningMessageQueueRepository _provisioningMessageRepository;
 
     public ProvisioningsApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
     {
         EmptyAllRepositories();
-        _provisioningMessageQueue = setup.GetRequiredService<IProvisioningMessageQueue>();
+        _provisioningMessageRepository = setup.GetRequiredService<IProvisioningMessageQueueRepository>();
 #if TESTINGONLY
-        _provisioningMessageQueue.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+        _provisioningMessageRepository.DestroyAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 #endif
     }
 
@@ -77,7 +77,7 @@ public class ProvisioningsApiSpec : WebApiSpec<Program>
         var login = await LoginUserAsync();
         var tenantId = login.DefaultOrganizationId;
         var call = CallContext.CreateCustom("acallid", "acallerid", tenantId, DatacenterLocations.Local);
-        await _provisioningMessageQueue.PushAsync(call, new ProvisioningMessage
+        await _provisioningMessageRepository.PushAsync(call, new ProvisioningMessage
         {
             MessageId = "amessageid1",
             TenantId = tenantId,
@@ -88,7 +88,7 @@ public class ProvisioningsApiSpec : WebApiSpec<Program>
                 { "aname3", new TenantSetting(true) }
             }
         }, CancellationToken.None);
-        await _provisioningMessageQueue.PushAsync(call, new ProvisioningMessage
+        await _provisioningMessageRepository.PushAsync(call, new ProvisioningMessage
         {
             MessageId = "amessageid3",
             TenantId = "anothertenantid",

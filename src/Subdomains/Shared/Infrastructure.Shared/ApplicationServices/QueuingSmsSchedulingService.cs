@@ -12,19 +12,19 @@ namespace Infrastructure.Shared.ApplicationServices;
 /// </summary>
 public class QueuingSmsSchedulingService : ISmsSchedulingService
 {
-    private readonly ISmsMessageQueue _queue;
+    private readonly ISmsMessageQueueRepository _repository;
     private readonly IRecorder _recorder;
 
-    public QueuingSmsSchedulingService(IRecorder recorder, ISmsMessageQueue queue)
+    public QueuingSmsSchedulingService(IRecorder recorder, ISmsMessageQueueRepository repository)
     {
         _recorder = recorder;
-        _queue = queue;
+        _repository = repository;
     }
 
     public async Task<Result<Error>> ScheduleSms(ICallerContext caller, SmsText smsText,
         CancellationToken cancellationToken)
     {
-        var queued = await _queue.PushAsync(caller.ToCall(), new SmsMessage
+        var queued = await _repository.PushAsync(caller.ToCall(), new SmsMessage
         {
             Message = new QueuedSmsMessage
             {

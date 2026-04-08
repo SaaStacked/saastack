@@ -15,23 +15,23 @@ namespace Infrastructure.Eventing.Common.UnitTests.Notifications;
 [Trait("Category", "Unit")]
 public class AsynchronousQueueConsumerRelaySpec
 {
-    private readonly Mock<IDomainEventingMessageBusTopic> _queue;
+    private readonly Mock<IDomainEventingMessageBusRepository> _messageRepository;
     private readonly AsynchronousQueueConsumerRelay _relay;
 
     public AsynchronousQueueConsumerRelaySpec()
     {
-        _queue = new Mock<IDomainEventingMessageBusTopic>();
+        _messageRepository = new Mock<IDomainEventingMessageBusRepository>();
         var hostRegionService = new Mock<IHostSettings>();
         hostRegionService.Setup(c => c.GetRegion())
             .Returns(DatacenterLocations.Local);
 
-        _relay = new AsynchronousQueueConsumerRelay(_queue.Object, hostRegionService.Object);
+        _relay = new AsynchronousQueueConsumerRelay(_messageRepository.Object, hostRegionService.Object);
     }
 
     [Fact]
     public async Task WhenRelayAsyncAndQueueReturnsError_ThenReturnsError()
     {
-        _queue.Setup(c =>
+        _messageRepository.Setup(c =>
                 c.SendAsync(It.IsAny<ICallContext>(), It.IsAny<DomainEventingMessage>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Error.RuleViolation("amessage"));
         var changeEvent = new EventStreamChangeEvent
@@ -52,7 +52,7 @@ public class AsynchronousQueueConsumerRelaySpec
             .Wrap(Resources.AsynchronousConsumerRelay_RelayFailed.Format(
                 "AsynchronousQueueConsumerRelay",
                 "arootid", typeof(TestDomainEvent).AssemblyQualifiedName!)).ToString());
-        _queue.Verify(c => c.SendAsync(It.Is<ICallContext>(call =>
+        _messageRepository.Verify(c => c.SendAsync(It.Is<ICallContext>(call =>
             call.HostRegion == DatacenterLocations.Local), It.Is<DomainEventingMessage>(msg =>
             msg.Event!.Id == changeEvent.Id
             && msg.Event.LastPersistedAtUtc == changeEvent.LastPersistedAtUtc

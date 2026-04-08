@@ -18,19 +18,19 @@ namespace Infrastructure.Eventing.Common.Notifications;
 public class AsynchronousQueueConsumerRelay : IDomainEventConsumerRelay
 {
     private readonly IHostSettings _hostSettings;
-    private readonly IDomainEventingMessageBusTopic _messageBusTopic;
+    private readonly IDomainEventingMessageBusRepository _messageRepository;
 
     public AsynchronousQueueConsumerRelay(IRecorder recorder, IHostSettings hostSettings,
         IMessageBusTopicMessageIdFactory messageBusTopicMessageIdFactory,
         IMessageBusStore store) : this(
-        new DomainEventingMessageBusTopic(recorder, messageBusTopicMessageIdFactory, store), hostSettings)
+        new DomainEventingMessageBusRepository(recorder, messageBusTopicMessageIdFactory, store), hostSettings)
     {
     }
 
-    internal AsynchronousQueueConsumerRelay(IDomainEventingMessageBusTopic messageBusTopic,
+    internal AsynchronousQueueConsumerRelay(IDomainEventingMessageBusRepository messageRepository,
         IHostSettings hostSettings)
     {
-        _messageBusTopic = messageBusTopic;
+        _messageRepository = messageRepository;
         _hostSettings = hostSettings;
     }
 
@@ -41,7 +41,7 @@ public class AsynchronousQueueConsumerRelay : IDomainEventConsumerRelay
         var message = changeEvent.ToDomainEventingMessage();
         var region = _hostSettings.GetRegion();
         var call = CallContext.CreateUnknown(region);
-        var queued = await _messageBusTopic.SendAsync(call, message, cancellationToken);
+        var queued = await _messageRepository.SendAsync(call, message, cancellationToken);
         if (queued.IsFailure)
         {
             return queued.Error
