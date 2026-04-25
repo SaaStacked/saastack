@@ -21,6 +21,7 @@ public static class HttpConstants
         public const string ImageJpegWithCharset = "image/jpeg; utf-8";
         public const string ImagePng = "image/png";
         public const string Json = "application/json";
+        public const string JsonApi = "application/vnd.api+json";
         public const string JsonProblem = "application/problem+json";
         public const string JsonWithCharset = "application/json; charset=utf-8";
         public const string MultiPartFormData = "multipart/form-data";

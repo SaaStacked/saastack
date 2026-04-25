@@ -303,6 +303,77 @@ public class JsonClientSpec
         }
 
         [Fact]
+        public async Task WhenGetTypedResponseAsyncAndContentTypeIsJsonAndContentForJsonApi_ThenReturnsResponseProblem()
+        {
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Content = JsonContent.Create(new JsonApiProblemDetails
+                {
+                    Errors =
+                    [
+                        new JsonApiProblemDetails.Error
+                        {
+                            Id = "anid",
+                            Links = new Dictionary<string, object>
+                            {
+                                { "self", "aurl" },
+                                {
+                                    "related", new
+                                    {
+                                        href = "aurl",
+                                        meta = new Dictionary<string, object>
+                                        {
+                                            { "akey", "avalue" }
+                                        }
+                                    }.ToJson(false)!
+                                }
+                            },
+                            Status = "astatus",
+                            Code = "acode",
+                            Title = "atitle",
+                            Detail = "adetail",
+                            Source = new JsonApiProblemDetails.ErrorSource
+                            {
+                                Pointer = "apointer",
+                                Parameter = "aparameter"
+                            },
+                            Meta = new Dictionary<string, object>
+                            {
+                                { "akey1", "avalue" },
+                                {
+                                    "akey2", new List<string>
+                                    {
+                                        "avalue1",
+                                        "avalue2"
+                                    }.ToJson(false)!
+                                }
+                            }
+                        }
+                    ]
+                }, new MediaTypeHeaderValue(HttpConstants.ContentTypes.JsonApi)),
+                ReasonPhrase = "areason"
+            };
+
+            var result =
+                await JsonClient.GetTypedResponseAsync<TestResponse>(response, null, CancellationToken.None);
+
+            result.IsSuccessful.Should().BeFalse();
+            result.Error.Status.Should().Be(500);
+            result.Error.Title.Should().Be("atitle");
+            result.Error.Detail.Should().Be("adetail");
+            result.Error.Type.Should().Be(JsonApiProblemDetails.Reference);
+            result.Error.Instance.Should().Be("anid");
+            result.Error.Exception.Should().BeNull();
+            result.Error.Errors.Should().BeNull();
+            result.Error.Extensions!.Count.Should().Be(3);
+            result.Error.Extensions.Should().Contain(pair => pair.Key == "code" && pair.Value!.ToString() == "acode");
+            result.Error.Extensions.Should().Contain(pair => pair.Key == "akey1" && pair.Value!.ToString() == "avalue");
+            result.Error.Extensions.Should().Contain(pair =>
+                pair.Key == "akey2" && pair.Value!.ToString() == "[\"avalue1\",\"avalue2\"]");
+        }
+
+        [Fact]
         public async Task
             WhenGetTypedResponseAsyncAndContentTypeIsJsonAndNonStandardError1ForFailure_ThenReturnsResponseProblem()
         {
@@ -957,6 +1028,77 @@ public class JsonClientSpec
             result.Error.Exception.Should().BeNull();
             result.Error.Errors.Should().BeNull();
             result.Error.Extensions.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task WhenGetTypedResponseAsyncAndContentTypeIsJsonAndContentForJsonApi_ThenReturnsResponseProblem()
+        {
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Content = JsonContent.Create(new JsonApiProblemDetails
+                {
+                    Errors =
+                    [
+                        new JsonApiProblemDetails.Error
+                        {
+                            Id = "anid",
+                            Links = new Dictionary<string, object>
+                            {
+                                { "self", "aurl" },
+                                {
+                                    "related", new
+                                    {
+                                        href = "aurl",
+                                        meta = new Dictionary<string, object>
+                                        {
+                                            { "akey", "avalue" }
+                                        }
+                                    }.ToJson(false)!
+                                }
+                            },
+                            Status = "astatus",
+                            Code = "acode",
+                            Title = "atitle",
+                            Detail = "adetail",
+                            Source = new JsonApiProblemDetails.ErrorSource
+                            {
+                                Pointer = "apointer",
+                                Parameter = "aparameter"
+                            },
+                            Meta = new Dictionary<string, object>
+                            {
+                                { "akey1", "avalue" },
+                                {
+                                    "akey2", new List<string>
+                                    {
+                                        "avalue1",
+                                        "avalue2"
+                                    }.ToJson(false)!
+                                }
+                            }
+                        }
+                    ]
+                }, new MediaTypeHeaderValue(HttpConstants.ContentTypes.JsonApi)),
+                ReasonPhrase = "areason"
+            };
+
+            var result =
+                await JsonClient.GetStringResponseAsync(response, CancellationToken.None);
+
+            result.IsSuccessful.Should().BeFalse();
+            result.Error.Status.Should().Be(500);
+            result.Error.Title.Should().Be("atitle");
+            result.Error.Detail.Should().Be("adetail");
+            result.Error.Type.Should().Be(JsonApiProblemDetails.Reference);
+            result.Error.Instance.Should().Be("anid");
+            result.Error.Exception.Should().BeNull();
+            result.Error.Errors.Should().BeNull();
+            result.Error.Extensions!.Count.Should().Be(3);
+            result.Error.Extensions.Should().Contain(pair => pair.Key == "code" && pair.Value!.ToString() == "acode");
+            result.Error.Extensions.Should().Contain(pair => pair.Key == "akey1" && pair.Value!.ToString() == "avalue");
+            result.Error.Extensions.Should().Contain(pair =>
+                pair.Key == "akey2" && pair.Value!.ToString() == "[\"avalue1\",\"avalue2\"]");
         }
 
         [Fact]

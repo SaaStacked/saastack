@@ -116,7 +116,8 @@ public class ContentNegotiationFilter : IEndpointFilter
                 return NegotiatedMimeType.Json;
             }
 
-            if (accepts.ContainsIgnoreCase(HttpConstants.ContentTypes.Json))
+            if (accepts.ContainsIgnoreCase(HttpConstants.ContentTypes.Json)
+                || accepts.ContainsIgnoreCase(HttpConstants.ContentTypes.JsonApi))
             {
                 return NegotiatedMimeType.Json;
             }

@@ -140,4 +140,55 @@ public static class ResponseProblemExtensions
 
         return response;
     }
+
+    /// <summary>
+    ///     Converts the given <see cref="details" /> to a <see cref="ResponseProblem" />, taking only the first error
+    /// </summary>
+    public static ResponseProblem ToResponseProblem(this JsonApiProblemDetails? details, int statusCode)
+    {
+        if (details.NotExists())
+        {
+            return new ResponseProblem
+            {
+                Title = nameof(HttpStatusCode.InternalServerError),
+                Status = (int)HttpStatusCode.InternalServerError
+            };
+        }
+
+        if (details.Errors.HasNone())
+        {
+            return new ResponseProblem
+            {
+                Title = nameof(HttpStatusCode.InternalServerError),
+                Status = (int)HttpStatusCode.InternalServerError
+            };
+        }
+
+        var firstError = details.Errors.First();
+
+        var response = new ResponseProblem
+        {
+            Type = JsonApiProblemDetails.Reference,
+            Title = firstError.Title,
+            Status = statusCode,
+            Detail = firstError.Detail,
+            Instance = firstError.Id
+        };
+        if (firstError.Code.HasValue())
+        {
+            response.Extensions ??= new Dictionary<string, object?>();
+            response.Extensions.Add("code", firstError.Code);
+        }
+
+        if (firstError.Meta.Exists())
+        {
+            response.Extensions ??= new Dictionary<string, object?>();
+            foreach (var pair in firstError.Meta)
+            {
+                response.Extensions.Add(pair.Key, pair.Value.ToString());
+            }
+        }
+
+        return response;
+    }
 }

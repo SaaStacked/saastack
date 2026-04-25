@@ -293,7 +293,7 @@ public class JsonClient : IHttpJsonClient, IDisposable
                 case HttpConstants.ContentTypes.OctetStream:
                     return default;
 
-                case HttpConstants.ContentTypes.Json:
+                case HttpConstants.ContentTypes.Json or HttpConstants.ContentTypes.JsonApi:
                 {
                     var instance = await response.Content.ReadFromJsonAsync<TResponse>(jsonOptions,
                         cancellationToken ?? CancellationToken.None);
@@ -541,6 +541,14 @@ public class JsonClient : IHttpJsonClient, IDisposable
         cancellationToken.ThrowIfCancellationRequested();
         var errorText = response.Content.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult();
 
+        if (response.Content.Headers.ContentType?.MediaType == HttpConstants.ContentTypes.JsonApi)
+        {
+            if (TryParseJsonApiError(errorText, response.StatusCode, out var problem4))
+            {
+                return problem4;
+            }
+        }
+
         if (TryParseRfc7807Error(errorText, response.StatusCode, out var problem1))
         {
             return problem1;
@@ -597,6 +605,36 @@ public class JsonClient : IHttpJsonClient, IDisposable
 
             //Must be a known error, like: invalid_request, unauthorized_client, access_denied, unsupported_response_type, invalid_scope, server_error, temporarily_unavailable
             if (!details.Error.IsMatchWith("^[a-zA-Z_]{5,200}$"))
+            {
+                return false;
+            }
+
+            problem = details.ToResponseProblem((int)statusCode);
+            return true;
+        }
+        catch (JsonException)
+        {
+            problem = statusCode.ToResponseProblem(responseText);
+            return false;
+        }
+    }
+
+    /// <summary>
+    ///     <see href="https://jsonapi.org/format/1.0/#error-objects" />
+    /// </summary>
+    private static bool TryParseJsonApiError(string responseText, HttpStatusCode statusCode,
+        out ResponseProblem problem)
+    {
+        problem = new ResponseProblem();
+        try
+        {
+            var details = responseText.FromJson<JsonApiProblemDetails>();
+            if (details.NotExists() || details.Errors.HasNone())
+            {
+                return false;
+            }
+
+            if (details.Errors.Any(err => err.Status.HasNoValue()))
             {
                 return false;
             }
