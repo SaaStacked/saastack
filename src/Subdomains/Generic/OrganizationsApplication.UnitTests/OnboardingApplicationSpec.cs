@@ -206,6 +206,12 @@ public class OnboardingApplicationSpec
     [Fact]
     public async Task WhenMoveForwardAsyncAndOnboardingNotFound_ThenReturnsError()
     {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<OrganizationOnboardingRoot>.None);
@@ -219,6 +225,12 @@ public class OnboardingApplicationSpec
     [Fact]
     public async Task WhenMoveForwardAsyncWithStepValues_ThenMovesForward()
     {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
         var workflow = CreateSimpleTwoStepWorkflow();
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
@@ -255,6 +267,12 @@ public class OnboardingApplicationSpec
     [Fact]
     public async Task WhenMoveForwardAsyncWithoutStepValues_ThenMovesForward()
     {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
         var workflow = CreateSimpleTwoStepWorkflow();
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);
@@ -290,6 +308,12 @@ public class OnboardingApplicationSpec
     [Fact]
     public async Task WhenMoveBackwardAsyncAndOnboardingNotFound_ThenReturnsError()
     {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
         _onboardingRepository.Setup(rep =>
                 rep.FindByOrganizationIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<OrganizationOnboardingRoot>.None);
@@ -302,6 +326,12 @@ public class OnboardingApplicationSpec
     [Fact]
     public async Task WhenMoveBackwardAsync_ThenMovesBackward()
     {
+        var organization = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object,
+            _tenantSettingService.Object, _emailDomainService.Object, OrganizationOwnership.Personal,
+            "acreatorid".ToId(), EmailAddress.Create("auser@company.com").Value, UserClassification.Person,
+            DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
+        _organizationRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organization);
         var workflow = CreateSimpleTwoStepWorkflow();
         _workflowService.Setup(ws => ws.FindWorkflow(It.IsAny<Identifier>()))
             .Returns(workflow);

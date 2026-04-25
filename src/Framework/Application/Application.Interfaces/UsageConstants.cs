@@ -53,6 +53,7 @@ public static class UsageConstants
         public const string UsedById = "UserId";
         public const string UserAgent = "UserAgent";
         public const string UserIdOverride = "UserIdOverride";
+        public const string OnboardingWorkflowName = "WorkflowName";
         public const string OnboardingStepId = "StepId";
         public const string EmailClassification = "EmailClassification";
     }

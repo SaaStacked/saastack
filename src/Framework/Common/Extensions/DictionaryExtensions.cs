@@ -13,6 +13,17 @@ public static class DictionaryExtensions
             .ForEach(entry => { source[entry.Key] = entry.Value; });
     }
 
+    /// <summary>
+    ///     Appends a new item to the dictionary
+    /// </summary>
+    public static Dictionary<TKey, TValue> With<TKey, TValue>(this Dictionary<TKey, TValue> properties, TKey key,
+        TValue value)
+        where TKey : notnull
+    {
+        properties[key] = value;
+        return properties;
+    }
+
 #if !GENERATORS_WORKERS_PROJECT
     /// <summary>
     ///     Converts the instance of the <see cref="TObject" /> to a <see cref="IReadOnlyDictionary{String,String}" />,

@@ -85,7 +85,7 @@ public class DictionaryExtensionsSpec
     }
 
     [Fact]
-    public void WhenToStringDictionaryWithNullInstance_ThenreturnsEmpty()
+    public void WhenToStringDictionaryWithNullInstance_ThenReturnsEmpty()
     {
         var result = ((TestMappingClass?)null).ToStringDictionary();
 
@@ -135,5 +135,45 @@ public class DictionaryExtensionsSpec
         result[nameof(TestMappingClass.AnIntProperty)].Should().Be("0");
         result[nameof(TestMappingClass.AnBoolProperty)].Should().Be("False");
         result[nameof(TestMappingClass.ADateTimeProperty)].Should().Be("0001-01-01T00:00:00");
+    }
+
+    [Fact]
+    public void WhenWithAndEmpty_ThenAdds()
+    {
+        var dictionary = new Dictionary<string, string>();
+
+        var result = dictionary.With("aname", "avalue");
+
+        result.Count.Should().Be(1);
+        result.Should().Contain(pair => pair.Key == "aname" && pair.Value == "avalue");
+    }
+
+    [Fact]
+    public void WhenWithAndPropertyNotExist_ThenAdds()
+    {
+        var dictionary = new Dictionary<string, string>
+        {
+            { "aname1", "avalue1" }
+        };
+
+        var result = dictionary.With("aname2", "avalue2");
+
+        result.Count.Should().Be(2);
+        result.Should().Contain(pair => pair.Key == "aname1" && pair.Value == "avalue1");
+        result.Should().Contain(pair => pair.Key == "aname2" && pair.Value == "avalue2");
+    }
+
+    [Fact]
+    public void WhenWithAndPropertyExists_ThenUpdates()
+    {
+        var dictionary = new Dictionary<string, string>
+        {
+            { "aname", "avalue1" }
+        };
+
+        var result = dictionary.With("aname", "avalue2");
+
+        result.Count.Should().Be(1);
+        result.Should().Contain(pair => pair.Key == "aname" && pair.Value == "avalue2");
     }
 }

@@ -104,12 +104,7 @@ public class OnboardingApplication : IOnboardingApplication
             onboarding.Id, organizationId);
         _recorder.TrackUsage(caller.ToCall(),
             UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingCompleted,
-            new Dictionary<string, object>
-            {
-                { UsageConstants.Properties.Id, onboarding.OrganizationId },
-                { UsageConstants.Properties.TenantId, organizationId },
-                { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId }
-            });
+            onboarding.ToOnboardingUsageEvent(organization));
 
         return onboarding.ToWorkflow();
     }
@@ -218,13 +213,8 @@ public class OnboardingApplication : IOnboardingApplication
                 onboarding.Id, organizationId);
             _recorder.TrackUsage(caller.ToCall(),
                 UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingStarted,
-                new Dictionary<string, object>
-                {
-                    { UsageConstants.Properties.Id, onboarding.OrganizationId },
-                    { UsageConstants.Properties.TenantId, organizationId },
-                    { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId },
-                    { UsageConstants.Properties.EmailClassification, emailClassification }
-                });
+                onboarding.ToOnboardingUsageEvent(organization)
+                    .With(UsageConstants.Properties.EmailClassification, emailClassification));
 
             return onboarding.ToWorkflow();
         }
@@ -233,6 +223,13 @@ public class OnboardingApplication : IOnboardingApplication
     public async Task<Result<OrganizationOnboardingWorkflow, Error>> MoveBackwardAsync(ICallerContext caller,
         string organizationId, CancellationToken cancellationToken)
     {
+        var retrievedOrganization = await _organizationRepository.LoadAsync(organizationId.ToId(), cancellationToken);
+        if (retrievedOrganization.IsFailure)
+        {
+            return retrievedOrganization.Error;
+        }
+
+        var organization = retrievedOrganization.Value;
         var retrieved = await _onboardingRepository.FindByOrganizationIdAsync(organizationId.ToId(), cancellationToken);
         if (retrieved.IsFailure)
         {
@@ -268,12 +265,7 @@ public class OnboardingApplication : IOnboardingApplication
             onboarding.Id, organizationId);
         _recorder.TrackUsage(caller.ToCall(),
             UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingStepChanged,
-            new Dictionary<string, object>
-            {
-                { UsageConstants.Properties.Id, onboarding.OrganizationId },
-                { UsageConstants.Properties.TenantId, organizationId },
-                { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId }
-            });
+            onboarding.ToOnboardingUsageEvent(organization));
 
         return onboarding.ToWorkflow();
     }
@@ -282,6 +274,13 @@ public class OnboardingApplication : IOnboardingApplication
         string organizationId, string? nextStepId, Dictionary<string, string>? stepValues,
         CancellationToken cancellationToken)
     {
+        var retrievedOrganization = await _organizationRepository.LoadAsync(organizationId.ToId(), cancellationToken);
+        if (retrievedOrganization.IsFailure)
+        {
+            return retrievedOrganization.Error;
+        }
+
+        var organization = retrievedOrganization.Value;
         var retrieved = await _onboardingRepository.FindByOrganizationIdAsync(organizationId.ToId(), cancellationToken);
         if (retrieved.IsFailure)
         {
@@ -342,12 +341,7 @@ public class OnboardingApplication : IOnboardingApplication
             onboarding.Id, nextStep, organizationId);
         _recorder.TrackUsage(caller.ToCall(),
             UsageConstants.Events.UsageScenarios.Generic.OrganizationOnboardingStepChanged,
-            new Dictionary<string, object>
-            {
-                { UsageConstants.Properties.Id, onboarding.OrganizationId },
-                { UsageConstants.Properties.TenantId, organizationId },
-                { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId }
-            });
+            onboarding.ToOnboardingUsageEvent(organization));
 
         return onboarding.ToWorkflow();
     }
@@ -479,6 +473,18 @@ public class OnboardingApplication : IOnboardingApplication
 
 internal static class OnboardingConversionExtensions
 {
+    public static Dictionary<string, object> ToOnboardingUsageEvent(this OrganizationOnboardingRoot onboarding,
+        OrganizationRoot organization)
+    {
+        return new Dictionary<string, object>
+        {
+            { UsageConstants.Properties.Id, onboarding.OrganizationId },
+            { UsageConstants.Properties.TenantId, organization.Id },
+            { UsageConstants.Properties.OnboardingWorkflowName, onboarding.Workflow.Name },
+            { UsageConstants.Properties.Ownership, organization.Ownership },
+            { UsageConstants.Properties.OnboardingStepId, onboarding.State.CurrentStepId }
+        };
+    }
     public static OrganizationOnboardingWorkflow ToWorkflow(this OrganizationOnboardingRoot onboarding)
     {
         return new OrganizationOnboardingWorkflow
