@@ -8,6 +8,12 @@ namespace Application.Persistence.Interfaces;
 public interface IMessageQueueStore<TMessage>
     where TMessage : IQueuedMessage, new()
 {
+    /// <summary>
+    ///     Returns the upper limit that a message can be scheduled in the future.
+    ///     Can be <see cref="TimeSpan.Zero" /> to signal that there is no limit
+    /// </summary>
+    TimeSpan MaxMessageDelay { get; }
+
 #if TESTINGONLY
     /// <summary>
     ///     Returns the total count of messages in the queue
@@ -24,15 +30,20 @@ public interface IMessageQueueStore<TMessage>
 
     /// <summary>
     ///     Fetches the first message on the top of the queue and executes the <see cref="onMessageReceivedAsync" /> handler
-    ///     with
-    ///     it.
+    ///     with it.
     /// </summary>
     Task<Result<bool, Error>> PopSingleAsync(
         Func<TMessage, CancellationToken, Task<Result<Error>>> onMessageReceivedAsync,
         CancellationToken cancellationToken);
 
     /// <summary>
-    ///     Adds a new message to the queue
+    ///     Adds a new message to the queue instantly
     /// </summary>
     Task<Result<TMessage, Error>> PushAsync(ICallContext call, TMessage message, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Adds a new message to the queue, which will appear after the delay
+    /// </summary>
+    Task<Result<TMessage, Error>> PushAsync(ICallContext call, TMessage message, TimeSpan delay,
+        CancellationToken cancellationToken);
 }

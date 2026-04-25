@@ -21,6 +21,8 @@ public class SmsMessageQueueRepository : ISmsMessageQueueRepository
             new MessageQueueStore<SmsMessage>(recorder, hostSettings, messageQueueMessageIdFactory, store);
     }
 
+    public TimeSpan MaxMessageDelay => _messageQueue.MaxMessageDelay;
+    
 #if TESTINGONLY
     public Task<Result<long, Error>> CountAsync(CancellationToken cancellationToken)
     {
@@ -53,5 +55,11 @@ public class SmsMessageQueueRepository : ISmsMessageQueueRepository
         CancellationToken cancellationToken)
     {
         return _messageQueue.PushAsync(call, message, cancellationToken);
+    }
+
+    public Task<Result<SmsMessage, Error>> PushAsync(ICallContext call, SmsMessage message, TimeSpan delay,
+        CancellationToken cancellationToken)
+    {
+        return _messageQueue.PushAsync(call, message, delay, cancellationToken);
     }
 }

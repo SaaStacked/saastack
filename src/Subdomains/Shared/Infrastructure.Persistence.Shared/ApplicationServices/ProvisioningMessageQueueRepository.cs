@@ -22,6 +22,8 @@ public class ProvisioningMessageQueueRepository : IProvisioningMessageQueueRepos
                 store);
     }
 
+    public TimeSpan MaxMessageDelay => _messageQueue.MaxMessageDelay;
+    
 #if TESTINGONLY
     public Task<Result<long, Error>> CountAsync(CancellationToken cancellationToken)
     {
@@ -54,5 +56,12 @@ public class ProvisioningMessageQueueRepository : IProvisioningMessageQueueRepos
         CancellationToken cancellationToken)
     {
         return _messageQueue.PushAsync(call, message, cancellationToken);
+    }
+
+    public Task<Result<ProvisioningMessage, Error>> PushAsync(ICallContext call, ProvisioningMessage message,
+        TimeSpan delay,
+        CancellationToken cancellationToken)
+    {
+        return _messageQueue.PushAsync(call, message, delay, cancellationToken);
     }
 }

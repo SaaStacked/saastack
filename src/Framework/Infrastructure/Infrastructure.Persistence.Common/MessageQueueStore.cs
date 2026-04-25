@@ -34,6 +34,8 @@ public sealed class MessageQueueStore<TMessage> : IMessageQueueStore<TMessage>
 
     public Guid InstanceId { get; }
 
+    public TimeSpan MaxMessageDelay => _queueStore.MaxMessageDelay;
+
 #if TESTINGONLY
     public async Task<Result<long, Error>> CountAsync(CancellationToken cancellationToken)
     {
@@ -99,6 +101,38 @@ public sealed class MessageQueueStore<TMessage> : IMessageQueueStore<TMessage>
         var messageJson = message.ToJson()!;
 
         var pushed = await _queueStore.PushAsync(_queueName, messageJson, cancellationToken);
+        if (pushed.IsFailure)
+        {
+            return pushed.Error;
+        }
+
+        _recorder.TraceDebug(null,
+            "Message {Message} was added to the queue {Queue} (in {Region}) by the {Store} store",
+            messageJson,
+            _queueName, region, _queueStore.GetType().Name);
+
+        return message;
+    }
+
+    public async Task<Result<TMessage, Error>> PushAsync(ICallContext call, TMessage message, TimeSpan delay,
+        CancellationToken cancellationToken)
+    {
+        message.TenantId = message.TenantId.HasValue()
+            ? message.TenantId
+            : call.TenantId;
+        message.CallId = message.CallId.HasValue()
+            ? message.CallId
+            : call.CallId;
+        message.CallerId = message.CallerId.HasValue()
+            ? message.CallerId
+            : call.CallerId;
+        var messageId = message.MessageId ?? CreateMessageId();
+        message.MessageId = messageId;
+        var region = message.OriginHostRegion ?? _hostSettings.GetRegion().Code;
+        message.OriginHostRegion = region;
+        var messageJson = message.ToJson()!;
+
+        var pushed = await _queueStore.PushAsync(_queueName, messageJson, delay, cancellationToken);
         if (pushed.IsFailure)
         {
             return pushed.Error;

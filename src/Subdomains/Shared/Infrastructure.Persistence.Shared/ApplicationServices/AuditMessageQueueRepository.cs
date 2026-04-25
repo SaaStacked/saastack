@@ -21,6 +21,8 @@ public class AuditMessageQueueRepository : IAuditMessageQueueRepository
             new MessageQueueStore<AuditMessage>(recorder, hostSettings, messageQueueMessageIdFactory, store);
     }
 
+    public TimeSpan MaxMessageDelay => _messageQueue.MaxMessageDelay;
+
 #if TESTINGONLY
     public Task<Result<long, Error>> CountAsync(CancellationToken cancellationToken)
     {
@@ -53,5 +55,11 @@ public class AuditMessageQueueRepository : IAuditMessageQueueRepository
         CancellationToken cancellationToken)
     {
         return _messageQueue.PushAsync(call, message, cancellationToken);
+    }
+
+    public Task<Result<AuditMessage, Error>> PushAsync(ICallContext call, AuditMessage message, TimeSpan delay,
+        CancellationToken cancellationToken)
+    {
+        return _messageQueue.PushAsync(call, message, delay, cancellationToken);
     }
 }

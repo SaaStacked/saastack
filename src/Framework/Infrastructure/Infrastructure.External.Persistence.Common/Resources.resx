@@ -42,6 +42,12 @@
     <data name="AnyStore_MissingQueueMessage" xml:space="preserve">
         <value>Message cannot be empty</value>
     </data>
+    <data name="AnyQueueStore_DelayNegative" xml:space="preserve">
+        <value>Message delay cannot be negative</value>
+    </data>
+    <data name="AnyQueueStore_DelayToolarge" xml:space="preserve">
+        <value>Message delay cannot exceed 'MaxMessageDelay'</value>
+    </data>
     <data name="AnyStore_MissingAggregateRootId" xml:space="preserve">
         <value>AggregateRootId cannot be empty</value>
     </data>

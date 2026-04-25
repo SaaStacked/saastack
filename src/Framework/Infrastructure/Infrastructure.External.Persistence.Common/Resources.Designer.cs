@@ -60,6 +60,24 @@ namespace Infrastructure.External.Persistence.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message delay cannot be negative.
+        /// </summary>
+        public static string AnyQueueStore_DelayNegative {
+            get {
+                return ResourceManager.GetString("AnyQueueStore_DelayNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message delay cannot exceed &apos;MaxMessageDelay&apos;.
+        /// </summary>
+        public static string AnyQueueStore_DelayToolarge {
+            get {
+                return ResourceManager.GetString("AnyQueueStore_DelayToolarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AggregateRootId cannot be empty.
         /// </summary>
         public static string AnyStore_MissingAggregateRootId {

@@ -54,6 +54,8 @@ public class NoOpStore : IDataStore, IBlobStore, IQueueStore, IMessageBusStore, 
         return Task.FromResult<Result<CommandEntity, Error>>(default);
     }
 
+    public TimeSpan MaxMessageDelay => TimeSpan.Zero;
+
     Task<Result<long, Error>> IDataStore.CountAsync(string containerName, CancellationToken cancellationToken)
     {
         return Task.FromResult<Result<long, Error>>(0);
@@ -176,6 +178,12 @@ public class NoOpStore : IDataStore, IBlobStore, IQueueStore, IMessageBusStore, 
     }
 
     Task<Result<Error>> IQueueStore.PushAsync(string queueName, string message, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Ok);
+    }
+
+    public Task<Result<Error>> PushAsync(string queueName, string message, TimeSpan delay,
+        CancellationToken cancellationToken)
     {
         return Task.FromResult(Result.Ok);
     }

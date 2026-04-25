@@ -10,6 +10,11 @@ namespace Infrastructure.Persistence.Interfaces;
 /// </summary>
 public interface IQueueStore
 {
+    /// <summary>
+    ///     Returns the upper limit that a message can be scheduled in the future.
+    ///     Can be <see cref="TimeSpan.Zero" /> to signal that there is no limit
+    /// </summary>
+    TimeSpan MaxMessageDelay { get; }
 #if TESTINGONLY
     /// <summary>
     ///     Returns the count of messages on the queue
@@ -33,7 +38,13 @@ public interface IQueueStore
         CancellationToken cancellationToken);
 
     /// <summary>
-    ///     Pushes a new message onto the queue
+    ///     Pushes a new message onto the queue instantly
     /// </summary>
     Task<Result<Error>> PushAsync(string queueName, string message, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Pushes a new message onto the queue, which will appear after the delay
+    /// </summary>
+    Task<Result<Error>> PushAsync(string queueName, string message, TimeSpan delay,
+        CancellationToken cancellationToken);
 }

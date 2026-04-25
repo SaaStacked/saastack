@@ -21,6 +21,8 @@ public class EmailMessageQueueRepository : IEmailMessageQueueRepository
             new MessageQueueStore<EmailMessage>(recorder, hostSettings, messageQueueMessageIdFactory, store);
     }
 
+    public TimeSpan MaxMessageDelay => _messageQueue.MaxMessageDelay;
+    
 #if TESTINGONLY
     public Task<Result<long, Error>> CountAsync(CancellationToken cancellationToken)
     {
@@ -53,5 +55,11 @@ public class EmailMessageQueueRepository : IEmailMessageQueueRepository
         CancellationToken cancellationToken)
     {
         return _messageQueue.PushAsync(call, message, cancellationToken);
+    }
+
+    public Task<Result<EmailMessage, Error>> PushAsync(ICallContext call, EmailMessage message, TimeSpan delay,
+        CancellationToken cancellationToken)
+    {
+        return _messageQueue.PushAsync(call, message, delay, cancellationToken);
     }
 }
