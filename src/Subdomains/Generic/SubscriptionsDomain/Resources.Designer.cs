@@ -60,6 +60,15 @@ namespace SubscriptionsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only a service account can add a subscription for the buyer.
+        /// </summary>
+        internal static string SubscriptionRoot_AddSubscriptionByProvider_NotAuthorized {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_AddSubscriptionByProvider_NotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceling the plan failed, reason: {0}.
         /// </summary>
         internal static string SubscriptionRoot_CancelSubscription_FailedWithReason {
@@ -80,9 +89,9 @@ namespace SubscriptionsDomain {
         /// <summary>
         ///   Looks up a localized string similar to Only a service account can cancel the subscription.
         /// </summary>
-        internal static string SubscriptionRoot_CancelSubscriptionFromProvider_NotAuthorized {
+        internal static string SubscriptionRoot_CancelSubscriptionByProvider_NotAuthorized {
             get {
-                return ResourceManager.GetString("SubscriptionRoot_CancelSubscriptionFromProvider_NotAuthorized", resourceCulture);
+                return ResourceManager.GetString("SubscriptionRoot_CancelSubscriptionByProvider_NotAuthorized", resourceCulture);
             }
         }
         
@@ -96,11 +105,20 @@ namespace SubscriptionsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only a service account can change the buyers details.
+        /// </summary>
+        internal static string SubscriptionRoot_ChangeBuyerDetailsByProvider_NotAuthorized {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_ChangeBuyerDetailsByProvider_NotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only a service account can change the payment method.
         /// </summary>
-        internal static string SubscriptionRoot_ChangeBuyerPaymentMethodFromProvider_NotAuthorized {
+        internal static string SubscriptionRoot_ChangeBuyerPaymentMethodByProvider_NotAuthorized {
             get {
-                return ResourceManager.GetString("SubscriptionRoot_ChangeBuyerPaymentMethodFromProvider_NotAuthorized", resourceCulture);
+                return ResourceManager.GetString("SubscriptionRoot_ChangeBuyerPaymentMethodByProvider_NotAuthorized", resourceCulture);
             }
         }
         
@@ -143,9 +161,9 @@ namespace SubscriptionsDomain {
         /// <summary>
         ///   Looks up a localized string similar to Only a service account can change the subscription plan.
         /// </summary>
-        internal static string SubscriptionRoot_ChangeSubscriptionPlanFromProvider_NotAuthorized {
+        internal static string SubscriptionRoot_ChangeSubscriptionPlanByProvider_NotAuthorized {
             get {
-                return ResourceManager.GetString("SubscriptionRoot_ChangeSubscriptionPlanFromProvider_NotAuthorized", resourceCulture);
+                return ResourceManager.GetString("SubscriptionRoot_ChangeSubscriptionPlanByProvider_NotAuthorized", resourceCulture);
             }
         }
         
@@ -161,9 +179,36 @@ namespace SubscriptionsDomain {
         /// <summary>
         ///   Looks up a localized string similar to Only a service account can delete the subscription.
         /// </summary>
-        internal static string SubscriptionRoot_DeleteSubscriptionFromProvider_NotAuthorized {
+        internal static string SubscriptionRoot_DeleteSubscriptionByProvider_NotAuthorized {
             get {
-                return ResourceManager.GetString("SubscriptionRoot_DeleteSubscriptionFromProvider_NotAuthorized", resourceCulture);
+                return ResourceManager.GetString("SubscriptionRoot_DeleteSubscriptionByProvider_NotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial has not been started, and cannot be ended.
+        /// </summary>
+        internal static string SubscriptionRoot_EndTrial_NotStarted {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_EndTrial_NotStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial has already been expired.
+        /// </summary>
+        internal static string SubscriptionRoot_ExpireTrial_AlreadyExpired {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_ExpireTrial_AlreadyExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial has not reached it expiry time yet.
+        /// </summary>
+        internal static string SubscriptionRoot_ExpireTrial_NotExpirable {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_ExpireTrial_NotExpirable", resourceCulture);
             }
         }
         
@@ -213,6 +258,15 @@ namespace SubscriptionsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trial is missing from provider.
+        /// </summary>
+        internal static string SubscriptionRoot_NoTrial {
+            get {
+                return ResourceManager.GetString("SubscriptionRoot_NoTrial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provider must be same as that of the current provider.
         /// </summary>
         internal static string SubscriptionRoot_ProviderMismatch {
@@ -233,9 +287,9 @@ namespace SubscriptionsDomain {
         /// <summary>
         ///   Looks up a localized string similar to Only a service account can delete the buyer.
         /// </summary>
-        internal static string SubscriptionRoot_RestoreBuyerAfterDeletedFromProvider_NotAuthorized {
+        internal static string SubscriptionRoot_RestoreBuyerAfterDeletedByProvider_NotAuthorized {
             get {
-                return ResourceManager.GetString("SubscriptionRoot_RestoreBuyerAfterDeletedFromProvider_NotAuthorized", resourceCulture);
+                return ResourceManager.GetString("SubscriptionRoot_RestoreBuyerAfterDeletedByProvider_NotAuthorized", resourceCulture);
             }
         }
         

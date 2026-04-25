@@ -362,11 +362,11 @@ public class EndUsersApplicationDomainEventHandlersSpec
         _caller.Setup(c => c.CallerId)
             .Returns(CallerConstants.MaintenanceAccountUserId);
         _subscriptionsService.Setup(ss =>
-                ss.GetSubscriptionAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                ss.GetSubscriptionByIdAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SubscriptionWithPlan
             {
-                Invoice = new InvoiceSummary
+                UpcomingInvoice = new InvoiceSummary
                 {
                     Currency = "acurrency"
                 },
@@ -408,7 +408,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
 
         result.Should().BeSuccess();
         _subscriptionsService.Verify(ss =>
-            ss.GetSubscriptionAsync(_caller.Object, "asubscriptionid".ToId(), It.IsAny<CancellationToken>()));
+            ss.GetSubscriptionByIdAsync(_caller.Object, "asubscriptionid".ToId(), It.IsAny<CancellationToken>()));
         _endUserRepository.Verify(rep => rep.SearchAllMembershipsByOrganizationAsync("anowningentityid".ToId(),
             It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()));
         _endUserRepository.Verify(eur => eur.SaveAsync(It.Is<EndUserRoot>(root =>

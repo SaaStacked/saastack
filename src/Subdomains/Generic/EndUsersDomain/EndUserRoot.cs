@@ -455,16 +455,16 @@ public sealed partial class EndUserRoot : AggregateRootBase
             }
         }
 
-        if (ownership == OrganizationOwnership.Personal
-            && Memberships.HasPersonalOrganization)
-        {
-            return Error.RuleViolation(Resources.EndUserRoot_AddMembership_OnlyOnePersonalOrganization);
-        }
-
         var existing = Memberships.FindByOrganizationId(organizationId);
         if (existing.HasValue)
         {
             return Result.Ok;
+        }
+
+        if (ownership == OrganizationOwnership.Personal
+            && Memberships.HasPersonalOrganization)
+        {
+            return Error.RuleViolation(Resources.EndUserRoot_AddMembership_OnlyOnePersonalOrganization);
         }
 
         var isFirst = Memberships.HasNone();

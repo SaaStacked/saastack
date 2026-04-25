@@ -35,6 +35,10 @@ public sealed class StubUserNotificationsService : IUserNotificationsService
 
     public string? LastReRegistrationCourtesyEmailRecipient { get; private set; }
 
+    public string? LastSubscriptionTrialEventEmailRecipient { get; private set; }
+
+    public string? LastSubscriptionTrialEventId { get; private set; }
+
     public Task<Result<Error>> NotifyGuestInvitationToPlatformAsync(ICallerContext caller, string token,
         string inviteeEmailAddress, string inviteeName, string inviterName, IReadOnlyList<string>? tags,
         CancellationToken cancellationToken)
@@ -93,6 +97,15 @@ public sealed class StubUserNotificationsService : IUserNotificationsService
         return Task.FromResult(Result.Ok);
     }
 
+    public Task<Result<Error>> NotifySubscriptionTrialEventEmailAsync(ICallerContext caller, string emailAddress,
+        string name, string companyName, string eventId, IReadOnlyList<string>? tags,
+        CancellationToken cancellationToken)
+    {
+        LastSubscriptionTrialEventId = eventId;
+        LastSubscriptionTrialEventEmailRecipient = emailAddress;
+        return Task.FromResult(Result.Ok);
+    }
+
     public void Reset()
     {
         LastRegistrationConfirmationEmailRecipient = null;
@@ -108,5 +121,7 @@ public sealed class StubUserNotificationsService : IUserNotificationsService
         LastMfaOobCode = null;
         LastMfaOobEmailRecipient = null;
         LastMfaOobSmsRecipient = null;
+        LastSubscriptionTrialEventEmailRecipient = null;
+        LastSubscriptionTrialEventId = null;
     }
 }

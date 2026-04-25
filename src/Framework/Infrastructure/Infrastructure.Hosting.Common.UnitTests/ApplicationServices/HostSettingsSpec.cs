@@ -76,8 +76,8 @@ public class HostSettingsSpec
     [Fact]
     public void WhenGetWebsiteHostCSRFEncryptionSecret_ThenReturnsBaseUrl()
     {
-        _settings.Setup(
-                s => s.Platform.GetString(HostSettings.WebsiteHostCSRFEncryptionSettingName, It.IsAny<string>()))
+        _settings
+            .Setup(s => s.Platform.GetString(HostSettings.WebsiteHostCSRFEncryptionSettingName, It.IsAny<string>()))
             .Returns("asecret");
 
         var result = _service.GetWebsiteHostCSRFEncryptionSecret();
@@ -139,6 +139,30 @@ public class HostSettingsSpec
             .Returns("asecret");
 
         var result = _service.GetPrivateInterHostHmacAuthSecret();
+
+        result.Should().Be("asecret");
+    }
+
+    [Fact]
+    public void WhenGetSubscriptionsApiHostBaseUrl_ThenReturnsBaseUrl()
+    {
+        _settings.Setup(s =>
+                s.Platform.GetString(HostSettings.SubscriptionsApiHostBaseUrlSettingName, It.IsAny<string>()))
+            .Returns("http://localhost/api/");
+
+        var result = _service.GetSubscriptionsApiHostBaseUrl();
+
+        result.Should().Be("http://localhost/api");
+    }
+
+    [Fact]
+    public void WhenGetSubscriptionsApiHostHmacAuthSecret_ThenReturnsSecret()
+    {
+        _settings.Setup(s =>
+                s.Platform.GetString(HostSettings.SubscriptionsApiHmacSecretSettingName, It.IsAny<string>()))
+            .Returns("asecret");
+
+        var result = _service.GetSubscriptionsApiHostHmacAuthSecret();
 
         result.Should().Be("asecret");
     }

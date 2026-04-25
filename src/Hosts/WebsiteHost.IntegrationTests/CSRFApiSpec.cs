@@ -58,7 +58,8 @@ public class CSRFApiSpec
     [Collection("WEBSITE")]
     public class GivenAnInsecureGetRequest : WebsiteSpec<Program, ApiHost1.Program>
     {
-        public GivenAnInsecureGetRequest(WebApiSetup<Program> setup) : base(setup)
+        public GivenAnInsecureGetRequest(WebApiSetup<Program> setup) : base(setup, null,
+            spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
         {
         }
 
@@ -232,7 +233,8 @@ public class CSRFApiSpec
     {
         private readonly string _userId;
 
-        public GivenAnInsecurePostRequestByAuthenticatedUser(WebApiSetup<Program> setup) : base(setup)
+        public GivenAnInsecurePostRequestByAuthenticatedUser(WebApiSetup<Program> setup) : base(setup, null,
+            spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
         {
             var (userId, _) = HttpApi.LoginUserFromBrowserAsync(JsonOptions, CSRFService).GetAwaiter()
                 .GetResult();

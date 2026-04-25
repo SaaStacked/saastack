@@ -57,8 +57,8 @@
     <data name="BillingProvider_InvalidMetadata" xml:space="preserve">
         <value>State of the provider is empty or invalid</value>
     </data>
-    <data name="ProviderSubscription_InvalidSubscriptionId" xml:space="preserve">
-        <value>SubscriptionId is empty</value>
+    <data name="ProviderSubscription_InvalidSubscriptionReference" xml:space="preserve">
+        <value>SubscriptionReference is empty</value>
     </data>
     <data name="ProviderPlan_InvalidPlanId" xml:space="preserve">
         <value>PlanId is empty</value>
@@ -74,5 +74,29 @@
     </data>
     <data name="EmailDomain_InvalidDomain" xml:space="preserve">
         <value>The email Domain is not valid</value>
+    </data>
+    <data name="TrialTimeline_StartsAtInFuture" xml:space="preserve">
+        <value>The trial cannot start in the future</value>
+    </data>
+    <data name="TrialTimeline_InvalidDuration" xml:space="preserve">
+        <value>The trial duration must be greater than zero days</value>
+    </data>
+    <data name="TrialTimeline_AlreadyConverted" xml:space="preserve">
+        <value>The trial is already converted</value>
+    </data>
+    <data name="TrialTimeline_AlreadyExpired" xml:space="preserve">
+        <value>The trial is already expired</value>
+    </data>
+    <data name="TrialTimeline_ExpiryNotDue" xml:space="preserve">
+        <value>The trial is not past due date to expire</value>
+    </data>
+    <data name="TrialScheduleEvent_InvalidDelay" xml:space="preserve">
+        <value>Delay cannot be negative</value>
+    </data>
+    <data name="TrialScheduleEvent_InvalidId" xml:space="preserve">
+        <value>Id is invalid</value>
+    </data>
+    <data name="TrialEventSchedule_DuplicateEvents" xml:space="preserve">
+        <value>At least one event has the same ID as another</value>
     </data>
 </root>

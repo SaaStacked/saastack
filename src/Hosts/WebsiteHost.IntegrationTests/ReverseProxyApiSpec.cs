@@ -18,7 +18,8 @@ namespace WebsiteHost.IntegrationTests;
 [Collection("WEBSITE")]
 public class ReverseProxyApiSpec : WebsiteSpec<Program, ApiHost1.Program>
 {
-    public ReverseProxyApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies)
+    public ReverseProxyApiSpec(WebApiSetup<Program> setup) : base(setup, OverrideDependencies,
+        spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
     {
     }
 

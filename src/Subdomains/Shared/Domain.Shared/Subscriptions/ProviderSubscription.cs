@@ -18,22 +18,30 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
             ProviderInvoice.Default, ProviderPaymentMethod.Empty);
     }
 
+    public static Result<ProviderSubscription, Error> Create(ProviderStatus status,
+        ProviderPlan plan, ProviderPlanPeriod period, ProviderPaymentMethod paymentMethod)
+    {
+        return new ProviderSubscription(Optional<Identifier>.None, status, plan, period, ProviderInvoice.Default,
+            paymentMethod);
+    }
+
+    
     public static Result<ProviderSubscription, Error> Create(ProviderStatus status, ProviderPaymentMethod paymentMethod)
     {
         return new ProviderSubscription(Optional<Identifier>.None, status, ProviderPlan.Empty, ProviderPlanPeriod.Empty,
             ProviderInvoice.Default, paymentMethod);
     }
 
-    public static Result<ProviderSubscription, Error> Create(Identifier subscriptionId, ProviderStatus status,
+    public static Result<ProviderSubscription, Error> Create(Identifier subscriptionReference, ProviderStatus status,
         ProviderPlan plan, ProviderPlanPeriod period, ProviderInvoice invoice, ProviderPaymentMethod paymentMethod)
     {
-        if (subscriptionId.IsInvalidParameter(id => !id.IsEmpty(), nameof(subscriptionId),
-                Resources.ProviderSubscription_InvalidSubscriptionId, out var error))
+        if (subscriptionReference.IsInvalidParameter(sr => !sr.IsEmpty(), nameof(subscriptionReference),
+                Resources.ProviderSubscription_InvalidSubscriptionReference, out var error))
         {
             return error;
         }
 
-        return new ProviderSubscription(subscriptionId, status, plan, period, invoice, paymentMethod);
+        return new ProviderSubscription(subscriptionReference, status, plan, period, invoice, paymentMethod);
     }
 
     private ProviderSubscription(Optional<Identifier> subscriptionReference, ProviderStatus status, ProviderPlan plan,
@@ -43,11 +51,11 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
         Status = status;
         Plan = plan;
         Period = period;
-        Invoice = invoice;
+        UpcomingInvoice = invoice;
         PaymentMethod = paymentMethod;
     }
 
-    public ProviderInvoice Invoice { get; }
+    public ProviderInvoice UpcomingInvoice { get; }
 
     public ProviderPaymentMethod PaymentMethod { get; }
 
@@ -77,6 +85,6 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
 
     protected override IEnumerable<object?> GetAtomicValues()
     {
-        return [SubscriptionReference, Status, Plan, Period, Invoice, PaymentMethod];
+        return [SubscriptionReference, Status, Plan, Period, UpcomingInvoice, PaymentMethod];
     }
 }

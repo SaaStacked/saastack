@@ -13,16 +13,38 @@ public partial interface ISubscriptionsApplication
         string planId,
         CancellationToken cancellationToken);
 
+#if TESTINGONLY
+    Task<Result<SubscriptionWithPlan, Error>> ConvertSubscriptionAsync(ICallerContext caller, string owningEntityId,
+        CancellationToken cancellationToken);
+#endif
+
+    Task<Result<bool, Error>> DeliverSubscriptionTrialEventAsync(ICallerContext caller, string messageAsJson,
+        CancellationToken cancellationToken);
+
+#if TESTINGONLY
+    Task<Result<Error>>
+        DrainAllSubscriptionTrialEventsAsync(ICallerContext caller, CancellationToken cancellationToken);
+#endif
+
+#if TESTINGONLY
+    Task<Result<SubscriptionWithPlan, Error>> ExpireTrialAsync(ICallerContext caller, string owningEntityId,
+        CancellationToken cancellationToken);
+#endif
+
     Task<Result<SearchResults<SubscriptionToMigrate>, Error>> ExportSubscriptionsToMigrateAsync(ICallerContext caller,
         SearchOptions searchOptions, GetOptions getOptions, CancellationToken cancellationToken);
 
     Task<Result<SubscriptionWithPlan, Error>> ForceCancelSubscriptionAsync(ICallerContext caller, string owningEntityId,
         CancellationToken cancellationToken);
 
-    Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionAsync(ICallerContext caller, string owningEntityId,
+    Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByIdAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 
-    Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionPrivateAsync(ICallerContext caller, string id,
+    Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByOwningEntityIdAsync(ICallerContext caller,
+        string owningEntityId,
+        CancellationToken cancellationToken);
+
+    Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId, string eventName,
         CancellationToken cancellationToken);
 
     Task<Result<PricingPlans, Error>> ListPricingPlansAsync(ICallerContext caller, CancellationToken cancellationToken);

@@ -7,9 +7,10 @@ public static class UserNotificationConstants
         private const string Authentication = "authentication";
         private const string EndUser = "user";
         private const string Invitation = "invitation";
-        private const string PersonCredential = "credential";
         private const string PasswordMfa = "mfa";
+        private const string PersonCredential = "credential";
         private const string Registration = "registration";
+        private const string Subscription = "subscription";
         public static readonly IReadOnlyList<string> RegistrationRepeatCourtesy = new List<string>
         {
             EndUser, Registration
@@ -37,6 +38,11 @@ public static class UserNotificationConstants
         public static readonly IReadOnlyList<string> PasswordMfaOob = new List<string>
         {
             EndUser, Authentication, PasswordMfa
+        };
+
+        public static readonly IReadOnlyList<string> SubscriptionTrialEvent = new List<string>
+        {
+            EndUser, Subscription
         };
     }
 }

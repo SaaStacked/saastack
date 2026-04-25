@@ -13,6 +13,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Framework\Application\Application.Common\Application.Common.csproj" />
         <ProjectReference Include="..\..\..\Framework\Application\Application.Persistence.Common\Application.Persistence.Common.csproj" />
+        <ProjectReference Include="..\..\Shared\Application.Persistence.Shared\Application.Persistence.Shared.csproj" />
         <ProjectReference Include="..\SubscriptionsDomain\SubscriptionsDomain.csproj" />
     </ItemGroup>
 

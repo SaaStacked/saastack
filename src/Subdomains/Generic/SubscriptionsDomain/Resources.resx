@@ -81,22 +81,40 @@
     <data name="SubscriptionRoot_CannotBeUnsubscribed" xml:space="preserve">
         <value>This subscription cannot be terminated in its current state</value>
     </data>
-    <data name="SubscriptionRoot_ChangeBuyerPaymentMethodFromProvider_NotAuthorized" xml:space="preserve">
+    <data name="SubscriptionRoot_ChangeBuyerPaymentMethodByProvider_NotAuthorized" xml:space="preserve">
         <value>Only a service account can change the payment method</value>
     </data>
     <data name="SubscriptionRoot_ProviderMismatch" xml:space="preserve">
         <value>Provider must be same as that of the current provider</value>
     </data>
-    <data name="SubscriptionRoot_CancelSubscriptionFromProvider_NotAuthorized" xml:space="preserve">
+    <data name="SubscriptionRoot_CancelSubscriptionByProvider_NotAuthorized" xml:space="preserve">
         <value>Only a service account can cancel the subscription</value>
     </data>
-    <data name="SubscriptionRoot_ChangeSubscriptionPlanFromProvider_NotAuthorized" xml:space="preserve">
+    <data name="SubscriptionRoot_ChangeSubscriptionPlanByProvider_NotAuthorized" xml:space="preserve">
         <value>Only a service account can change the subscription plan</value>
     </data>
-    <data name="SubscriptionRoot_DeleteSubscriptionFromProvider_NotAuthorized" xml:space="preserve">
+    <data name="SubscriptionRoot_DeleteSubscriptionByProvider_NotAuthorized" xml:space="preserve">
         <value>Only a service account can delete the subscription</value>
     </data>
-    <data name="SubscriptionRoot_RestoreBuyerAfterDeletedFromProvider_NotAuthorized" xml:space="preserve">
+    <data name="SubscriptionRoot_RestoreBuyerAfterDeletedByProvider_NotAuthorized" xml:space="preserve">
         <value>Only a service account can delete the buyer</value>
+    </data>
+    <data name="SubscriptionRoot_ChangeBuyerDetailsByProvider_NotAuthorized" xml:space="preserve">
+        <value>Only a service account can change the buyers details</value>
+    </data>
+    <data name="SubscriptionRoot_AddSubscriptionByProvider_NotAuthorized" xml:space="preserve">
+        <value>Only a service account can add a subscription for the buyer</value>
+    </data>
+    <data name="SubscriptionRoot_EndTrial_NotStarted" xml:space="preserve">
+        <value>Trial has not been started, and cannot be ended</value>
+    </data>
+    <data name="SubscriptionRoot_NoTrial" xml:space="preserve">
+        <value>Trial is missing from provider</value>
+    </data>
+    <data name="SubscriptionRoot_ExpireTrial_NotExpirable" xml:space="preserve">
+        <value>Trial has not reached it expiry time yet</value>
+    </data>
+    <data name="SubscriptionRoot_ExpireTrial_AlreadyExpired" xml:space="preserve">
+        <value>Trial has already been expired</value>
     </data>
 </root>

@@ -9,6 +9,7 @@ public static class WorkerConstants
         // EXTEND: Add other queues here
         public const string Audits = "audits";
         public const string Emails = "emails";
+        public const string SubscriptionTrialEvents = "trials";
         public const string Provisionings = "tenant-provisionings";
         public const string Smses = "smses";
         public const string Usages = "usages";
@@ -43,6 +44,11 @@ public static class WorkerConstants
                         Usages,
                         settings => (settings.GetAncillaryApiHostBaseUrl(),
                             settings.GetAncillaryApiHostHmacAuthSecret())
+                    },
+                    {
+                        SubscriptionTrialEvents,
+                        settings => (settings.GetSubscriptionsApiHostBaseUrl(),
+                            settings.GetSubscriptionsApiHostHmacAuthSecret())
                     }
                     // EXTEND: Add other queues and endpoints
                 };

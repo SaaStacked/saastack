@@ -1,4 +1,6 @@
 using System.Reflection;
+using Application.Interfaces.Services;
+using Application.Persistence.Shared;
 using Application.Services.Shared;
 using Common;
 using Domain.Interfaces;
@@ -6,6 +8,7 @@ using Infrastructure.Eventing.Interfaces.Notifications;
 using Infrastructure.Hosting.Common.Extensions;
 using Infrastructure.Interfaces;
 using Infrastructure.Persistence.Interfaces;
+using Infrastructure.Persistence.Shared.ApplicationServices;
 using Infrastructure.Shared.ApplicationServices;
 using Infrastructure.Web.Hosting.Common;
 using Microsoft.AspNetCore.Builder;
@@ -58,10 +61,17 @@ public class SubscriptionsModule : ISubdomainModule
                         c.GetRequiredService<IDataStore>()),
                     _ => new SubscriptionNotifier()
                 );
+                services.AddPerHttpRequest<ISubscriptionTrialEventMessageQueueRepository>(c =>
+                    new SubscriptionTrialEventMessageQueueRepository(c.GetRequiredService<IRecorder>(),
+                        c.GetRequiredService<IHostSettings>(),
+                        c.GetRequiredService<IMessageQueueMessageIdFactory>(),
+                        c.GetRequiredServiceForPlatform<IQueueStore>()));
 
-                services.AddSingleton<IBillingProvider, SimpleBillingProvider>();
                 services.AddPerHttpRequest<ISubscriptionsService>(c =>
                     new SubscriptionsInProcessServiceClient(c.LazyGetRequiredService<ISubscriptionsApplication>()));
+                
+                // EXTEND: remove this registration when adding another provider
+                services.AddPerHttpRequest<IBillingProvider, SimpleBillingProvider>();
             };
         }
     }

@@ -13,11 +13,13 @@ public class ProviderPaymentMethodSpec
     {
         var expires = DateOnly.FromDateTime(DateTime.UtcNow);
         var result =
-            ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid, expires);
+            ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid, expires,
+                "achecouturl");
 
         result.Should().BeSuccess();
         result.Value.Type.Should().Be(BillingPaymentMethodType.Card);
         result.Value.Status.Should().Be(BillingPaymentMethodStatus.Valid);
         result.Value.ExpiresOn.Should().Be(expires);
+        result.Value.CheckoutUrl.Should().Be("achecouturl");
     }
 }

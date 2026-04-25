@@ -9,11 +9,12 @@ public static class FakeBillingProviderConstants
     public static class MetadataProperties
     {
         public const string CustomerId = "CustomerId";
-        public const string IsCancelled = "IsCancelled";
+        public const string IsCanceled = "IsCanceled";
         public const string WhenCanceled = "CancelWhen";
         public const string PaymentMethodId = "PaymentMethodId";
         public const string PlanId = "PlanId";
         public const string SubscriptionId = "SubscriptionId";
+        public const string SubscribedAt = "SubscribedAt";
     }
 }
 #endif

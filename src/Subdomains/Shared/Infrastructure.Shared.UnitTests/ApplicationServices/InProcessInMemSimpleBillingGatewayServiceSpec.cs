@@ -34,7 +34,8 @@ public class InProcessInMemSimpleBillingGatewayServiceSpec
             Subscriber = new Subscriber
             {
                 EntityId = "anentityid",
-                EntityType = "anentitytype"
+                EntityType = "anentitytype",
+                EntityName = "anentityname"
             },
             PhoneNumber = "aphonenumber"
         };

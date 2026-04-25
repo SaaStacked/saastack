@@ -12,6 +12,7 @@ using Infrastructure.Web.Api.Interfaces;
 using Infrastructure.Web.Api.Interfaces.Clients;
 using Infrastructure.Web.Api.Operations.Shared.Ancillary;
 using Infrastructure.Web.Api.Operations.Shared.EventNotifications;
+using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using Infrastructure.Web.Hosting.Common;
 using TestingStubApiHost.Api;
 using TestingStubApiHost.Workers;
@@ -32,7 +33,8 @@ public class StubApiModule : ISubdomainModule
         { WorkerConstants.Queues.Usages, new DrainAllUsagesRequest() },
         { WorkerConstants.Queues.Emails, new DrainAllEmailsRequest() },
         { WorkerConstants.Queues.Smses, new DrainAllSmsesRequest() },
-        { WorkerConstants.Queues.Provisionings, new DrainAllProvisioningsRequest() }
+        { WorkerConstants.Queues.Provisionings, new DrainAllProvisioningsRequest() },
+        { WorkerConstants.Queues.SubscriptionTrialEvents, new DrainAllSubscriptionTrialEventsRequest() }
     };
 
     public Action<WebHostOptions, WebApplication, List<MiddlewareRegistration>> ConfigureMiddleware

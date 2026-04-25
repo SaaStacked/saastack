@@ -10,6 +10,8 @@ using Infrastructure.Web.Api.Operations.Shared.Ancillary;
 using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 using Infrastructure.Web.Api.Operations.Shared.EventNotifications;
+using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
+using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Microsoft.AspNetCore.Http;
 using RecordMeasureRequest = Infrastructure.Web.Api.Operations.Shared.Ancillary.RecordMeasureRequest;
 using RecordUseRequest = Infrastructure.Web.Api.Operations.Shared.Ancillary.RecordUseRequest;
@@ -31,8 +33,10 @@ public class ApiUsageFilter : IEndpointFilter
         typeof(DrainAllSmsesRequest),
         typeof(DrainAllProvisioningsRequest),
         typeof(DrainAllEventNotificationsRequest),
+        typeof(DrainAllSubscriptionTrialEventsRequest),
         typeof(SearchAllAuditsRequest),
         typeof(SearchAllEventNotificationsRequest),
+        typeof(DestroyAllRepositoriesRequest),
 #endif
         typeof(ApiHealthCheckRequest),
         typeof(ApiStatisticsRequest),

@@ -82,13 +82,21 @@ public class SubscriptionRepository : ISubscriptionRepository
     public async Task<Result<SubscriptionRoot, Error>> SaveAsync(SubscriptionRoot subscription,
         CancellationToken cancellationToken)
     {
+        return await SaveAsync(subscription, false, cancellationToken);
+    }
+
+    public async Task<Result<SubscriptionRoot, Error>> SaveAsync(SubscriptionRoot subscription, bool reload,
+        CancellationToken cancellationToken)
+    {
         var saved = await _subscriptions.SaveAsync(subscription, cancellationToken);
         if (saved.IsFailure)
         {
             return saved.Error;
         }
 
-        return subscription;
+        return reload
+            ? await LoadAsync(subscription.Id, cancellationToken)
+            : subscription;
     }
 
     public async Task<Result<QueryResults<Subscription>, Error>> SearchAllByProviderAsync(string providerName,

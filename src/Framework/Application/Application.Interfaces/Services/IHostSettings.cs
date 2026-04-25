@@ -58,6 +58,16 @@ public interface IHostSettings
     ///     Returns the URL for the specified <see cref="MediaTypeNames.Image" />
     /// </summary>
     string MakeImagesApiGetUrl(string imageId);
+
+    /// <summary>
+    ///     Returns the URL for the Subscriptions API host
+    /// </summary>
+    string GetSubscriptionsApiHostBaseUrl();
+
+    /// <summary>
+    ///     Returns the HMAC auth secret for the Subscriptions API Host
+    /// </summary>
+    string GetSubscriptionsApiHostHmacAuthSecret();
 }
 
 /// <summary>

@@ -1,6 +1,5 @@
 using Common;
 using Common.Extensions;
-using Domain.Common.Extensions;
 using Domain.Common.ValueObjects;
 using Domain.Interfaces;
 using JetBrains.Annotations;
@@ -10,7 +9,7 @@ namespace Domain.Shared.Subscriptions;
 public sealed class ProviderPlan : ValueObjectBase<ProviderPlan>
 {
     public static readonly ProviderPlan Empty =
-        new(Optional<string>.None, false, Optional<DateTime>.None, BillingSubscriptionTier.Unsubscribed);
+        new(Optional<string>.None, Optional<TrialTimeline>.None, BillingSubscriptionTier.Unsubscribed);
 
     public static Result<ProviderPlan, Error> Create(string planId, BillingSubscriptionTier tier)
     {
@@ -20,10 +19,10 @@ public sealed class ProviderPlan : ValueObjectBase<ProviderPlan>
             return error;
         }
 
-        return Create(planId, false, Optional<DateTime>.None, tier);
+        return Create(planId, Optional<TrialTimeline>.None, tier);
     }
 
-    public static Result<ProviderPlan, Error> Create(string planId, bool isTrial, Optional<DateTime> trialEndDateUtc,
+    public static Result<ProviderPlan, Error> Create(string planId, Optional<TrialTimeline> trial,
         BillingSubscriptionTier tier)
     {
         if (planId.IsInvalidParameter(id => id.HasValue(), nameof(planId), Resources.ProviderPlan_InvalidPlanId,
@@ -32,43 +31,38 @@ public sealed class ProviderPlan : ValueObjectBase<ProviderPlan>
             return error;
         }
 
-        return new ProviderPlan(planId, isTrial, trialEndDateUtc, tier);
+        return new ProviderPlan(planId, trial, tier);
     }
 
-    private ProviderPlan(Optional<string> planId, bool isTrial, Optional<DateTime> trialEndDateUtc,
-        BillingSubscriptionTier tier)
+    private ProviderPlan(Optional<string> planId, Optional<TrialTimeline> trial, BillingSubscriptionTier tier)
     {
         PlanId = planId;
-        IsTrial = isTrial;
-        TrialEndDateUtc = trialEndDateUtc;
+        Trial = trial;
         Tier = tier;
     }
-
-    public bool IsTrial { get; }
 
     public Optional<string> PlanId { get; }
 
     public BillingSubscriptionTier Tier { get; }
 
-    public Optional<DateTime> TrialEndDateUtc { get; }
+    public Optional<TrialTimeline> Trial { get; }
 
     [UsedImplicitly]
     public static ValueObjectFactory<ProviderPlan> Rehydrate()
     {
-        return (property, _) =>
+        return (property, container) =>
         {
             var parts = RehydrateToList(property, false);
             return new ProviderPlan(
                 parts[0],
-                parts[1].Value.ToBool(),
-                parts[2].ToOptional(val => val.FromIso8601()),
-                parts[3].Value.ToEnumOrDefault(BillingSubscriptionTier.Unsubscribed));
+                TrialTimeline.Rehydrate()(parts[1], container),
+                parts[2].Value.ToEnumOrDefault(BillingSubscriptionTier.Unsubscribed));
         };
     }
 
     protected override IEnumerable<object?> GetAtomicValues()
     {
-        return [PlanId, IsTrial, TrialEndDateUtc, Tier];
+        return [PlanId, Trial, Tier];
     }
 }
 

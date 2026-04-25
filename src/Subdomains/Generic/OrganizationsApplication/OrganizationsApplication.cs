@@ -293,7 +293,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
 
         var org = retrieved.Value;
         var subscription =
-            await _subscriptionService.GetSubscriptionAsync(caller, org.BillingSubscriber.Value.SubscriptionId,
+            await _subscriptionService.GetSubscriptionByIdAsync(caller, org.BillingSubscriber.Value.SubscriptionId,
                 cancellationToken);
         if (subscription.IsFailure)
         {

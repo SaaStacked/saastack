@@ -79,7 +79,7 @@ public static class RequestExtensions
     /// </summary>
     public static (RequestInfo Info, IWebRequest Request) ParseRequestInfo(this IWebRequest request)
     {
-        var info = GetRequestInfo(request);
+        var info = request.GetRequestInfo();
         var adjustedRequest = NullifyRequestFields(info.RouteParams, request);
 
         return (info, adjustedRequest);
@@ -109,19 +109,29 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    ///     Sets the HMAC signature header on the specified <see cref="message" /> by signing the body of the specified
-    ///     <see cref="request" />
+    ///     Sets the HMAC signature to the specified <see cref="headerName"/>,
+    /// of the specified <see cref="message" /> by signing the body of the specified <see cref="request" />
     /// </summary>
     public static void SetHMACAuth(this HttpRequestMessage message, IWebRequest request, string secret)
     {
-        var signature = request.CreateHMACSignature(secret);
-
-        message.Headers.Add(HttpConstants.Headers.HMACSignature, signature);
+        message.SetHMACAuth(request, secret, HttpConstants.Headers.HMACSignature);
     }
 
     /// <summary>
-    ///     Sets the HMAC signature header on the specified <see cref="message" /> by signing the body of the specified
-    ///     <see cref="request" />
+    ///     Sets the HMAC signature to the specified <see cref="headerName" />,
+    ///     of the specified <see cref="message" /> by signing the body of the specified <see cref="request" />
+    /// </summary>
+    public static void SetHMACAuth(this HttpRequestMessage message, IWebRequest request, string secret,
+        string headerName)
+    {
+        var signature = request.CreateHMACSignature(secret);
+
+        message.Headers.Add(headerName, signature);
+    }
+
+    /// <summary>
+    ///     Sets the HMAC signature to the <see cref="HttpConstants.Headers.HMACSignature" /> header,
+    ///     of the specified <see cref="message" /> by signing the body of the specified  <see cref="request" />
     /// </summary>
     public static void SetHMACAuth(this HttpRequestMessage message, string secret)
     {
@@ -131,7 +141,7 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    ///     Sets the HMAC signature header on the specified <see cref="message" /> by signing the body of the specified
+    ///     Sets the HMAC signature header of the specified <see cref="message" /> by signing the body of the specified
     ///     <see cref="request" />
     /// </summary>
     public static void SetPrivateInterHostAuth(this HttpRequestMessage message, IWebRequest request, string secret,
@@ -147,7 +157,7 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    ///     Sets the HMAC signature header on the specified <see cref="message" /> by signing the body of the specified
+    ///     Sets the HMAC signature header of the specified <see cref="message" /> by signing the body of the specified
     ///     <see cref="message" />
     /// </summary>
     public static void SetPrivateInterHostAuth(this HttpRequestMessage message, string secret,
@@ -188,7 +198,7 @@ public static class RequestExtensions
     ///     Where {body} for GET, SEARCH, DELETE requests will always be the characters
     ///     <see cref="HttpConstants.EmptyRequestJson" />
     /// </summary>
-    private static string CreateHMACSignature(this IWebRequest request, string secret)
+    public static string CreateHMACSignature(this IWebRequest request, string secret)
     {
         var body = request.CanHaveBody()
             ? GetSerializedBody(request)

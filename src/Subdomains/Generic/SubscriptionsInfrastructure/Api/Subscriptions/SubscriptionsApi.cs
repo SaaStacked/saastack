@@ -25,9 +25,9 @@ public class SubscriptionsApi : IWebApiService
             request.Id!, cancellationToken);
 
         return () =>
-            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(x =>
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
                 new GetSubscriptionResponse
-                    { Subscription = x });
+                    { Subscription = sub });
     }
 
     public async Task<ApiPutPatchResult<SubscriptionWithPlan, GetSubscriptionResponse>> ChangePlan(
@@ -37,9 +37,9 @@ public class SubscriptionsApi : IWebApiService
             request.Id!, request.PlanId!, cancellationToken);
 
         return () =>
-            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(x =>
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
                 new GetSubscriptionResponse
-                    { Subscription = x });
+                    { Subscription = sub });
     }
 
     public async Task<ApiResult<SubscriptionWithPlan, GetSubscriptionResponse>> ForceCancelSubscription(
@@ -49,15 +49,15 @@ public class SubscriptionsApi : IWebApiService
             request.Id!, cancellationToken);
 
         return () =>
-            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(x =>
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
                 new GetSubscriptionResponse
-                    { Subscription = x });
+                    { Subscription = sub });
     }
 
     public async Task<ApiGetResult<SubscriptionWithPlan, GetSubscriptionResponse>> GetSubscription(
         GetSubscriptionRequest request, CancellationToken cancellationToken)
     {
-        var subscription = await _subscriptionsApplication.GetSubscriptionAsync(_callerFactory.Create(),
+        var subscription = await _subscriptionsApplication.GetSubscriptionByOwningEntityIdAsync(_callerFactory.Create(),
             request.Id!, cancellationToken);
 
         return () =>
@@ -85,7 +85,34 @@ public class SubscriptionsApi : IWebApiService
             request.Id!, request.UserId!, cancellationToken);
 
         return () =>
-            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(x =>
-                new GetSubscriptionResponse { Subscription = x });
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
+                new GetSubscriptionResponse { Subscription = sub });
     }
+
+#if TESTINGONLY
+    public async Task<ApiPutPatchResult<SubscriptionWithPlan, GetSubscriptionResponse>> ExpireTrial(
+        ExpireSubscriptionTrialRequest request, CancellationToken cancellationToken)
+    {
+        var subscription =
+            await _subscriptionsApplication.ExpireTrialAsync(_callerFactory.Create(), request.Id!, cancellationToken);
+
+        return () =>
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
+                new GetSubscriptionResponse { Subscription = sub });
+    }
+#endif
+
+#if TESTINGONLY
+    public async Task<ApiPutPatchResult<SubscriptionWithPlan, GetSubscriptionResponse>> ConvertSubscription(
+        ConvertSubscriptionRequest request, CancellationToken cancellationToken)
+    {
+        var subscription =
+            await _subscriptionsApplication.ConvertSubscriptionAsync(_callerFactory.Create(), request.Id!,
+                cancellationToken);
+
+        return () =>
+            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
+                new GetSubscriptionResponse { Subscription = sub });
+    }
+#endif
 }

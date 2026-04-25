@@ -19,7 +19,8 @@ public class GeneralBeffeApiSpec
     [Collection("WEBSITE")]
     public class GivenCSRFIgnoredRoutes : WebsiteSpec<Program, ApiHost1.Program>
     {
-        public GivenCSRFIgnoredRoutes(WebApiSetup<Program> setup) : base(setup)
+        public GivenCSRFIgnoredRoutes(WebApiSetup<Program> setup) : base(setup, null,
+            spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
         {
         }
 
@@ -64,7 +65,8 @@ public class GeneralBeffeApiSpec
     [Collection("WEBSITE")]
     public class GivenCSRFRoutes : WebsiteSpec<Program, ApiHost1.Program>
     {
-        public GivenCSRFRoutes(WebApiSetup<Program> setup) : base(setup)
+        public GivenCSRFRoutes(WebApiSetup<Program> setup) : base(setup, null,
+            spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
         {
         }
 

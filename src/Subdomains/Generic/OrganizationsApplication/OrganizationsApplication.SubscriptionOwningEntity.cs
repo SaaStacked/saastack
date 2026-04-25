@@ -1,4 +1,6 @@
 using Application.Interfaces;
+using Application.Resources.Shared;
+using Application.Services.Shared;
 using Common;
 using Common.Extensions;
 using Domain.Common.ValueObjects;
@@ -97,6 +99,24 @@ partial class OrganizationsApplication
         }
 
         return organization.CanViewBillingSubscription(viewerId.ToId(), viewerRoles.Value);
+    }
+
+    public async Task<Result<OwningEntity, Error>> GetOwningEntityAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken)
+    {
+        var retrieved = await _repository.LoadAsync(id.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var organization = retrieved.Value;
+        return new OwningEntity
+        {
+            Id = organization.Id,
+            Type = nameof(Organization),
+            Name = organization.Name
+        };
     }
 
     private async Task<Result<Roles, Error>> GetMemberRolesAsync(ICallerContext caller, Identifier userId,

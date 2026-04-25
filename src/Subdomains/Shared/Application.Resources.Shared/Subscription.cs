@@ -25,7 +25,7 @@ public class SubscriptionWithPlan : Subscription
 
     public DateTime? CanceledDateUtc { get; set; }
 
-    public required InvoiceSummary Invoice { get; set; }
+    public required InvoiceSummary UpcomingInvoice { get; set; }
 
     public required SubscriptionPaymentMethod PaymentMethod { get; set; }
 
@@ -36,6 +36,8 @@ public class SubscriptionWithPlan : Subscription
     public SubscriptionStatus Status { get; set; }
 
     public string? SubscriptionReference { get; set; }
+
+    public string? CheckoutUrl { get; set; }
 }
 
 public class SubscriptionPlan

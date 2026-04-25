@@ -12,9 +12,8 @@ public class ProviderPlanSpec
     [Fact]
     public void WhenCreateWithEmptyPlanId_ThenReturnsError()
     {
-        var trialEnd = DateTime.UtcNow;
-
-        var result = ProviderPlan.Create(string.Empty, true, trialEnd, BillingSubscriptionTier.Enterprise);
+        var result =
+            ProviderPlan.Create(string.Empty, Optional<TrialTimeline>.None, BillingSubscriptionTier.Enterprise);
 
         result.Should().BeError(ErrorCode.Validation, Resources.ProviderPlan_InvalidPlanId);
     }
@@ -22,14 +21,14 @@ public class ProviderPlanSpec
     [Fact]
     public void WhenCreate_ThenReturnsPlan()
     {
-        var trialEnd = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        var trial = TrialTimeline.Create(now, 1).Value;
 
-        var result = ProviderPlan.Create("anid", true, trialEnd, BillingSubscriptionTier.Enterprise);
+        var result = ProviderPlan.Create("anid", trial, BillingSubscriptionTier.Enterprise);
 
         result.Should().BeSuccess();
         result.Value.PlanId.Should().Be("anid");
-        result.Value.IsTrial.Should().BeTrue();
-        result.Value.TrialEndDateUtc.Should().Be(trialEnd);
+        result.Value.Trial.Should().Be(trial);
         result.Value.Tier.Should().Be(BillingSubscriptionTier.Enterprise);
     }
 }

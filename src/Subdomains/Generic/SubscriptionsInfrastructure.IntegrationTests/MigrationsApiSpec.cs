@@ -50,7 +50,8 @@ public class MigrationsApiSpec
                 .Be("{\"FirstName\":\"persona\",\"LastName\":\"alastname\"}");
             result[0].Buyer[nameof(SubscriptionBuyer.EmailAddress)].Should().Be(login.Profile!.EmailAddress!.Address);
             result[0].Buyer[nameof(SubscriptionBuyer.Subscriber)].Should()
-                .Be($"{{\"EntityId\":\"{login.DefaultOrganizationId}\",\"EntityType\":\"Organization\"}}");
+                .Be(
+                    $"{{\"EntityId\":\"{login.DefaultOrganizationId}\",\"EntityType\":\"Organization\",\"EntityName\":\"persona alastname\"}}");
             result[0].Buyer[nameof(SubscriptionBuyer.Address)].Should().Be(
                 "{\"City\":\"\",\"CountryCode\":\"USA\",\"Line1\":\"\",\"Line2\":\"\",\"Line3\":\"\",\"State\":\"\",\"Zip\":\"\"}");
         }
@@ -116,7 +117,8 @@ public class MigrationsApiSpec
                 .Be("{\"FirstName\":\"persona\",\"LastName\":\"alastname\"}");
             result[0].Buyer[nameof(SubscriptionBuyer.EmailAddress)].Should().Be(login.Profile!.EmailAddress!.Address);
             result[0].Buyer[nameof(SubscriptionBuyer.Subscriber)].Should()
-                .Be($"{{\"EntityId\":\"{login.DefaultOrganizationId}\",\"EntityType\":\"Organization\"}}");
+                .Be(
+                    $"{{\"EntityId\":\"{login.DefaultOrganizationId}\",\"EntityType\":\"Organization\",\"EntityName\":\"persona alastname\"}}");
             result[0].Buyer[nameof(SubscriptionBuyer.Address)].Should().Be(
                 "{\"City\":\"\",\"CountryCode\":\"USA\",\"Line1\":\"\",\"Line2\":\"\",\"Line3\":\"\",\"State\":\"\",\"Zip\":\"\"}");
         }

@@ -15,9 +15,12 @@ public class StubBillingProvider : IBillingProvider
 {
     public StubBillingProvider()
     {
-        StateInterpreter = new StubBillingStateInterpreter();
-        GatewayService = new StubBillingGatewayService();
+        Capabilities = new BillingProviderCapabilities();
+        StateInterpreter = new StubBillingStateInterpreter(Capabilities);
+        GatewayService = new StubBillingGatewayService(Capabilities);
     }
+
+    public BillingProviderCapabilities Capabilities { get; }
 
     public IBillingGatewayService GatewayService { get; }
 
@@ -31,6 +34,11 @@ public class StubBillingProvider : IBillingProvider
 /// </summary>
 public class StubBillingGatewayService : IBillingGatewayService
 {
+    public StubBillingGatewayService(BillingProviderCapabilities capabilities)
+    {
+        Capabilities = capabilities;
+    }
+
     public Task<Result<SubscriptionMetadata, Error>> CancelSubscriptionAsync(ICallerContext caller,
         CancelSubscriptionOptions options, BillingProvider provider,
         CancellationToken cancellationToken)
@@ -38,9 +46,23 @@ public class StubBillingGatewayService : IBillingGatewayService
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
     }
 
+    public BillingProviderCapabilities Capabilities { get; }
+
     public Task<Result<SubscriptionMetadata, Error>> ChangeSubscriptionPlanAsync(ICallerContext caller,
         ChangePlanOptions options, BillingProvider provider,
         CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
+    }
+
+    public Task<Result<Error>> HandleTrialScheduledEventAsync(ICallerContext caller, SubscriptionBuyer buyer,
+        TrialScheduledEvent trialEvent, BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Ok);
+    }
+
+    public Task<Result<SubscriptionMetadata, Error>> IncrementMeterAsync(ICallerContext caller, string meterName,
+        BillingProvider provider, CancellationToken cancellationToken)
     {
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
     }
@@ -58,6 +80,12 @@ public class StubBillingGatewayService : IBillingGatewayService
         {
             { "BuyerId", buyer.Subscriber.EntityId }
         });
+    }
+
+    public Task<Result<SubscriptionMetadata, Error>> ReSyncSubscriptionAsync(ICallerContext caller,
+        BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
     }
 
     public Task<Result<SearchResults<Invoice>, Error>> SearchAllInvoicesAsync(ICallerContext caller,
@@ -93,6 +121,13 @@ public class StubBillingGatewayService : IBillingGatewayService
 /// </summary>
 public class StubBillingStateInterpreter : IBillingStateInterpreter
 {
+    public StubBillingStateInterpreter(BillingProviderCapabilities capabilities)
+    {
+        Capabilities = capabilities;
+    }
+
+    public BillingProviderCapabilities Capabilities { get; }
+
     public Result<string, Error> GetBuyerReference(BillingProvider current)
     {
         return current.State["BuyerId"];

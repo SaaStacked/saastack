@@ -51,4 +51,10 @@ public interface IUserNotificationsService
     /// </summary>
     Task<Result<Error>> NotifyPasswordResetUnknownUserCourtesyAsync(ICallerContext caller, string emailAddress,
         IReadOnlyList<string>? tags, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Notifies a user, via email, about a scheduled event occuring during a subscription trial
+    /// </summary>
+    Task<Result<Error>> NotifySubscriptionTrialEventEmailAsync(ICallerContext caller, string emailAddress, string name,
+        string companyName, string eventId, IReadOnlyList<string>? tags, CancellationToken cancellationToken);
 }

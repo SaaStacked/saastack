@@ -14,7 +14,8 @@ namespace WebsiteHost.IntegrationTests;
 [Collection("WEBSITE")]
 public class AuthNApiSpec : WebsiteSpec<Program, ApiHost1.Program>
 {
-    public AuthNApiSpec(WebApiSetup<Program> setup) : base(setup)
+    public AuthNApiSpec(WebApiSetup<Program> setup) : base(setup, null,
+        spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
     {
     }
 

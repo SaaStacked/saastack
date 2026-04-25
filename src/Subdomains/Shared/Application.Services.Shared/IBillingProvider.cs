@@ -21,4 +21,9 @@ public interface IBillingProvider
     ///     Returns the interpreter to manage state changes to the provider
     /// </summary>
     public IBillingStateInterpreter StateInterpreter { get; }
+
+    /// <summary>
+    ///     Returns the capabilities of the provider
+    /// </summary>
+    public BillingProviderCapabilities Capabilities { get; }
 }

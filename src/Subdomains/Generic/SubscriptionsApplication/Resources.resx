@@ -27,4 +27,13 @@
     <data name="SubscriptionsApplication_BuyerNotAPerson" xml:space="preserve">
         <value>Buyer is not a person</value>
     </data>
+    <data name="SubscriptionsApplication_TrialEvent_MissingOwningEntityId" xml:space="preserve">
+        <value>The trial event message is missing a 'OwningEntityId'</value>
+    </data>
+    <data name="SubscriptionsApplication_TrialEvent_MissingProviderName" xml:space="preserve">
+        <value>The trial event message is missing a 'ProviderName'</value>
+    </data>
+    <data name="SubscriptionsApplication_TrialEvent_MissingEventAndSignal" xml:space="preserve">
+        <value>The trial event message is missing either the 'Event' or the 'Signal'</value>
+    </data>
 </root>

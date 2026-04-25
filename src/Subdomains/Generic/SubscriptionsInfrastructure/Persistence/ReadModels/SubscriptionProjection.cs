@@ -91,6 +91,45 @@ public class SubscriptionProjection : IReadModelProjection
                     },
                     cancellationToken);
 
+            case BuyerDetailsChanged e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto =>
+                    {
+                        dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal);
+                        dto.OwningEntityId = e.OwningEntityId;
+                    },
+                    cancellationToken);
+
+            case SubscriptionConverted e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto =>
+                    {
+                        dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal);
+                        dto.OwningEntityId = e.OwningEntityId;
+                        dto.SubscriptionReference = e.SubscriptionReference;
+                    },
+                    cancellationToken);
+
+            case ManagedTrialStarted e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
+                    cancellationToken);
+
+            case ManagedTrialScheduledEventAdded e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
+                    cancellationToken);
+
+            case ManagedTrialExpired e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
+                    cancellationToken);
+
+            case ManagedTrialEventScheduleEnded e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
+                    cancellationToken);
+
             case Deleted e:
                 return await _subscriptions.HandleDeleteAsync(e.RootId, cancellationToken);
 

@@ -9,6 +9,17 @@ namespace SubscriptionsDomain;
 
 public static class Events
 {
+    public static BuyerDetailsChanged BuyerDetailsChanged(Identifier id, Identifier owningEntityId,
+        BillingProvider provider)
+    {
+        return new BuyerDetailsChanged(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State
+        };
+    }
+
     public static BuyerRestored BuyerRestored(Identifier id, Identifier owningEntityId,
         BillingProvider provider, string buyerReference, Optional<string> subscriptionReference)
     {
@@ -73,6 +84,19 @@ public static class Events
         };
     }
 
+    public static SubscriptionConverted SubscriptionConverted(Identifier id, Identifier owningEntityId,
+        BillingProvider provider, string planId, string subscriptionReference)
+    {
+        return new SubscriptionConverted(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State,
+            PlanId = planId,
+            SubscriptionReference = subscriptionReference
+        };
+    }
+
     public static SubscriptionPlanChanged SubscriptionPlanChanged(Identifier id, Identifier owningEntityId,
         string planId, BillingProvider provider, string buyerReference, Optional<string> subscriptionReference)
     {
@@ -112,6 +136,63 @@ public static class Events
             OwningEntityId = owningEntityId,
             ProviderName = provider.Name,
             ProviderState = provider.State
+        };
+    }
+
+    public static ManagedTrialExpired ManagedTrialExpired(Identifier id, Identifier owningEntityId,
+        BillingProvider provider, TrialTimeline trial)
+    {
+        return new ManagedTrialExpired(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State,
+            TrialStartedAt = trial.StartedAt,
+            TrialDurationDays = trial.DurationDays,
+            TrialExpiresAt = trial.ExpiryDueAt
+        };
+    }
+
+    public static ManagedTrialScheduledEventAdded ManagedTrialScheduledEventAdded(Identifier id,
+        Identifier owningEntityId,
+        BillingProvider provider, TrialScheduledEvent @event)
+    {
+        return new ManagedTrialScheduledEventAdded(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State,
+            EventId = @event.Id,
+            EventAction = @event.Action,
+            EventAppliesWhen = @event.Track,
+            EventMetadata = @event.Metadata.Items.ToDictionary()
+        };
+    }
+
+    public static ManagedTrialEventScheduleEnded ManagedTrialEventScheduleEnded(Identifier id,
+        Identifier owningEntityId,
+        BillingProvider provider, TrialScheduledEndingReason reason)
+    {
+        return new ManagedTrialEventScheduleEnded(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State,
+            Reason = reason
+        };
+    }
+
+    public static ManagedTrialStarted ManagedTrialStarted(Identifier id, Identifier owningEntityId,
+        BillingProvider provider,
+        TrialTimeline trial)
+    {
+        return new ManagedTrialStarted(id)
+        {
+            OwningEntityId = owningEntityId,
+            ProviderName = provider.Name,
+            ProviderState = provider.State,
+            TrialStartedAt = trial.StartedAt,
+            TrialDurationDays = trial.DurationDays
         };
     }
 }

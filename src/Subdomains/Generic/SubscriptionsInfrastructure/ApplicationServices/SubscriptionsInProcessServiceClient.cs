@@ -23,10 +23,18 @@ public class SubscriptionsInProcessServiceClient : ISubscriptionsService
         _subscriptionsApplicationFactory = subscriptionsApplicationFactory;
     }
 
-    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionAsync(ICallerContext caller, string id,
+    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByIdAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken)
     {
-        return await GetApplication().GetSubscriptionPrivateAsync(caller, id, cancellationToken);
+        return await GetApplication().GetSubscriptionByIdAsync(caller, id, cancellationToken);
+    }
+
+    public async Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId,
+        string eventName,
+        CancellationToken cancellationToken)
+    {
+        return await GetApplication()
+            .IncrementSubscriptionUsageAsync(caller, owningEntityId, eventName, cancellationToken);
     }
 
     private ISubscriptionsApplication GetApplication()

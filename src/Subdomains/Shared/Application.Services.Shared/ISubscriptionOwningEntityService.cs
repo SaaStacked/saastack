@@ -37,4 +37,19 @@ public interface ISubscriptionOwningEntityService
     /// </summary>
     Task<Result<Permission, Error>> CanViewSubscriptionAsync(ICallerContext caller, string id, string viewerId,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Returns the entity for the specified id
+    /// </summary>
+    Task<Result<OwningEntity, Error>> GetEntityAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken);
+}
+
+public class OwningEntity
+{
+    public required string Id { get; set; }
+
+    public required string Name { get; set; }
+
+    public required string Type { get; set; }
 }

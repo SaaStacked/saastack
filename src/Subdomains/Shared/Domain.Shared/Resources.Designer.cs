@@ -177,11 +177,11 @@ namespace Domain.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SubscriptionId is empty.
+        ///   Looks up a localized string similar to SubscriptionReference is empty.
         /// </summary>
-        internal static string ProviderSubscription_InvalidSubscriptionId {
+        internal static string ProviderSubscription_InvalidSubscriptionReference {
             get {
-                return ResourceManager.GetString("ProviderSubscription_InvalidSubscriptionId", resourceCulture);
+                return ResourceManager.GetString("ProviderSubscription_InvalidSubscriptionReference", resourceCulture);
             }
         }
         
@@ -209,6 +209,78 @@ namespace Domain.Shared {
         internal static string Timezone_InvalidTimezone {
             get {
                 return ResourceManager.GetString("Timezone_InvalidTimezone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one event has the same ID as another.
+        /// </summary>
+        internal static string TrialEventSchedule_DuplicateEvents {
+            get {
+                return ResourceManager.GetString("TrialEventSchedule_DuplicateEvents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delay cannot be negative.
+        /// </summary>
+        internal static string TrialScheduleEvent_InvalidDelay {
+            get {
+                return ResourceManager.GetString("TrialScheduleEvent_InvalidDelay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id is invalid.
+        /// </summary>
+        internal static string TrialScheduleEvent_InvalidId {
+            get {
+                return ResourceManager.GetString("TrialScheduleEvent_InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial is already converted.
+        /// </summary>
+        internal static string TrialTimeline_AlreadyConverted {
+            get {
+                return ResourceManager.GetString("TrialTimeline_AlreadyConverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial is already expired.
+        /// </summary>
+        internal static string TrialTimeline_AlreadyExpired {
+            get {
+                return ResourceManager.GetString("TrialTimeline_AlreadyExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial is not past due date to expire.
+        /// </summary>
+        internal static string TrialTimeline_ExpiryNotDue {
+            get {
+                return ResourceManager.GetString("TrialTimeline_ExpiryNotDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial duration must be greater than zero days.
+        /// </summary>
+        internal static string TrialTimeline_InvalidDuration {
+            get {
+                return ResourceManager.GetString("TrialTimeline_InvalidDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial cannot start in the future.
+        /// </summary>
+        internal static string TrialTimeline_StartsAtInFuture {
+            get {
+                return ResourceManager.GetString("TrialTimeline_StartsAtInFuture", resourceCulture);
             }
         }
     }

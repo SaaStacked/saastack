@@ -9,6 +9,11 @@ namespace Domain.Services.Shared;
 public interface IBillingStateInterpreter
 {
     /// <summary>
+    ///     Returns the capabilities of the provider
+    /// </summary>
+    public BillingProviderCapabilities Capabilities { get; }
+    
+    /// <summary>
     ///     Returns the name of this provider
     /// </summary>
     string ProviderName { get; }

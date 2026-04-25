@@ -336,7 +336,8 @@ partial class EndUsersApplication
     private async Task<Result<Error>> HandleChangeSubscriptionPlanAsync(ICallerContext caller,
         Identifier subscriptionId, Identifier organizationId, string planId, CancellationToken cancellationToken)
     {
-        var subscription = await _subscriptionsService.GetSubscriptionAsync(caller, subscriptionId, cancellationToken);
+        var subscription =
+            await _subscriptionsService.GetSubscriptionByIdAsync(caller, subscriptionId, cancellationToken);
         if (subscription.IsFailure)
         {
             return subscription.Error;

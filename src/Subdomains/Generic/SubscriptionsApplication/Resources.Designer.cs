@@ -67,5 +67,32 @@ namespace SubscriptionsApplication {
                 return ResourceManager.GetString("SubscriptionsApplication_BuyerNotAPerson", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial event message is missing either the &apos;Event&apos; or the &apos;Signal&apos;.
+        /// </summary>
+        internal static string SubscriptionsApplication_TrialEvent_MissingEventAndSignal {
+            get {
+                return ResourceManager.GetString("SubscriptionsApplication_TrialEvent_MissingEventAndSignal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial event message is missing a &apos;OwningEntityId&apos;.
+        /// </summary>
+        internal static string SubscriptionsApplication_TrialEvent_MissingOwningEntityId {
+            get {
+                return ResourceManager.GetString("SubscriptionsApplication_TrialEvent_MissingOwningEntityId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial event message is missing a &apos;ProviderName&apos;.
+        /// </summary>
+        internal static string SubscriptionsApplication_TrialEvent_MissingProviderName {
+            get {
+                return ResourceManager.GetString("SubscriptionsApplication_TrialEvent_MissingProviderName", resourceCulture);
+            }
+        }
     }
 }

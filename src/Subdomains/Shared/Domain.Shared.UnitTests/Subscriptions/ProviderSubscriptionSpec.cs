@@ -16,7 +16,7 @@ public class ProviderSubscriptionSpec
         var result = ProviderSubscription.Create(Identifier.Empty(), ProviderStatus.Empty, ProviderPlan.Empty,
             ProviderPlanPeriod.Empty, ProviderInvoice.Default, ProviderPaymentMethod.Empty);
 
-        result.Should().BeError(ErrorCode.Validation, Resources.ProviderSubscription_InvalidSubscriptionId);
+        result.Should().BeError(ErrorCode.Validation, Resources.ProviderSubscription_InvalidSubscriptionReference);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class ProviderSubscriptionSpec
         var result = ProviderSubscription.Create(status);
 
         result.Value.Status.Should().Be(status);
-        result.Value.Invoice.Should().Be(ProviderInvoice.Default);
+        result.Value.UpcomingInvoice.Should().Be(ProviderInvoice.Default);
         result.Value.Period.Should().Be(ProviderPlanPeriod.Empty);
         result.Value.Plan.Should().Be(ProviderPlan.Empty);
         result.Value.PaymentMethod.Should().Be(ProviderPaymentMethod.Empty);
@@ -39,12 +39,13 @@ public class ProviderSubscriptionSpec
     {
         var status = ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value;
         var paymentMethod = ProviderPaymentMethod
-            .Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None).Value;
+            .Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None,
+                "achecouturl").Value;
 
         var result = ProviderSubscription.Create(status, paymentMethod);
 
         result.Value.Status.Should().Be(status);
-        result.Value.Invoice.Should().Be(ProviderInvoice.Default);
+        result.Value.UpcomingInvoice.Should().Be(ProviderInvoice.Default);
         result.Value.Period.Should().Be(ProviderPlanPeriod.Empty);
         result.Value.Plan.Should().Be(ProviderPlan.Empty);
         result.Value.PaymentMethod.Should().Be(paymentMethod);

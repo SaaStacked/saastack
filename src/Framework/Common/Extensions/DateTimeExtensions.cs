@@ -36,12 +36,12 @@ public static class DateTimeExtensions
         {
             if (DateTime.TryParseExact(value, supportedDateAndTimeFormats, DateTimeFormatInfo.InvariantInfo,
                     DateTimeStyles.None,
-                out var date))
-        {
-            return date.Kind == DateTimeKind.Utc
-                ? date
-                : date.ToUniversalTime();
-        }
+                    out var date))
+            {
+                return date.Kind == DateTimeKind.Utc
+                    ? date
+                    : date.ToUniversalTime();
+            }
         }
         else
         {
@@ -300,6 +300,21 @@ public static class DateTimeExtensions
         var utcDateTime = value.ToUniversalTime();
 
         return utcDateTime.ToString("O");
+    }
+
+    /// <summary>
+    ///     Truncates the <see cref="value" /> to the nearest hour.
+    /// </summary>
+    public static DateTime ToNearestHour(this DateTime value)
+    {
+        var minuteOffset = TimeSpan.FromMinutes(value.Minute)
+            .Add(TimeSpan.FromSeconds(value.Second))
+            .Add(TimeSpan.FromMilliseconds(value.Millisecond))
+            .Add(TimeSpan.FromMicroseconds(value.Microsecond));
+        var nanosecondsInTicks = value.Nanosecond != 0
+            ? value.Nanosecond / 100
+            : 0;
+        return value.Subtract(minuteOffset).AddTicks(-nanosecondsInTicks);
     }
 
     /// <summary>

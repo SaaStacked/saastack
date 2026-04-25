@@ -9,7 +9,7 @@ namespace Infrastructure.Web.Api.Common;
 /// </summary>
 public class HMACSigner
 {
-    private const string SignatureFormat = @"sha256={0}";
+    public const string SignatureFormat = @"sha256={0}";
     internal static readonly Encoding SignatureEncoding = Encoding.UTF8;
     private readonly byte[] _data;
     private readonly string _secret;

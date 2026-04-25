@@ -1,11 +1,11 @@
 using Common;
-using Domain.Events.Shared.Organizations;
 using Domain.Interfaces.Entities;
 using Infrastructure.Eventing.Interfaces.Notifications;
 using Infrastructure.Interfaces;
 using SubscriptionsApplication;
 using OrganizationCreated = Domain.Events.Shared.Organizations.Created;
 using UserProfileCreated = Domain.Events.Shared.UserProfiles.Created;
+using Deleted = Domain.Events.Shared.Organizations.Deleted;
 
 namespace SubscriptionsInfrastructure.Notifications;
 

@@ -57,4 +57,26 @@ public static class QueryResultsExtensions
             Metadata = searchOptions.ToMetadata(results.TotalCount)
         };
     }
+
+    /// <summary>
+    ///     Converts the specified <see cref="QueryResults{TReadModel}" /> to a <see cref="SearchResults{TResource}" /> object,
+    ///     considering the specified <see cref="SearchOptions" />, using an async converter.
+    /// </summary>
+    public static async Task<SearchResults<TResource>> ToSearchResultsAsync<TResource, TReadModel>(
+        this QueryResults<TReadModel> results,
+        SearchOptions searchOptions, Func<TReadModel, Task<TResource>> converter)
+        where TResource : IIdentifiableResource
+        where TReadModel : IQueryableEntity
+    {
+        var conversionTasks = results.Results
+            .Select(converter);
+
+        var resources = await Task.WhenAll(conversionTasks);
+
+        return new SearchResults<TResource>
+        {
+            Results = resources.ToList(),
+            Metadata = searchOptions.ToMetadata(results.TotalCount)
+        };
+    }
 }

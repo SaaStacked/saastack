@@ -6,6 +6,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Framework\Application\Application.Interfaces\Application.Interfaces.csproj" />
+        <ProjectReference Include="..\Domain.Services.Shared\Domain.Services.Shared.csproj" />
+        <ProjectReference Include="..\Domain.Shared\Domain.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -95,9 +95,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
             result.Period.Frequency.Should().Be(0);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Eternity);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -156,9 +156,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
             result.Period.Frequency.Should().Be(0);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Eternity);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -185,9 +185,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Unsubscribed);
             result.Period.Frequency.Should().Be(0);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Eternity);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -214,9 +214,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Unsubscribed);
             result.Period.Frequency.Should().Be(0);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Eternity);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -274,9 +274,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
             result.Period.Frequency.Should().Be(0);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Eternity);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         private async Task SetupBillingAdminAsync(LoginDetails loginA, LoginDetails loginB, string organizationId)
@@ -397,9 +397,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Professional);
             result.Period.Frequency.Should().Be(1);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Month);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -462,9 +462,9 @@ public class SubscriptionsApiSpec
             result.Plan.Tier.Should().Be(SubscriptionTier.Professional);
             result.Period.Frequency.Should().Be(1);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Month);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -487,15 +487,15 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Canceling);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow.AddMonths(1), TimeSpan.FromMinutes(1));
-            result.Plan.Id.Should().Be("apaidtrial");
+            result.Plan.Id.Should().Be("1234567890");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
             result.Period.Frequency.Should().Be(1);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Month);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -518,15 +518,15 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Canceled);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
-            result.Plan.Id.Should().Be("apaidtrial");
+            result.Plan.Id.Should().Be("1234567890");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Unsubscribed);
             result.Period.Frequency.Should().Be(1);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Month);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         [Fact]
@@ -573,15 +573,15 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Activated);
             result.CanceledDateUtc.Should().BeNull();
-            result.Plan.Id.Should().Be("apaidtrial");
+            result.Plan.Id.Should().Be("1234567890");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
             result.Period.Frequency.Should().Be(1);
             result.Period.Unit.Should().Be(PeriodFrequencyUnit.Month);
-            result.Invoice.Amount.Should().Be(0);
-            result.Invoice.Currency.Should().Be(CurrencyCodes.Default.Code);
-            result.Invoice.NextUtc.Should().BeNull();
+            result.UpcomingInvoice.Amount.Should().Be(0);
+            result.UpcomingInvoice.Currency.Should().Be(CurrencyCodes.Default.Code);
+            result.UpcomingInvoice.NextUtc.Should().BeNull();
         }
 
         private async Task SetupBillingAdminAsync(LoginDetails loginA, LoginDetails loginB, string organizationId)

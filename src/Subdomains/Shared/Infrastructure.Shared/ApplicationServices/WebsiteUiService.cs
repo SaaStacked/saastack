@@ -15,6 +15,7 @@ public sealed class WebsiteUiService : IWebsiteUiService
     public const string PasswordMfaOobConfirmationPageRoute = "/identity/credentials/2fa/mfaoob-confirm";
     public const string PasswordRegistrationConfirmationPageRoute = "/identity/credentials/register-confirm";
     public const string PasswordResetConfirmationPageRoute = "/identity/credentials/password-reset-complete";
+    public const string PostPaymentPageRoute = "/organizations/payment-complete";
     public const string RegistrationPageRoute = "/identity/credentials/register";
     private readonly string _websiteHostBaseUrl;
 
@@ -54,6 +55,11 @@ public sealed class WebsiteUiService : IWebsiteUiService
     {
         var escapedToken = Uri.EscapeDataString(token);
         return $"{_websiteHostBaseUrl}/{PasswordResetConfirmationPageRoute.WithoutLeadingSlash()}?token={escapedToken}";
+    }
+
+    public string ConstructPostPaymentPageUrl()
+    {
+        return $"{_websiteHostBaseUrl}/{PostPaymentPageRoute.WithoutLeadingSlash()}";
     }
 
     public string CreateRegistrationPageUrl(string token)

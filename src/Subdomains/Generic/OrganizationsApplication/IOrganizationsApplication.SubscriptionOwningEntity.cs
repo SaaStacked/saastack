@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Services.Shared;
 using Common;
 
 namespace OrganizationsApplication;
@@ -18,5 +19,8 @@ partial interface IOrganizationsApplication
         CancellationToken cancellationToken);
 
     Task<Result<Permission, Error>> CanViewSubscriptionAsync(ICallerContext caller, string id, string viewerId,
+        CancellationToken cancellationToken);
+
+    Task<Result<OwningEntity, Error>> GetOwningEntityAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 }

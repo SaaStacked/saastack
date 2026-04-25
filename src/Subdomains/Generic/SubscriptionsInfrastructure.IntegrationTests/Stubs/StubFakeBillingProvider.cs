@@ -3,40 +3,61 @@ using Application.Interfaces;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
+using Common.Extensions;
 using Domain.Common.ValueObjects;
 using Domain.Services.Shared;
 using Domain.Shared.Subscriptions;
+using FluentAssertions;
 using SubscriptionsInfrastructure.Api._3rdParties;
 
 namespace SubscriptionsInfrastructure.IntegrationTests.Stubs;
 
 /// <summary>
-///     A fake provider to help testing various common billing provider scenarios.
+///     A fake billing provider to help testing various common billing provider scenarios.
 ///     Works with the <see cref="FakeBillingProviderApi" /> to update payment methods out of band
 ///     For this provider:
 ///     1. Has a customerId (from external provider system)
 ///     2. Supports adding a payment method
-///     3. Supports different pricing tiers based on planId 
+///     3. Supports different pricing tiers based on planId
 ///     4. Supports canceling immediately or at end of period
 ///     5. Defines a single billing period of once a month
+///     6. Defines no trial
 /// </summary>
 public class StubFakeBillingProvider : IBillingProvider
 {
     public StubFakeBillingProvider()
     {
-        StateInterpreter = new StubFakeBillingProviderStateInterpreter();
-        GatewayService = new StubFakeBillingGatewayService();
+        Capabilities = new BillingProviderCapabilities
+        {
+            TrialManagement = TrialManagementOptions.SelfManaged
+        };
+        StateInterpreter = new StubFakeBillingProviderStateInterpreter(Capabilities);
+        GatewayService = new StubFakeBillingGatewayService(Capabilities);
     }
+
+    public BillingProviderCapabilities Capabilities { get; }
 
     public IBillingGatewayService GatewayService { get; }
 
     public string ProviderName => StateInterpreter.ProviderName;
 
     public IBillingStateInterpreter StateInterpreter { get; }
+
+    public void Reset()
+    {
+        GatewayService.As<StubFakeBillingGatewayService>().Reset();
+    }
 }
 
 public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
 {
+    public StubFakeBillingProviderStateInterpreter(BillingProviderCapabilities capabilities)
+    {
+        Capabilities = capabilities;
+    }
+
+    public BillingProviderCapabilities Capabilities { get; }
+
     public Result<string, Error> GetBuyerReference(BillingProvider current)
     {
         return current.State[FakeBillingProviderConstants.MetadataProperties.CustomerId];
@@ -49,7 +70,7 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
                 out _))
         {
             paymentMethod = ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
-                BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None).Value;
+                BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None, Optional<string>.None).Value;
         }
 
         var plan = ProviderPlan.Empty;
@@ -69,15 +90,15 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
                 out var subscriptionId))
         {
             var providerStatus = ProviderStatus.Empty;
-            if (current.State.TryGetValue(FakeBillingProviderConstants.MetadataProperties.IsCancelled,
-                    out var isCancelled))
+            if (current.State.TryGetValue(FakeBillingProviderConstants.MetadataProperties.IsCanceled,
+                    out var isCanceled))
             {
-                if (isCancelled == true.ToString())
+                if (isCanceled == true.ToString())
                 {
                     if (current.State.TryGetValue(FakeBillingProviderConstants.MetadataProperties.WhenCanceled,
                             out var cancelWhen))
                     {
-                        if (cancelWhen == CancelWhen.Immediately.ToString())
+                        if (cancelWhen == nameof(CancelWhen.Immediately))
                         {
                             providerStatus = ProviderStatus
                                 .Create(BillingSubscriptionStatus.Canceled, DateTime.UtcNow, true).Value;
@@ -125,7 +146,12 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
 
 public class StubFakeBillingGatewayService : IBillingGatewayService
 {
-    public const string InitialPlanId = "apaidtrial";
+    public const string InitialPlanId = "1234567890";
+
+    public StubFakeBillingGatewayService(BillingProviderCapabilities capabilities)
+    {
+        Capabilities = capabilities;
+    }
 
     public Task<Result<SubscriptionMetadata, Error>> CancelSubscriptionAsync(ICallerContext caller,
         CancelSubscriptionOptions options, BillingProvider provider,
@@ -133,15 +159,17 @@ public class StubFakeBillingGatewayService : IBillingGatewayService
     {
         var metadata = new SubscriptionMetadata(provider.State)
         {
-            [FakeBillingProviderConstants.MetadataProperties.IsCancelled] = true.ToString(),
+            [FakeBillingProviderConstants.MetadataProperties.IsCanceled] = true.ToString(),
             [FakeBillingProviderConstants.MetadataProperties.WhenCanceled] =
                 options.CancelWhen == CancelSubscriptionSchedule.Immediately
-                    ? CancelWhen.Immediately.ToString()
-                    : CancelWhen.EndOfPeriod.ToString()
+                    ? nameof(CancelWhen.Immediately)
+                    : nameof(CancelWhen.EndOfPeriod)
         };
 
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(metadata);
     }
+
+    public BillingProviderCapabilities Capabilities { get; }
 
     public Task<Result<SubscriptionMetadata, Error>> ChangeSubscriptionPlanAsync(ICallerContext caller,
         ChangePlanOptions options, BillingProvider provider, CancellationToken cancellationToken)
@@ -150,10 +178,22 @@ public class StubFakeBillingGatewayService : IBillingGatewayService
         {
             [FakeBillingProviderConstants.MetadataProperties.PlanId] = options.PlanId
         };
-        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.IsCancelled);
+        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.IsCanceled);
         metadata.Remove(FakeBillingProviderConstants.MetadataProperties.WhenCanceled);
 
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(metadata);
+    }
+
+    public Task<Result<Error>> HandleTrialScheduledEventAsync(ICallerContext caller, SubscriptionBuyer buyer,
+        TrialScheduledEvent trialEvent, BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Ok);
+    }
+
+    public Task<Result<SubscriptionMetadata, Error>> IncrementMeterAsync(ICallerContext caller, string meterName,
+        BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
     }
 
     public Task<Result<PricingPlans, Error>> ListAllPricingPlansAsync(ICallerContext caller,
@@ -171,6 +211,16 @@ public class StubFakeBillingGatewayService : IBillingGatewayService
         });
     }
 
+    public Task<Result<SubscriptionMetadata, Error>> ReSyncSubscriptionAsync(ICallerContext caller,
+        BillingProvider provider, CancellationToken cancellationToken)
+    {
+        var metadata = new SubscriptionMetadata(provider.State);
+        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.IsCanceled);
+        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.WhenCanceled);
+
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(metadata);
+    }
+
     public Task<Result<SearchResults<Invoice>, Error>> SearchAllInvoicesAsync(ICallerContext caller,
         BillingProvider provider,
         DateTime fromUtc, DateTime toUtc, SearchOptions searchOptions, CancellationToken cancellationToken)
@@ -184,6 +234,7 @@ public class StubFakeBillingGatewayService : IBillingGatewayService
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
         {
             { FakeBillingProviderConstants.MetadataProperties.CustomerId, buyer.Subscriber.EntityId },
+            { FakeBillingProviderConstants.MetadataProperties.SubscribedAt, DateTime.UtcNow.ToIso8601() },
             { FakeBillingProviderConstants.MetadataProperties.SubscriptionId, CreateSubscriptionId() },
 #if TESTINGONLY
             { FakeBillingProviderConstants.MetadataProperties.PlanId, options.PlanId ?? InitialPlanId },
@@ -200,9 +251,13 @@ public class StubFakeBillingGatewayService : IBillingGatewayService
         {
             [FakeBillingProviderConstants.MetadataProperties.PlanId] = planId
         };
-        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.IsCancelled);
+        metadata.Remove(FakeBillingProviderConstants.MetadataProperties.IsCanceled);
 
         return Task.FromResult<Result<SubscriptionMetadata, Error>>(metadata);
+    }
+
+    public void Reset()
+    {
     }
 
     private static string CreateSubscriptionId()

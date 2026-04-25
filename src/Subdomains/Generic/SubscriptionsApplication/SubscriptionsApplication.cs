@@ -2,6 +2,7 @@ using Application.Common;
 using Application.Common.Extensions;
 using Application.Interfaces;
 using Application.Persistence.Common.Extensions;
+using Application.Persistence.Shared;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
@@ -28,13 +29,16 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
     public SubscriptionsApplication(IRecorder recorder, IIdentifierFactory identifierFactory,
         IUserProfilesService userProfilesService, IBillingProvider billingProvider,
-        ISubscriptionOwningEntityService subscriptionOwningEntityService, ISubscriptionRepository repository)
+        ISubscriptionOwningEntityService subscriptionOwningEntityService,
+        ISubscriptionTrialEventMessageQueueRepository trialEventMessageRepository,
+        ISubscriptionRepository repository)
     {
         _recorder = recorder;
         _identifierFactory = identifierFactory;
         _userProfilesService = userProfilesService;
         _billingProvider = billingProvider;
         _subscriptionOwningEntityService = subscriptionOwningEntityService;
+        _trialEventMessageRepository = trialEventMessageRepository;
         _repository = repository;
     }
 
@@ -65,6 +69,88 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         return await ChangeSubscriptionPlanInternalAsync(caller, subscription, planId, cancellationToken);
     }
 
+#if TESTINGONLY
+    public async Task<Result<SubscriptionWithPlan, Error>> ConvertSubscriptionAsync(ICallerContext caller,
+        string owningEntityId, CancellationToken cancellationToken)
+    {
+        var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var subscription = retrieved.Value;
+        var providerSubscription =
+            await subscription.ForceConvertSubscriptionAsync(_billingProvider.StateInterpreter, OnDispatchTrialEvent);
+        if (providerSubscription.IsFailure)
+        {
+            return providerSubscription.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionConverted,
+            subscription.ToSubscriptionChangedUsageEvent());
+
+        return subscription.ToSubscription(providerSubscription.Value);
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
+        }
+    }
+#endif
+
+#if TESTINGONLY
+    public async Task<Result<SubscriptionWithPlan, Error>> ExpireTrialAsync(ICallerContext caller,
+        string owningEntityId, CancellationToken cancellationToken)
+    {
+        var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var subscription = retrieved.Value;
+        var providerSubscription =
+            await subscription.ForceExpireManagedTrialAsync(_billingProvider.StateInterpreter, OnExpired,
+                OnDispatchTrialEvent);
+        if (providerSubscription.IsFailure)
+        {
+            return providerSubscription.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionManagedTrialExpired,
+            subscription.ToSubscriptionChangedUsageEvent());
+
+        return subscription.ToSubscription(providerSubscription.Value);
+
+        async Task<Result<Error>> OnExpired(SubscriptionRoot root)
+        {
+            return await OnExpireManagedTrialAsync(caller, root, cancellationToken);
+        }
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
+        }
+    }
+#endif
+
     public async Task<Result<SearchResults<SubscriptionToMigrate>, Error>> ExportSubscriptionsToMigrateAsync(
         ICallerContext caller, SearchOptions searchOptions, GetOptions getOptions,
         CancellationToken cancellationToken)
@@ -80,10 +166,19 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         var subscriptions = searched.Value;
         _recorder.TraceInformation(caller.ToCall(), "All subscriptions were fetched");
 
-        return subscriptions.ToSearchResults(searchOptions, subscription =>
+        return await subscriptions.ToSearchResultsAsync(searchOptions, async subscription =>
         {
+            var owningEntity = await _subscriptionOwningEntityService.GetEntityAsync(caller,
+                subscription.OwningEntityId,
+                cancellationToken);
+            if (owningEntity.IsFailure)
+            {
+                return subscription.ToSubscriptionForMigration(null);
+            }
+
             var buyer = CreateBuyerAsync(caller, subscription.BuyerId.Value.ToId(),
-                subscription.OwningEntityId.Value.ToId(), cancellationToken).GetAwaiter().GetResult();
+                    owningEntity.Value, cancellationToken)
+                .GetAwaiter().GetResult();
             if (buyer.IsFailure)
             {
                 return subscription.ToSubscriptionForMigration(null);
@@ -107,7 +202,20 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             cancellationToken);
     }
 
-    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionAsync(ICallerContext caller,
+    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByIdAsync(ICallerContext caller,
+        string id, CancellationToken cancellationToken)
+    {
+        var retrieved = await _repository.LoadAsync(id.ToId(), cancellationToken);
+        if (retrieved.IsFailure)
+        {
+            return retrieved.Error;
+        }
+
+        var subscription = retrieved.Value;
+        return await GetSubscriptionInternalAsync(caller, subscription, cancellationToken);
+    }
+
+    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByOwningEntityIdAsync(ICallerContext caller,
         string owningEntityId, CancellationToken cancellationToken)
     {
         var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
@@ -120,17 +228,42 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         return await GetSubscriptionInternalAsync(caller, subscription, cancellationToken);
     }
 
-    public async Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionPrivateAsync(ICallerContext caller,
-        string id, CancellationToken cancellationToken)
+    public async Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId,
+        string eventName, CancellationToken cancellationToken)
     {
-        var retrieved = await _repository.LoadAsync(id.ToId(), cancellationToken);
+        var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error;
         }
 
         var subscription = retrieved.Value;
-        return await GetSubscriptionInternalAsync(caller, subscription, cancellationToken);
+        var incremented =
+            await subscription.IncrementUsageAsync(_billingProvider.StateInterpreter, eventName, OnIncrement);
+        if (incremented.IsFailure)
+        {
+            return incremented.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.TraceInformation(caller.ToCall(), "Incremented usage for {Subscription} for event {EventName}",
+            subscription.Id, eventName);
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionMeteredUsageIncremented,
+            subscription.ToSubscriptionChangedUsageEvent()
+                .With(UsageConstants.Properties.BillingMeterName, eventName));
+        return Result.Ok;
+
+        async Task<Result<SubscriptionMetadata, Error>> OnIncrement(SubscriptionRoot root)
+        {
+            return await _billingProvider.GatewayService.IncrementMeterAsync(caller, eventName, root.Provider,
+                cancellationToken);
+        }
     }
 
     public async Task<Result<PricingPlans, Error>> ListPricingPlansAsync(ICallerContext caller,
@@ -248,6 +381,9 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         _recorder.AuditAgainst(caller.ToCall(), transfererId, Audits.SubscriptionsApplication_BuyerTransferred,
             "EndUser {TransfererId} transferred subscription {Id} to: {Buyer}", transfererId, subscription.Id,
             afterBuyerId);
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionTransfered,
+            subscription.ToSubscriptionChangedUsageEvent());
 
         var providerSubscription = _billingProvider.StateInterpreter.GetSubscriptionDetails(subscription.Provider);
         if (providerSubscription.IsFailure)
@@ -257,29 +393,36 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         return subscription.ToSubscription(providerSubscription.Value);
 
-        async Task<Permission> CanTransfer(SubscriptionRoot subscription1, Identifier transfererId1,
+        async Task<Permission> CanTransfer(SubscriptionRoot root, Identifier transfererId1,
             Identifier transfereeId1)
         {
             return (await _subscriptionOwningEntityService.CanTransferSubscriptionAsync(caller,
-                    subscription1.OwningEntityId,
-                    transfererId1, transfereeId1, cancellationToken))
+                    root.OwningEntityId, transfererId1, transfereeId1, cancellationToken))
                 .Match(optional => optional.Value, Permission.Denied_Evaluating);
         }
 
-        Task<Result<SubscriptionMetadata, Error>> OnTransfer(BillingProvider provider, Identifier transfereeId1)
+        async Task<Result<SubscriptionMetadata, Error>> OnTransfer(SubscriptionRoot root, Identifier transfereeId1)
         {
+            var owningEntity =
+                await _subscriptionOwningEntityService.GetEntityAsync(caller, root.OwningEntityId, cancellationToken);
+            if (owningEntity.IsFailure)
+            {
+                return owningEntity.Error;
+            }
+
             var maintenance = Caller.CreateAsMaintenance(caller);
-            var transferee = CreateBuyerAsync(maintenance, transfereeId1, owningEntityId.ToId(),
+            var transferee = CreateBuyerAsync(maintenance, transfereeId1, owningEntity.Value,
                 cancellationToken);
             if (transferee.Result.IsFailure)
             {
-                return Task.FromResult<Result<SubscriptionMetadata, Error>>(transferee.Result.Error);
+                return transferee.Result.Error;
             }
 
-            return _billingProvider.GatewayService.TransferSubscriptionAsync(caller, new TransferSubscriptionOptions
-            {
-                TransfereeBuyer = transferee.Result.Value
-            }, provider, cancellationToken);
+            return await _billingProvider.GatewayService.TransferSubscriptionAsync(caller,
+                new TransferSubscriptionOptions
+                {
+                    TransfereeBuyer = transferee.Result.Value
+                }, root.Provider, cancellationToken);
         }
     }
 
@@ -308,11 +451,17 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             _recorder.TraceInformation(caller.ToCall(),
                 "Subscription {Id} has been transferred from {FromBuyer} to {ToBuyer}", subscription.Id,
                 buyerIdBeforeChange, buyerIdAfterChange);
+            _recorder.TrackUsage(caller.ToCall(),
+                UsageConstants.Events.UsageScenarios.Generic.SubscriptionTransfered,
+                subscription.ToSubscriptionChangedUsageEvent());
         }
         else
         {
             _recorder.TraceInformation(caller.ToCall(), "Subscription {Id} changed its plan: {Plan}",
                 subscription.Id, planId);
+            _recorder.TrackUsage(caller.ToCall(),
+                UsageConstants.Events.UsageScenarios.Generic.SubscriptionPlanChanged,
+                subscription.ToSubscriptionChangedUsageEvent());
         }
 
         var providerSubscription = _billingProvider.StateInterpreter.GetSubscriptionDetails(subscription.Provider);
@@ -323,45 +472,60 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         return subscription.ToSubscription(providerSubscription.Value);
 
-        Task<Result<SubscriptionMetadata, Error>> OnChange(SubscriptionRoot subscription1, string planId1)
+        async Task<Result<SubscriptionMetadata, Error>> OnChange(SubscriptionRoot root, string planId1)
         {
+            var owningEntity =
+                await _subscriptionOwningEntityService.GetEntityAsync(caller, root.OwningEntityId, cancellationToken);
+            if (owningEntity.IsFailure)
+            {
+                return owningEntity.Error;
+            }
+
             var options = new ChangePlanOptions
             {
                 PlanId = planId1,
                 Subscriber = new Subscriber
                 {
-                    EntityId = subscription.OwningEntityId.ToString(),
-                    EntityType = nameof(Organization)
+                    EntityId = owningEntity.Value.Id,
+                    EntityType = owningEntity.Value.Type,
+                    EntityName = owningEntity.Value.Name
                 }
             };
 
             var planChanged = _billingProvider.GatewayService.ChangeSubscriptionPlanAsync(caller, options,
-                subscription1.Provider.Value, cancellationToken);
-            return Task.FromResult(planChanged.Result);
+                root.Provider.Value, cancellationToken);
+            return planChanged.Result;
         }
 
-        async Task<Permission> CanChange(SubscriptionRoot subscription1, Identifier modifierId1)
+        async Task<Permission> CanChange(SubscriptionRoot root, Identifier modifierId1)
         {
             return (await _subscriptionOwningEntityService.CanChangeSubscriptionPlanAsync(caller,
-                    subscription1.OwningEntityId,
+                    root.OwningEntityId,
                     modifierId1, cancellationToken))
                 .Match(optional => optional.Value, Permission.Denied_Evaluating);
         }
 
-        Task<Result<SubscriptionMetadata, Error>> OnTransfer(BillingProvider provider, Identifier transfereeId)
+        async Task<Result<SubscriptionMetadata, Error>> OnTransfer(SubscriptionRoot root, Identifier transfereeId)
         {
-            var transferee = CreateBuyerAsync(caller, transfereeId, subscription.OwningEntityId,
-                cancellationToken);
-            if (transferee.Result.IsFailure)
+            var owningEntity =
+                await _subscriptionOwningEntityService.GetEntityAsync(caller, root.OwningEntityId, cancellationToken);
+            if (owningEntity.IsFailure)
             {
-                return Task.FromResult<Result<SubscriptionMetadata, Error>>(transferee.Result.Error);
+                return owningEntity.Error;
             }
 
-            return _billingProvider.GatewayService.TransferSubscriptionAsync(caller, new TransferSubscriptionOptions
+            var transferee = CreateBuyerAsync(caller, transfereeId, owningEntity.Value, cancellationToken);
+            if (transferee.Result.IsFailure)
             {
-                TransfereeBuyer = transferee.Result.Value,
-                PlanId = planId
-            }, provider, cancellationToken);
+                return transferee.Result.Error;
+            }
+
+            return await _billingProvider.GatewayService.TransferSubscriptionAsync(caller,
+                new TransferSubscriptionOptions
+                {
+                    TransfereeBuyer = transferee.Result.Value,
+                    PlanId = planId
+                }, root.Provider, cancellationToken);
         }
     }
 
@@ -392,6 +556,9 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         subscription = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Canceled subscription: {Id} for entity: {OwningEntity}",
             subscription.Id, subscription.OwningEntityId);
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionCanceled,
+            subscription.ToSubscriptionChangedUsageEvent());
 
         var providerSubscription = _billingProvider.StateInterpreter.GetSubscriptionDetails(subscription.Provider);
         if (providerSubscription.IsFailure)
@@ -401,17 +568,17 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         return subscription.ToSubscription(providerSubscription.Value);
 
-        Task<Result<SubscriptionMetadata, Error>> OnCancel(SubscriptionRoot subscription1)
+        Task<Result<SubscriptionMetadata, Error>> OnCancel(SubscriptionRoot root)
         {
             var canceledSubscription = _billingProvider.GatewayService.CancelSubscriptionAsync(caller,
-                options, subscription1.Provider.Value, cancellationToken);
+                options, root.Provider.Value, cancellationToken);
             return Task.FromResult(canceledSubscription.Result);
         }
 
-        async Task<Permission> CanCancel(SubscriptionRoot subscription1, Identifier cancellerId1)
+        async Task<Permission> CanCancel(SubscriptionRoot root, Identifier cancellerId1)
         {
             return (await _subscriptionOwningEntityService.CanCancelSubscriptionAsync(caller,
-                    subscription1.OwningEntityId, cancellerId1, cancellationToken))
+                    root.OwningEntityId, cancellerId1, cancellationToken))
                 .Match(optional => optional.Value, Permission.Denied_Evaluating);
         }
     }
@@ -431,10 +598,10 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             subscription.Id, subscription.OwningEntityId);
         return subscription.ToSubscription(providerSubscription.Value);
 
-        async Task<Permission> CanView(SubscriptionRoot subscription1, Identifier viewerId1)
+        async Task<Permission> CanView(SubscriptionRoot root, Identifier viewerId1)
         {
             return (await _subscriptionOwningEntityService.CanViewSubscriptionAsync(caller,
-                    subscription1.OwningEntityId,
+                    root.OwningEntityId,
                     viewerId1, cancellationToken))
                 .Match(optional => optional.Value, Permission.Denied_Evaluating);
         }
@@ -448,8 +615,8 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
     /// </summary>
     private static (DateTime From, DateTime To) CalculatedSearchRange(DateTime? fromUtc, DateTime? toUtc)
     {
-        var to = toUtc ?? (fromUtc?.Add(Validations.Subscription.DefaultInvoicePeriod)
-                           ?? DateTime.UtcNow.ToNearestMinute());
+        var to = toUtc
+                 ?? fromUtc?.Add(Validations.Subscription.DefaultInvoicePeriod) ?? DateTime.UtcNow.ToNearestMinute();
         var from = fromUtc ?? to.Add(-Validations.Subscription.DefaultInvoicePeriod);
 
         return (from, to);
@@ -474,7 +641,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
     }
 
     private async Task<Result<Optional<SubscriptionBuyer>, Error>> CreateBuyerAsync(ICallerContext caller,
-        Identifier buyerId, Optional<Identifier> owningEntityId, CancellationToken cancellationToken)
+        Identifier buyerId, OwningEntity owningEntity, CancellationToken cancellationToken)
     {
         var retrievedProfile = await _userProfilesService.GetProfilePrivateAsync(caller, buyerId, cancellationToken);
         if (retrievedProfile.IsFailure)
@@ -488,26 +655,26 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         }
 
         var profile = retrievedProfile.Value;
-        var buyer = ToSubscriptionBuyer(buyerId, owningEntityId, profile);
+        var buyer = ToSubscriptionBuyer(buyerId, owningEntity, profile);
 
         return buyer.ToOptional();
     }
 
     private static SubscriptionBuyer ToSubscriptionBuyer(Identifier buyerId,
-        Identifier owningEntityId,
-        UserProfile profile)
+        OwningEntity entity, UserProfile user)
     {
         return new SubscriptionBuyer
         {
             Id = buyerId.ToString(),
-            Name = profile.Name,
-            PhoneNumber = profile.PhoneNumber,
-            EmailAddress = profile.EmailAddress!.Address,
-            Address = profile.Address,
+            Name = user.Name,
+            PhoneNumber = user.PhoneNumber,
+            EmailAddress = user.EmailAddress!.Address,
+            Address = user.Address,
             Subscriber = new Subscriber
             {
-                EntityId = owningEntityId,
-                EntityType = nameof(Organization)
+                EntityId = entity.Id,
+                EntityType = entity.Type,
+                EntityName = entity.Name
             }
         };
     }
@@ -518,6 +685,14 @@ internal static class SubscriptionConversionExtensions
     public static SubscriptionWithPlan ToSubscription(this SubscriptionRoot subscription,
         ProviderSubscription providerSubscription)
     {
+        //Infer from provider
+        var isTrial = subscription.ManagedTrial.HasValue || providerSubscription.Plan.Trial.HasValue;
+        var trialEndDate = subscription.ManagedTrial.HasValue
+            ? (DateTime?)subscription.ManagedTrial.Value.ExpiryDueAt
+            : providerSubscription.Plan.Trial.HasValue
+                ? providerSubscription.Plan.Trial.Value.ExpiryDueAt
+                : null;
+
         return new SubscriptionWithPlan
         {
             Id = subscription.Id,
@@ -532,8 +707,8 @@ internal static class SubscriptionConversionExtensions
             Plan = new SubscriptionPlan
             {
                 Id = providerSubscription.Plan.PlanId.ValueOrDefault,
-                IsTrial = providerSubscription.Plan.IsTrial,
-                TrialEndDateUtc = providerSubscription.Plan.TrialEndDateUtc.ToNullable(),
+                IsTrial = isTrial,
+                TrialEndDateUtc = trialEndDate,
                 Tier = providerSubscription.Plan.Tier.ToEnum<BillingSubscriptionTier, SubscriptionTier>()
             },
             Period = new PlanPeriod
@@ -541,11 +716,11 @@ internal static class SubscriptionConversionExtensions
                 Frequency = providerSubscription.Period.Frequency,
                 Unit = providerSubscription.Period.Unit.ToEnumOrDefault(PeriodFrequencyUnit.Eternity)
             },
-            Invoice = new InvoiceSummary
+            UpcomingInvoice = new InvoiceSummary
             {
-                Amount = providerSubscription.Invoice.Amount,
-                Currency = providerSubscription.Invoice.CurrencyCode.Currency.Code,
-                NextUtc = providerSubscription.Invoice.NextUtc.ToNullable()
+                Amount = providerSubscription.UpcomingInvoice.Amount,
+                Currency = providerSubscription.UpcomingInvoice.CurrencyCode.Currency.Code,
+                NextUtc = providerSubscription.UpcomingInvoice.NextUtc.ToNullable()
             },
             PaymentMethod = new SubscriptionPaymentMethod
             {
@@ -553,8 +728,20 @@ internal static class SubscriptionConversionExtensions
                 Type = providerSubscription.PaymentMethod.Type.ToEnumOrDefault(PaymentMethodType.None),
                 ExpiresOn = providerSubscription.PaymentMethod.ExpiresOn.ToNullable()
             },
+            CheckoutUrl = providerSubscription.PaymentMethod.CheckoutUrl,
             CanBeUnsubscribed = providerSubscription.Status.CanBeUnsubscribed,
             CanBeCanceled = providerSubscription.Status.CanBeCanceled
+        };
+    }
+
+    public static Dictionary<string, object> ToSubscriptionChangedUsageEvent(this SubscriptionRoot subscription)
+    {
+        return new Dictionary<string, object>
+        {
+            { UsageConstants.Properties.Id, subscription.Id },
+            { UsageConstants.Properties.TenantId, subscription.OwningEntityId },
+            { UsageConstants.Properties.BillingProvider, subscription.Provider.Value.Name },
+            { UsageConstants.Properties.CreatedById, subscription.BuyerId }
         };
     }
 

@@ -270,6 +270,26 @@ public class EndUserRootSpec
         }
 
         [Fact]
+        public void WhenAddMembershipAndAlreadySamePersonalOrg_ThenReturns()
+        {
+            _user.Register(Roles.Create(PlatformRoles.Standard).Value,
+                Features.Create(PlatformFeatures.Basic).Value, EndUserProfile.Create("afirstname").Value,
+                EmailAddress.Create("auser@company.com").Value);
+            _user.AddMembership(_user, OrganizationOwnership.Personal, "anorganizationid".ToId(),
+                Roles.Empty, Features.Empty);
+            var eventCountAfterFirstAdd = _user.Events.Count;
+
+            var result = _user.AddMembership(_user, OrganizationOwnership.Personal, "anorganizationid".ToId(),
+                Roles.Empty, Features.Empty);
+
+            result.Should().BeSuccess();
+            _user.Events.Count.Should().Be(eventCountAfterFirstAdd);
+            _user.Memberships.Should().ContainSingle(ms =>
+                ms.OrganizationId.Value == "anorganizationid"
+                && ms.Ownership.Value == OrganizationOwnership.Personal);
+        }
+
+        [Fact]
         public void WhenAddMembershipToMachinesPersonalOrganization_ThenReturnsError()
         {
             _user.Register(Roles.Create(PlatformRoles.Standard).Value,
@@ -1452,6 +1472,26 @@ public class EndUserRootSpec
                 && ms.Roles == roles
                 && ms.Features == features);
             _user.Events.Last().Should().BeOfType<DefaultMembershipChanged>();
+        }
+
+        [Fact]
+        public void WhenAddMembershipAndAlreadySamePersonalOrg_ThenReturns()
+        {
+            _user.Register(Roles.Create(PlatformRoles.Standard).Value,
+                Features.Create(PlatformFeatures.Basic).Value, EndUserProfile.Create("afirstname").Value,
+                EmailAddress.Create("auser@company.com").Value);
+            _user.AddMembership(_user, OrganizationOwnership.Personal, "anorganizationid".ToId(),
+                Roles.Empty, Features.Empty);
+            var eventCountAfterFirstAdd = _user.Events.Count;
+
+            var result = _user.AddMembership(_user, OrganizationOwnership.Personal, "anorganizationid".ToId(),
+                Roles.Empty, Features.Empty);
+
+            result.Should().BeSuccess();
+            _user.Events.Count.Should().Be(eventCountAfterFirstAdd);
+            _user.Memberships.Should().ContainSingle(ms =>
+                ms.OrganizationId.Value == "anorganizationid"
+                && ms.Ownership.Value == OrganizationOwnership.Personal);
         }
 
         [Fact]

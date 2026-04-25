@@ -43,7 +43,8 @@ public class FakeBillingProviderApi : IWebApiService
         if (created.IsFailure)
         {
             _recorder.TraceError(caller.ToCall(),
-                "Failed to audit Chargebee webhook event {Event} with {Code}: {Message}", eventType, created.Error.Code,
+                "Failed to audit Fake Billing webhook event {Event} with {Code}: {Message}", eventType,
+                created.Error.Code,
                 created.Error.Message);
             return () => new Result<EmptyResponse, Error>(created.Error);
         }

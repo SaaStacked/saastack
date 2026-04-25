@@ -21,7 +21,8 @@ public class OAuth2AuthApiZSpec : WebsiteSpec<Program, ApiHost1.Program>
 {
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public OAuth2AuthApiZSpec(WebApiSetup<Program> setup) : base(setup)
+    public OAuth2AuthApiZSpec(WebApiSetup<Program> setup) : base(setup, null,
+        spec => spec.StartupAdditionalServer<TestingStubApiHost.Program>())
     {
         _jsonOptions = setup.GetRequiredService<JsonSerializerOptions>();
     }

@@ -3,10 +3,11 @@ using Application.Interfaces;
 using Application.Services.Shared;
 using Common;
 using Domain.Common.ValueObjects;
-using Domain.Events.Shared.Organizations;
+using Domain.Services.Shared;
 using Domain.Shared.Subscriptions;
 using SubscriptionsDomain;
 using Created = Domain.Events.Shared.UserProfiles.Created;
+using Deleted = Domain.Events.Shared.Organizations.Deleted;
 
 namespace SubscriptionsApplication;
 
@@ -34,7 +35,7 @@ partial class SubscriptionsApplication
     }
 
     /// <summary>
-    ///     To create a subscription in full we need both and existing organization (OwningEntity),
+    ///     To create a subscription in full/complete we need both and existing organization (OwningEntity),
     ///     and an existing buyer (UserProfile).
     ///     The organization is created separately from the profile, and these events happen in parallel,
     ///     in response to other events, and so we have to wait for both events to occur before we can "complete" the
@@ -65,7 +66,15 @@ partial class SubscriptionsApplication
             }
 
             var subscription = created.Value;
-            var buyer = await CreateBuyerAsync(caller, buyerId, owningEntityId, cancellationToken);
+            var owningEntity =
+                await _subscriptionOwningEntityService.GetEntityAsync(caller, subscription.OwningEntityId,
+                    cancellationToken);
+            if (owningEntity.IsFailure)
+            {
+                return owningEntity.Error;
+            }
+
+            var buyer = await CreateBuyerAsync(caller, buyerId, owningEntity.Value, cancellationToken);
             if (buyer.IsFailure)
             {
                 return buyer.Error;
@@ -99,7 +108,15 @@ partial class SubscriptionsApplication
                     return Result.Ok;
                 }
 
-                var buyer = await CreateBuyerAsync(caller, buyerId, subscription.OwningEntityId, cancellationToken);
+                var owningEntity =
+                    await _subscriptionOwningEntityService.GetEntityAsync(caller, subscription.OwningEntityId,
+                        cancellationToken);
+                if (owningEntity.IsFailure)
+                {
+                    return owningEntity.Error;
+                }
+
+                var buyer = await CreateBuyerAsync(caller, buyerId, owningEntity.Value, cancellationToken);
                 if (buyer.IsFailure)
                 {
                     return buyer.Error;
@@ -135,17 +152,68 @@ partial class SubscriptionsApplication
                 return provided.Error;
             }
 
+            var configured =
+                await subscription.InitializeSubscriptionAsync(_billingProvider.StateInterpreter, subscription.Provider,
+                    OnDispatchTrialEvent);
+            if (configured.IsFailure)
+            {
+                return configured.Error;
+            }
+
+            var dispatchedScheduleEvent =
+                await subscription.DispatchManagedTrialFirstScheduledEventAsync(_billingProvider.StateInterpreter,
+                    OnDispatchTrialEvent);
+            if (dispatchedScheduleEvent.IsFailure)
+            {
+                return dispatchedScheduleEvent.Error;
+            }
+
             var saved = await _repository.SaveAsync(subscription, cancellationToken);
             if (saved.IsFailure)
             {
                 return saved.Error;
             }
 
+            var dispatchedExpirySignal =
+                await subscription.DispatchManagedTrialFirstExpirySignalAsync(_billingProvider.StateInterpreter,
+                    OnDispatchSignal);
+            if (dispatchedExpirySignal.IsFailure)
+            {
+                return dispatchedExpirySignal.Error;
+            }
+
+            subscription = saved.Value;
             _recorder.TraceInformation(caller.ToCall(), "Subscription {Id} created complete for {BuyerId}",
-                subscription.Id,
-                subscription.BuyerId);
+                subscription.Id, subscription.BuyerId);
+            _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.SubscriptionCreated,
+                subscription.ToSubscriptionChangedUsageEvent());
+            if (_billingProvider.Capabilities.TrialManagement is TrialManagementOptions.RequiresManaged
+                && subscription.ManagedTrial.HasValue)
+            {
+                _recorder.TrackUsage(caller.ToCall(),
+                    UsageConstants.Events.UsageScenarios.Generic.SubscriptionManagedTrialStarted,
+                    subscription.ToSubscriptionChangedUsageEvent());
+            }
+
+            if (subscription.IsConverted)
+            {
+                _recorder.TrackUsage(caller.ToCall(),
+                    UsageConstants.Events.UsageScenarios.Generic.SubscriptionConverted,
+                    subscription.ToSubscriptionChangedUsageEvent());
+            }
 
             return Result.Ok;
+
+            async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent @event,
+                DateTime relativeTo)
+            {
+                return await OnDispatchManagedTrialEventAsync(caller, root, @event, relativeTo, cancellationToken);
+            }
+
+            async Task<Result<Error>> OnDispatchSignal(SubscriptionRoot root)
+            {
+                return await OnDispatchManagedTrialSignalAsync(caller, root, cancellationToken);
+            }
         }
 
         async Task<Result<Error>> SavePartialSubscriptionAsync(SubscriptionRoot subscription)

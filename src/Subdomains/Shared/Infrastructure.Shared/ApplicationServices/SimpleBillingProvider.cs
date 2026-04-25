@@ -21,7 +21,10 @@ public sealed class SimpleBillingProvider : IBillingProvider
     {
         GatewayService = new InProcessInMemSimpleBillingGatewayService();
         StateInterpreter = new SinglePlanBillingStateInterpreter();
+        Capabilities = SinglePlanBillingStateInterpreter.Constants.Capabilities;
     }
+
+    public BillingProviderCapabilities Capabilities { get; }
 
     public IBillingGatewayService GatewayService { get; }
 
@@ -35,6 +38,8 @@ public sealed class SimpleBillingProvider : IBillingProvider
 /// </summary>
 public sealed class SinglePlanBillingStateInterpreter : IBillingStateInterpreter
 {
+    public BillingProviderCapabilities Capabilities => Constants.Capabilities;
+
     public Result<string, Error> GetBuyerReference(BillingProvider current)
     {
         if (current.State.TryGetValue(Constants.MetadataProperties.BuyerId, out var reference))
@@ -64,7 +69,7 @@ public sealed class SinglePlanBillingStateInterpreter : IBillingStateInterpreter
             // Always a valid payment method
             var paymentMethod =
                 ProviderPaymentMethod.Create(BillingPaymentMethodType.Other, BillingPaymentMethodStatus.Valid,
-                    Optional<DateOnly>.None);
+                    Optional<DateOnly>.None, Optional<string>.None);
             if (paymentMethod.IsFailure)
             {
                 return paymentMethod.Error;
@@ -83,7 +88,7 @@ public sealed class SinglePlanBillingStateInterpreter : IBillingStateInterpreter
             }
 
             // Fixed plan
-            var plan = ProviderPlan.Create(Constants.DefaultPlanId, false, Optional<DateTime>.None,
+            var plan = ProviderPlan.Create(Constants.DefaultPlanId, Optional<TrialTimeline>.None,
                 BillingSubscriptionTier.Standard);
             if (plan.IsFailure)
             {
@@ -93,7 +98,7 @@ public sealed class SinglePlanBillingStateInterpreter : IBillingStateInterpreter
             // Always a valid payment method
             var paymentMethod =
                 ProviderPaymentMethod.Create(BillingPaymentMethodType.Other, BillingPaymentMethodStatus.Valid,
-                    Optional<DateOnly>.None);
+                    Optional<DateOnly>.None, Optional<string>.None);
             if (paymentMethod.IsFailure)
             {
                 return paymentMethod.Error;
@@ -147,6 +152,7 @@ public sealed class SinglePlanBillingStateInterpreter : IBillingStateInterpreter
     {
         public const string DefaultPlanId = "_simple_standard";
         public const string ProviderName = "simple_billing_provider";
+        public static readonly BillingProviderCapabilities Capabilities = new();
 
         public static class MetadataProperties
         {
@@ -179,23 +185,34 @@ public class InProcessInMemSimpleBillingGatewayService : IBillingGatewayService
         });
     }
 
+    public BillingProviderCapabilities Capabilities => SinglePlanBillingStateInterpreter.Constants.Capabilities;
+
     /// <summary>
     ///     Resets the state, since the current plan cannot be (effectively) changed
     /// </summary>
     public Task<Result<SubscriptionMetadata, Error>> ChangeSubscriptionPlanAsync(ICallerContext caller,
         ChangePlanOptions options, BillingProvider provider, CancellationToken cancellationToken)
     {
-        return Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
-        {
-            {
-                SinglePlanBillingStateInterpreter.Constants.MetadataProperties.BuyerId,
-                provider.State[SinglePlanBillingStateInterpreter.Constants.MetadataProperties.BuyerId]
-            },
-            {
-                SinglePlanBillingStateInterpreter.Constants.MetadataProperties.SubscriptionId,
-                provider.State[SinglePlanBillingStateInterpreter.Constants.MetadataProperties.SubscriptionId]
-            }
-        });
+        return ReSyncSubscriptionAsync(caller, provider, cancellationToken);
+    }
+
+    /// <summary>
+    ///     There is no trial schedule
+    /// </summary>
+    public Task<Result<Error>> HandleTrialScheduledEventAsync(ICallerContext caller,
+        SubscriptionBuyer buyer, TrialScheduledEvent trialEvent, BillingProvider provider,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Ok);
+    }
+
+    /// <summary>
+    ///     No metering capability
+    /// </summary>
+    public Task<Result<SubscriptionMetadata, Error>> IncrementMeterAsync(ICallerContext caller, string meterName,
+        BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(provider.State);
     }
 
     /// <summary>
@@ -261,6 +278,25 @@ public class InProcessInMemSimpleBillingGatewayService : IBillingGatewayService
         {
             { SinglePlanBillingStateInterpreter.Constants.MetadataProperties.BuyerId, buyer.Id },
             { SinglePlanBillingStateInterpreter.Constants.MetadataProperties.SubscriptionId, GenerateSubscriptionId() }
+        });
+    }
+
+    /// <summary>
+    ///     Resets the state, since the current plan cannot be (effectively) changed
+    /// </summary>
+    public Task<Result<SubscriptionMetadata, Error>> ReSyncSubscriptionAsync(ICallerContext caller,
+        BillingProvider provider, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
+        {
+            {
+                SinglePlanBillingStateInterpreter.Constants.MetadataProperties.BuyerId,
+                provider.State[SinglePlanBillingStateInterpreter.Constants.MetadataProperties.BuyerId]
+            },
+            {
+                SinglePlanBillingStateInterpreter.Constants.MetadataProperties.SubscriptionId,
+                provider.State[SinglePlanBillingStateInterpreter.Constants.MetadataProperties.SubscriptionId]
+            }
         });
     }
 

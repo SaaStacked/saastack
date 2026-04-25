@@ -4,6 +4,7 @@ using FluentAssertions;
 using Infrastructure.Interfaces;
 using Infrastructure.Web.Api.Common.Endpoints;
 using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
+using Infrastructure.Web.Api.Operations.Shared.Subscriptions;
 using Infrastructure.Web.Api.Operations.Shared.TestingOnly;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -69,6 +70,46 @@ public class ApiUsageFilterSpec
             rec => rec.TrackUsage(It.IsAny<ICallContext?>(), It.IsAny<string>(),
                 It.IsAny<Dictionary<string, object>>()), Times.Never);
     }
+
+#if TESTINGONLY
+    [Fact]
+    public async Task WhenInvokeAndRequestTypeIsDestroyAllRepositoriesRequest_ThenDoesNothing()
+    {
+        var args = new object[] { "anarg1", new DestroyAllRepositoriesRequest() };
+        var httpContext = new DefaultHttpContext
+        {
+            Request = { Method = "amethod", Path = "/apath" }
+        };
+        httpContext.SetEndpoint(new Endpoint(_ => Task.CompletedTask, null, "aroute"));
+        var context = new DefaultEndpointFilterInvocationContext(httpContext, args);
+        var next = new EndpointFilterDelegate(_ => new ValueTask<object?>());
+
+        await _filter.InvokeAsync(context, next);
+
+        _recorder.Verify(
+            rec => rec.TrackUsage(It.IsAny<ICallContext?>(), It.IsAny<string>(),
+                It.IsAny<Dictionary<string, object>>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task WhenInvokeAndRequestTypeIsDrainAllSubscriptionTrialEventsRequest_ThenDoesNothing()
+    {
+        var args = new object[] { "anarg1", new DrainAllSubscriptionTrialEventsRequest() };
+        var httpContext = new DefaultHttpContext
+        {
+            Request = { Method = "amethod", Path = "/apath" }
+        };
+        httpContext.SetEndpoint(new Endpoint(_ => Task.CompletedTask, null, "aroute"));
+        var context = new DefaultEndpointFilterInvocationContext(httpContext, args);
+        var next = new EndpointFilterDelegate(_ => new ValueTask<object?>());
+
+        await _filter.InvokeAsync(context, next);
+
+        _recorder.Verify(
+            rec => rec.TrackUsage(It.IsAny<ICallContext?>(), It.IsAny<string>(),
+                It.IsAny<Dictionary<string, object>>()), Times.Never);
+    }
+#endif
 
     [Fact]
     public async Task WhenInvokeAndRequestTypeIsNotIgnored_ThenTracksUsage()

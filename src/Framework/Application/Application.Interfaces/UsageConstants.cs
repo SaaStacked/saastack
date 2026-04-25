@@ -9,6 +9,7 @@ public static class UsageConstants
     {
         public const string BackEndApiHost = "API";
         public const string BackEndForFrontEndWebHost = "WEB";
+        public const string MobileClient = "MOBILE";
     }
 
     public static class Properties
@@ -16,6 +17,8 @@ public static class UsageConstants
         public const string AuditCode = "Code";
         public const string AuthProvider = "AuthProvider";
         public const string AvatarUrl = "AvatarUrl";
+        public const string BillingMeterName = "BillingMeterName";
+        public const string BillingProvider = "BillingProvider";
         public const string CallId = "CallId";
         public const string CarMake = "Make";
         public const string CarModel = "Model";
@@ -84,6 +87,14 @@ public static class UsageConstants
                 public const string PersonRegistrationRenewed = "User Registration Confirmation Renewed";
                 public const string PersonRegistrationCreated = "User Registration Created";
                 public const string PersonReRegistered = "User Registration ReAttempted";
+                public const string SubscriptionCanceled = "Subscription Canceled";
+                public const string SubscriptionConverted = "Subscription Converted Paid";
+                public const string SubscriptionCreated = "Subscription Created";
+                public const string SubscriptionManagedTrialExpired = "Subscription Trial Expired";
+                public const string SubscriptionManagedTrialStarted = "Subscription Trial Started";
+                public const string SubscriptionPlanChanged = "Subscription Plan Changed";
+                public const string SubscriptionTransfered = "Subscription Transfered";
+                public const string SubscriptionMeteredUsageIncremented = "Subscription Usage Incremented";
                 public const string UserExtendedLogin = "User Extended Login";
                 public const string UserLogin = "User Login";
                 public const string UserLogout = "User Logout";

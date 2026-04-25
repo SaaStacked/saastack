@@ -531,4 +531,56 @@ public class DateTimeExtensionsSpec
         result.Should().Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, datum.Minute, datum.Second,
             datum.Millisecond, 0, datum.Kind));
     }
+
+    [Fact]
+    public void WhenToNearestHourAndHasMinutes_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9);
+
+        var result = datum.ToNearestHour();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 0, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestHourAndHasSeconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9);
+
+        var result = datum.ToNearestHour();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 0, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestHourAndHasMilliseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9);
+
+        var result = datum.ToNearestHour();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 0, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestHourAndHasMicroseconds_ThenReturnsRounded()
+    {
+        var datum = new DateTime(2024, 10, 1, 15, 23, 9, 9, 9);
+
+        var result = datum.ToNearestHour();
+
+        result.Should().Be(new DateTime(2024, 10, 1, 15, 0, 0, 0, 0));
+    }
+
+    [Fact]
+    public void WhenToNearestHourAndHasNanoseconds_ThenReturnsRounded()
+    {
+        var datum = DateTime.UtcNow;
+
+        var result = datum.ToNearestHour();
+
+        result.Should()
+            .Be(new DateTime(datum.Year, datum.Month, datum.Day, datum.Hour, 0, 0, 0, 0,
+                datum.Kind));
+    }
 }

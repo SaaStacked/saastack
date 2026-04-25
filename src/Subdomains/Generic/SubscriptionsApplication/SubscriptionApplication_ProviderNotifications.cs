@@ -64,7 +64,7 @@ partial class SubscriptionsApplication
         return subscription.Provider.Value.State;
     }
 
-    public async Task<Result<Error>> NotifyBuyerDeletedAsync(ICallerContext caller, string providerName,
+    public async Task<Result<Error>> NotifyBuyerDetailsChangedAsync(ICallerContext caller, string providerName,
         SubscriptionMetadata state, CancellationToken cancellationToken)
     {
         var provider = BillingProvider.Create(providerName, state);
@@ -86,11 +86,11 @@ partial class SubscriptionsApplication
         }
 
         var subscription = retrievedSubscription.Value.Value;
-        var deleted = await subscription.RestoreBuyerAfterDeletedFromProviderAsync(
-            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value, OnRestoreBuyer);
-        if (deleted.IsFailure)
+        var changed = subscription.ChangeDetailsForBuyerByProvider(
+            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value);
+        if (changed.IsFailure)
         {
-            return deleted.Error;
+            return changed.Error;
         }
 
         var saved = await _repository.SaveAsync(subscription, cancellationToken);
@@ -100,28 +100,9 @@ partial class SubscriptionsApplication
         }
 
         _recorder.TraceInformation(caller.ToCall(),
-            "Subscription {Id} had its buyer deleted by the provider, and restored", subscription.Id);
+            "Subscription {Id} had its buyer details changed by the provider", subscription.Id);
 
         return Result.Ok;
-
-        async Task<Result<SubscriptionMetadata, Error>> OnRestoreBuyer(SubscriptionRoot subscription1)
-        {
-            var buyer = await CreateBuyerAsync(caller, subscription1.BuyerId, subscription1.OwningEntityId,
-                cancellationToken);
-            if (buyer.IsFailure)
-            {
-                return buyer.Error;
-            }
-
-            var restoredBuyer = await _billingProvider.GatewayService.RestoreBuyerAsync(caller,
-                buyer.Value, cancellationToken);
-            if (restoredBuyer.IsFailure)
-            {
-                return restoredBuyer.Error;
-            }
-
-            return restoredBuyer.Value;
-        }
     }
 
     public async Task<Result<Error>> NotifyBuyerPaymentMethodChangedAsync(ICallerContext caller, string providerName,
@@ -146,7 +127,7 @@ partial class SubscriptionsApplication
         }
 
         var subscription = retrievedSubscription.Value.Value;
-        var changed = subscription.ChangePaymentMethodForBuyerFromProvider(
+        var changed = subscription.ChangePaymentMethodForBuyerByProvider(
             _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value);
         if (changed.IsFailure)
         {
@@ -165,7 +146,60 @@ partial class SubscriptionsApplication
         return Result.Ok;
     }
 
-    public async Task<Result<Error>> NotifySubscriptionCancelledAsync(ICallerContext caller, string providerName,
+    public async Task<Result<Error>> NotifyBuyerSubscriptionAddedWithPaymentMethodAsync(ICallerContext caller,
+        string providerName, SubscriptionMetadata state, CancellationToken cancellationToken)
+    {
+        var provider = BillingProvider.Create(providerName, state);
+        if (provider.IsFailure)
+        {
+            return provider.Error;
+        }
+
+        var retrievedSubscription =
+            await FindSubscriptionByBuyerReference(provider.Value, cancellationToken);
+        if (retrievedSubscription.IsFailure)
+        {
+            return retrievedSubscription.Error;
+        }
+
+        if (!retrievedSubscription.Value.HasValue)
+        {
+            return Result.Ok;
+        }
+
+        var subscription = retrievedSubscription.Value.Value;
+        var added = await subscription.ConvertSubscriptionByProviderAsync(
+            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value, OnDispatchTrialEvent);
+        if (added.IsFailure)
+        {
+            return added.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.TraceInformation(caller.ToCall(),
+            "Subscription {Id} had a subscription added by the provider", subscription.Id);
+        if (subscription.IsConverted)
+        {
+            _recorder.TrackUsage(caller.ToCall(),
+                UsageConstants.Events.UsageScenarios.Generic.SubscriptionConverted,
+                subscription.ToSubscriptionChangedUsageEvent());
+        }
+
+        return Result.Ok;
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent @event,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, @event, relativeTo, cancellationToken);
+        }
+    }
+
+    public async Task<Result<Error>> NotifySubscriptionCanceledAsync(ICallerContext caller, string providerName,
         SubscriptionMetadata state, CancellationToken cancellationToken)
     {
         var provider = BillingProvider.Create(providerName, state);
@@ -189,7 +223,7 @@ partial class SubscriptionsApplication
         var subscription = retrievedSubscription.Value.Value;
         var cancellerId = caller.ToCallerId();
         var canceled =
-            subscription.CancelSubscriptionFromProvider(_billingProvider.StateInterpreter, cancellerId, provider.Value);
+            subscription.CancelSubscriptionByProvider(_billingProvider.StateInterpreter, cancellerId, provider.Value);
         if (canceled.IsFailure)
         {
             return canceled.Error;
@@ -202,10 +236,130 @@ partial class SubscriptionsApplication
         }
 
         subscription = saved.Value;
-        _recorder.TraceInformation(caller.ToCall(), "Subscription {Id} was cancelled by the provider",
+        _recorder.TraceInformation(caller.ToCall(), "Subscription {Id} was canceled by the provider",
+            subscription.Id);
+        _recorder.TrackUsage(caller.ToCall(),
+            UsageConstants.Events.UsageScenarios.Generic.SubscriptionCanceled,
+            subscription.ToSubscriptionChangedUsageEvent());
+
+        return Result.Ok;
+    }
+
+    public async Task<Result<Error>> NotifySubscriptionDetailsChangedAsync(ICallerContext caller, string providerName,
+        SubscriptionMetadata state, CancellationToken cancellationToken)
+    {
+        var provider = BillingProvider.Create(providerName, state);
+        if (provider.IsFailure)
+        {
+            return provider.Error;
+        }
+
+        var retrievedSubscription =
+            await FindSubscriptionBySubscriptionReference(provider.Value, cancellationToken);
+        if (retrievedSubscription.IsFailure)
+        {
+            return retrievedSubscription.Error;
+        }
+
+        if (!retrievedSubscription.Value.HasValue)
+        {
+            // HACK: what to do if we don't have a subscription?
+            return Result.Ok;
+        }
+
+        var subscription = retrievedSubscription.Value.Value;
+        var modifierId = caller.ToCallerId();
+        var changed = await subscription.UpdateSubscriptionByProviderAsync(_billingProvider.StateInterpreter,
+            modifierId, provider.Value, OnChange);
+        if (changed.IsFailure)
+        {
+            return changed.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        subscription = saved.Value;
+        _recorder.TraceInformation(caller.ToCall(), "Subscription {Id} had its plan changed by the provider",
             subscription.Id);
 
         return Result.Ok;
+
+        Task<Result<SubscriptionMetadata, Error>> OnChange(SubscriptionRoot subscription1, string planId1)
+        {
+            var resynced = _billingProvider.GatewayService.ReSyncSubscriptionAsync(caller,
+                subscription1.Provider.Value, cancellationToken);
+            return Task.FromResult(resynced.Result);
+        }
+    }
+
+    public async Task<Result<Error>> NotifyBuyerDeletedAsync(ICallerContext caller, string providerName,
+        SubscriptionMetadata state, CancellationToken cancellationToken)
+    {
+        var provider = BillingProvider.Create(providerName, state);
+        if (provider.IsFailure)
+        {
+            return provider.Error;
+        }
+
+        var retrievedSubscription =
+            await FindSubscriptionByBuyerReference(provider.Value, cancellationToken);
+        if (retrievedSubscription.IsFailure)
+        {
+            return retrievedSubscription.Error;
+        }
+
+        if (!retrievedSubscription.Value.HasValue)
+        {
+            return Result.Ok;
+        }
+
+        var subscription = retrievedSubscription.Value.Value;
+        var deleted = await subscription.RestoreBuyerAfterDeletedByProviderAsync(
+            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value, OnRestoreBuyer);
+        if (deleted.IsFailure)
+        {
+            return deleted.Error;
+        }
+
+        var saved = await _repository.SaveAsync(subscription, cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.TraceInformation(caller.ToCall(),
+            "Subscription {Id} had its buyer deleted by the provider, and restored", subscription.Id);
+
+        return Result.Ok;
+
+        async Task<Result<SubscriptionMetadata, Error>> OnRestoreBuyer(SubscriptionRoot root)
+        {
+            var owningEntity =
+                await _subscriptionOwningEntityService.GetEntityAsync(caller, root.OwningEntityId, cancellationToken);
+            if (owningEntity.IsFailure)
+            {
+                return owningEntity.Error;
+            }
+
+            var buyer = await CreateBuyerAsync(caller, root.BuyerId, owningEntity.Value, cancellationToken);
+            if (buyer.IsFailure)
+            {
+                return buyer.Error;
+            }
+
+            var restoredBuyer = await _billingProvider.GatewayService.RestoreBuyerAsync(caller,
+                buyer.Value, cancellationToken);
+            if (restoredBuyer.IsFailure)
+            {
+                return restoredBuyer.Error;
+            }
+
+            return restoredBuyer.Value;
+        }
     }
 
     public async Task<Result<Error>> NotifySubscriptionDeletedAsync(ICallerContext caller, string providerName,
@@ -231,7 +385,7 @@ partial class SubscriptionsApplication
 
         var subscription = retrievedSubscription.Value.Value;
         var deleterId = caller.ToCallerId();
-        var deleted = subscription.DeleteSubscriptionFromProvider(_billingProvider.StateInterpreter,
+        var deleted = subscription.DeleteSubscriptionByProvider(_billingProvider.StateInterpreter,
             deleterId, provider.Value);
         if (deleted.IsFailure)
         {
@@ -275,7 +429,7 @@ partial class SubscriptionsApplication
         var subscription = retrievedSubscription.Value.Value;
         var modifierId = caller.ToCallerId();
         var changed =
-            subscription.ChangeSubscriptionPlanFromProvider(_billingProvider.StateInterpreter, modifierId,
+            subscription.ChangeSubscriptionPlanByProvider(_billingProvider.StateInterpreter, modifierId,
                 provider.Value);
         if (changed.IsFailure)
         {

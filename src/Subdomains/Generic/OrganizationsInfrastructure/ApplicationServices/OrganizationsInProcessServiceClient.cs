@@ -77,6 +77,14 @@ public class OrganizationsInProcessServiceClient : IOrganizationsService, ISubsc
         return await GetApplication().CanViewSubscriptionAsync(caller, id, viewerId, cancellationToken);
     }
 
+    public async Task<Result<OwningEntity, Error>> GetEntityAsync(ICallerContext caller, string id,
+        CancellationToken cancellationToken)
+    {
+        return await GetApplication().GetOwningEntityAsync(caller, id, cancellationToken);
+    }
+
+    public string EntityType => nameof(Organization);
+
     private IOrganizationsApplication GetApplication()
     {
         if (_application.NotExists())

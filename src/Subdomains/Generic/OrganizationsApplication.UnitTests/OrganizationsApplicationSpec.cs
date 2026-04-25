@@ -898,11 +898,12 @@ public class OrganizationsApplicationSpec
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _subscriptionsService.Setup(ss =>
-                ss.GetSubscriptionAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                ss.GetSubscriptionByIdAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SubscriptionWithPlan
             {
                 Id = "asubscriptionid",
-                Invoice = new InvoiceSummary
+                UpcomingInvoice = new InvoiceSummary
                 {
                     Currency = "acurrency"
                 },

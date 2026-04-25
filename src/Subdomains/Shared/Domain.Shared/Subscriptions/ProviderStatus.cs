@@ -30,7 +30,7 @@ public sealed class ProviderStatus : ValueObjectBase<ProviderStatus>
     ///     Whether the subscription is in a state where it can be canceled.
     ///     Generally, not possible if the subscription is already canceled,
     ///     or in the process of being canceled, or if it is already unsubscribed.
-    ///     ONly when it is activated.
+    ///     Only when it is activated.
     /// </summary>
     public bool CanBeCanceled => Status == BillingSubscriptionStatus.Activated;
 

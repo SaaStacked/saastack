@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Application.Resources.Shared;
 using Common;
+using Domain.Services.Shared;
 using Domain.Shared.Subscriptions;
 
 namespace Application.Services.Shared;
@@ -10,6 +11,11 @@ namespace Application.Services.Shared;
 /// </summary>
 public interface IBillingGatewayService
 {
+    /// <summary>
+    ///     Returns the capabilities of the provider
+    /// </summary>
+    public BillingProviderCapabilities Capabilities { get; }
+
     /// <summary>
     ///     Cancels the subscription for the current buyer
     /// </summary>
@@ -23,6 +29,18 @@ public interface IBillingGatewayService
         ChangePlanOptions options, BillingProvider provider, CancellationToken cancellationToken);
 
     /// <summary>
+    ///     Handles a trial event delivered from the schedule of events
+    /// </summary>
+    Task<Result<Error>> HandleTrialScheduledEventAsync(ICallerContext caller, SubscriptionBuyer buyer,
+        TrialScheduledEvent trialEvent, BillingProvider provider, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Increments a meter on the subscription
+    /// </summary>
+    Task<Result<SubscriptionMetadata, Error>> IncrementMeterAsync(ICallerContext caller, string meterName,
+        BillingProvider provider, CancellationToken cancellationToken);
+
+    /// <summary>
     ///     Returns all the pricing plans for the current provider
     /// </summary>
     Task<Result<PricingPlans, Error>> ListAllPricingPlansAsync(ICallerContext caller,
@@ -33,6 +51,12 @@ public interface IBillingGatewayService
     /// </summary>
     Task<Result<SubscriptionMetadata, Error>> RestoreBuyerAsync(ICallerContext caller, SubscriptionBuyer buyer,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Updates the subscription details from the provider
+    /// </summary>
+    Task<Result<SubscriptionMetadata, Error>> ReSyncSubscriptionAsync(ICallerContext caller,
+        BillingProvider provider, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Lists all invoices for the subscription, given the specified date range, and options
@@ -176,11 +200,13 @@ public class SubscriptionBuyer
 }
 
 /// <summary>
-///     Defines the subscriber
+///     Defines the entity associated to the subscription
 /// </summary>
 public class Subscriber
 {
     public required string EntityId { get; set; }
 
     public required string EntityType { get; set; }
+
+    public required string EntityName { get; set; }
 }

@@ -20,6 +20,8 @@ public class HostSettings : IHostSettings
     internal const string EventNotificationSubscriberSettingName = "Hosts:EventNotificationApi:SubscribedHosts";
     internal const string ImagesApiHostBaseUrlSettingName = "Hosts:ImagesApi:BaseUrl";
     internal const string PrivateInterHostHmacSecretSettingName = "Hosts:PrivateInterHost:HMACAuthNSecret";
+    internal const string SubscriptionsApiHmacSecretSettingName = "Hosts:SubscriptionsApi:HMACAuthNSecret";
+    internal const string SubscriptionsApiHostBaseUrlSettingName = "Hosts:SubscriptionsApi:BaseUrl";
     internal const string WebsiteHostBaseUrlSettingName = "Hosts:WebsiteHost:BaseUrl";
     internal const string WebsiteHostCSRFEncryptionSettingName = "Hosts:WebsiteHost:CSRFAESSecret";
     internal const string WebsiteHostCSRFSigningSettingName = "Hosts:WebsiteHost:CSRFHMACSecret";
@@ -101,6 +103,30 @@ public class HostSettings : IHostSettings
     public DatacenterLocation GetRegion()
     {
         return DatacenterLocations.FindOrDefault(_settings.GetString(RegionSettingName));
+    }
+
+    public string GetSubscriptionsApiHostBaseUrl()
+    {
+        var baseUrl = _settings.Platform.GetString(SubscriptionsApiHostBaseUrlSettingName);
+        if (baseUrl.HasValue())
+        {
+            return baseUrl.WithoutTrailingSlash();
+        }
+
+        throw new InvalidOperationException(
+            Resources.HostSettings_MissingSetting.Format(SubscriptionsApiHostBaseUrlSettingName));
+    }
+
+    public string GetSubscriptionsApiHostHmacAuthSecret()
+    {
+        var secret = _settings.Platform.GetString(SubscriptionsApiHmacSecretSettingName);
+        if (secret.HasValue())
+        {
+            return secret;
+        }
+
+        throw new InvalidOperationException(
+            Resources.HostSettings_MissingSetting.Format(SubscriptionsApiHmacSecretSettingName));
     }
 
     public virtual string GetWebsiteHostBaseUrl()
