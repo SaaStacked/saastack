@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CarsApplication\CarsApplication.csproj" />
-        <ProjectReference Include="..\..\..\Framework\Testing\UnitTesting.Common\UnitTesting.Common.csproj" />
+        <ProjectReference Include="..\TestingStubApiHost\TestingStubApiHost.csproj" />
+        <ProjectReference Include="..\..\Framework\Testing\UnitTesting.Common\UnitTesting.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
