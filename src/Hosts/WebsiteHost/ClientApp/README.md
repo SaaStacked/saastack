@@ -22,7 +22,7 @@ We support a mixed mode environment, where you can use the dev server (with hot-
 We are deliberately rendering the `Index.html` page server-side (see: `HomeController.cs`) for security purposes, thus we need to load the correct JavaScript and CSS files into `Index.html` at runtime both locally and in production.
 
 * In 'development' mode, we need to reference the TypeScript from the `src` folder of the dev server at: `http://localhost:5173/src/main.tsx` and `http://localhost:5173/src/main.css`.
-* In 'production' mode, we need to reference the vite compiled JavaScript bundle from the `https://app.critter.com/BSaMLVRv.bundle.js` folder (which is located in the `wwwroot` folder).
+* In 'production' mode, we need to reference the vite compiled JavaScript bundle from the `https://app.saastack.com/BSaMLVRv.bundle.js` folder (which is located in the `wwwroot` folder).
 
 
 > Everytime the `npm run build` command is run (as is expected in CI/CD for 'production' builds), the `jsapp.build.json` file is updated with the latest bundle file names, and version.

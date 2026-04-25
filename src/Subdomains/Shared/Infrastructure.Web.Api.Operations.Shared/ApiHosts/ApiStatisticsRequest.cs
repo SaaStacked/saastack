@@ -8,5 +8,5 @@ namespace Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 [Route("/stats", OperationMethod.Get)]
 public class ApiStatisticsRequest : UnTenantedRequest<ApiStatisticsRequest, ApiStatisticsResponse>
 {
-    public bool Details { get; set; }
+    public bool? Details { get; set; }
 }

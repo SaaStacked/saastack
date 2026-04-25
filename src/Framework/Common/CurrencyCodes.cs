@@ -81,7 +81,7 @@ public static class CurrencyCodes
     ///     Converts the amount in the minor unit of currency to the amount in the currency
     ///     For example, the minor unit of the USDollar is the number of cents, and 100 cents is 1 USDollar
     /// </summary>
-    public static decimal FromMinorUnit(string code, int amountInMinorUnit)
+    public static decimal FromMinorUnit(string code, long amountInMinorUnit)
     {
         var currency = Find(code);
         if (currency.NotExists())

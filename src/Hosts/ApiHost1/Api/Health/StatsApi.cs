@@ -26,7 +26,8 @@ public sealed class StatsApi : IWebApiService
         CancellationToken cancellationToken)
     {
         var httpContext = _httpContextAccessor.HttpContext!;
-        var stats = await httpContext.BuildApiStatisticsAsync(_webHostOptions, _swaggerProvider, request.Details,
+        var stats = await httpContext.BuildApiStatisticsAsync(_webHostOptions, _swaggerProvider,
+            request.Details ?? false,
             cancellationToken);
 
         return () => new Result<ApiStatisticsResponse, Error>(new ApiStatisticsResponse
