@@ -22,7 +22,7 @@ public class AuthorizationAttributeGenerator : ISourceGenerator
 
         var fileSource = BuildFile(context, assemblyNamespace!, classUsingNamespaces);
 
-        context.AddSource(Filename, SourceText.From(fileSource, Encoding.UTF8));
+        context.AddSource(Filename, SourceText.From(fileSource.Replace("\r\n", "\n"), Encoding.UTF8));
 
         return;
 

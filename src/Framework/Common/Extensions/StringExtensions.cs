@@ -16,8 +16,6 @@ using System.Text;
 using JetBrains.Annotations;
 #endif
 
-using System.Globalization;
-using System.Text.RegularExpressions;
 #if GENERATORS_COMMON_PROJECT
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -34,6 +32,8 @@ using System.Text;
 using JetBrains.Annotations;
 #endif
 
+using System.Globalization;
+using System.Text.RegularExpressions;
 #if GENERATORS_WORKERS_PROJECT
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -494,7 +494,10 @@ public static class StringExtensions
                 ? DefaultCamelCase
                 : DefaultCamelCaseVarying(prettyPrint, namingPolicy, includeNulls);
 
-        return JsonSerializer.Serialize(value, jsonPolicy);
+        // We need serialized JSON to be the same whether it is performed on Linux, MacOS or Windows (using LF only).
+        // Note: .NET 8 does not support doing this natively, but .NET9 does with `JsonSerializerOptions.NewLine`.
+        return JsonSerializer.Serialize(value, jsonPolicy)
+            .Replace("\r\n", "\n");
     }
 #elif GENERATORS_WEB_API_PROJECT || ANALYZERS_NONFRAMEWORK || ANALYZERS_NONFRAMEWORK || GENERATORS_WORKERS_PROJECT
     public static string? ToJson<TObject>(this TObject? value, bool? prettyPrint = true, JsonCasing casing =

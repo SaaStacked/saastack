@@ -33,7 +33,7 @@ public class WorkerGenerator : ISourceGenerator
         var filename = $"{assemblyName}_{Filename}";
         var fileSource = BuildFile(assemblyName, consumerNames);
 
-        context.AddSource(filename, SourceText.From(fileSource, Encoding.UTF8));
+        context.AddSource(filename, SourceText.From(fileSource.Replace("\r\n", "\n"), Encoding.UTF8));
 
         return;
 

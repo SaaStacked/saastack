@@ -405,9 +405,9 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
                 registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
-                registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
-                                                    + $"         return \"\";{Environment.NewLine}"
-                                                    + $"    }}{Environment.NewLine}");
+                registration.MethodBody.Should().Be("    {\n"
+                                                    + "         return \"\";\n"
+                                                    + "    }\n");
                 registration.MethodName.Should().Be("AMethod");
                 registration.OperationMethod.Should().Be(OperationMethod.Get);
                 registration.OperationAuthorization.Should().BeNull();
@@ -460,9 +460,9 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
                 registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
-                registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
-                                                    + $"         return \"\";{Environment.NewLine}"
-                                                    + $"    }}{Environment.NewLine}");
+                registration.MethodBody.Should().Be("    {\n"
+                                                    + "         return \"\";\n"
+                                                    + "    }\n");
                 registration.MethodName.Should().Be("AMethod");
                 registration.OperationMethod.Should().Be(OperationMethod.Get);
                 registration.OperationAuthorization!.PolicyName.Should().Be(
@@ -517,9 +517,9 @@ public class WebApiAssemblyVisitorSpec
                 registration.Class.TypeName.Namespace.Should().Be("ANamespace");
                 registration.Class.TypeName.FullName.Should().Be("global::ANamespace.AServiceClass");
                 registration.Class.UsingNamespaces.Count().Should().Be(2);
-                registration.MethodBody.Should().Be($"    {{{Environment.NewLine}"
-                                                    + $"         return \"\";{Environment.NewLine}"
-                                                    + $"    }}{Environment.NewLine}");
+                registration.MethodBody.Should().Be("    {\n"
+                                                    + "         return \"\";\n"
+                                                    + "    }\n");
                 registration.MethodName.Should().Be("AMethod");
                 registration.OperationMethod.Should().Be(OperationMethod.Get);
                 registration.OperationAuthorization!.PolicyName.Should().Be(

@@ -191,7 +191,7 @@ public class HttpRecordingFilterSpec
                     && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "500 - InternalServerError"
                     && arr[2].As<string>()
-                    == "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"atitle\",\r\n  \"status\": 500\r\n}"
+                    == "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"atitle\",\n  \"status\": 500\n}"
                 )));
     }
 
@@ -228,7 +228,7 @@ public class HttpRecordingFilterSpec
                     && arr[0].As<string>() == "amethod /apath"
                     && arr[1].As<string>() == "500 - InternalServerError"
                     && arr[2].As<string>()
-                    == "{\r\n  \"type\": \"atype\",\r\n  \"title\": \"atitle\",\r\n  \"status\": 500\r\n}"
+                    == "{\n  \"type\": \"atype\",\n  \"title\": \"atitle\",\n  \"status\": 500\n}"
                 )));
     }
 }

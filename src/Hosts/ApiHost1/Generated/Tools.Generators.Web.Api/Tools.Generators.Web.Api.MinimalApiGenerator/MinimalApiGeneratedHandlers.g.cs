@@ -12,7 +12,6 @@ using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Infrastructure.Web.Api.Interfaces;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Interfaces;
-using Infrastructure.External.Persistence.TestingOnly.ApplicationServices;
 using Common.Extensions;
 using Common;
 using Application.Resources.Shared;

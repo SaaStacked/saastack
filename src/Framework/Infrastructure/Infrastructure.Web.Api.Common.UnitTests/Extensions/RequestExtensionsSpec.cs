@@ -87,7 +87,7 @@ public class RequestExtensionsSpec
         message.SetHMACAuth(request, "asecret");
 
         message.Headers.GetValues(HttpConstants.Headers.HMACSignature).Should().OnlyContain(hdr =>
-            hdr == "sha256=39c08f3c039a00cbe36df51b325b058daef9ce54bc9a1b21eba71c048ca68c6c");
+            hdr == "sha256=6f68152ac30e570071da5707d7af2f9a4bdf12b5e24bc44fbc71a6fc274c8946");
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class RequestExtensionsSpec
         message.SetHMACAuth(request, "asecret");
 
         message.Headers.GetValues(HttpConstants.Headers.HMACSignature).Should().OnlyContain(hdr =>
-            hdr == "sha256=39c08f3c039a00cbe36df51b325b058daef9ce54bc9a1b21eba71c048ca68c6c");
+            hdr == "sha256=6f68152ac30e570071da5707d7af2f9a4bdf12b5e24bc44fbc71a6fc274c8946");
     }
 
     [Fact]
@@ -590,16 +590,12 @@ public class RequestExtensionsSpec
         var message = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            Content = new StringContent("""
-                                        {
-                                          "ABodyProperty": "abodyvalue"
-                                        }
-                                        """)
+            Content = new StringContent("{\n  \"ABodyProperty\": \"abodyvalue\"\n}")
         };
         message.SetPrivateInterHostAuth("asecret");
 
         message.Headers.GetValues(HttpConstants.Headers.PrivateInterHostSignature).Should().OnlyContain(hdr =>
-            hdr == "sha256=39c08f3c039a00cbe36df51b325b058daef9ce54bc9a1b21eba71c048ca68c6c");
+            hdr == "sha256=6f68152ac30e570071da5707d7af2f9a4bdf12b5e24bc44fbc71a6fc274c8946");
     }
 
     [Fact]
@@ -608,17 +604,13 @@ public class RequestExtensionsSpec
         var message = new HttpRequestMessage
         {
             Method = HttpMethod.Put,
-            Content = new StringContent("""
-                                        {
-                                          "ABodyProperty": "abodyvalue"
-                                        }
-                                        """)
+            Content = new StringContent("{\n  \"ABodyProperty\": \"abodyvalue\"\n}")
         };
 
         message.SetPrivateInterHostAuth("asecret");
 
         message.Headers.GetValues(HttpConstants.Headers.PrivateInterHostSignature).Should().OnlyContain(hdr =>
-            hdr == "sha256=39c08f3c039a00cbe36df51b325b058daef9ce54bc9a1b21eba71c048ca68c6c");
+            hdr == "sha256=6f68152ac30e570071da5707d7af2f9a4bdf12b5e24bc44fbc71a6fc274c8946");
     }
 
     [Fact]

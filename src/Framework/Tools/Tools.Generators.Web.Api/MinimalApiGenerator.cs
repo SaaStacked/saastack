@@ -45,7 +45,7 @@ public class MinimalApiGenerator : ISourceGenerator
         var fileSource = BuildFile(assemblyNamespace!, classUsingNamespaces, endpointRegistrations.ToString(),
             handlerClasses.ToString());
 
-        context.AddSource(Filename, SourceText.From(fileSource, Encoding.UTF8));
+        context.AddSource(Filename, SourceText.From(fileSource.Replace("\r\n", "\n"), Encoding.UTF8));
 
         return;
 
