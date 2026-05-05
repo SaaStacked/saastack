@@ -98,6 +98,11 @@ public sealed class InterHostServiceClient : ApiServiceClient
 
             case ICallerContext.AuthorizationMethod.AuthNCookie:
             {
+                if (authorizationValue.HasValue())
+                {
+                    var token = authorization.Value.Value.Value;
+                    message.SetJWTBearerToken(token);
+                }
                 break;
             }
 

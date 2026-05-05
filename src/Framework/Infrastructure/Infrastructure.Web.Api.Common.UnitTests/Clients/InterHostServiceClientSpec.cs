@@ -102,4 +102,19 @@ public class InterHostServiceClientSpec
         message.Headers.GetValues(HttpConstants.Headers.Authorization).Should()
             .OnlyContain(hdr => hdr == $"Basic {base64Credential}");
     }
+
+    [Fact]
+    public void WhenSetAuthorizationAndAuthNCookieAuthorization_ThenAuthorizes()
+    {
+        var message = new HttpRequestMessage();
+        var caller = new Mock<ICallerContext>();
+        caller.Setup(cc => cc.Authorization)
+            .Returns(new ICallerContext.CallerAuthorization(ICallerContext.AuthorizationMethod.AuthNCookie,
+                "avalue")).ToOptional();
+
+        InterHostServiceClient.SetAuthorization(message, caller.Object, "asecret", "asecret");
+
+        message.Headers.GetValues(HttpConstants.Headers.Authorization).Should()
+            .OnlyContain(hdr => hdr == "Bearer avalue");
+    }
 }

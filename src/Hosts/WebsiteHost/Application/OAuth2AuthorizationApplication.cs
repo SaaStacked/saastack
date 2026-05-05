@@ -5,7 +5,6 @@ using Common;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Interfaces.Clients;
 using Infrastructure.Web.Api.Operations.Shared.Identities;
-using Infrastructure.Web.Common.Extensions;
 
 namespace WebsiteHost.Application;
 
@@ -36,16 +35,11 @@ public class OAuth2AuthorizationApplication : IOAuth2AuthorizationApplication
                 CodeChallengeMethod = codeChallengeMethod
             }, req =>
             {
-                if (caller is
+                if (caller is not
                     {
                         IsAuthenticated: true,
                         Authorization: { HasValue: true, Value.Method: ICallerContext.AuthorizationMethod.AuthNCookie }
                     })
-                {
-                    var token = caller.Authorization.Value.Value.Value;
-                    req.SetJWTBearerToken(token);
-                }
-                else
                 {
                     req.RemoveAuthorization();
                 }
@@ -80,16 +74,11 @@ public class OAuth2AuthorizationApplication : IOAuth2AuthorizationApplication
                 State = state
             }, req =>
             {
-                if (caller is
+                if (caller is not
                     {
                         IsAuthenticated: true,
                         Authorization: { HasValue: true, Value.Method: ICallerContext.AuthorizationMethod.AuthNCookie }
                     })
-                {
-                    var token = caller.Authorization.Value.Value.Value;
-                    req.SetJWTBearerToken(token);
-                }
-                else
                 {
                     req.RemoveAuthorization();
                 }
