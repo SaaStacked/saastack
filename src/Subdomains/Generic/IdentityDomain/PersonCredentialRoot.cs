@@ -104,13 +104,13 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
     public MfaOptions MfaOptions { get; private set; } = MfaOptions.Default;
 
-    public PasswordKeep Password { get; private set; } = PasswordKeep.Create().Value;
+    public PasswordKeep Password { get; private set; } = PasswordKeep.Empty;
 
     public Optional<Registration> Registration { get; private set; }
 
     public Identifier UserId { get; private set; } = Identifier.Empty();
 
-    public VerificationKeep VerificationKeep { get; private set; } = VerificationKeep.Create().Value;
+    public VerificationKeep VerificationKeep { get; private set; } = VerificationKeep.Empty;
 
     [UsedImplicitly]
     public static AggregateRootFactory<PersonCredentialRoot> Rehydrate()
@@ -221,21 +221,33 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
             case RegistrationVerificationCreated created:
             {
-                VerificationKeep = VerificationKeep.Renew(created.Token);
+                var verification = VerificationKeep.Renew(created.Token, created.ExpiresAt);
+                if (verification.IsFailure)
+                {
+                    return verification.Error;
+                }
+
+                VerificationKeep = verification.Value;
                 Recorder.TraceDebug(null, "Password credential {Id} verification has been renewed", Id);
                 return Result.Ok;
             }
 
             case RegistrationVerificationVerified _:
             {
-                VerificationKeep = VerificationKeep.Verify();
+                var verification = VerificationKeep.Verify();
+                if (verification.IsFailure)
+                {
+                    return verification.Error;
+                }
+
+                VerificationKeep = verification.Value;
                 Recorder.TraceDebug(null, "Password credential {Id} has been verified", Id);
                 return Result.Ok;
             }
 
             case PasswordResetInitiated changed:
             {
-                var reset = Password.InitiatePasswordReset(changed.Token);
+                var reset = Password.InitiatePasswordReset(changed.Token, changed.ExpiresAt);
                 if (reset.IsFailure)
                 {
                     return reset.Error;
@@ -815,7 +827,9 @@ public sealed class PersonCredentialRoot : AggregateRootBase
         }
 
         var token = _tokensService.CreatePasswordResetToken();
-        return RaiseChangeEvent(IdentityDomain.Events.PersonCredentials.PasswordResetInitiated(Id, token));
+        var expiresAt = DateTime.UtcNow.Add(PasswordKeep.DefaultResetExpiry);
+        return RaiseChangeEvent(
+            IdentityDomain.Events.PersonCredentials.PasswordResetInitiated(Id, token, expiresAt));
     }
 
     public Result<Error> InitiateRegistrationVerification()
@@ -826,8 +840,9 @@ public sealed class PersonCredentialRoot : AggregateRootBase
         }
 
         var token = _tokensService.CreateRegistrationVerificationToken();
+        var expiresUtc = DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry);
         return RaiseChangeEvent(
-            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token));
+            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token, expiresUtc));
     }
 
     public Result<Error> RenewRegistrationVerification()
@@ -838,8 +853,9 @@ public sealed class PersonCredentialRoot : AggregateRootBase
         }
 
         var token = _tokensService.CreateRegistrationVerificationToken();
+        var expiresUtc = DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry);
         return RaiseChangeEvent(
-            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token));
+            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token, expiresUtc));
     }
 
     public Result<Error> ResetMfa(Roles resetterRoles)
@@ -889,7 +905,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
         {
             return Error.RuleViolation(Resources.PersonCredentialRoot_EmailNotUnique);
         }
-        
+
         return RaiseChangeEvent(
             IdentityDomain.Events.PersonCredentials.RegistrationChanged(Id, emailAddress, displayName));
     }
@@ -919,7 +935,8 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 #if TESTINGONLY
     public void TestingOnly_RenewVerification(string token)
     {
-        VerificationKeep = VerificationKeep.Renew(token);
+        VerificationKeep = VerificationKeep.Renew(token, DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry))
+            .Value;
     }
 #endif
 

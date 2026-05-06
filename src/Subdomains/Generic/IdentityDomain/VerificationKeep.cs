@@ -10,14 +10,11 @@ namespace IdentityDomain;
 public sealed class VerificationKeep : ValueObjectBase<VerificationKeep>
 {
     public static readonly TimeSpan DefaultTokenExpiry = TimeSpan.FromDays(1);
+    public static readonly VerificationKeep Empty = new(Optional<string>.None, Optional<DateTime>.None,
+        Optional<DateTime>.None);
 
-    public static Result<VerificationKeep, Error> Create()
-    {
-        return new VerificationKeep(Optional<string>.None, Optional<DateTime>.None, Optional<DateTime>.None);
-    }
-
-    public static Result<VerificationKeep, Error> Create(Optional<string> token, Optional<DateTime> expiresUtc,
-        Optional<DateTime> verifiedUtc)
+    public static Result<VerificationKeep, Error> Create(Optional<string> token, Optional<DateTime> expiresAt,
+        Optional<DateTime> verifiedAt)
     {
         if (token.HasValue)
         {
@@ -28,29 +25,29 @@ public sealed class VerificationKeep : ValueObjectBase<VerificationKeep>
             }
         }
 
-        return new VerificationKeep(token, expiresUtc, verifiedUtc);
+        return new VerificationKeep(token, expiresAt, verifiedAt);
     }
 
-    private VerificationKeep(Optional<string> token, Optional<DateTime> expiresUtc, Optional<DateTime> verifiedUtc)
+    private VerificationKeep(Optional<string> token, Optional<DateTime> expiresAt, Optional<DateTime> verifiedAt)
     {
         Token = token;
-        ExpiresUtc = expiresUtc;
-        VerifiedUtc = verifiedUtc;
+        ExpiresAt = expiresAt;
+        VerifiedAt = verifiedAt;
     }
 
-    public Optional<DateTime> ExpiresUtc { get; }
+    public Optional<DateTime> ExpiresAt { get; }
 
-    public bool IsStillVerifying => IsVerifying && ExpiresUtc > DateTime.UtcNow;
+    public bool IsStillVerifying => IsVerifying && ExpiresAt > DateTime.UtcNow;
 
-    public bool IsVerifiable => !Token.HasValue && !ExpiresUtc.HasValue && !VerifiedUtc.HasValue;
+    public bool IsVerifiable => !Token.HasValue && !ExpiresAt.HasValue && !VerifiedAt.HasValue;
 
-    public bool IsVerified => !Token.HasValue && !ExpiresUtc.HasValue && VerifiedUtc.HasValue;
+    public bool IsVerified => !Token.HasValue && !ExpiresAt.HasValue && VerifiedAt.HasValue;
 
-    public bool IsVerifying => Token.HasValue && ExpiresUtc.HasValue;
+    public bool IsVerifying => Token.HasValue && ExpiresAt.HasValue;
 
     public Optional<string> Token { get; }
 
-    public Optional<DateTime> VerifiedUtc { get; }
+    public Optional<DateTime> VerifiedAt { get; }
 
     [UsedImplicitly]
     public static ValueObjectFactory<VerificationKeep> Rehydrate()
@@ -67,16 +64,18 @@ public sealed class VerificationKeep : ValueObjectBase<VerificationKeep>
 
     protected override IEnumerable<object?> GetAtomicValues()
     {
-        return [Token, ExpiresUtc, VerifiedUtc];
+        return [Token, ExpiresAt, VerifiedAt];
     }
 
-#pragma warning disable CA1822
-    public VerificationKeep Renew(string token)
-#pragma warning restore CA1822
+    public Result<VerificationKeep, Error> Renew(string token, DateTime expiresAt)
     {
-        ArgumentException.ThrowIfNullOrEmpty(token);
+        if (token.IsInvalidParameter(Validations.Credentials.Password.VerificationToken, nameof(token),
+                Resources.VerificationKeep_InvalidToken, out var error))
+        {
+            return error;
+        }
 
-        return new VerificationKeep(token, DateTime.UtcNow.Add(DefaultTokenExpiry), Optional<DateTime>.None);
+        return new VerificationKeep(token, expiresAt, Optional<DateTime>.None);
     }
 
 #if TESTINGONLY
@@ -86,9 +85,7 @@ public sealed class VerificationKeep : ValueObjectBase<VerificationKeep>
     }
 #endif
 
-#pragma warning disable CA1822
-    public VerificationKeep Verify()
-#pragma warning restore CA1822
+    public Result<VerificationKeep, Error> Verify()
     {
         return new VerificationKeep(Optional<string>.None, Optional<DateTime>.None, DateTime.UtcNow.SubtractSeconds(1));
     }

@@ -15,5 +15,7 @@ public sealed class RegistrationVerificationCreated : DomainEvent
     {
     }
 
+    public required DateTime ExpiresAt { get; set; }
+
     public required string Token { get; set; }
 }

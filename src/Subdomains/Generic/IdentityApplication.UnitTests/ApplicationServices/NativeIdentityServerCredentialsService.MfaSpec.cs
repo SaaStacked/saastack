@@ -27,6 +27,7 @@ namespace IdentityApplication.UnitTests.ApplicationServices;
 [Trait("Category", "Unit")]
 public class NativeIdentityServerCredentialsMfaServiceSpec
 {
+    private const string Token = "5n6nA42SQrsO1UIgc7lIVebR6_3CmZwcthUEx3nF2sM";
     private readonly Mock<IAuthTokensService> _authTokensService;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IEmailAddressService> _emailAddressService;
@@ -99,7 +100,7 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
             .ReturnsAsync(true);
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateRegistrationVerificationToken())
-            .Returns("averificationtoken");
+            .Returns(Token);
         _tokensService.Setup(ts => ts.CreateMfaAuthenticationToken())
             .Returns("anmfatoken");
         _encryptionService = new Mock<IEncryptionService>();

@@ -21,7 +21,7 @@ namespace IdentityApplication.UnitTests.ApplicationServices;
 [Trait("Category", "Unit")]
 public class NativeIdentityServerCredentialsServicePasswordResetSpec
 {
-    private const string TestingToken = "Ll4qhv77XhiXSqsTUc6icu56ZLrqu5p1gH9kT5IlHio";
+    private const string Token = "Ll4qhv77XhiXSqsTUc6icu56ZLrqu5p1gH9kT5IlHio";
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IEmailAddressService> _emailAddressService;
     private readonly Mock<IEncryptionService> _encryptionService;
@@ -57,7 +57,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
             .ReturnsAsync(true);
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateRegistrationVerificationToken())
-            .Returns("averificationtoken");
+            .Returns(Token);
         _tokensService.Setup(ts => ts.CreateMfaAuthenticationToken())
             .Returns("anmfatoken");
         _encryptionService = new Mock<IEncryptionService>();
@@ -115,7 +115,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
     public async Task WhenInitiatePasswordRequest_ThenSendsNotification()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())
-            .Returns(TestingToken);
+            .Returns(Token);
         _repository.Setup(s => s.FindCredentialByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(CreateVerifiedCredential().ToOptional());
 
@@ -127,7 +127,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
             cred.IsPasswordSet
         ), It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
-            ns.NotifyPasswordResetInitiatedAsync(_caller.Object, "aname", "user@company.com", TestingToken,
+            ns.NotifyPasswordResetInitiatedAsync(_caller.Object, "aname", "user@company.com", Token,
                 UserNotificationConstants.EmailTags.PasswordResetInitiated, It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
             ns.NotifyPasswordResetUnknownUserCourtesyAsync(It.IsAny<ICallerContext>(), "user@company.com",
@@ -156,7 +156,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
     public async Task WhenResendPasswordRequest_ThenResendsNotification()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())
-            .Returns(TestingToken);
+            .Returns(Token);
         _repository.Setup(s =>
                 s.FindCredentialByPasswordResetTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(CreateVerifiedCredential().ToOptional());
@@ -169,7 +169,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
             cred.IsPasswordResetInitiated
         ), It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
-            ns.NotifyPasswordResetInitiatedAsync(_caller.Object, "aname", "auser@company.com", TestingToken,
+            ns.NotifyPasswordResetInitiatedAsync(_caller.Object, "aname", "auser@company.com", Token,
                 UserNotificationConstants.EmailTags.PasswordResetResend, It.IsAny<CancellationToken>()));
     }
 
@@ -195,7 +195,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
     public async Task WhenVerifyPasswordResetAsync_ThenVerifies()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())
-            .Returns(TestingToken);
+            .Returns(Token);
         var credential = CreateVerifiedCredential();
         credential.InitiatePasswordReset();
         _repository.Setup(s =>
@@ -203,7 +203,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
             .ReturnsAsync(credential.ToOptional());
 
         var result =
-            await _service.VerifyPasswordResetAsync(_caller.Object, TestingToken, CancellationToken.None);
+            await _service.VerifyPasswordResetAsync(_caller.Object, Token, CancellationToken.None);
 
         result.Should().BeSuccess();
         _repository.Verify(s => s.SaveAsync(It.IsAny<PersonCredentialRoot>(), It.IsAny<CancellationToken>()),
@@ -233,7 +233,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
     public async Task WhenCompletePasswordResetAsync_ThenCompletes()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())
-            .Returns(TestingToken);
+            .Returns(Token);
         _passwordHasherService.Setup(phs => phs.VerifyPassword(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(false);
 
@@ -244,7 +244,7 @@ public class NativeIdentityServerCredentialsServicePasswordResetSpec
             .ReturnsAsync(credential.ToOptional());
 
         var result =
-            await _service.CompletePasswordResetAsync(_caller.Object, TestingToken, "2Password!",
+            await _service.CompletePasswordResetAsync(_caller.Object, Token, "2Password!",
                 CancellationToken.None);
 
         result.Should().BeSuccess();

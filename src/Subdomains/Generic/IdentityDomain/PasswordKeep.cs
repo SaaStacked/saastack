@@ -12,11 +12,8 @@ namespace IdentityDomain;
 public sealed class PasswordKeep : ValueObjectBase<PasswordKeep>
 {
     public static readonly TimeSpan DefaultResetExpiry = TimeSpan.FromHours(2);
-
-    public static Result<PasswordKeep, Error> Create()
-    {
-        return new PasswordKeep(Optional<string>.None, Optional<string>.None, Optional<DateTime>.None);
-    }
+    public static readonly PasswordKeep Empty = new(Optional<string>.None, Optional<string>.None,
+        Optional<DateTime>.None);
 
     public static Result<PasswordKeep, Error> Create(IPasswordHasherService passwordHasherService, string passwordHash)
     {
@@ -30,24 +27,24 @@ public sealed class PasswordKeep : ValueObjectBase<PasswordKeep>
     }
 
     private PasswordKeep(Optional<string> passwordHash, Optional<string> resetToken,
-        Optional<DateTime> tokenExpires)
+        Optional<DateTime> tokenExpiresAt)
     {
         PasswordHash = passwordHash;
         ResetToken = resetToken;
-        TokenExpires = tokenExpires;
+        TokenExpiresAt = tokenExpiresAt;
     }
 
     public bool HasPassword => PasswordHash.HasValue;
 
-    public bool IsResetInitiated => ResetToken.HasValue && TokenExpires.HasValue;
+    public bool IsResetInitiated => ResetToken.HasValue && TokenExpiresAt.HasValue;
 
-    public bool IsResetStillValid => IsResetInitiated && TokenExpires > DateTime.UtcNow;
+    public bool IsResetStillValid => IsResetInitiated && TokenExpiresAt > DateTime.UtcNow;
 
     public Optional<string> PasswordHash { get; }
 
     public Optional<string> ResetToken { get; }
 
-    public Optional<DateTime> TokenExpires { get; }
+    public Optional<DateTime> TokenExpiresAt { get; }
 
     [UsedImplicitly]
     public static ValueObjectFactory<PasswordKeep> Rehydrate()
@@ -64,7 +61,7 @@ public sealed class PasswordKeep : ValueObjectBase<PasswordKeep>
 
     protected override IEnumerable<object?> GetAtomicValues()
     {
-        return [PasswordHash, ResetToken, TokenExpires];
+        return [PasswordHash, ResetToken, TokenExpiresAt];
     }
 
     public Result<PasswordKeep, Error> CompletePasswordReset(IPasswordHasherService passwordHasherService, string token,
@@ -102,15 +99,10 @@ public sealed class PasswordKeep : ValueObjectBase<PasswordKeep>
             return Error.RuleViolation(Resources.PasswordKeep_TokensNotMatch);
         }
 
-        if (!IsResetStillValid)
-        {
-            return Error.PreconditionViolation(Resources.PasswordKeep_TokenExpired);
-        }
-
         return new PasswordKeep(passwordHash, Optional<string>.None, Optional<DateTime>.None);
     }
 
-    public Result<PasswordKeep, Error> InitiatePasswordReset(string token)
+    public Result<PasswordKeep, Error> InitiatePasswordReset(string token, DateTime expiresUtc)
     {
         if (token.IsNotValuedParameter(nameof(token), out var error1))
         {
@@ -128,8 +120,7 @@ public sealed class PasswordKeep : ValueObjectBase<PasswordKeep>
             return Error.RuleViolation(Resources.PasswordKeep_NoPasswordHash);
         }
 
-        var expiry = DateTime.UtcNow.Add(DefaultResetExpiry);
-        return new PasswordKeep(PasswordHash, token, expiry);
+        return new PasswordKeep(PasswordHash, token, expiresUtc);
     }
 
     public Result<PasswordKeep, Error> SetPassword(IPasswordHasherService passwordHasherService, string passwordHash)

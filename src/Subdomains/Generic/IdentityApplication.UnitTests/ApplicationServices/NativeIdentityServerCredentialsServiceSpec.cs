@@ -25,6 +25,7 @@ namespace IdentityApplication.UnitTests.ApplicationServices;
 [Trait("Category", "Unit")]
 public class NativeIdentityServerCredentialsServiceSpec
 {
+    private const string Token = "5n6nA42SQrsO1UIgc7lIVebR6_3CmZwcthUEx3nF2sM";
     private readonly Mock<IAuthTokensService> _authTokensService;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IEmailAddressService> _emailAddressService;
@@ -63,7 +64,7 @@ public class NativeIdentityServerCredentialsServiceSpec
             .ReturnsAsync(true);
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateRegistrationVerificationToken())
-            .Returns("averificationtoken");
+            .Returns(Token);
         _tokensService.Setup(ts => ts.CreateMfaAuthenticationToken())
             .Returns("anmfatoken");
         _encryptionService = new Mock<IEncryptionService>();
@@ -512,7 +513,7 @@ public class NativeIdentityServerCredentialsServiceSpec
             Times.Never);
         _notificationsService.Verify(ns =>
             ns.NotifyPasswordRegistrationConfirmationAsync(_caller.Object, "auser@company.com", "afirstname",
-                "averificationtoken", It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()));
+                Token, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus => eus.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
             "auser@company.com", "afirstname", "alastname", "atimezone", "alocale", "acountrycode", true,
             It.IsAny<CancellationToken>()));
@@ -646,7 +647,7 @@ public class NativeIdentityServerCredentialsServiceSpec
         ), It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
             ns.NotifyPasswordRegistrationConfirmationAsync(_caller.Object, "auser@company.com", "afirstname",
-                "averificationtoken", UserNotificationConstants.EmailTags.RegisterPerson,
+                Token, UserNotificationConstants.EmailTags.RegisterPerson,
                 It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus => eus.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
             "auser@company.com", "afirstname", "alastname", "atimezone", "alocale", "acountrycode", true,
@@ -734,7 +735,7 @@ public class NativeIdentityServerCredentialsServiceSpec
         ), It.IsAny<CancellationToken>()));
         _notificationsService.Verify(ns =>
             ns.NotifyPasswordRegistrationConfirmationAsync(_caller.Object, "auser@company.com", "aname",
-                "averificationtoken", UserNotificationConstants.EmailTags.RegisterPerson,
+                Token, UserNotificationConstants.EmailTags.RegisterPerson,
                 It.IsAny<CancellationToken>()));
     }
     

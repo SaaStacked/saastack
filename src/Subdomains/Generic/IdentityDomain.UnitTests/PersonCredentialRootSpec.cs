@@ -73,7 +73,7 @@ public class PersonCredentialRootSpec
             .Returns("abarcodeuri");
         _tokensService = new Mock<ITokensService>();
         _tokensService.Setup(ts => ts.CreateRegistrationVerificationToken())
-            .Returns("averificationtoken");
+            .Returns(Token);
         _tokensService.Setup(ts => ts.CreateMfaAuthenticationToken())
             .Returns("anmfatoken");
         _settings = new Mock<IConfigurationSettings>();
@@ -121,6 +121,8 @@ public class PersonCredentialRootSpec
         _personCredential.InitiateRegistrationVerification();
 
         _personCredential.VerificationKeep.IsStillVerifying.Should().BeTrue();
+        _personCredential.VerificationKeep.ExpiresAt.Should()
+            .BeNear(DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry));
         _personCredential.Events.Last().Should()
             .BeOfType<RegistrationVerificationCreated>();
     }
@@ -315,6 +317,8 @@ public class PersonCredentialRootSpec
         _personCredential.RenewRegistrationVerification();
 
         _personCredential.VerificationKeep.IsStillVerifying.Should().BeTrue();
+        _personCredential.VerificationKeep.ExpiresAt.Should()
+            .BeNear(DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry));
         _personCredential.Events.Last().Should()
             .BeOfType<RegistrationVerificationCreated>();
     }
@@ -360,6 +364,8 @@ public class PersonCredentialRootSpec
         _personCredential.InitiatePasswordReset();
 
         _personCredential.Password.IsResetInitiated.Should().BeTrue();
+        _personCredential.Password.TokenExpiresAt.Should()
+            .BeNear(DateTime.UtcNow.Add(PasswordKeep.DefaultResetExpiry));
         _personCredential.Events[1].Should().BeOfType<CredentialsChanged>();
         _personCredential.Events[2].Should().BeOfType<RegistrationChanged>();
         _personCredential.Events.Last().Should().BeOfType<PasswordResetInitiated>();
