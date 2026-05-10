@@ -8,7 +8,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Organizations;
 /// <response code="400">The invited cannot be added to a personal organization</response>
 /// <response code="403">The inviter is not an owner of the organization</response>
 [Route("/organizations/{Id}/members", OperationMethod.Post, AccessType.Token)]
-[Authorize(Roles.Tenant_Owner, Features.Platform_PaidTrial)]
+[Authorize(Roles.Tenant_Owner, Features.Tenant_PaidTrial)]
 public class InviteMemberToOrganizationRequest :
     UnTenantedRequest<InviteMemberToOrganizationRequest, InviteMemberToOrganizationResponse>,
     IUnTenantedOrganizationRequest

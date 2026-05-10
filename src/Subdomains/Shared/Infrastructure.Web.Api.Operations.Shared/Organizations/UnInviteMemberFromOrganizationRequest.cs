@@ -9,7 +9,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Organizations;
 /// <response code="400">The invited cannot be removed from a personal organization</response>
 /// <response code="403">The inviter is not an owner of the organization, or the invited is a required member of the organization</response>
 [Route("/organizations/{Id}/members/{UserId}", OperationMethod.Delete, AccessType.Token)]
-[Authorize(Roles.Tenant_Owner, Features.Platform_PaidTrial)]
+[Authorize(Roles.Tenant_Owner, Features.Tenant_PaidTrial)]
 public class UnInviteMemberFromOrganizationRequest : UnTenantedRequest<UnInviteMemberFromOrganizationRequest,
         UnInviteMemberFromOrganizationResponse>,
     IUnTenantedOrganizationRequest
