@@ -37,7 +37,7 @@ public class ResendPasswordResetRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.CompletePasswordResetRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ResendPasswordResetRequestValidator_InvalidToken);
     }
 
     [Fact]
@@ -48,6 +48,6 @@ public class ResendPasswordResetRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.CompletePasswordResetRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ResendPasswordResetRequestValidator_InvalidToken);
     }
 }

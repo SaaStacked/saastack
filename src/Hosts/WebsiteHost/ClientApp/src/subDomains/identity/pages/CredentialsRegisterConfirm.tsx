@@ -15,7 +15,11 @@ import {
   ConfirmPersonCredentialRegistrationAction,
   ConfirmPersonCredentialRegistrationErrors
 } from '../actions/confirmPersonCredentialRegistration.ts';
-import { ResendPersonCredentialRegistrationConfirmationAction } from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
+import {
+  ResendPersonCredentialRegistrationConfirmationAction,
+  ResendPersonCredentialRegistrationConfirmationErrors
+} from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
+
 
 export const CredentialsRegisterConfirm: React.FC = () => {
   const { t: translate } = useTranslation();
@@ -107,12 +111,12 @@ function HandleConfirmSuccess({ translate }: HandlerProps) {
   );
 }
 
-function HandleConfirmError({ translate, lastExpectedError, lastUnexpectedError, token }: HandlerProps) {
+function HandleConfirmError({ translate, lastExpectedError, lastUnexpectedError }: HandlerProps) {
   const isTokenExpired =
     lastExpectedError && lastExpectedError.code === ConfirmPersonCredentialRegistrationErrors.token_expired;
   const isTokenUsed =
     lastExpectedError && lastExpectedError.code === ConfirmPersonCredentialRegistrationErrors.token_used;
-  const resendConfirmation = ResendPersonCredentialRegistrationConfirmationAction(token!);
+  const resendConfirmation = ResendPersonCredentialRegistrationConfirmationAction();
 
   return (
     <FormPage title={translate('pages.identity.credentials_register_confirm.states.confirming.title')}>
@@ -128,11 +132,8 @@ function HandleConfirmError({ translate, lastExpectedError, lastUnexpectedError,
                 busyLabel={translate('pages.identity.credentials_register_confirm.states.resending.loader')}
                 action={resendConfirmation}
                 expectedErrorMessages={{
-                  [ConfirmPersonCredentialRegistrationErrors.token_used]: translate(
-                    'pages.identity.credentials_register_confirm.states.resending.errors.token_used'
-                  ),
-                  [ConfirmPersonCredentialRegistrationErrors.token_expired]: translate(
-                    'pages.identity.credentials_register_confirm.states.resending.errors.token_expired'
+                  [ResendPersonCredentialRegistrationConfirmationErrors.already_registered]: translate(
+                    'pages.identity.credentials_register_confirm.states.resending.errors.already_registered'
                   )
                 }}
                 variant="brand-secondary"

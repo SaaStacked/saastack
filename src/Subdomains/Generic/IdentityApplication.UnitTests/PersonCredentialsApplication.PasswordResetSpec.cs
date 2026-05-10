@@ -1,6 +1,8 @@
 using Application.Interfaces;
+using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
+using FluentAssertions;
 using Moq;
 using UnitTesting.Common;
 using Xunit;
@@ -34,12 +36,16 @@ public class PersonCredentialsApplicationPasswordResetSpec
         _credentialsService.Setup(aks =>
                 aks.InitiatePasswordResetAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result.Ok);
+            .ReturnsAsync(new PersonCredentialPasswordResetResult
+            {
+                ResendToken = "aresendtoken"
+            });
 
         var result =
             await _application.InitiatePasswordResetAsync(_caller.Object, "anemailaddress", CancellationToken.None);
 
         result.Should().BeSuccess();
+        result.Value.ResendToken.Should().Be("aresendtoken");
         _credentialsService.Verify(aks =>
             aks.InitiatePasswordResetAsync(_caller.Object, "anemailaddress", CancellationToken.None));
     }

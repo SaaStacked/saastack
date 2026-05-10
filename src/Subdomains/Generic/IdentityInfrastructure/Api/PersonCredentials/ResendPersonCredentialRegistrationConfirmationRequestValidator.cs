@@ -12,8 +12,7 @@ public class
     public ResendPersonCredentialRegistrationConfirmationRequestValidator()
     {
         RuleFor(req => req.Token)
-            .NotEmpty()
-            .Matches(Validations.Credentials.Password.VerificationToken)
-            .WithMessage(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
+            .Matches(Validations.Credentials.Password.ResendToken)
+            .WithMessage(Resources.ResendPersonCredentialRegistrationConfirmationRequestValidator_InvalidToken);
     }
 }

@@ -96,6 +96,18 @@ public class PersonCredential : IIdentifiableResource
     public required string Id { get; set; }
 }
 
+public class PersonCredentialPasswordResetResult
+{
+    public required string ResendToken { get; set; }
+}
+
+public class PersonCredentialRegistrationVerificationResult
+{
+    public required PersonCredential Credential { get; set; }
+
+    public required string ResendToken { get; set; }
+}
+
 public class PersonCredentialEmailConfirmation
 {
     public required string Token { get; set; }

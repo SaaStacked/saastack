@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import z from 'zod';
+import { InitiatePasswordResetRequest, InitiatePasswordResetResponse } from '../../../framework/api/apiHost1';
 import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormInput from '../../../framework/components/form/formInput/FormInput.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
@@ -29,8 +30,13 @@ export const PasswordResetRequestPage: React.FC = () => {
             translate('pages.identity.credentials_password_reset_initiate.form.fields.email.validation')
           )
         })}
-        onSuccess={() => {
-          window.location.replace(RoutePaths.PasswordResetRedirect); // no browser history
+        onSuccess={(params: {
+          requestData?: InitiatePasswordResetRequest;
+          response: InitiatePasswordResetResponse;
+        }) => {
+          const token = params.response.resendToken;
+          const url = `${RoutePaths.PasswordResetRedirect}?token=${encodeURIComponent(token)}`;
+          window.location.replace(url); // no browser history
         }}
       >
         <FormInput

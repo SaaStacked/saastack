@@ -199,8 +199,7 @@ namespace IdentityInfrastructure {
         /// </summary>
         internal static string ChallengePasswordMfaAuthenticatorForCallerRequestValidator_InvalidAuthenticatorId {
             get {
-                return ResourceManager.GetString("ChallengePasswordMfaAuthenticatorForCallerRequestValidator_InvalidAuthenticatorId" +
-                        "", resourceCulture);
+                return ResourceManager.GetString("ChallengePasswordMfaAuthenticatorForCallerRequestValidator_InvalidAuthenticatorId", resourceCulture);
             }
         }
         
@@ -254,8 +253,8 @@ namespace IdentityInfrastructure {
         /// </summary>
         internal static string ConfirmPasswordMfaAuthenticatorForCallerRequestValidator_InvalidRecoveryConfirmationCode {
             get {
-                return ResourceManager.GetString("ConfirmPasswordMfaAuthenticatorForCallerRequestValidator_InvalidRecoveryConfirmat" +
-                        "ionCode", resourceCulture);
+                return ResourceManager.GetString(("ConfirmPasswordMfaAuthenticatorForCallerRequestValidator_InvalidRecoveryConfirmat" +
+                        "ionCode"), resourceCulture);
             }
         }
         
@@ -598,6 +597,24 @@ namespace IdentityInfrastructure {
         internal static string RegisterPersonPasswordRequestValidator_InvalidTermsAndConditionsAccepted {
             get {
                 return ResourceManager.GetString("RegisterPersonPasswordRequestValidator_InvalidTermsAndConditionsAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Token&apos; is either missing or invalid.
+        /// </summary>
+        internal static string ResendPasswordResetRequestValidator_InvalidToken {
+            get {
+                return ResourceManager.GetString("ResendPasswordResetRequestValidator_InvalidToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Token&apos; is either missing or invalid.
+        /// </summary>
+        internal static string ResendPersonCredentialRegistrationConfirmationRequestValidator_InvalidToken {
+            get {
+                return ResourceManager.GetString("ResendPersonCredentialRegistrationConfirmationRequestValidator_InvalidToken", resourceCulture);
             }
         }
         

@@ -235,8 +235,7 @@
             "title": "Resend Confirmation",
             "loader": "Sending",
             "errors": {
-              "token_expired": "Your registration link has expired. Please request to send a new one.",
-              "token_used": "This registration link is invalid, and cannot be used to resend a confirmation email. Please check your email."
+              "already_registered": "Your account has already been registered."
             }
           },
           "resent": {
@@ -262,6 +261,10 @@
           "submit": {
             "label": "Send Reset Link"
           }
+        },
+        "resending": {
+          "title": "Resend Email",
+          "loader": "Sending"
         },
         "errors": {
           "user_not_registered": "This email address is not yet registered."

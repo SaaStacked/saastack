@@ -41,7 +41,11 @@ public class PersonCredentialProjection : IReadModelProjection
 
             case CredentialsChanged e:
                 return await _credentials.HandleUpdateAsync(e.RootId,
-                    dto => { dto.PasswordResetToken = Optional<string>.None; }, cancellationToken);
+                    dto =>
+                    {
+                        dto.PasswordResetToken = Optional<string>.None;
+                        dto.PasswordResetResendToken = Optional<string>.None;
+                    }, cancellationToken);
 
             case RegistrationChanged e:
                 return await _credentials.HandleUpdateAsync(e.RootId, dto =>
@@ -65,22 +69,35 @@ public class PersonCredentialProjection : IReadModelProjection
 
             case RegistrationVerificationCreated e:
                 return await _credentials.HandleUpdateAsync(e.RootId,
-                    dto => { dto.RegistrationVerificationToken = e.Token; }, cancellationToken);
+                    dto =>
+                    {
+                        dto.RegistrationVerificationToken = e.VerificationToken;
+                        dto.RegistrationVerificationResendToken = e.ResendToken;
+                    }, cancellationToken);
 
             case RegistrationVerificationVerified e:
                 return await _credentials.HandleUpdateAsync(e.RootId, dto =>
                 {
                     dto.RegistrationVerificationToken = Optional<string>.None;
+                    dto.RegistrationVerificationResendToken = Optional<string>.None;
                     dto.RegistrationVerified = true;
                 }, cancellationToken);
 
             case PasswordResetInitiated e:
                 return await _credentials.HandleUpdateAsync(e.RootId,
-                    dto => { dto.PasswordResetToken = e.Token; }, cancellationToken);
+                    dto =>
+                    {
+                        dto.PasswordResetToken = e.ResetToken;
+                        dto.PasswordResetResendToken = e.ResendToken;
+                    }, cancellationToken);
 
             case PasswordResetCompleted e:
                 return await _credentials.HandleUpdateAsync(e.RootId,
-                    dto => { dto.PasswordResetToken = Optional<string>.None; }, cancellationToken);
+                    dto =>
+                    {
+                        dto.PasswordResetToken = Optional<string>.None;
+                        dto.PasswordResetResendToken = Optional<string>.None;
+                    }, cancellationToken);
 
             case MfaOptionsChanged e:
                 return await _credentials.HandleUpdateAsync(e.RootId, dto =>

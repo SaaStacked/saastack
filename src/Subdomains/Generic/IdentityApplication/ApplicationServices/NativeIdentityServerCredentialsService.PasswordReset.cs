@@ -46,7 +46,8 @@ public partial class NativeIdentityServerCredentialsService
         return Result.Ok;
     }
 
-    public async Task<Result<Error>> InitiatePasswordResetAsync(ICallerContext caller, string emailAddress,
+    public async Task<Result<PersonCredentialPasswordResetResult, Error>> InitiatePasswordResetAsync(
+        ICallerContext caller, string emailAddress,
         CancellationToken cancellationToken)
     {
         var retrieved = await _repository.FindCredentialByUsernameAsync(emailAddress, cancellationToken);
@@ -57,6 +58,7 @@ public partial class NativeIdentityServerCredentialsService
 
         if (!retrieved.Value.HasValue)
         {
+            //Ignore the existence check, to prevent username enumeration vulnerability, and inform the user
             var warned =
                 await _userNotificationsService.NotifyPasswordResetUnknownUserCourtesyAsync(caller, emailAddress,
                     UserNotificationConstants.EmailTags.PasswordResetUnknownUser, cancellationToken);
@@ -65,7 +67,11 @@ public partial class NativeIdentityServerCredentialsService
                 return warned.Error;
             }
 
-            return Result.Ok;
+            // a new token, not associated to anything, for security purposes
+            return new PersonCredentialPasswordResetResult
+            {
+                ResendToken = _tokensService.CreatePasswordResetToken()
+            };
         }
 
         var credentials = retrieved.Value.Value;
@@ -75,6 +81,7 @@ public partial class NativeIdentityServerCredentialsService
             return initiated.Error;
         }
 
+        var resendToken = initiated.Value.ResendToken;
         var registration = credentials.Registration.Value;
         var notified = await _userNotificationsService.NotifyPasswordResetInitiatedAsync(caller, registration.Name,
             emailAddress, credentials.Password.ResetToken, UserNotificationConstants.EmailTags.PasswordResetInitiated,
@@ -98,13 +105,16 @@ public partial class NativeIdentityServerCredentialsService
                 { nameof(PersonCredential.Id), credentials.UserId }
             });
 
-        return Result.Ok;
+        return new PersonCredentialPasswordResetResult
+        {
+            ResendToken = resendToken
+        };
     }
 
     public async Task<Result<Error>> ResendPasswordResetAsync(ICallerContext caller, string token,
         CancellationToken cancellationToken)
     {
-        var retrieved = await _repository.FindCredentialByPasswordResetTokenAsync(token, cancellationToken);
+        var retrieved = await _repository.FindCredentialByPasswordResetResendTokenAsync(token, cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error;
@@ -112,10 +122,25 @@ public partial class NativeIdentityServerCredentialsService
 
         if (!retrieved.Value.HasValue)
         {
-            return Error.EntityNotFound();
+            //Ignore the existence check, to prevent username enumeration vulnerability, and inform the user
+            var warned =
+                await _userNotificationsService.NotifyPasswordResetUnknownUserCourtesyAsync(caller, token,
+                    UserNotificationConstants.EmailTags.PasswordResetUnknownUser, cancellationToken);
+            if (warned.IsFailure)
+            {
+                return warned.Error;
+            }
+
+            return Result.Ok;
         }
 
         var credentials = retrieved.Value.Value;
+        if (!credentials.IsPasswordResetInitiated)
+        {
+            //Ignore the existence check, to prevent username enumeration vulnerability
+            return Result.Ok;
+        }
+
         var initiated = credentials.InitiatePasswordReset();
         if (initiated.IsFailure)
         {

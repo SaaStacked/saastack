@@ -118,8 +118,10 @@ public class PersonCredentialRootSpec
     [Fact]
     public void WhenInitiateRegistrationVerificationAndNotVerified_ThenInitiates()
     {
-        _personCredential.InitiateRegistrationVerification();
+        var result = _personCredential.InitiateRegistrationVerification();
 
+        result.Should().BeSuccess();
+        result.Value.ResendToken.Should().Be(Token);
         _personCredential.VerificationKeep.IsStillVerifying.Should().BeTrue();
         _personCredential.VerificationKeep.ExpiresAt.Should()
             .BeNear(DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry));
@@ -300,30 +302,6 @@ public class PersonCredentialRootSpec
     }
 
     [Fact]
-    public void WhenRenewRegistrationVerificationAndAlreadyVerified_ThenReturnsError()
-    {
-        _personCredential.InitiateRegistrationVerification();
-        _personCredential.VerifyRegistration();
-
-        var result = _personCredential.RenewRegistrationVerification();
-
-        result.Should().BeError(ErrorCode.PreconditionViolation,
-            Resources.PersonCredentialRoot_RegistrationVerified);
-    }
-
-    [Fact]
-    public void WhenRenewRegistrationVerificationAndNotVerified_ThenInitiates()
-    {
-        _personCredential.RenewRegistrationVerification();
-
-        _personCredential.VerificationKeep.IsStillVerifying.Should().BeTrue();
-        _personCredential.VerificationKeep.ExpiresAt.Should()
-            .BeNear(DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry));
-        _personCredential.Events.Last().Should()
-            .BeOfType<RegistrationVerificationCreated>();
-    }
-
-    [Fact]
     public void WhenInitiatePasswordResetAndPasswordNotSet_ThenReturnsError()
     {
         _tokensService.Setup(ts => ts.CreatePasswordResetToken())
@@ -361,8 +339,10 @@ public class PersonCredentialRootSpec
         _personCredential.InitiateRegistrationVerification();
         _personCredential.VerifyRegistration();
 
-        _personCredential.InitiatePasswordReset();
+        var result = _personCredential.InitiatePasswordReset();
 
+        result.Should().BeSuccess();
+        result.Value.ResendToken.Should().Be(Token);
         _personCredential.Password.IsResetInitiated.Should().BeTrue();
         _personCredential.Password.TokenExpiresAt.Should()
             .BeNear(DateTime.UtcNow.Add(PasswordKeep.DefaultResetExpiry));

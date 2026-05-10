@@ -8,7 +8,8 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 /// </summary>
 /// <response code="405">The user is not yet registered</response>
 [Route("/credentials/reset", OperationMethod.Post)]
-public class InitiatePasswordResetRequest : UnTenantedEmptyRequest<InitiatePasswordResetRequest>
+public class
+    InitiatePasswordResetRequest : UnTenantedRequest<InitiatePasswordResetRequest, InitiatePasswordResetResponse>
 {
     [Required] public string? EmailAddress { get; set; }
 }

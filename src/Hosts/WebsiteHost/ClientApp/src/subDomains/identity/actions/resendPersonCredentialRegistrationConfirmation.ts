@@ -4,23 +4,22 @@ import {
   ResendPersonCredentialRegistrationConfirmationRequest,
   ResendPersonCredentialRegistrationConfirmationResponse
 } from '../../../framework/api/apiHost1';
-import { ConfirmPersonCredentialRegistrationErrors } from './confirmPersonCredentialRegistration.ts';
 
-export const ResendPersonCredentialRegistrationConfirmationAction = (token: string) =>
+export enum ResendPersonCredentialRegistrationConfirmationErrors {
+  already_registered = 'already_registered'
+}
+
+export const ResendPersonCredentialRegistrationConfirmationAction = () =>
   useActionCommand<
     ResendPersonCredentialRegistrationConfirmationRequest,
     ResendPersonCredentialRegistrationConfirmationResponse,
-    ConfirmPersonCredentialRegistrationErrors
+    ResendPersonCredentialRegistrationConfirmationErrors
   >({
     request: (request) =>
       resendPersonCredentialRegistrationConfirmation({
-        body: {
-          ...request,
-          token
-        }
+        body: request
       }),
     passThroughErrors: {
-      400: ConfirmPersonCredentialRegistrationErrors.token_expired,
-      404: ConfirmPersonCredentialRegistrationErrors.token_used
+      404: ResendPersonCredentialRegistrationConfirmationErrors.already_registered
     }
   });

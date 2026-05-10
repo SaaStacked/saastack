@@ -59,6 +59,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         result.Content.Value.Person.User.Roles.Should().OnlyContain(rol => rol == PlatformRoles.Standard.Name);
         result.Content.Value.Person.User.Features.Should()
             .ContainSingle(feat => feat == PlatformFeatures.PaidTrial.Name);
+        result.Content.Value.ResendToken.Should().NotBeNullOrEmpty();
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
     }
 
@@ -90,6 +91,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         result.Content.Value.Person.User.Id.Should().Be(userId);
+        result.Content.Value.ResendToken.Should().NotBeNullOrEmpty();
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().Be(emailAddress);
     }
 
@@ -120,6 +122,7 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         result.Content.Value.Person.User.Id.Should().Be(userId);
+        result.Content.Value.ResendToken.Should().NotBeNullOrEmpty();
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
 #endif
     }
@@ -181,9 +184,21 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenResendConfirmationBeforeRegistered_ThenResendsConfirmation()
+    public async Task WhenResendConfirmationWithUnknownToken_ThenDoesNothing()
     {
-        await Api.PostAsync(new RegisterPersonCredentialRequest
+        var result = await Api.PostAsync(new ResendPersonCredentialRegistrationConfirmationRequest
+        {
+            Token = new TokensService().GenerateRandomToken()
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        UserNotificationsService.LastRegistrationConfirmationEmailRecipient.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WhenResendConfirmationBeforeVerified_ThenResendsConfirmation()
+    {
+        var registered = await Api.PostAsync(new RegisterPersonCredentialRequest
         {
             EmailAddress = "auser@company.com",
             FirstName = "afirstname",
@@ -193,11 +208,12 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         await PropagateDomainEventsAsync();
-        var token = UserNotificationsService.LastRegistrationConfirmationToken;
         UserNotificationsService.Reset();
+
+        var resendToken = registered.Content.Value.ResendToken;
         var result = await Api.PostAsync(new ResendPersonCredentialRegistrationConfirmationRequest
         {
-            Token = token
+            Token = resendToken
         });
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -205,9 +221,9 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenResendConfirmationAndAlreadyRegistered_ThenReturnsError()
+    public async Task WhenResendConfirmationAndAlreadyVerified_ThenReturnsOk()
     {
-        await Api.PostAsync(new RegisterPersonCredentialRequest
+        var registered = await Api.PostAsync(new RegisterPersonCredentialRequest
         {
             EmailAddress = "auser@company.com",
             FirstName = "afirstname",
@@ -217,18 +233,21 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         await PropagateDomainEventsAsync();
-        var token = UserNotificationsService.LastRegistrationConfirmationToken;
+        var resetToken = UserNotificationsService.LastRegistrationConfirmationToken;
+        UserNotificationsService.Reset();
+        
         await Api.PostAsync(new ConfirmPersonCredentialRegistrationRequest
         {
-            Token = token
+            Token = resetToken
         });
 
+        var resendToken = registered.Content.Value.ResendToken;
         var result = await Api.PostAsync(new ResendPersonCredentialRegistrationConfirmationRequest
         {
-            Token = token
+            Token = resendToken
         });
 
-        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -353,7 +372,22 @@ public class CredentialsApiSpec : WebApiSpec<Program>
     }
 
     [Fact]
-    public async Task WhenResendPasswordReset_ThenResendsEmailNotification()
+    public async Task WhenResendPasswordResetBeforeInitiated_ThenReturnsOk()
+    {
+        await LoginUserAsync();
+
+        var result = await Api.PostAsync(new ResendPasswordResetRequest
+        {
+            Token = new TokensService().GenerateRandomToken()
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        _userNotificationsService.LastPasswordResetEmailRecipient.Should().BeNull();
+        _userNotificationsService.LastPasswordResetToken.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WhenResendPasswordResetAndUnknownToken_ThenReturnsOk()
     {
         var login = await LoginUserAsync();
 
@@ -362,17 +396,40 @@ public class CredentialsApiSpec : WebApiSpec<Program>
             EmailAddress = login.Profile!.EmailAddress!.Address
         });
 
-        var token = _userNotificationsService.LastPasswordResetToken;
         _userNotificationsService.Reset();
 
         var result = await Api.PostAsync(new ResendPasswordResetRequest
         {
-            Token = token!
+            Token = new TokensService().GenerateRandomToken()
+        });
+
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        _userNotificationsService.LastPasswordResetEmailRecipient.Should().BeNull();
+        _userNotificationsService.LastPasswordResetToken.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WhenResendPasswordReset_ThenResendsEmailNotification()
+    {
+        var login = await LoginUserAsync();
+
+        var initiated = await Api.PostAsync(new InitiatePasswordResetRequest
+        {
+            EmailAddress = login.Profile!.EmailAddress!.Address
+        });
+
+        var resetToken = _userNotificationsService.LastPasswordResetToken;
+        var resendToken = initiated.Content.Value.ResendToken;
+        _userNotificationsService.Reset();
+
+        var result = await Api.PostAsync(new ResendPasswordResetRequest
+        {
+            Token = resendToken
         });
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
         _userNotificationsService.LastPasswordResetEmailRecipient.Should().Be(login.Profile.EmailAddress!.Address);
-        _userNotificationsService.LastPasswordResetToken.Should().NotBe(token);
+        _userNotificationsService.LastPasswordResetToken.Should().NotBe(resetToken);
     }
 
     [Fact]

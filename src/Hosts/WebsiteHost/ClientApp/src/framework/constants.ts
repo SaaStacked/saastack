@@ -28,6 +28,11 @@ export namespace LocalStorageKeys {
   export const IsPendingOAuth2Authorization = 'isPendingOAuth2Authorization';
 }
 
+export namespace SessionStorageKeys {
+  export const OAuth2PkceState = 'oauth_state';
+  export const OAuth2PkceVerifier = 'code_verifier';
+}
+
 export namespace UsageConstants {
   export enum UsageScenarios {
     BrowserAuthRefresh = 'Browser Authentication Refreshed'

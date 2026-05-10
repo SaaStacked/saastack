@@ -8,7 +8,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 /// </summary>
 /// <response code="404">The token is invalid or already used</response>
 /// <response code="405">The user is not yet registered</response>
-[Route("/credentials/{Token}/reset/resend", OperationMethod.Post)]
+[Route("/credentials/resend-reset", OperationMethod.Post)]
 public class ResendPasswordResetRequest : UnTenantedEmptyRequest<ResendPasswordResetRequest>
 {
     [Required] public string? Token { get; set; }

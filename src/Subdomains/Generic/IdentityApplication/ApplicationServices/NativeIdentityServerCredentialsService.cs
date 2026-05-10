@@ -211,9 +211,9 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
         return await IssueAuthenticationTokensAsync(caller, user.Id, cancellationToken);
     }
 
-    public async Task<Result<PersonCredential, Error>> RegisterPersonAsync(ICallerContext caller,
-        string? invitationToken, string firstName, string lastName, string emailAddress, string password,
-        string? timezone, string? locale, string? countryCode, bool termsAndConditionsAccepted,
+    public async Task<Result<PersonCredentialRegistrationVerificationResult, Error>> RegisterPersonAsync(
+        ICallerContext caller, string? invitationToken, string firstName, string lastName, string emailAddress,
+        string password, string? timezone, string? locale, string? countryCode, bool termsAndConditionsAccepted,
         CancellationToken cancellationToken)
     {
         var person = await _endUsersService.RegisterPersonPrivateAsync(caller, invitationToken, emailAddress,
@@ -257,7 +257,13 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
                     });
             }
 
-            return retrievedCredential.Value.Value.ToCredential(user);
+            return new PersonCredentialRegistrationVerificationResult
+            {
+                Credential = retrievedCredential.Value.Value.ToCredential(user),
+                ResendToken =
+                    _tokensService
+                        .CreateRegistrationVerificationToken() // a new token, not associated to anything, for security purposes 
+            };
         }
 
         var created = PersonCredentialRoot.Create(_recorder, _identifierFactory, _settings, _emailAddressService,
@@ -298,6 +304,7 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
             return initiated.Error;
         }
 
+        var resendToken = initiated.Value.ResendToken;
         var confirmed = await _userNotificationsService.NotifyPasswordRegistrationConfirmationAsync(caller,
             credential.Registration.Value.EmailAddress, credential.Registration.Value.Name,
             credential.VerificationKeep.Token, UserNotificationConstants.EmailTags.RegisterPerson, cancellationToken);
@@ -315,7 +322,11 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
         credential = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Password credentials created for {UserId}", credential.UserId);
 
-        return credential.ToCredential(user);
+        return new PersonCredentialRegistrationVerificationResult
+        {
+            Credential = credential.ToCredential(user),
+            ResendToken = resendToken
+        };
     }
 
     public async Task<Result<PersonCredential, Error>> GetPersonCredentialForUserAsync(ICallerContext caller,
@@ -385,7 +396,7 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
     public async Task<Result<Error>> ConfirmPersonRegistrationAsync(ICallerContext caller, string token,
         CancellationToken cancellationToken)
     {
-        var retrieved = await _repository.FindCredentialsByRegistrationVerificationTokenAsync(token, cancellationToken);
+        var retrieved = await _repository.FindCredentialByRegistrationVerificationTokenAsync(token, cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error;
@@ -421,10 +432,11 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
         return Result.Ok;
     }
 
-    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
-        CancellationToken cancellationToken)
+    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller,
+        string token, CancellationToken cancellationToken)
     {
-        var retrieved = await _repository.FindCredentialsByRegistrationVerificationTokenAsync(token, cancellationToken);
+        var retrieved =
+            await _repository.FindCredentialByRegistrationVerificationResendTokenAsync(token, cancellationToken);
         if (retrieved.IsFailure)
         {
             return retrieved.Error;
@@ -432,11 +444,12 @@ public partial class NativeIdentityServerCredentialsService : IIdentityServerCre
 
         if (!retrieved.Value.HasValue)
         {
-            return Error.EntityNotFound();
+            //Ignore the existence check, to prevent username enumeration vulnerability
+            return Result.Ok;
         }
 
         var credential = retrieved.Value.Value;
-        var renewed = credential.RenewRegistrationVerification();
+        var renewed = credential.InitiateRegistrationVerification();
         if (renewed.IsFailure)
         {
             return renewed.Error;

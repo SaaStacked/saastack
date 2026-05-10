@@ -21,8 +21,7 @@ public class CredentialsApi : IWebApiService
     }
 
     public async Task<ApiPostResult<AuthenticateTokens, AuthenticateResponse>> Authenticate(
-        AuthenticateCredentialRequest request,
-        CancellationToken cancellationToken)
+        AuthenticateCredentialRequest request, CancellationToken cancellationToken)
     {
         var authenticated =
             await _personCredentialsApplication.AuthenticateAsync(_callerFactory.Create(), request.Username!,
@@ -55,17 +54,6 @@ public class CredentialsApi : IWebApiService
             error => new Result<EmptyResponse, Error>(error));
     }
 
-    public async Task<ApiEmptyResult> ResendConfirmation(ResendPersonCredentialRegistrationConfirmationRequest request,
-        CancellationToken cancellationToken)
-    {
-        var result =
-            await _personCredentialsApplication.ResendConfirmationPersonRegistrationAsync(_callerFactory.Create(),
-                request.Token!, cancellationToken);
-
-        return () => result.Match(() => new Result<EmptyResponse, Error>(),
-            error => new Result<EmptyResponse, Error>(error));
-    }
-
 #if TESTINGONLY
     public async Task<ApiGetResult<PersonCredentialEmailConfirmation,
             GetPersonCredentialRegistrationConfirmationResponse>>
@@ -77,13 +65,28 @@ public class CredentialsApi : IWebApiService
 
         return () =>
             token.HandleApplicationResult<PersonCredentialEmailConfirmation,
-                GetPersonCredentialRegistrationConfirmationResponse>(
-                con =>
-                    new GetPersonCredentialRegistrationConfirmationResponse { Token = con.Token });
+                GetPersonCredentialRegistrationConfirmationResponse>(con =>
+                new GetPersonCredentialRegistrationConfirmationResponse { Token = con.Token });
     }
 #endif
 
-    public async Task<ApiPostResult<PersonCredential, RegisterPersonCredentialResponse>> RegisterPerson(
+    public async Task<ApiPostResult<PersonCredentialPasswordResetResult, InitiatePasswordResetResponse>>
+        InitiatePasswordReset(
+            InitiatePasswordResetRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _personCredentialsApplication.InitiatePasswordResetAsync(_callerFactory.Create(),
+            request.EmailAddress!, cancellationToken);
+
+        return () =>
+            result.HandleApplicationResult<PersonCredentialPasswordResetResult, InitiatePasswordResetResponse>(res =>
+                new PostResult<InitiatePasswordResetResponse>(new InitiatePasswordResetResponse
+                {
+                    ResendToken = res.ResendToken
+                }));
+    }
+
+    public async Task<ApiPostResult<PersonCredentialRegistrationVerificationResult, RegisterPersonCredentialResponse>>
+        RegisterPerson(
         RegisterPersonCredentialRequest request, CancellationToken cancellationToken)
     {
         var credential = await _personCredentialsApplication.RegisterPersonAsync(_callerFactory.Create(),
@@ -91,17 +94,26 @@ public class CredentialsApi : IWebApiService
             request.Timezone, request.Locale, request.CountryCode, request.TermsAndConditionsAccepted,
             cancellationToken);
 
-        return () => credential.HandleApplicationResult<PersonCredential, RegisterPersonCredentialResponse>(creds =>
-            new PostResult<RegisterPersonCredentialResponse>(new RegisterPersonCredentialResponse { Person = creds }));
+        return () =>
+            credential
+                .HandleApplicationResult<PersonCredentialRegistrationVerificationResult,
+                    RegisterPersonCredentialResponse>(creds =>
+                    new PostResult<RegisterPersonCredentialResponse>(new RegisterPersonCredentialResponse
+                    {
+                        Person = creds.Credential,
+                        ResendToken = creds.ResendToken
+                    }));
     }
 
-    public async Task<ApiEmptyResult> RequestPasswordReset(InitiatePasswordResetRequest request,
+    public async Task<ApiEmptyResult> ResendConfirmation(ResendPersonCredentialRegistrationConfirmationRequest request,
         CancellationToken cancellationToken)
     {
-        var reset = await _personCredentialsApplication.InitiatePasswordResetAsync(_callerFactory.Create(),
-            request.EmailAddress!, cancellationToken);
+        var result =
+            await _personCredentialsApplication.ResendConfirmationPersonRegistrationAsync(_callerFactory.Create(),
+                request.Token!, cancellationToken);
 
-        return () => reset.HandleApplicationResult();
+        return () => result.Match(() => new Result<EmptyResponse, Error>(),
+            error => new Result<EmptyResponse, Error>(error));
     }
 
     public async Task<ApiEmptyResult> ResendPasswordReset(ResendPasswordResetRequest request,

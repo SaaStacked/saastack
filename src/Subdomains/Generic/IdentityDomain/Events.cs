@@ -257,11 +257,13 @@ public static class Events
             };
         }
 
-        public static PasswordResetInitiated PasswordResetInitiated(Identifier id, string token, DateTime expiresAt)
+        public static PasswordResetInitiated PasswordResetInitiated(Identifier id, string resetToken,
+            string resendToken, DateTime expiresAt)
         {
             return new PasswordResetInitiated(id)
             {
-                Token = token,
+                ResetToken = resetToken,
+                ResendToken = resendToken,
                 ExpiresAt = expiresAt
             };
         }
@@ -286,12 +288,14 @@ public static class Events
             };
         }
 
-        public static RegistrationVerificationCreated RegistrationVerificationCreated(Identifier id, string token,
+        public static RegistrationVerificationCreated RegistrationVerificationCreated(Identifier id,
+            string verificationToken, string resendToken,
             DateTime expiresAt)
         {
             return new RegistrationVerificationCreated(id)
             {
-                Token = token,
+                VerificationToken = verificationToken,
+                ResendToken = resendToken,
                 ExpiresAt = expiresAt
             };
         }

@@ -231,6 +231,10 @@ export type ConsentOAuth2ClientForCallerRequest = {
     state?: string | null;
 };
 
+export type ConvertSubscriptionRequest = {
+    [key: string]: never;
+};
+
 export type CreateApiKeyRequest = {
     expiresOnUtc?: Date | null;
 };
@@ -306,6 +310,10 @@ export type DeliverMessageResponse = {
     isSent: boolean;
 };
 
+export type DeliverSubscriptionTrialEventRequest = {
+    message: string;
+};
+
 export type DeliverUsageRequest = {
     message: string;
 };
@@ -370,6 +378,10 @@ export type DrainAllSmsesRequest = {
     [key: string]: never;
 };
 
+export type DrainAllSubscriptionTrialEventsRequest = {
+    [key: string]: never;
+};
+
 export type DrainAllUsagesRequest = {
     [key: string]: never;
 };
@@ -422,6 +434,10 @@ export type ExchangeOAuth2ForTokensResponse = {
     id_token?: string;
     refresh_token?: string;
     token_type: OAuth2TokenType;
+};
+
+export type ExpireSubscriptionTrialRequest = {
+    [key: string]: never;
 };
 
 export type ExportSubscriptionsToMigrateResponse = {
@@ -586,6 +602,10 @@ export type InitiateOnboardingWorkflowRequest = {
 
 export type InitiatePasswordResetRequest = {
     emailAddress: string;
+};
+
+export type InitiatePasswordResetResponse = {
+    resendToken: string;
 };
 
 export type Invitation = {
@@ -1228,6 +1248,7 @@ export type RegisterPersonCredentialRequest = {
 
 export type RegisterPersonCredentialResponse = {
     person: PersonCredential;
+    resendToken: string;
 };
 
 export type ResendGuestInvitationRequest = {
@@ -1235,7 +1256,7 @@ export type ResendGuestInvitationRequest = {
 };
 
 export type ResendPasswordResetRequest = {
-    [key: string]: never;
+    token: string;
 };
 
 export type ResendPersonCredentialRegistrationConfirmationRequest = {
@@ -1448,12 +1469,13 @@ export type SubscriptionWithPlan = {
     canBeCanceled: boolean;
     canBeUnsubscribed: boolean;
     canceledDateUtc?: Date;
-    invoice: InvoiceSummary;
+    upcomingInvoice: InvoiceSummary;
     paymentMethod: SubscriptionPaymentMethod;
     period: PlanPeriod;
     plan: SubscriptionPlan;
     status: SubscriptionStatus;
     subscriptionReference?: string;
+    checkoutUrl?: string;
 };
 
 export type TakeOfflineCarRequest = {
@@ -4322,14 +4344,14 @@ export type ConfirmPersonCredentialRegistrationResponses = {
 
 export type ConfirmPersonCredentialRegistrationResponse = ConfirmPersonCredentialRegistrationResponses[keyof ConfirmPersonCredentialRegistrationResponses];
 
-export type ResendPersonCredentialRegistrationConfirmationData = {
-    body?: ResendPersonCredentialRegistrationConfirmationRequest;
+export type InitiatePasswordResetData = {
+    body?: InitiatePasswordResetRequest;
     path?: never;
     query?: never;
-    url: '/credentials/resend-confirmation';
+    url: '/credentials/reset';
 };
 
-export type ResendPersonCredentialRegistrationConfirmationErrors = {
+export type InitiatePasswordResetErrors = {
     /**
      * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
      */
@@ -4347,11 +4369,11 @@ export type ResendPersonCredentialRegistrationConfirmationErrors = {
      */
     403: unknown;
     /**
-     * The user has already confirmed their registration
+     * Not Found: The server cannot find the requested resource
      */
     404: unknown;
     /**
-     * Method Not Allowed: The request is not allowed by the current state of the resource
+     * The user is not yet registered
      */
     405: unknown;
     /**
@@ -4368,16 +4390,16 @@ export type ResendPersonCredentialRegistrationConfirmationErrors = {
     500: ProblemDetails;
 };
 
-export type ResendPersonCredentialRegistrationConfirmationError = ResendPersonCredentialRegistrationConfirmationErrors[keyof ResendPersonCredentialRegistrationConfirmationErrors];
+export type InitiatePasswordResetError = InitiatePasswordResetErrors[keyof InitiatePasswordResetErrors];
 
-export type ResendPersonCredentialRegistrationConfirmationResponses = {
+export type InitiatePasswordResetResponses = {
     /**
      * Created
      */
-    201: EmptyResponse;
+    201: InitiatePasswordResetResponse;
 };
 
-export type ResendPersonCredentialRegistrationConfirmationResponse = ResendPersonCredentialRegistrationConfirmationResponses[keyof ResendPersonCredentialRegistrationConfirmationResponses];
+export type InitiatePasswordResetResponse2 = InitiatePasswordResetResponses[keyof InitiatePasswordResetResponses];
 
 export type RegisterPersonCredentialData = {
     body?: RegisterPersonCredentialRequest;
@@ -4436,14 +4458,14 @@ export type RegisterPersonCredentialResponses = {
 
 export type RegisterPersonCredentialResponse2 = RegisterPersonCredentialResponses[keyof RegisterPersonCredentialResponses];
 
-export type InitiatePasswordResetData = {
-    body?: InitiatePasswordResetRequest;
+export type ResendPersonCredentialRegistrationConfirmationData = {
+    body?: ResendPersonCredentialRegistrationConfirmationRequest;
     path?: never;
     query?: never;
-    url: '/credentials/reset';
+    url: '/credentials/resend-confirmation';
 };
 
-export type InitiatePasswordResetErrors = {
+export type ResendPersonCredentialRegistrationConfirmationErrors = {
     /**
      * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
      */
@@ -4461,11 +4483,11 @@ export type InitiatePasswordResetErrors = {
      */
     403: unknown;
     /**
-     * Not Found: The server cannot find the requested resource
+     * The user has already confirmed their registration
      */
     404: unknown;
     /**
-     * The user is not yet registered
+     * Method Not Allowed: The request is not allowed by the current state of the resource
      */
     405: unknown;
     /**
@@ -4482,24 +4504,22 @@ export type InitiatePasswordResetErrors = {
     500: ProblemDetails;
 };
 
-export type InitiatePasswordResetError = InitiatePasswordResetErrors[keyof InitiatePasswordResetErrors];
+export type ResendPersonCredentialRegistrationConfirmationError = ResendPersonCredentialRegistrationConfirmationErrors[keyof ResendPersonCredentialRegistrationConfirmationErrors];
 
-export type InitiatePasswordResetResponses = {
+export type ResendPersonCredentialRegistrationConfirmationResponses = {
     /**
      * Created
      */
     201: EmptyResponse;
 };
 
-export type InitiatePasswordResetResponse = InitiatePasswordResetResponses[keyof InitiatePasswordResetResponses];
+export type ResendPersonCredentialRegistrationConfirmationResponse = ResendPersonCredentialRegistrationConfirmationResponses[keyof ResendPersonCredentialRegistrationConfirmationResponses];
 
 export type ResendPasswordResetData = {
     body?: ResendPasswordResetRequest;
-    path: {
-        Token: string;
-    };
+    path?: never;
     query?: never;
-    url: '/credentials/{Token}/reset/resend';
+    url: '/credentials/resend-reset';
 };
 
 export type ResendPasswordResetErrors = {
@@ -10415,6 +10435,242 @@ export type TransferSubscriptionPutResponses = {
 
 export type TransferSubscriptionPutResponse = TransferSubscriptionPutResponses[keyof TransferSubscriptionPutResponses];
 
+export type ExpireSubscriptionTrialPatchData = {
+    body?: ExpireSubscriptionTrialRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/subscriptions/{Id}/expire-trial';
+};
+
+export type ExpireSubscriptionTrialPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ExpireSubscriptionTrialPatchError = ExpireSubscriptionTrialPatchErrors[keyof ExpireSubscriptionTrialPatchErrors];
+
+export type ExpireSubscriptionTrialPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetSubscriptionResponse;
+};
+
+export type ExpireSubscriptionTrialPatchResponse = ExpireSubscriptionTrialPatchResponses[keyof ExpireSubscriptionTrialPatchResponses];
+
+export type ExpireSubscriptionTrialPutData = {
+    body?: ExpireSubscriptionTrialRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/subscriptions/{Id}/expire-trial';
+};
+
+export type ExpireSubscriptionTrialPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ExpireSubscriptionTrialPutError = ExpireSubscriptionTrialPutErrors[keyof ExpireSubscriptionTrialPutErrors];
+
+export type ExpireSubscriptionTrialPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetSubscriptionResponse;
+};
+
+export type ExpireSubscriptionTrialPutResponse = ExpireSubscriptionTrialPutResponses[keyof ExpireSubscriptionTrialPutResponses];
+
+export type ConvertSubscriptionPatchData = {
+    body?: ConvertSubscriptionRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/subscriptions/{Id}/convert';
+};
+
+export type ConvertSubscriptionPatchErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ConvertSubscriptionPatchError = ConvertSubscriptionPatchErrors[keyof ConvertSubscriptionPatchErrors];
+
+export type ConvertSubscriptionPatchResponses = {
+    /**
+     * Accepted
+     */
+    202: GetSubscriptionResponse;
+};
+
+export type ConvertSubscriptionPatchResponse = ConvertSubscriptionPatchResponses[keyof ConvertSubscriptionPatchResponses];
+
+export type ConvertSubscriptionPutData = {
+    body?: ConvertSubscriptionRequest;
+    path: {
+        Id: string;
+    };
+    query?: never;
+    url: '/subscriptions/{Id}/convert';
+};
+
+export type ConvertSubscriptionPutErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type ConvertSubscriptionPutError = ConvertSubscriptionPutErrors[keyof ConvertSubscriptionPutErrors];
+
+export type ConvertSubscriptionPutResponses = {
+    /**
+     * Accepted
+     */
+    202: GetSubscriptionResponse;
+};
+
+export type ConvertSubscriptionPutResponse = ConvertSubscriptionPutResponses[keyof ConvertSubscriptionPutResponses];
+
 export type GetCallerWithHmacTestingOnlyData = {
     body?: never;
     path?: never;
@@ -12878,6 +13134,120 @@ export type ValidationsValidatedPostTestingOnlyResponses = {
 };
 
 export type ValidationsValidatedPostTestingOnlyResponse = ValidationsValidatedPostTestingOnlyResponses[keyof ValidationsValidatedPostTestingOnlyResponses];
+
+export type DeliverSubscriptionTrialEventData = {
+    body?: DeliverSubscriptionTrialEventRequest;
+    path?: never;
+    query?: never;
+    url: '/subscription-trial-events/deliver';
+};
+
+export type DeliverSubscriptionTrialEventErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type DeliverSubscriptionTrialEventError = DeliverSubscriptionTrialEventErrors[keyof DeliverSubscriptionTrialEventErrors];
+
+export type DeliverSubscriptionTrialEventResponses = {
+    /**
+     * Created
+     */
+    201: DeliverMessageResponse;
+};
+
+export type DeliverSubscriptionTrialEventResponse = DeliverSubscriptionTrialEventResponses[keyof DeliverSubscriptionTrialEventResponses];
+
+export type DrainAllSubscriptionTrialEventsData = {
+    body?: DrainAllSubscriptionTrialEventsRequest;
+    path?: never;
+    query?: never;
+    url: '/subscription-trial-events/drain';
+};
+
+export type DrainAllSubscriptionTrialEventsErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type DrainAllSubscriptionTrialEventsError = DrainAllSubscriptionTrialEventsErrors[keyof DrainAllSubscriptionTrialEventsErrors];
+
+export type DrainAllSubscriptionTrialEventsResponses = {
+    /**
+     * Created
+     */
+    201: EmptyResponse;
+};
+
+export type DrainAllSubscriptionTrialEventsResponse = DrainAllSubscriptionTrialEventsResponses[keyof DrainAllSubscriptionTrialEventsResponses];
 
 export type DeliverUsageData = {
     body?: DeliverUsageRequest;

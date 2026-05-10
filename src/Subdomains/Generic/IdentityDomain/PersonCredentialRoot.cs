@@ -221,7 +221,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
             case RegistrationVerificationCreated created:
             {
-                var verification = VerificationKeep.Renew(created.Token, created.ExpiresAt);
+                var verification = VerificationKeep.Renew(created.VerificationToken, created.ExpiresAt);
                 if (verification.IsFailure)
                 {
                     return verification.Error;
@@ -247,7 +247,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
 
             case PasswordResetInitiated changed:
             {
-                var reset = Password.InitiatePasswordReset(changed.Token, changed.ExpiresAt);
+                var reset = Password.InitiatePasswordReset(changed.ResetToken, changed.ExpiresAt);
                 if (reset.IsFailure)
                 {
                     return reset.Error;
@@ -819,43 +819,45 @@ public sealed class PersonCredentialRoot : AggregateRootBase
         return MfaOptions.AuthenticationToken.Value;
     }
 
-    public Result<Error> InitiatePasswordReset()
+    public Result<InitiatePasswordResetResult, Error> InitiatePasswordReset()
     {
         if (!IsRegistrationVerified)
         {
             return Error.PreconditionViolation(Resources.PersonCredentialRoot_RegistrationUnverified);
         }
 
-        var token = _tokensService.CreatePasswordResetToken();
+        var resetToken = _tokensService.CreatePasswordResetToken();
+        var resendToken = _tokensService.CreatePasswordResetToken();
         var expiresAt = DateTime.UtcNow.Add(PasswordKeep.DefaultResetExpiry);
-        return RaiseChangeEvent(
-            IdentityDomain.Events.PersonCredentials.PasswordResetInitiated(Id, token, expiresAt));
+        var raised = RaiseChangeEvent(
+            IdentityDomain.Events.PersonCredentials.PasswordResetInitiated(Id, resetToken, resendToken, expiresAt));
+        if (raised.IsFailure)
+        {
+            return raised.Error;
+        }
+
+        return new InitiatePasswordResetResult(resendToken);
     }
 
-    public Result<Error> InitiateRegistrationVerification()
+    public Result<InitiateRegistrationVerificationResult, Error> InitiateRegistrationVerification()
     {
         if (IsVerified)
         {
             return Error.PreconditionViolation(Resources.PersonCredentialRoot_RegistrationVerified);
         }
 
-        var token = _tokensService.CreateRegistrationVerificationToken();
+        var verificationToken = _tokensService.CreateRegistrationVerificationToken();
+        var resendToken = _tokensService.CreateRegistrationVerificationToken();
         var expiresUtc = DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry);
-        return RaiseChangeEvent(
-            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token, expiresUtc));
-    }
-
-    public Result<Error> RenewRegistrationVerification()
-    {
-        if (IsVerified)
+        var created = RaiseChangeEvent(
+            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, verificationToken, resendToken,
+                expiresUtc));
+        if (created.IsFailure)
         {
-            return Error.PreconditionViolation(Resources.PersonCredentialRoot_RegistrationVerified);
+            return created.Error;
         }
 
-        var token = _tokensService.CreateRegistrationVerificationToken();
-        var expiresUtc = DateTime.UtcNow.Add(VerificationKeep.DefaultTokenExpiry);
-        return RaiseChangeEvent(
-            IdentityDomain.Events.PersonCredentials.RegistrationVerificationCreated(Id, token, expiresUtc));
+        return new InitiateRegistrationVerificationResult(resendToken);
     }
 
     public Result<Error> ResetMfa(Roles resetterRoles)
@@ -1144,4 +1146,8 @@ public sealed class PersonCredentialRoot : AggregateRootBase
                 Validations.Credentials.Login.DefaultCooldownPeriodMinutes)
             )).Value;
     }
+
+    public record InitiatePasswordResetResult(string ResendToken);
+
+    public record InitiateRegistrationVerificationResult(string ResendToken);
 }

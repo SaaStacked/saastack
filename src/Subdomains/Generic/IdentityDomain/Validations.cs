@@ -48,6 +48,7 @@ public static class Validations
             public static readonly Validation OobCode = CommonValidations.RandomToken();
             public static readonly Validation RecoveryConfirmationCode = new(@"^[a-fA-F0-9]{8}$");
             public static readonly Validation ResetToken = CommonValidations.RandomToken();
+            public static readonly Validation ResendToken = CommonValidations.RandomToken();
             public static readonly Validation VerificationToken = CommonValidations.RandomToken();
         }
     }

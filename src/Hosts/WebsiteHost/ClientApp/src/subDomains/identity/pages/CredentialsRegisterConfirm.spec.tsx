@@ -9,8 +9,10 @@ import {
   ResendPersonCredentialRegistrationConfirmationResponse
 } from '../../../framework/api/apiHost1';
 import { ConfirmPersonCredentialRegistrationErrors } from '../actions/confirmPersonCredentialRegistration.ts';
+import {
+  ResendPersonCredentialRegistrationConfirmationErrors
+} from '../actions/resendPersonCredentialRegistrationConfirmation.ts';
 import { CredentialsRegisterConfirm } from './CredentialsRegisterConfirm';
-
 
 const mockConfirmAction: ActionResult<
   ConfirmPersonCredentialRegistrationRequest,
@@ -29,7 +31,7 @@ const mockConfirmAction: ActionResult<
 
 const mockResendAction: ActionResult<
   ResendPersonCredentialRegistrationConfirmationRequest,
-  ConfirmPersonCredentialRegistrationErrors,
+  ResendPersonCredentialRegistrationConfirmationErrors,
   ResendPersonCredentialRegistrationConfirmationResponse
 > = {
   execute: vi.fn(),
@@ -51,7 +53,10 @@ vi.mock('../actions/confirmPersonCredentialRegistration', () => ({
 }));
 
 vi.mock('../actions/resendPersonCredentialRegistrationConfirmation', () => ({
-  ResendPersonCredentialRegistrationConfirmationAction: () => mockResendAction
+  ResendPersonCredentialRegistrationConfirmationAction: () => mockResendAction,
+  ResendPersonCredentialRegistrationConfirmationErrors: {
+    already_registered: 'already_registered'
+  }
 }));
 
 const renderWithRouter = (initialEntries: string[] = ['/']) =>
@@ -197,15 +202,15 @@ describe('CredentialsRegisterConfirm', () => {
         mockResendAction.lastUnexpectedError = undefined;
       });
 
-      it('when token used, displays error', () => {
+      it('when registration already confirmed, displays error', () => {
         mockResendAction.lastExpectedError = {
-          code: ConfirmPersonCredentialRegistrationErrors.token_used
+          code: ResendPersonCredentialRegistrationConfirmationErrors.already_registered
         };
         renderWithRouter(['/aroute?token=atoken']);
 
         expect(screen.getByTestId('resend_button_action_expected_error_alert_message')).toBeDefined();
         expect(
-          screen.getByText('pages.identity.credentials_register_confirm.states.resending.errors.token_used')
+          screen.getByText('pages.identity.credentials_register_confirm.states.resending.errors.already_registered')
         ).toBeDefined();
       });
 

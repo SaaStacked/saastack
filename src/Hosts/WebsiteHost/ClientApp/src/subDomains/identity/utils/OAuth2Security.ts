@@ -3,6 +3,8 @@
  * Following RFC 7636 specification
  */
 
+import { SessionStorageKeys } from '../../../framework/constants.ts';
+
 /**
  * Generates a cryptographically secure code verifier for PKCE
  * @returns Base64URL-encoded random string (43-128 characters)
@@ -44,8 +46,8 @@ export const generateOAuth2State = (): string =>
  * @param codeVerifier PKCE code verifier
  */
 export const storePKCEParameters = (state: string, codeVerifier: string): void => {
-  sessionStorage.setItem('oauth_state', state);
-  sessionStorage.setItem('code_verifier', codeVerifier);
+  sessionStorage.setItem(SessionStorageKeys.OAuth2PkceState, state);
+  sessionStorage.setItem(SessionStorageKeys.OAuth2PkceVerifier, codeVerifier);
 };
 
 /**
@@ -60,8 +62,8 @@ export const validatePKCEParametersFromStorage = (
   codeVerifier: string | null;
   error?: string;
 } => {
-  const storedState = sessionStorage.getItem('oauth_state');
-  const codeVerifier = sessionStorage.getItem('code_verifier');
+  const storedState = sessionStorage.getItem(SessionStorageKeys.OAuth2PkceState);
+  const codeVerifier = sessionStorage.getItem(SessionStorageKeys.OAuth2PkceVerifier);
 
   if (!storedState || !returnedState || storedState !== returnedState) {
     return {
@@ -89,6 +91,6 @@ export const validatePKCEParametersFromStorage = (
  * Cleans up PKCE parameters from session storage
  */
 export const cleanupStoredPKCEParameters = (): void => {
-  sessionStorage.removeItem('oauth_state');
-  sessionStorage.removeItem('code_verifier');
+  sessionStorage.removeItem(SessionStorageKeys.OAuth2PkceState);
+  sessionStorage.removeItem(SessionStorageKeys.OAuth2PkceVerifier);
 };

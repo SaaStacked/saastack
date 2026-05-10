@@ -24,10 +24,10 @@ public partial interface IIdentityServerCredentialsService
         ICallerContext caller, string userId, CancellationToken cancellationToken);
 #endif
 
-    Task<Result<PersonCredential, Error>> RegisterPersonAsync(ICallerContext caller, string? invitationToken,
+    Task<Result<PersonCredentialRegistrationVerificationResult, Error>> RegisterPersonAsync(ICallerContext caller,
+        string? invitationToken,
         string firstName, string lastName, string emailAddress, string password, string? timezone, string? locale,
-        string? countryCode,
-        bool termsAndConditionsAccepted, CancellationToken cancellationToken);
+        string? countryCode, bool termsAndConditionsAccepted, CancellationToken cancellationToken);
 
     Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
         CancellationToken cancellationToken);
@@ -41,7 +41,8 @@ public partial interface IIdentityServerCredentialsService
     Task<Result<Error>> CompletePasswordResetAsync(ICallerContext caller, string token, string password,
         CancellationToken cancellationToken);
 
-    Task<Result<Error>> InitiatePasswordResetAsync(ICallerContext caller, string emailAddress,
+    Task<Result<PersonCredentialPasswordResetResult, Error>> InitiatePasswordResetAsync(ICallerContext caller,
+        string emailAddress,
         CancellationToken cancellationToken);
 
     Task<Result<Error>> ResendPasswordResetAsync(ICallerContext caller, string token,

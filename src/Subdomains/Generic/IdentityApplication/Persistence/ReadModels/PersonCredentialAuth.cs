@@ -17,7 +17,11 @@ public class PersonCredentialAuth : ReadModelEntity
 
     public Optional<bool> MfaCanBeDisabled { get; set; }
 
+    public Optional<string> PasswordResetResendToken { get; set; }
+
     public Optional<string> PasswordResetToken { get; set; }
+
+    public Optional<string> RegistrationVerificationResendToken { get; set; }
 
     public Optional<string> RegistrationVerificationToken { get; set; }
 

@@ -1,7 +1,7 @@
 import { useActionCommand } from '../../../framework/actions/ActionCommand.ts';
 import {
   resendPasswordReset,
-  ResendPasswordResetData,
+  ResendPasswordResetRequest,
   ResendPasswordResetResponse
 } from '../../../framework/api/apiHost1';
 
@@ -11,8 +11,11 @@ export enum ResendPasswordResetErrors {
 }
 
 export const ResendPasswordResetAction = () =>
-  useActionCommand<ResendPasswordResetData, ResendPasswordResetResponse, ResendPasswordResetErrors>({
-    request: (request) => resendPasswordReset(request),
+  useActionCommand<ResendPasswordResetRequest, ResendPasswordResetResponse, ResendPasswordResetErrors>({
+    request: (request) =>
+      resendPasswordReset({
+        body: request
+      }),
     passThroughErrors: {
       404: ResendPasswordResetErrors.token_invalid,
       405: ResendPasswordResetErrors.user_not_registered

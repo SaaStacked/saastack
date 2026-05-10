@@ -19,7 +19,7 @@ public class ResendPersonCredentialRegistrationConfirmationRequestValidatorSpec
         _validator = new ResendPersonCredentialRegistrationConfirmationRequestValidator();
         _dto = new ResendPersonCredentialRegistrationConfirmationRequest
         {
-            Token = new TokensService().CreateRegistrationVerificationToken()
+            Token = new TokensService().CreatePasswordResetToken()
         };
     }
 
@@ -37,17 +37,17 @@ public class ResendPersonCredentialRegistrationConfirmationRequestValidatorSpec
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ResendPersonCredentialRegistrationConfirmationRequestValidator_InvalidToken);
     }
 
     [Fact]
     public void WhenTokenIsInvalid_ThenThrows()
     {
-        _dto.Token = "aninvalidtoken";
+        _dto.Token = "notavalidtoken";
 
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
-            .WithMessageLike(Resources.ConfirmPersonCredentialRegistrationRequestValidator_InvalidToken);
+            .WithMessageLike(Resources.ResendPersonCredentialRegistrationConfirmationRequestValidator_InvalidToken);
     }
 }

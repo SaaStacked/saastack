@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Resources.Shared;
 using Common;
 
 namespace IdentityApplication;
@@ -12,7 +13,8 @@ partial class PersonCredentialsApplication
             cancellationToken);
     }
 
-    public async Task<Result<Error>> InitiatePasswordResetAsync(ICallerContext caller, string emailAddress,
+    public async Task<Result<PersonCredentialPasswordResetResult, Error>> InitiatePasswordResetAsync(
+        ICallerContext caller, string emailAddress,
         CancellationToken cancellationToken)
     {
         return await _identityServerProvider.CredentialsService.InitiatePasswordResetAsync(caller, emailAddress,

@@ -8,7 +8,9 @@
   "paths": {
     "/api/auth": {
       "post": {
-        "tags": ["AuthenticationApi"],
+        "tags": [
+          "AuthenticationApi"
+        ],
         "summary": "Authenticates the user with the specified provider, using either an auth code or a username and password.",
         "description": "(request type: AuthenticateRequest)",
         "operationId": "Authenticate",
@@ -48,12 +50,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -91,7 +93,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -102,7 +104,9 @@
     },
     "/api/auth/logout": {
       "post": {
-        "tags": ["AuthenticationApi"],
+        "tags": [
+          "AuthenticationApi"
+        ],
         "summary": "Removes the current user's authenticated session (if any)",
         "description": "(request type: LogoutRequest)",
         "operationId": "Logout",
@@ -142,12 +146,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -185,7 +189,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -196,7 +200,9 @@
     },
     "/api/auth/refresh": {
       "post": {
-        "tags": ["AuthenticationApi"],
+        "tags": [
+          "AuthenticationApi"
+        ],
         "summary": "Refreshes the current user's authentication session (if possible)",
         "description": "(request type: RefreshTokenRequest)",
         "operationId": "RefreshToken",
@@ -236,12 +242,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -279,7 +285,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -290,7 +296,9 @@
     },
     "/api/flags": {
       "get": {
-        "tags": ["FeatureFlagsApi"],
+        "tags": [
+          "FeatureFlagsApi"
+        ],
         "summary": "Lists all the available feature flags",
         "description": "(request type: GetAllFeatureFlagsRequest)",
         "operationId": "GetAllFeatureFlags",
@@ -321,12 +329,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -364,7 +372,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -375,7 +383,9 @@
     },
     "/api/flags/{Name}": {
       "get": {
-        "tags": ["FeatureFlagsApi"],
+        "tags": [
+          "FeatureFlagsApi"
+        ],
         "summary": "Fetches the named feature flag for the current authenticated user",
         "description": "(request type: GetFeatureFlagForCallerRequest)",
         "operationId": "GetFeatureFlagForCaller",
@@ -417,12 +427,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -460,7 +470,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -471,7 +481,9 @@
     },
     "/api/health": {
       "get": {
-        "tags": ["HealthApi"],
+        "tags": [
+          "HealthApi"
+        ],
         "summary": "Displays the health of the API",
         "description": "(request type: ApiHealthCheckRequest)",
         "operationId": "ApiHealthCheck",
@@ -502,12 +514,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -545,7 +557,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -556,7 +568,9 @@
     },
     "/error": {
       "get": {
-        "tags": ["Home"],
+        "tags": [
+          "Home"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -566,7 +580,9 @@
     },
     "/api/oauth2/authorize": {
       "post": {
-        "tags": ["OAuth2AuthorizationApi"],
+        "tags": [
+          "OAuth2AuthorizationApi"
+        ],
         "summary": "Authorizes the user to access the application in Open ID Connect.",
         "description": "(request type: AuthorizeOAuth2Request)",
         "operationId": "AuthorizeOAuth2",
@@ -606,12 +622,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -649,7 +665,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -660,7 +676,9 @@
     },
     "/api/oauth2/clients/{Id}/consent": {
       "post": {
-        "tags": ["OAuth2AuthorizationApi"],
+        "tags": [
+          "OAuth2AuthorizationApi"
+        ],
         "summary": "Consent for the user to authorize the OAuth2/Open ID Connect client to access their data",
         "description": "(request type: ConsentOAuth2ClientRequest)",
         "operationId": "ConsentOAuth2Client",
@@ -711,12 +729,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -754,7 +772,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -763,17 +781,19 @@
         },
         "security": [
           {
-            "Bearer": []
+            "Bearer": [ ]
           },
           {
-            "APIKey": []
+            "APIKey": [ ]
           }
         ]
       }
     },
     "/api/record/crash": {
       "post": {
-        "tags": ["RecordingApi"],
+        "tags": [
+          "RecordingApi"
+        ],
         "summary": "Records a crash event of the product",
         "description": "(request type: RecordCrashRequest)",
         "operationId": "RecordCrash",
@@ -813,12 +833,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -856,7 +876,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -867,7 +887,9 @@
     },
     "/api/record/measure": {
       "post": {
-        "tags": ["RecordingApi"],
+        "tags": [
+          "RecordingApi"
+        ],
         "summary": "Measures an event in the product",
         "description": "(request type: RecordMeasureRequest)",
         "operationId": "RecordMeasure",
@@ -907,12 +929,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -950,7 +972,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -961,7 +983,9 @@
     },
     "/api/record/page_view": {
       "post": {
-        "tags": ["RecordingApi"],
+        "tags": [
+          "RecordingApi"
+        ],
         "summary": "Records a page view event in the product",
         "description": "(request type: RecordPageViewRequest)",
         "operationId": "RecordPageView",
@@ -1001,12 +1025,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1044,7 +1068,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1055,7 +1079,9 @@
     },
     "/api/record/trace": {
       "post": {
-        "tags": ["RecordingApi"],
+        "tags": [
+          "RecordingApi"
+        ],
         "summary": "Records a trace event in the product",
         "description": "(request type: RecordTraceRequest)",
         "operationId": "RecordTrace",
@@ -1095,12 +1121,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1138,7 +1164,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1149,7 +1175,9 @@
     },
     "/api/record/use": {
       "post": {
-        "tags": ["RecordingApi"],
+        "tags": [
+          "RecordingApi"
+        ],
         "summary": "Records a usage of the product",
         "description": "(request type: RecordUseRequest)",
         "operationId": "RecordUse",
@@ -1189,12 +1217,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1232,7 +1260,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1243,7 +1271,9 @@
     },
     "/api/stats": {
       "get": {
-        "tags": ["StatsApi"],
+        "tags": [
+          "StatsApi"
+        ],
         "summary": "Displays the statistics of the API",
         "description": "(request type: ApiStatisticsRequest)",
         "operationId": "ApiStatistics",
@@ -1284,12 +1314,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1327,7 +1357,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1338,7 +1368,9 @@
     },
     "/api/testingonly/direct/anonymous": {
       "post": {
-        "tags": ["TestingOnlyApi"],
+        "tags": [
+          "TestingOnlyApi"
+        ],
         "summary": "An example of a request that uses NO authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).",
         "description": "(request type: BeffeAnonymousDirectTestingOnlyRequest)",
         "operationId": "BeffeAnonymousDirectTestingOnly",
@@ -1378,12 +1410,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1421,7 +1453,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1432,7 +1464,9 @@
     },
     "/api/testingonly/anonymous": {
       "post": {
-        "tags": ["TestingOnlyApi"],
+        "tags": [
+          "TestingOnlyApi"
+        ],
         "summary": "An example of a request that uses NO authentication for a BEFFE endpoint",
         "description": "(request type: BeffeAnonymousTestingOnlyRequest)",
         "operationId": "BeffeAnonymousTestingOnly",
@@ -1472,12 +1506,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1515,7 +1549,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1526,7 +1560,9 @@
     },
     "/api/testingonly/direct/hmac": {
       "post": {
-        "tags": ["TestingOnlyApi"],
+        "tags": [
+          "TestingOnlyApi"
+        ],
         "summary": "An example of a request that uses HMAC authentication for a BEFFE endpoint, which can be called directly from another client (and not from the browser, which includes CSRF protection).",
         "description": "(request type: BeffeHMacDirectTestingOnlyRequest)",
         "operationId": "BeffeHMacDirectTestingOnly",
@@ -1566,12 +1602,12 @@
                   "Validation": {
                     "summary": "Validation Error",
                     "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
-                    "value": "{\r\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The error for FieldA\",\r\n  \"instance\": \"https://api.server.com/resource/123\",\r\n  \"errors\": [\r\n    {\r\n      \"reason\": \"The error for FieldA\",\r\n      \"rule\": \"The Code for FieldA\"\r\n    },\r\n    {\r\n      \"reason\": \"The error for FieldB\",\r\n      \"rule\": \"The Code for FieldB\"\r\n    }\r\n  ]\r\n}"
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
                   },
                   "RuleViolation": {
                     "summary": "Rule Violation",
                     "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"A description of the violation\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
                   }
                 }
               }
@@ -1609,7 +1645,7 @@
                   "Unexpected": {
                     "summary": "Unexpected Error",
                     "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
-                    "value": "{\r\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\r\n  \"title\": \"An error occurred while processing your request.\",\r\n  \"status\": 500,\r\n  \"detail\": \"A description of the error\"\r\n}"
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
                   }
                 }
               }
@@ -1618,7 +1654,7 @@
         },
         "security": [
           {
-            "HMAC": []
+            "HMAC": [ ]
           }
         ]
       }
@@ -1627,7 +1663,9 @@
   "components": {
     "schemas": {
       "ApiHealthCheckResponse": {
-        "required": ["health"],
+        "required": [
+          "health"
+        ],
         "type": "object",
         "properties": {
           "health": {
@@ -1637,7 +1675,10 @@
         "additionalProperties": false
       },
       "ApiHostHealth": {
-        "required": ["name", "status"],
+        "required": [
+          "name",
+          "status"
+        ],
         "type": "object",
         "properties": {
           "name": {
@@ -1650,7 +1691,13 @@
         "additionalProperties": false
       },
       "ApiStatistics": {
-        "required": ["apiVersion", "baseUrl", "methods", "name", "total"],
+        "required": [
+          "apiVersion",
+          "baseUrl",
+          "methods",
+          "name",
+          "total"
+        ],
         "type": "object",
         "properties": {
           "apiVersion": {
@@ -1673,7 +1720,9 @@
         "additionalProperties": false
       },
       "ApiStatisticsResponse": {
-        "required": ["statistics"],
+        "required": [
+          "statistics"
+        ],
         "type": "object",
         "properties": {
           "statistics": {
@@ -1683,7 +1732,9 @@
         "additionalProperties": false
       },
       "AuthenticateRequest": {
-        "required": ["provider"],
+        "required": [
+          "provider"
+        ],
         "type": "object",
         "properties": {
           "authCode": {
@@ -1710,7 +1761,9 @@
         "additionalProperties": false
       },
       "AuthenticateResponse": {
-        "required": ["userId"],
+        "required": [
+          "userId"
+        ],
         "type": "object",
         "properties": {
           "userId": {
@@ -1720,7 +1773,12 @@
         "additionalProperties": false
       },
       "AuthorizeOAuth2Request": {
-        "required": ["clientId", "redirectUri", "responseType", "scope"],
+        "required": [
+          "clientId",
+          "redirectUri",
+          "responseType",
+          "scope"
+        ],
         "type": "object",
         "properties": {
           "clientId": {
@@ -1757,7 +1815,9 @@
         "additionalProperties": false
       },
       "AuthorizeOAuth2Response": {
-        "required": ["redirect"],
+        "required": [
+          "redirect"
+        ],
         "type": "object",
         "properties": {
           "redirect": {
@@ -1767,7 +1827,12 @@
         "additionalProperties": false
       },
       "AuthorizeRedirect": {
-        "required": ["isConsent", "isExternal", "isLogin", "redirectUri"],
+        "required": [
+          "isConsent",
+          "isExternal",
+          "isLogin",
+          "redirectUri"
+        ],
         "type": "object",
         "properties": {
           "redirectUri": {
@@ -1798,7 +1863,9 @@
         "additionalProperties": false
       },
       "BeffeTestingOnlyResponse": {
-        "required": ["callerId"],
+        "required": [
+          "callerId"
+        ],
         "type": "object",
         "properties": {
           "callerId": {
@@ -1808,7 +1875,12 @@
         "additionalProperties": false
       },
       "ConsentOAuth2ClientRequest": {
-        "required": ["consented", "id", "redirectUri", "scope"],
+        "required": [
+          "consented",
+          "id",
+          "redirectUri",
+          "scope"
+        ],
         "type": "object",
         "properties": {
           "consented": {
@@ -1830,7 +1902,9 @@
         "additionalProperties": false
       },
       "ConsentOAuth2ClientResponse": {
-        "required": ["redirect"],
+        "required": [
+          "redirect"
+        ],
         "type": "object",
         "properties": {
           "redirect": {
@@ -1840,7 +1914,10 @@
         "additionalProperties": false
       },
       "ConsentRedirect": {
-        "required": ["isConsented", "redirectUri"],
+        "required": [
+          "isConsented",
+          "redirectUri"
+        ],
         "type": "object",
         "properties": {
           "redirectUri": {
@@ -1857,7 +1934,11 @@
         "additionalProperties": false
       },
       "EndpointStatistic": {
-        "required": ["description", "path", "tags"],
+        "required": [
+          "description",
+          "path",
+          "tags"
+        ],
         "type": "object",
         "properties": {
           "description": {
@@ -1869,7 +1950,10 @@
           "tags": {
             "type": "array",
             "items": {
-              "required": ["chars", "length"],
+              "required": [
+                "chars",
+                "length"
+              ],
               "type": "string"
             }
           }
@@ -1877,7 +1961,10 @@
         "additionalProperties": false
       },
       "FeatureFlag": {
-        "required": ["isEnabled", "name"],
+        "required": [
+          "isEnabled",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "isEnabled": {
@@ -1890,7 +1977,9 @@
         "additionalProperties": false
       },
       "GetAllFeatureFlagsResponse": {
-        "required": ["flags"],
+        "required": [
+          "flags"
+        ],
         "type": "object",
         "properties": {
           "flags": {
@@ -1903,7 +1992,9 @@
         "additionalProperties": false
       },
       "GetFeatureFlagResponse": {
-        "required": ["flag"],
+        "required": [
+          "flag"
+        ],
         "type": "object",
         "properties": {
           "flag": {
@@ -1917,7 +2008,9 @@
         "additionalProperties": false
       },
       "MethodGroupEndpointStatistics": {
-        "required": ["total"],
+        "required": [
+          "total"
+        ],
         "type": "object",
         "properties": {
           "endpoints": {
@@ -1934,7 +2027,14 @@
         "additionalProperties": false
       },
       "MethodGroupStatistics": {
-        "required": ["deletes", "gets", "patches", "posts", "puts", "total"],
+        "required": [
+          "deletes",
+          "gets",
+          "patches",
+          "posts",
+          "puts",
+          "total"
+        ],
         "type": "object",
         "properties": {
           "deletes": {
@@ -1960,15 +2060,27 @@
         "additionalProperties": false
       },
       "OAuth2ResponseType": {
-        "enum": ["code", "id_Token", "token"],
+        "enum": [
+          "code",
+          "id_Token",
+          "token"
+        ],
         "type": "string"
       },
       "OpenIdConnectCodeChallengeMethod": {
-        "enum": ["plain", "s256"],
+        "enum": [
+          "plain",
+          "s256"
+        ],
         "type": "string"
       },
       "ProblemDetails": {
-        "required": ["detail", "instance", "title", "type"],
+        "required": [
+          "detail",
+          "instance",
+          "title",
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
@@ -1988,10 +2100,12 @@
             "type": "string"
           }
         },
-        "additionalProperties": {}
+        "additionalProperties": { }
       },
       "RecordCrashRequest": {
-        "required": ["message"],
+        "required": [
+          "message"
+        ],
         "type": "object",
         "properties": {
           "message": {
@@ -2002,7 +2116,9 @@
         "additionalProperties": false
       },
       "RecordMeasureRequest": {
-        "required": ["eventName"],
+        "required": [
+          "eventName"
+        ],
         "type": "object",
         "properties": {
           "additional": {
@@ -2020,7 +2136,9 @@
         "additionalProperties": false
       },
       "RecordPageViewRequest": {
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "type": "object",
         "properties": {
           "path": {
@@ -2031,7 +2149,10 @@
         "additionalProperties": false
       },
       "RecordTraceRequest": {
-        "required": ["level", "messageTemplate"],
+        "required": [
+          "level",
+          "messageTemplate"
+        ],
         "type": "object",
         "properties": {
           "arguments": {
@@ -2053,7 +2174,9 @@
         "additionalProperties": false
       },
       "RecordUseRequest": {
-        "required": ["eventName"],
+        "required": [
+          "eventName"
+        ],
         "type": "object",
         "properties": {
           "additional": {

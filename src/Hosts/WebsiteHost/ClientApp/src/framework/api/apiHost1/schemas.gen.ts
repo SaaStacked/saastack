@@ -834,6 +834,14 @@ export const ConsentOAuth2ClientForCallerRequestSchema = {
     additionalProperties: false
 } as const;
 
+export const ConvertSubscriptionRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
+    additionalProperties: false
+} as const;
+
 export const CreateAPIKeyRequestSchema = {
     type: 'object',
     properties: {
@@ -1048,6 +1056,20 @@ export const DeliverMessageResponseSchema = {
     properties: {
         isSent: {
             type: 'boolean'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const DeliverSubscriptionTrialEventRequestSchema = {
+    required: [
+        'message'
+    ],
+    type: 'object',
+    properties: {
+        message: {
+            minLength: 1,
+            type: 'string'
         }
     },
     additionalProperties: false
@@ -1295,6 +1317,11 @@ export const DrainAllSmsesRequestSchema = {
     additionalProperties: false
 } as const;
 
+export const DrainAllSubscriptionTrialEventsRequestSchema = {
+    type: 'object',
+    additionalProperties: false
+} as const;
+
 export const DrainAllUsagesRequestSchema = {
     type: 'object',
     additionalProperties: false
@@ -1475,6 +1502,14 @@ export const ExchangeOAuth2ForTokensResponseSchema = {
             $ref: '#/components/schemas/OAuth2TokenType'
         }
     },
+    additionalProperties: false
+} as const;
+
+export const ExpireSubscriptionTrialRequestSchema = {
+    required: [
+        'id'
+    ],
+    type: 'object',
     additionalProperties: false
 } as const;
 
@@ -2029,6 +2064,19 @@ export const InitiatePasswordResetRequestSchema = {
     properties: {
         emailAddress: {
             minLength: 1,
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const InitiatePasswordResetResponseSchema = {
+    required: [
+        'resendToken'
+    ],
+    type: 'object',
+    properties: {
+        resendToken: {
             type: 'string'
         }
     },
@@ -4198,12 +4246,16 @@ export const RegisterPersonCredentialRequestSchema = {
 
 export const RegisterPersonCredentialResponseSchema = {
     required: [
-        'person'
+        'person',
+        'resendToken'
     ],
     type: 'object',
     properties: {
         person: {
             $ref: '#/components/schemas/PersonCredential'
+        },
+        resendToken: {
+            type: 'string'
         }
     },
     additionalProperties: false
@@ -4222,6 +4274,12 @@ export const ResendPasswordResetRequestSchema = {
         'token'
     ],
     type: 'object',
+    properties: {
+        token: {
+            minLength: 1,
+            type: 'string'
+        }
+    },
     additionalProperties: false
 } as const;
 
@@ -4870,13 +4928,13 @@ export const SubscriptionWithPlanSchema = {
         'canBeCanceled',
         'canBeUnsubscribed',
         'id',
-        'invoice',
         'owningEntityId',
         'paymentMethod',
         'period',
         'plan',
         'providerState',
-        'status'
+        'status',
+        'upcomingInvoice'
     ],
     type: 'object',
     properties: {
@@ -4915,7 +4973,7 @@ export const SubscriptionWithPlanSchema = {
             type: 'string',
             format: 'date-time'
         },
-        invoice: {
+        upcomingInvoice: {
             $ref: '#/components/schemas/InvoiceSummary'
         },
         paymentMethod: {
@@ -4931,6 +4989,9 @@ export const SubscriptionWithPlanSchema = {
             $ref: '#/components/schemas/SubscriptionStatus'
         },
         subscriptionReference: {
+            type: 'string'
+        },
+        checkoutUrl: {
             type: 'string'
         }
     },

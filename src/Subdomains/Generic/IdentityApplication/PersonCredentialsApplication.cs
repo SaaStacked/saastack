@@ -45,7 +45,8 @@ public partial class PersonCredentialsApplication : IPersonCredentialsApplicatio
     }
 #endif
 
-    public async Task<Result<PersonCredential, Error>> RegisterPersonAsync(ICallerContext caller,
+    public async Task<Result<PersonCredentialRegistrationVerificationResult, Error>> RegisterPersonAsync(
+        ICallerContext caller,
         string? invitationToken, string firstName, string lastName, string emailAddress, string password,
         string? timezone, string? locale, string? countryCode, bool termsAndConditionsAccepted,
         CancellationToken cancellationToken)

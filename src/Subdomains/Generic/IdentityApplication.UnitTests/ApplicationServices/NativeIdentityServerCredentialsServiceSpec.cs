@@ -540,7 +540,8 @@ public class NativeIdentityServerCredentialsServiceSpec
             "alastname", "auser@company.com", "apassword", "atimezone", "alocale", "acountrycode", true,
             CancellationToken.None);
 
-        result.Value.User.Should().Be(endUser);
+        result.Value.Credential.User.Should().Be(endUser);
+        result.Value.ResendToken.Should().Be(Token);
         _repository.Verify(s => s.SaveAsync(It.IsAny<PersonCredentialRoot>(), It.IsAny<CancellationToken>()),
             Times.Never);
         _endUsersService.Verify(uas => uas.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
@@ -603,7 +604,8 @@ public class NativeIdentityServerCredentialsServiceSpec
             "alastname", "auser@company.com", "apassword", "atimezone", "alocale", "acountrycode", true,
             CancellationToken.None);
 
-        result.Value.User.Should().Be(endUser);
+        result.Value.Credential.User.Should().Be(endUser);
+        result.Value.ResendToken.Should().Be(Token);
         _repository.Verify(s => s.SaveAsync(It.IsAny<PersonCredentialRoot>(), It.IsAny<CancellationToken>()),
             Times.Never);
         _endUsersService.Verify(uas => uas.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
@@ -635,7 +637,8 @@ public class NativeIdentityServerCredentialsServiceSpec
             "alastname", "auser@company.com", "apassword", "atimezone", "alocale", "acountrycode", true,
             CancellationToken.None);
 
-        result.Value.User.Should().Be(registeredAccount);
+        result.Value.Credential.User.Should().Be(registeredAccount);
+        result.Value.ResendToken.Should().Be(Token);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(uc =>
             uc.Id == "anid"
             && uc.UserId == "auserid"
@@ -662,7 +665,7 @@ public class NativeIdentityServerCredentialsServiceSpec
     public async Task WhenConfirmPersonRegistrationAsyncAndTokenUnknown_ThenReturnsError()
     {
         _repository.Setup(s =>
-                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                s.FindCredentialByRegistrationVerificationTokenAsync(It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<PersonCredentialRoot>
                 .None);
@@ -680,7 +683,7 @@ public class NativeIdentityServerCredentialsServiceSpec
     {
         var credential = CreateUnVerifiedCredential();
         _repository.Setup(s =>
-                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                s.FindCredentialByRegistrationVerificationTokenAsync(It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(credential.ToOptional());
 
@@ -695,18 +698,19 @@ public class NativeIdentityServerCredentialsServiceSpec
     }
 
     [Fact]
-    public async Task WhenResendConfirmationPersonRegistrationAsyncAndTokenUnknown_ThenReturnsError()
+    public async Task WhenResendConfirmationPersonRegistrationAsyncAndEmailAddressUnknown_ThenReturnsOk()
     {
         _repository.Setup(s =>
-                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                s.FindCredentialByRegistrationVerificationResendTokenAsync(It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(Optional<PersonCredentialRoot>
                 .None);
 
         var result =
-            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None);
+            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "auser@company.com",
+                CancellationToken.None);
 
-        result.Should().BeError(ErrorCode.EntityNotFound);
+        result.Should().BeSuccess();
         _repository.Verify(s => s.SaveAsync(It.IsAny<PersonCredentialRoot>(), It.IsAny<CancellationToken>()),
             Times.Never);
         _notificationsService.Verify(ns =>
@@ -721,12 +725,13 @@ public class NativeIdentityServerCredentialsServiceSpec
     {
         var credential = CreateUnVerifiedCredential();
         _repository.Setup(s =>
-                s.FindCredentialsByRegistrationVerificationTokenAsync(It.IsAny<string>(),
+                s.FindCredentialByRegistrationVerificationResendTokenAsync(It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(credential.ToOptional());
 
         var result =
-            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "atoken", CancellationToken.None);
+            await _service.ResendConfirmationPersonRegistrationAsync(_caller.Object, "auser@company.com",
+                CancellationToken.None);
 
         result.Should().BeSuccess();
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(pc =>

@@ -10,7 +10,7 @@ public class ResendPasswordResetRequestValidator : AbstractValidator<ResendPassw
     public ResendPasswordResetRequestValidator()
     {
         RuleFor(req => req.Token)
-            .Matches(Validations.Credentials.Password.ResetToken)
-            .WithMessage(Resources.CompletePasswordResetRequestValidator_InvalidToken);
+            .Matches(Validations.Credentials.Password.ResendToken)
+            .WithMessage(Resources.ResendPasswordResetRequestValidator_InvalidToken);
     }
 }
