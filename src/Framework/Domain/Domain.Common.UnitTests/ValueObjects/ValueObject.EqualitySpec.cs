@@ -337,6 +337,100 @@ public class ValueObjectEqualitySpec
     }
 
     [Fact]
+    public void WhenEqualsWithDifferentValueInDictionaryValueObject_ThenReturnsFalse()
+    {
+        var result =
+            new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue1") }
+                }).Equals(new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue2") }
+                }));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void WhenEqualsWithDifferentValuesInDictionaryValueObject_ThenReturnsFalse()
+    {
+        var result =
+            new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue1") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("avalue2") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("avalue3") }
+                }).Equals(new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue4") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("avalue5") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("avalue6") }
+                }));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void WhenEqualsWithDifferentValuesByCaseInDictionaryValueObject_ThenReturnsFalse()
+    {
+        var result =
+            new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue1") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("avalue2") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("avalue3") }
+                }).Equals(new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("AVALUE1") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("AVALUE2") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("AVALUE3") }
+                }));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void WhenEqualsWithEmptyValueInDictionaryValueObject_ThenReturnsTrue()
+    {
+        var result =
+            // ReSharper disable once EqualExpressionComparison
+            new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                    new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>())
+                .Equals(new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                    new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>()));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void WhenEqualsWithSameValuesInDictionaryValueObject_ThenReturnsTrue()
+    {
+        var result =
+            // ReSharper disable once EqualExpressionComparison
+            new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue1") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("avalue2") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("avalue3") }
+                }).Equals(new ValueObjectSpec.TestSingleDictionaryValueObjectValueObject(
+                new Dictionary<string, ValueObjectSpec.TestSingleStringValueObject>
+                {
+                    { "akey1", new ValueObjectSpec.TestSingleStringValueObject("avalue1") },
+                    { "akey2", new ValueObjectSpec.TestSingleStringValueObject("avalue2") },
+                    { "akey3", new ValueObjectSpec.TestSingleStringValueObject("avalue3") }
+                }));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
     public void WhenEqualsWithNullStringValue_ThenReturnsFalse()
     {
         var result = new ValueObjectSpec.TestMultiValueObject("avalue", 25, true, DateTime.UtcNow).Equals(null!);

@@ -255,6 +255,23 @@ public class ValueObjectSpec
         result.Should().ContainInOrder("astringvalue", "25", "true", "0001-01-01T00:00:00");
     }
 
+    public sealed class TestSingleDictionaryStringValueObject : SingleValueObjectBase<
+        TestSingleDictionaryStringValueObject,
+        Dictionary<string, string>>
+    {
+        public TestSingleDictionaryStringValueObject(Dictionary<string, string> value) : base(value)
+        {
+        }
+
+        public Dictionary<string, string> Values => Value;
+
+        public static ValueObjectFactory<TestSingleDictionaryStringValueObject> Rehydrate()
+        {
+            return (property, _) =>
+                new TestSingleDictionaryStringValueObject(property.FromJson<Dictionary<string, string>>()!);
+        }
+    }
+
     public sealed class TestSingleListStringValueObject : SingleValueObjectBase<TestSingleListStringValueObject,
         List<string>>
     {
@@ -327,6 +344,25 @@ public class ValueObjectSpec
             return (property, _) => new TestSingleListValueObjectValueObject(property.FromJson<List<string>>()!
                 .Select(item => new TestSingleStringValueObject(item))
                 .ToList());
+        }
+    }
+
+    public sealed class TestSingleDictionaryValueObjectValueObject : SingleValueObjectBase<
+        TestSingleDictionaryValueObjectValueObject,
+        Dictionary<string, TestSingleStringValueObject>>
+    {
+        public TestSingleDictionaryValueObjectValueObject(Dictionary<string, TestSingleStringValueObject> value) :
+            base(value)
+        {
+        }
+
+        public Dictionary<string, TestSingleStringValueObject> Values => Value;
+
+        public static ValueObjectFactory<TestSingleDictionaryValueObjectValueObject> Rehydrate()
+        {
+            return (property, _) => new TestSingleDictionaryValueObjectValueObject(
+                property.FromJson<Dictionary<string, string>>()!
+                    .ToDictionary(pair => pair.Key, pair => new TestSingleStringValueObject(pair.Value)));
         }
     }
 

@@ -97,8 +97,16 @@ public abstract partial class ValueObjectBase<TValueObject> : IEqualityComparer,
                 continue;
             }
 
-            if (leftValue is IEnumerable<IDehydratableValueObject> leftEnumerable
-                && rightValue is IEnumerable<IDehydratableValueObject> rightEnumerable)
+            if (leftValue is IDictionary leftDictionary
+                && rightValue is IDictionary rightDictionary)
+            {
+                if (!DictionariesAreEqual(leftDictionary, rightDictionary))
+                {
+                    return false;
+                }
+            }
+            else if (leftValue is IEnumerable<IDehydratableValueObject> leftEnumerable
+                     && rightValue is IEnumerable<IDehydratableValueObject> rightEnumerable)
             {
                 if (!leftEnumerable.SequenceEqual(rightEnumerable))
                 {
@@ -147,6 +155,11 @@ public abstract partial class ValueObjectBase<TValueObject> : IEqualityComparer,
                     return GetDeterministicHashCode(stringValue);
                 }
 
+                if (val is IDictionary dict)
+                {
+                    return GetDictionaryHashCode(dict);
+                }
+
                 return val.GetHashCode();
             })
             .Aggregate((x, y) => x ^ y);
@@ -190,6 +203,59 @@ public abstract partial class ValueObjectBase<TValueObject> : IEqualityComparer,
         }
 
         return !(left == right);
+    }
+
+    private static bool DictionariesAreEqual(IDictionary left, IDictionary right)
+    {
+        if (left.Count != right.Count)
+        {
+            return false;
+        }
+
+        foreach (DictionaryEntry entry in left)
+        {
+            if (!right.Contains(entry.Key))
+            {
+                return false;
+            }
+
+            var leftValue = entry.Value;
+            var rightValue = right[entry.Key];
+
+            if (ReferenceEquals(leftValue, null) != ReferenceEquals(rightValue, null))
+            {
+                return false;
+            }
+
+            if (leftValue is null)
+            {
+                continue;
+            }
+
+            if (!leftValue.Equals(rightValue))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static int GetDictionaryHashCode(IDictionary dict)
+    {
+        return dict.Keys.Cast<object>()
+            .OrderBy(key => key.ToString())
+            .Aggregate(0, (hash, key) =>
+            {
+                var keyHash = key is string s
+                    ? GetDeterministicHashCode(s)
+                    : key.GetHashCode();
+                var value = dict[key];
+                var valueHash = value is null ? 0
+                    : value is string sv ? GetDeterministicHashCode(sv)
+                    : value.GetHashCode();
+                return hash ^ keyHash ^ valueHash;
+            });
     }
 
     /// <summary>
