@@ -37,7 +37,8 @@ public class SubscriptionsModule : ISubdomainModule
 
     public Dictionary<Type, string> EntityPrefixes => new()
     {
-        { typeof(SubscriptionRoot), "billsub" }
+        { typeof(SubscriptionRoot), "billsub" },
+        { typeof(SubscriptionQuotaUsageRoot), "billsubquot" }
     };
 
     public Assembly InfrastructureAssembly => typeof(SubscriptionsApi).Assembly;
@@ -72,8 +73,16 @@ public class SubscriptionsModule : ISubdomainModule
                         c.GetRequiredService<IMessageQueueMessageIdFactory>(),
                         c.GetRequiredServiceForPlatform<IQueueStore>()));
 
+                services.AddPerHttpRequest<ISubscriptionQuotaRepository>(c => new SubscriptionQuotaRepository(
+                    c.GetRequiredService<IRecorder>(),
+                    c.GetRequiredService<IDomainFactory>(),
+                    c.GetRequiredServiceForPlatform<IDataStore>()));
+                services.RegisterEventing<SubscriptionQuotaUsageRoot>();
+
                 services.AddPerHttpRequest<ISubscriptionsService>(c =>
                     new SubscriptionsInProcessServiceClient(c.LazyGetRequiredService<ISubscriptionsApplication>()));
+                services.AddPerHttpRequest<IQuotaUsageService>(c =>
+                    new QuotaUsageServiceInProcessServiceClient(c.GetRequiredService<ISubscriptionsApplication>()));
                 
                 // EXTEND: remove this registration when adding another provider
                 services.AddPerHttpRequest<IBillingProvider, SimpleBillingProvider>();

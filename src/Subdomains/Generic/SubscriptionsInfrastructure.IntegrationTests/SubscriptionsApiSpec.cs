@@ -487,7 +487,7 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Canceling);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow.AddMonths(1), TimeSpan.FromMinutes(1));
-            result.Plan.Id.Should().Be("1234567890");
+            result.Plan.Id.Should().Be("1234567891");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);
@@ -518,7 +518,7 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Canceled);
             result.CanceledDateUtc.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
-            result.Plan.Id.Should().Be("1234567890");
+            result.Plan.Id.Should().Be("1234567891");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Unsubscribed);
@@ -573,7 +573,7 @@ public class SubscriptionsApiSpec
 #endif
             result.Status.Should().Be(SubscriptionStatus.Activated);
             result.CanceledDateUtc.Should().BeNull();
-            result.Plan.Id.Should().Be("1234567890");
+            result.Plan.Id.Should().Be("1234567891");
             result.Plan.IsTrial.Should().BeFalse();
             result.Plan.TrialEndDateUtc.Should().BeNull();
             result.Plan.Tier.Should().Be(SubscriptionTier.Standard);

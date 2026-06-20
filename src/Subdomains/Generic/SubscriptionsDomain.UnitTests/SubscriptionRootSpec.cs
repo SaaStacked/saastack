@@ -29,11 +29,21 @@ public class SubscriptionRootSpec
         identifierFactory.Setup(x => x.Create(It.IsAny<IIdentifiableEntity>()))
             .Returns("anid".ToId());
         var recorder = new Mock<IRecorder>();
+        var quotas = ProviderQuotas.Create(
+            new Dictionary<BillingSubscriptionTier, ProviderPlanQuotas>
+            {
+                {
+                    BillingSubscriptionTier.Standard,
+                    ProviderPlanQuotas.Create("aquotaid", ProviderPlanQuota.Create("adescription").Value).Value
+                }
+            }).Value;
         _interpreter = new Mock<IBillingStateInterpreter>();
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged
+                TrialManagement = ManagementOptions.RequiresManaged,
+                QuotaManagement = ManagementOptions.RequiresManaged,
+                ManagedQuotas = quotas
             });
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("aprovidername");
@@ -43,6 +53,8 @@ public class SubscriptionRootSpec
             .Returns("asubscriptionreference".ToOptional());
         _interpreter.Setup(bsi => bsi.SetInitialProviderState(It.IsAny<BillingProvider>()))
             .Returns((BillingProvider provider) => provider);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Empty);
 
         _subscription = SubscriptionRoot.Create(recorder.Object, identifierFactory.Object, "anowningentityid".ToId(),
             "abuyerid".ToId(), _interpreter.Object).Value;
@@ -81,32 +93,33 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenSetProviderByAnotherUser_ThenReturnsError()
+    public async Task WhenSetProviderByAnotherUser_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } })
             .Value;
 
-        var result = _subscription.SetProvider(provider, "anotheruserid".ToId(),
+        var result = await _subscription.SetProviderAsync(provider, "anotheruserid".ToId(),
             _interpreter.Object);
 
         result.Should().BeError(ErrorCode.RoleViolation, Resources.SubscriptionRoot_NotBuyer);
     }
 
     [Fact]
-    public void WhenSetProviderAndAlreadyInitialized_ThenReturnsError()
+    public async Task WhenSetProviderAndAlreadyInitialized_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } })
             .Value;
-        _subscription.ChangeProvider(provider, CallerConstants.MaintenanceAccountUserId.ToId(), _interpreter.Object);
+        await _subscription.ChangeProviderAsync(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
-        var result = _subscription.SetProvider(provider, "abuyerid".ToId(),
+        var result = await _subscription.SetProviderAsync(provider, "abuyerid".ToId(),
             _interpreter.Object);
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_SameProvider);
     }
 
     [Fact]
-    public void WhenSetProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenSetProviderAndNotInstalledProvider_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
@@ -115,19 +128,19 @@ public class SubscriptionRootSpec
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
 
-        var result = _subscription.SetProvider(provider, "abuyerid".ToId(),
+        var result = await _subscription.SetProviderAsync(provider, "abuyerid".ToId(),
             _interpreter.Object);
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
 
     [Fact]
-    public void WhenSetProvider_ThenSets()
+    public async Task WhenSetProvider_ThenSets()
     {
         var metadata = new SubscriptionMetadata { { "aname", "avalue" } };
         var provider = BillingProvider.Create("aprovidername", metadata).Value;
 
-        _subscription.SetProvider(provider, "abuyerid".ToId(),
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(),
             _interpreter.Object);
 
         _subscription.Provider.Value.Name.Should().Be("aprovidername");
@@ -137,46 +150,47 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeProviderByAnyUser_ThenReturnsError()
+    public async Task WhenChangeProviderByAnyUser_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } })
             .Value;
 
-        var result = _subscription.ChangeProvider(provider, "auserid".ToId(),
-            _interpreter.Object);
+        var result = await _subscription.ChangeProviderAsync(provider, "auserid".ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RoleViolation, Resources.SubscriptionRoot_ChangeProvider_NotAuthorized);
     }
 
     [Fact]
-    public void WhenChangeProviderAndAlreadyInitialized_ThenReturnsError()
+    public async Task WhenChangeProviderAndAlreadyInitialized_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } })
             .Value;
-        _subscription.ChangeProvider(provider, CallerConstants.MaintenanceAccountUserId.ToId(), _interpreter.Object);
+        await _subscription.ChangeProviderAsync(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
-        var result = _subscription.ChangeProvider(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
-            _interpreter.Object);
+        var result = await _subscription.ChangeProviderAsync(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_SameProvider);
     }
 
     [Fact]
-    public void WhenChangeProviderAndNotSameAsInstalledProvider_ThenReturnsError()
+    public async Task WhenChangeProviderAndNotSameAsInstalledProvider_ThenReturnsError()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } })
             .Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
 
-        var result = _subscription.ChangeProvider(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
-            _interpreter.Object);
+        var result = await _subscription.ChangeProviderAsync(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
 
     [Fact]
-    public void WhenChangeBillingProvider_ThenChanged()
+    public async Task WhenChangeBillingProvider_ThenChanged()
     {
         var metadata = new SubscriptionMetadata
         {
@@ -184,8 +198,8 @@ public class SubscriptionRootSpec
         };
         var provider = BillingProvider.Create("aprovidername", metadata).Value;
 
-        _subscription.ChangeProvider(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
-            _interpreter.Object);
+        await _subscription.ChangeProviderAsync(provider, CallerConstants.MaintenanceAccountUserId.ToId(),
+            _interpreter.Object, (_, _, _) => Task.FromResult(Result.Ok));
 
         _subscription.Provider.Value.Name.Should().Be("aprovidername");
         _subscription.Provider.Value.State.Should().BeEquivalentTo(metadata);
@@ -200,7 +214,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.ViewSubscriptionAsync(_interpreter.Object, "abuyerid".ToId(),
             (_, _) => Task.FromResult(Permission.Denied_Rule("areason")));
@@ -216,7 +230,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         var providerSubscription = ProviderSubscription.Empty;
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(providerSubscription);
@@ -236,7 +250,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         var providerSubscription = ProviderSubscription.Empty;
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(providerSubscription);
@@ -256,7 +270,9 @@ public class SubscriptionRootSpec
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "amodifierid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_NoProvider);
     }
@@ -270,12 +286,14 @@ public class SubscriptionRootSpec
         }).Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "amodifierid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_NoProvider);
     }
@@ -287,12 +305,14 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "abuyerid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Denied_Rule("areason")),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation,
             Resources.SubscriptionRoot_ChangePlan_FailedWithReason.Format("areason"));
@@ -305,29 +325,122 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Empty);
 
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "abuyerid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.FeatureViolation, Resources.SubscriptionRoot_ChangePlan_InvalidPaymentMethod);
     }
 
     [Fact]
-    public async Task WhenChangePlanAsyncByBuyerWithPaymentMethod_ThenChangesPlan()
+    public async Task WhenChangePlanAsyncByBuyerWithPaymentMethodAndNoSubscription_ThenChangesPlan()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+        _interpreter.Setup(bsi => bsi.GetBuyerReference(provider))
+            .Returns("abuyerreference2");
+        _interpreter.Setup(bsi => bsi.GetSubscriptionReference(provider))
+            .Returns(Optional<string>.None);
+
+        var result = await _subscription.ChangePlanAsync(_interpreter.Object, "abuyerid".ToId(), "aplanid",
+            (_, _) => Task.FromResult(Permission.Allowed),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        result.Value.Should().NotBeNull();
+        _subscription.IsConverted.Should().BeFalse();
+        _subscription.BuyerId.Should().Be("abuyerid".ToId());
+        _subscription.ProviderBuyerReference.Should().Be("abuyerreference2");
+        _subscription.ProviderSubscriptionReference.Should().BeNone();
+        _subscription.Events.Count.Should().Be(3);
+        _subscription.Events[1].Should().BeOfType<ProviderChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
+        _interpreter.Verify(bsi => bsi.GetSubscriptionDetails(provider));
+        _interpreter.Verify(bsi => bsi.GetBuyerReference(provider));
+        _interpreter.Verify(bsi => bsi.GetSubscriptionReference(provider));
+    }
+
+    [Fact]
+    public async Task WhenChangePlanAsyncByBuyerWithPaymentMethodAndSubscriptionAndAlreadyConverted_ThenChangesPlan()
+    {
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+        await _subscription.InitializeSubscriptionAsync(_interpreter.Object, provider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
+        _interpreter.Setup(bsi => bsi.GetBuyerReference(provider))
+            .Returns("abuyerreference2");
+        _interpreter.Setup(bsi => bsi.GetSubscriptionReference(provider))
+            .Returns("asubscriptionreference2".ToOptional());
+
+        var result = await _subscription.ChangePlanAsync(_interpreter.Object, "abuyerid".ToId(), "aplanid",
+            (_, _) => Task.FromResult(Permission.Allowed),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        result.Value.Should().NotBeNull();
+        _subscription.IsConverted.Should().BeTrue();
+        _subscription.BuyerId.Should().Be("abuyerid".ToId());
+        _subscription.ProviderBuyerReference.Should().Be("abuyerreference2");
+        _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference2");
+        _subscription.Events.Count.Should().Be(7);
+        _subscription.Events[5].Should().BeOfType<SubscriptionConverted>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
+        _interpreter.Verify(bsi => bsi.GetSubscriptionDetails(provider));
+        _interpreter.Verify(bsi => bsi.GetBuyerReference(provider));
+        _interpreter.Verify(bsi => bsi.GetSubscriptionReference(provider));
+    }
+
+    [Fact]
+    public async Task WhenChangePlanAsyncByBuyerWithPaymentMethodAndNotConverted_ThenChangesPlanAndConverts()
+    {
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
                         Optional<DateOnly>.None, Optional<string>.None)
                     .Value));
         _interpreter.Setup(bsi => bsi.GetBuyerReference(provider))
@@ -341,30 +454,37 @@ public class SubscriptionRootSpec
             {
                 { "aname", "avalue" }
             }),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
+        _subscription.IsConverted.Should().BeTrue();
         _subscription.BuyerId.Should().Be("abuyerid".ToId());
         _subscription.ProviderBuyerReference.Should().Be("abuyerreference2");
         _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference2");
-        _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Count.Should().Be(4);
+        _subscription.Events[2].Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
         _interpreter.Verify(bsi => bsi.GetSubscriptionDetails(provider));
         _interpreter.Verify(bsi => bsi.GetBuyerReference(provider));
         _interpreter.Verify(bsi => bsi.GetSubscriptionReference(provider));
     }
 
     [Fact]
-    public async Task WhenChangePlanAsyncByWebhookWithPaymentMethod_ThenChangesPlan()
+    public async Task WhenChangePlanAsyncByWebhookWithPaymentMethod_ThenChangesPlanAndConverts()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create(ProviderStatus.Empty,
-                ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid,
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
                         Optional<DateOnly>.None, Optional<string>.None)
                     .Value));
         _interpreter.Setup(bsi => bsi.GetBuyerReference(provider))
@@ -379,14 +499,18 @@ public class SubscriptionRootSpec
             {
                 { "aname", "avalue" }
             }),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
+        _subscription.IsConverted.Should().BeTrue();
         _subscription.BuyerId.Should().Be("abuyerid".ToId());
         _subscription.ProviderBuyerReference.Should().Be("abuyerreference2");
         _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference2");
-        _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events[2].Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
         _interpreter.Verify(bsi => bsi.GetSubscriptionDetails(provider));
         _interpreter.Verify(bsi => bsi.GetBuyerReference(provider));
         _interpreter.Verify(bsi => bsi.GetSubscriptionReference(provider));
@@ -399,14 +523,16 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Empty);
 
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "auserid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.FeatureViolation,
             Resources.SubscriptionRoot_TransferSubscription_InvalidPaymentMethod);
@@ -419,7 +545,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value,
@@ -430,7 +556,9 @@ public class SubscriptionRootSpec
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "auserid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_ChangePlan_NotClaimable);
     }
@@ -442,7 +570,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Canceled, Optional<DateTime>.None, true).Value,
@@ -457,10 +585,12 @@ public class SubscriptionRootSpec
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "auserid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
             {
                 { "aname", "avalue" }
-            }));
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
@@ -480,7 +610,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Unsubscribed, Optional<DateTime>.None, true).Value,
@@ -495,10 +625,12 @@ public class SubscriptionRootSpec
         var result = await _subscription.ChangePlanAsync(_interpreter.Object, "auserid".ToId(), "aplanid",
             (_, _) => Task.FromResult(Permission.Allowed),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok),
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
             {
                 { "aname", "avalue" }
-            }));
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
@@ -531,7 +663,7 @@ public class SubscriptionRootSpec
         }).Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.CancelSubscriptionAsync(_interpreter.Object, "acancellerid".ToId(),
             Roles.Empty,
@@ -548,7 +680,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.CancelSubscriptionAsync(_interpreter.Object, "abuyerid".ToId(),
             Roles.Empty,
@@ -566,7 +698,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Canceled, Optional<DateTime>.None, true).Value,
@@ -590,7 +722,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value,
@@ -620,7 +752,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value,
@@ -649,7 +781,8 @@ public class SubscriptionRootSpec
         var result = await _subscription.TransferSubscriptionAsync(_interpreter.Object, "atransfererid".ToId(),
             "atransfereeid".ToId(),
             (_, _, _) => Task.FromResult(Permission.Allowed),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_NoProvider);
     }
@@ -663,12 +796,13 @@ public class SubscriptionRootSpec
         }).Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.TransferSubscriptionAsync(_interpreter.Object, "atransfererid".ToId(),
             "atransfereeid".ToId(),
             (_, _, _) => Task.FromResult(Permission.Allowed),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_NoProvider);
     }
@@ -680,12 +814,13 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.TransferSubscriptionAsync(_interpreter.Object, "auserid".ToId(),
             "atransfereeid".ToId(),
             (_, _, _) => Task.FromResult(Permission.Denied_Rule("areason")),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RoleViolation,
             Resources.SubscriptionRoot_NotBuyer);
@@ -698,12 +833,13 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.TransferSubscriptionAsync(_interpreter.Object, "abuyerid".ToId(),
             "atransfereeid".ToId(),
             (_, _, _) => Task.FromResult(Permission.Denied_Rule("areason")),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation,
             Resources.SubscriptionRoot_TransferSubscription_FailedWithReason.Format("areason"));
@@ -716,14 +852,15 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Empty);
 
         var result = await _subscription.TransferSubscriptionAsync(_interpreter.Object, "abuyerid".ToId(),
             "atransfereeid".ToId(),
             (_, _, _) => Task.FromResult(Permission.Allowed),
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.FeatureViolation,
             Resources.SubscriptionRoot_TransferSubscription_InvalidPaymentMethod);
@@ -736,7 +873,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value,
@@ -754,7 +891,8 @@ public class SubscriptionRootSpec
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
             {
                 { "aname", "avalue" }
-            }));
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
@@ -774,7 +912,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription.Create(
                 ProviderStatus.Create(BillingSubscriptionStatus.Canceled, Optional<DateTime>.None, true).Value,
@@ -792,7 +930,8 @@ public class SubscriptionRootSpec
             (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
             {
                 { "aname", "avalue" }
-            }));
+            }),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         result.Value.Should().NotBeNull();
@@ -842,7 +981,7 @@ public class SubscriptionRootSpec
         }).Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.UnsubscribeSubscriptionAsync(_interpreter.Object, "unsubscriberid".ToId(),
             false, (_, _) => Task.FromResult(Permission.Allowed),
@@ -858,7 +997,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.UnsubscribeSubscriptionAsync(_interpreter.Object, "unsubscriberid".ToId(),
             false, (_, _) => Task.FromResult(Permission.Denied_Rule("areason")),
@@ -875,7 +1014,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription
                 .Create(ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false)
@@ -896,7 +1035,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription
                 .Create(ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value)
@@ -934,7 +1073,7 @@ public class SubscriptionRootSpec
         }).Value;
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.ChangePaymentMethodForBuyerAsync(_interpreter.Object, "amodifierid".ToId(),
             _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
@@ -949,7 +1088,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.ChangePaymentMethodForBuyerAsync(_interpreter.Object, "amodifierid".ToId(),
             _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
@@ -959,13 +1098,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public async Task WhenChangePaymentMethodForBuyerAsyncByBuyer_ThenChanges()
+    public async Task WhenChangePaymentMethodForBuyerAsyncByBuyerAndNoSubscription_ThenChangesPlan()
     {
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription
                 .Create(ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value)
@@ -979,7 +1118,69 @@ public class SubscriptionRootSpec
 
         result.Should().BeSuccess();
         _subscription.BuyerId.Should().Be("abuyerid".ToId());
+        _subscription.Events.Count.Should().Be(3);
+        _subscription.Events[1].Should().BeOfType<ProviderChanged>();
         _subscription.Events.Last().Should().BeOfType<PaymentMethodChanged>();
+    }
+
+    [Fact]
+    public async Task WhenChangePaymentMethodForBuyerAsyncByBuyerAndAlreadyConverted_ThenChanges()
+    {
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+        await _subscription.InitializeSubscriptionAsync(_interpreter.Object, provider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
+
+        var result = await _subscription.ChangePaymentMethodForBuyerAsync(_interpreter.Object, "abuyerid".ToId(),
+            _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            }));
+
+        result.Should().BeSuccess();
+        _subscription.BuyerId.Should().Be("abuyerid".ToId());
+        _subscription.Events.Count.Should().Be(7);
+        _subscription.Events[5].Should().BeOfType<SubscriptionConverted>();
+        _subscription.Events.Last().Should().BeOfType<PaymentMethodChanged>();
+    }
+
+    [Fact]
+    public async Task WhenChangePaymentMethodForBuyerAsyncByBuyerAndNotConverted_ThenChangesAndConverts()
+    {
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+
+        var result = await _subscription.ChangePaymentMethodForBuyerAsync(_interpreter.Object, "abuyerid".ToId(),
+            _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            }));
+
+        result.Should().BeSuccess();
+        _subscription.BuyerId.Should().Be("abuyerid".ToId());
+        _subscription.Events.Count.Should().Be(4);
+        _subscription.Events[2].Should().BeOfType<PaymentMethodChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
     }
 
     [Fact]
@@ -989,7 +1190,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(provider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(provider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
             .Returns(ProviderSubscription
                 .Create(ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, true).Value)
@@ -1008,13 +1209,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangePaymentMethodForBuyerByProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenChangePaymentMethodForBuyerByProviderAndNotInstalledProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1029,13 +1230,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangePaymentMethodForBuyerByProviderWithDifferentProvider_ThenReturnsError()
+    public async Task WhenChangePaymentMethodForBuyerByProviderWithDifferentProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1048,13 +1249,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangePaymentMethodForBuyerByProviderByAnyUser_ThenReturnsError()
+    public async Task WhenChangePaymentMethodForBuyerByProviderByAnyUser_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1068,13 +1269,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangePaymentMethodForBuyerByProviderAndSameState_ThenDoesNotChange()
+    public async Task WhenChangePaymentMethodForBuyerByProviderAndSameState_ThenDoesNotChange()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1089,13 +1290,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangePaymentMethodForBuyerByProvider_ThenChanges()
+    public async Task WhenChangePaymentMethodForBuyerByProviderAndNoSubscription_ThenChanges()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
@@ -1106,17 +1307,85 @@ public class SubscriptionRootSpec
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(provider);
+        _subscription.Events.Count.Should().Be(3);
+        _subscription.Events[1].Should().BeOfType<ProviderChanged>();
         _subscription.Events.Last().Should().BeOfType<PaymentMethodChanged>();
     }
 
     [Fact]
-    public void WhenCancelSubscriptionByProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenChangePaymentMethodForBuyerByProviderAndAlreadyConverted_ThenChanges()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname1", "avalue1" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname2", "avalue2" }
+        }).Value;
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+        await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
+        _interpreter.Setup(bsi => bsi.GetBuyerReference(provider))
+            .Returns("abuyerreference2");
+        _interpreter.Setup(bsi => bsi.GetSubscriptionReference(provider))
+            .Returns("asubscriptionreference2".ToOptional());
+
+        var result = _subscription.ChangePaymentMethodForBuyerByProvider(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider);
+
+        result.Should().BeSuccess();
+        _subscription.Provider.Should().Be(provider);
+        _subscription.Events.Count.Should().Be(7);
+        _subscription.Events[5].Should().BeOfType<SubscriptionConverted>();
+        _subscription.Events.Last().Should().BeOfType<PaymentMethodChanged>();
+    }
+
+    [Fact]
+    public async Task WhenChangePaymentMethodForBuyerByProviderAndNotConverted_ThenChangesAndConverts()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname1", "avalue1" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname2", "avalue2" }
+        }).Value;
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference2".ToId(), ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
+                        BillingPaymentMethodStatus.Valid,
+                        Optional<DateOnly>.None, Optional<string>.None)
+                    .Value));
+
+        var result = _subscription.ChangePaymentMethodForBuyerByProvider(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider);
+
+        result.Should().BeSuccess();
+        _subscription.Provider.Should().Be(provider);
+        _subscription.Events.Count.Should().Be(4);
+        _subscription.Events[2].Should().BeOfType<PaymentMethodChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
+    }
+
+    [Fact]
+    public async Task WhenCancelSubscriptionByProviderAndNotInstalledProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1131,13 +1400,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenCancelSubscriptionByProviderWithDifferentProvider_ThenReturnsError()
+    public async Task WhenCancelSubscriptionByProviderWithDifferentProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1150,13 +1419,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenCancelSubscriptionByProviderByAnyUser_ThenReturnsError()
+    public async Task WhenCancelSubscriptionByProviderByAnyUser_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1170,13 +1439,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenCancelSubscriptionByProviderAndSameState_ThenDoesNotChange()
+    public async Task WhenCancelSubscriptionByProviderAndSameState_ThenDoesNotChange()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1191,17 +1460,21 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenCancelSubscriptionByProvider_ThenChanges()
+    public async Task WhenCancelSubscriptionByProvider_ThenChanges()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
+                ProviderPlanPeriod.Empty, ProviderPaymentMethod.Empty));
 
         var result = _subscription.CancelSubscriptionByProvider(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider);
@@ -1218,7 +1491,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1229,7 +1502,9 @@ public class SubscriptionRootSpec
         var result =
             await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
                 provider,
-                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
@@ -1241,7 +1516,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1250,7 +1525,9 @@ public class SubscriptionRootSpec
         var result =
             await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
                 provider,
-                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_ProviderMismatch);
     }
@@ -1262,7 +1539,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1271,7 +1548,9 @@ public class SubscriptionRootSpec
         var result =
             await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
                 provider,
-                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+                (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RoleViolation,
             Resources.SubscriptionRoot_ChangeSubscriptionPlanByProvider_NotAuthorized);
@@ -1284,7 +1563,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1292,7 +1571,9 @@ public class SubscriptionRootSpec
 
         var result = await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -1306,19 +1587,21 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
                 ProviderPlanPeriod.Empty, ProviderInvoice.Default, ProviderPaymentMethod.Empty));
 
         var result = await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(new SubscriptionMetadata()),
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.FeatureViolation, Resources.SubscriptionRoot_ChangePlan_InvalidPaymentMethod);
     }
@@ -1330,13 +1613,13 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
                 ProviderPlanPeriod.Empty, ProviderInvoice.Default, ProviderPaymentMethod.Create(
                     BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None,
@@ -1349,26 +1632,30 @@ public class SubscriptionRootSpec
 
         var result = await _subscription.UpdateSubscriptionByProviderAsync(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
-            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(onChangeState));
+            (_, _) => Task.FromResult<Result<SubscriptionMetadata, Error>>(onChangeState),
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(changedState);
         _subscription.ProviderBuyerReference.Should().Be("abuyerreference");
         _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference");
-        _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Count.Should().Be(4);
+        _subscription.Events[2].Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
         _interpreter.Verify(bsi => bsi.GetSubscriptionDetails(provider));
         _interpreter.Verify(bsi => bsi.GetBuyerReference(changedState));
         _interpreter.Verify(bsi => bsi.GetSubscriptionReference(changedState));
     }
 
     [Fact]
-    public void WhenChangeSubscriptionPlanByProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncAndNotInstalledProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1377,65 +1664,76 @@ public class SubscriptionRootSpec
             .Returns("anotherprovidername");
 
         var result =
-            _subscription.ChangeSubscriptionPlanByProvider(_interpreter.Object, "amodifierid".ToId(), provider);
+            await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
+                provider,
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
 
     [Fact]
-    public void WhenChangeSubscriptionPlanByProviderWithDifferentProvider_ThenReturnsError()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncWithDifferentProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
 
         var result =
-            _subscription.ChangeSubscriptionPlanByProvider(_interpreter.Object, "amodifierid".ToId(), provider);
+            await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
+                provider,
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_ProviderMismatch);
     }
 
     [Fact]
-    public void WhenChangeSubscriptionPlanByProviderByAnyUser_ThenReturnsError()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncByAnyUser_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
 
         var result =
-            _subscription.ChangeSubscriptionPlanByProvider(_interpreter.Object, "amodifierid".ToId(), provider);
+            await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
+                provider,
+                (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RoleViolation,
             Resources.SubscriptionRoot_ChangeSubscriptionPlanByProvider_NotAuthorized);
     }
 
     [Fact]
-    public void WhenChangeSubscriptionPlanByProviderAndSameState_ThenDoesNotChange()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncAndSameState_ThenDoesNotChange()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
 
-        var result = _subscription.ChangeSubscriptionPlanByProvider(_interpreter.Object,
-            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider);
+        var result = await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -1443,40 +1741,83 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeSubscriptionPlanByProvider_ThenChanges()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncAndAlreadyConverted_ThenChangesPlan()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(p => p.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionid".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
-                ProviderPlanPeriod.Empty, ProviderInvoice.Default, ProviderPaymentMethod.Empty));
+                ProviderPlanPeriod.Empty, ProviderInvoice.Default,
+                ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid,
+                    Optional<DateOnly>.None, Optional<string>.None).Value));
+        await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
-        var result = _subscription.ChangeSubscriptionPlanByProvider(_interpreter.Object,
-            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider);
+        var result = await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
+        _subscription.IsConverted.Should().BeTrue();
         _subscription.Provider.Should().Be(provider);
         _subscription.ProviderBuyerReference.Should().Be("abuyerreference");
         _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference");
+        _subscription.Events.Count.Should().Be(7);
+        _subscription.Events[5].Should().BeOfType<SubscriptionConverted>();
         _subscription.Events.Last().Should().BeOfType<SubscriptionPlanChanged>();
     }
-    
+
     [Fact]
-    public void WhenDeleteSubscriptionByProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenChangeSubscriptionPlanByProviderAsyncAndNotConverted_ThenChangesPlanAndConverts()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname1", "avalue1" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname2", "avalue2" }
+        }).Value;
+        _interpreter.Setup(p => p.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
+                ProviderPlanPeriod.Empty, ProviderInvoice.Default,
+                ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid,
+                    Optional<DateOnly>.None, Optional<string>.None).Value));
+
+        var result = await _subscription.ChangeSubscriptionPlanByProviderAsync(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider,
+            (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        _subscription.IsConverted.Should().BeTrue();
+        _subscription.Provider.Should().Be(provider);
+        _subscription.ProviderBuyerReference.Should().Be("abuyerreference");
+        _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference");
+        _subscription.Events.Count.Should().Be(4);
+        _subscription.Events[2].Should().BeOfType<SubscriptionPlanChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
+    }
+
+    [Fact]
+    public async Task WhenDeleteSubscriptionByProviderAndNotInstalledProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1491,13 +1832,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenDeleteSubscriptionByProviderWithDifferentProvider_ThenReturnsError()
+    public async Task WhenDeleteSubscriptionByProviderWithDifferentProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1510,13 +1851,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenDeleteSubscriptionByProviderByAnyUser_ThenReturnsError()
+    public async Task WhenDeleteSubscriptionByProviderByAnyUser_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1530,13 +1871,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenDeleteSubscriptionByProviderAndSameState_ThenDoesNotChange()
+    public async Task WhenDeleteSubscriptionByProviderAndSameState_ThenDoesNotChange()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1551,19 +1892,19 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenDeleteSubscriptionByProvider_ThenChanges()
+    public async Task WhenDeleteSubscriptionByProvider_ThenChanges()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value,
                 ProviderPlanPeriod.Empty, ProviderInvoice.Default, ProviderPaymentMethod.Empty));
 
@@ -1584,7 +1925,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1606,7 +1947,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1626,7 +1967,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1647,7 +1988,7 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
@@ -1668,13 +2009,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeDetailsForBuyerByProviderAndNotInstalledProvider_ThenReturnsError()
+    public async Task WhenChangeDetailsForBuyerByProviderAndNotInstalledProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1689,13 +2030,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeDetailsForBuyerByProviderWithDifferentProvider_ThenReturnsError()
+    public async Task WhenChangeDetailsForBuyerByProviderWithDifferentProvider_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1708,13 +2049,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeDetailsForBuyerByProviderByAnyUser_ThenReturnsError()
+    public async Task WhenChangeDetailsForBuyerByProviderByAnyUser_ThenReturnsError()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1728,13 +2069,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeDetailsForBuyerByProviderAndSameState_ThenDoesNotChange()
+    public async Task WhenChangeDetailsForBuyerByProviderAndSameState_ThenDoesNotChange()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1749,13 +2090,13 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public void WhenChangeDetailsForBuyerByProvider_ThenChanges()
+    public async Task WhenChangeDetailsForBuyerByProvider_ThenChanges()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
@@ -1776,7 +2117,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1786,7 +2127,8 @@ public class SubscriptionRootSpec
 
         var result =
             await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
-                provider, (_, _, _) => Task.FromResult(Result.Ok));
+                provider, (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
@@ -1798,7 +2140,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1806,7 +2148,8 @@ public class SubscriptionRootSpec
 
         var result =
             await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
-                provider, (_, _, _) => Task.FromResult(Result.Ok));
+                provider, (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_ProviderMismatch);
     }
@@ -1818,7 +2161,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1826,7 +2169,8 @@ public class SubscriptionRootSpec
 
         var result =
             await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object, "amodifierid".ToId(),
-                provider, (_, _, _) => Task.FromResult(Result.Ok));
+                provider, (_, _, _) => Task.FromResult(Result.Ok),
+                (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RoleViolation,
             Resources.SubscriptionRoot_AddSubscriptionByProvider_NotAuthorized);
@@ -1839,14 +2183,15 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
 
         var result = await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object,
-            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) => Task.FromResult(Result.Ok));
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -1860,18 +2205,18 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,
@@ -1879,15 +2224,21 @@ public class SubscriptionRootSpec
                     Optional<DateOnly>.None, Optional<string>.None).Value).Value);
 
         var wasDispatched = false;
+        var wasPrepared = false;
         var result = await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) =>
             {
                 wasDispatched = true;
                 return Task.FromResult(Result.Ok);
+            }, (_, _, _) =>
+            {
+                wasPrepared = true;
+                return Task.FromResult(Result.Ok);
             });
 
         result.Should().BeSuccess();
         wasDispatched.Should().BeFalse();
+        wasPrepared.Should().BeFalse();
         _subscription.Provider.Should().Be(provider);
         _subscription.ManagedTrial.Should().BeNone();
         _subscription.Events[2].Should().BeOfType<PaymentMethodChanged>();
@@ -1901,14 +2252,14 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Converted,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule.Value
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -1920,7 +2271,7 @@ public class SubscriptionRootSpec
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,
@@ -1928,6 +2279,7 @@ public class SubscriptionRootSpec
                     Optional<DateOnly>.None, Optional<string>.None).Value).Value);
 
         var wasDispatched = false;
+        var wasPrepared = false;
         TrialScheduledEvent? dispatchedEvent = null;
         var result = await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object,
             CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, @event, _) =>
@@ -1935,11 +2287,16 @@ public class SubscriptionRootSpec
                 wasDispatched = true;
                 dispatchedEvent = @event;
                 return Task.FromResult(Result.Ok);
+            }, (_, _, _) =>
+            {
+                wasPrepared = true;
+                return Task.FromResult(Result.Ok);
             });
 
         result.Should().BeSuccess();
         wasDispatched.Should().BeTrue();
         dispatchedEvent.Should().Be(event1);
+        wasPrepared.Should().BeFalse();
         _subscription.Provider.Should().Be(provider);
         _subscription.ManagedTrial.Value.Status.Should().Be(TrialStatus.Converted);
         _subscription.ManagedTrial.Value.ConvertedAt.Should().BeNear(DateTime.UtcNow.ToNearestMinute());
@@ -1954,13 +2311,13 @@ public class SubscriptionRootSpec
         {
             { "aname1", "avalue1" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname2", "avalue2" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,
@@ -1968,9 +2325,63 @@ public class SubscriptionRootSpec
                     Optional<DateOnly>.None, Optional<string>.None).Value).Value);
 
         var result = await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object,
-            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) => Task.FromResult(Result.Ok));
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) => Task.FromResult(Result.Ok),
+            (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
+        _subscription.Provider.Should().Be(provider);
+        _subscription.Events[2].Should().BeOfType<PaymentMethodChanged>();
+        _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
+    }
+
+    [Fact]
+    public async Task WhenConvertSubscriptionByProviderAsyncAndHasQuotas_ThenConverts()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname1", "avalue1" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        var standardQuotas = ProviderTierQuotas.Create(BillingSubscriptionTier.Standard,
+            ProviderPlanQuotas.Create("aquotaid", ProviderPlanQuota.Create("adescription").Value).Value
+        ).Value;
+#if TESTINGONLY
+        _subscription.TestingOnly_SetManagedQuotas(standardQuotas);
+#endif
+        var provider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname2", "avalue2" }
+        }).Value;
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(initialProvider))
+            .Returns(ProviderSubscription.Create(
+                ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
+                ProviderPlan.Create("aplanid1", BillingSubscriptionTier.Enterprise).Value, ProviderPlanPeriod.Empty,
+                ProviderPaymentMethod.Empty).Value);
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(provider))
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
+                ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
+                ProviderPlan.Create("aplanid2", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderInvoice.Default,
+                ProviderPaymentMethod.Create(BillingPaymentMethodType.Card, BillingPaymentMethodStatus.Valid,
+                    Optional<DateOnly>.None, Optional<string>.None).Value).Value);
+
+        var wasPrepared = false;
+        BillingSubscriptionTier? fromTier = null;
+        BillingSubscriptionTier? toTier = null;
+        var result = await _subscription.ConvertSubscriptionByProviderAsync(_interpreter.Object,
+            CallerConstants.ExternalWebhookAccountUserId.ToId(), provider, (_, _, _) => Task.FromResult(Result.Ok),
+            (_, from, to) =>
+            {
+                wasPrepared = true;
+                fromTier = from;
+                toTier = to;
+                return Task.FromResult(Result.Ok);
+            });
+
+        result.Should().BeSuccess();
+        wasPrepared.Should().BeTrue();
+        fromTier.Should().Be(BillingSubscriptionTier.Enterprise);
+        toTier.Should().Be(BillingSubscriptionTier.Standard);
         _subscription.Provider.Should().Be(provider);
         _subscription.Events[2].Should().BeOfType<PaymentMethodChanged>();
         _subscription.Events.Last().Should().BeOfType<SubscriptionConverted>();
@@ -1983,7 +2394,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -1993,7 +2404,7 @@ public class SubscriptionRootSpec
 
         var result =
             await _subscription.InitializeSubscriptionAsync(_interpreter.Object, provider,
-                (_, _, _) => Task.FromResult(Result.Ok));
+                "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
     }
@@ -2005,7 +2416,7 @@ public class SubscriptionRootSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var provider = BillingProvider.Create("anotherprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
@@ -2013,7 +2424,7 @@ public class SubscriptionRootSpec
 
         var result =
             await _subscription.InitializeSubscriptionAsync(_interpreter.Object, provider,
-                (_, _, _) => Task.FromResult(Result.Ok));
+                "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_ProviderMismatch);
     }
@@ -2030,13 +2441,13 @@ public class SubscriptionRootSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var result =
             await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
-                (_, _, _) => Task.FromResult(Result.Ok));
+                "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -2057,13 +2468,13 @@ public class SubscriptionRootSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged
+                TrialManagement = ManagementOptions.RequiresManaged
             });
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var result =
             await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
-                (_, _, _) => Task.FromResult(Result.Ok));
+                "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -2082,7 +2493,7 @@ public class SubscriptionRootSpec
             { "aname", "avalue" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,
@@ -2095,12 +2506,12 @@ public class SubscriptionRootSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
-            (_, _, _) => Task.FromResult(Result.Ok));
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -2121,7 +2532,7 @@ public class SubscriptionRootSpec
             { "aname", "avalue" }
         }).Value;
         _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,
@@ -2134,12 +2545,12 @@ public class SubscriptionRootSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged
+                TrialManagement = ManagementOptions.RequiresManaged
             });
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var result = await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
-            (_, _, _) => Task.FromResult(Result.Ok));
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
         _subscription.Provider.Should().Be(initialProvider);
@@ -2153,78 +2564,98 @@ public class SubscriptionRootSpec
     }
 
     [Fact]
-    public async Task WhenIncrementUsageAsyncAndNotInstalledProvider_ThenReturnsError()
+    public async Task
+        WhenInitializeSubscriptionForSelfManagedQuota_ThenDoesNothing()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
-        _interpreter.Setup(bsi => bsi.ProviderName)
-            .Returns("anotherprovidername");
-
-        var result =
-            await _subscription.IncrementUsageAsync(_interpreter.Object, "aneventname",
-                _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State));
-
-        result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
-    }
-
-    [Fact]
-    public async Task WhenIncrementUsageAsyncAndUnknownEvent_ThenDoesNotIncrement()
-    {
-        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
-        {
-            { "aname", "avalue" }
-        }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
-        _interpreter.Setup(bsi => bsi.ProviderName)
-            .Returns("aprovidername");
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty).Value);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                MeteredEvents = []
+                QuotaManagement = ManagementOptions.SelfManaged
             });
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
-        var wasIncremented = false;
-        var result =
-            await _subscription.IncrementUsageAsync(_interpreter.Object, "aneventname",
-                _ =>
-                {
-                    wasIncremented = true;
-                    return Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State);
-                });
+        var result = await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
-        wasIncremented.Should().BeFalse();
+        _subscription.Provider.Should().Be(initialProvider);
+        _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference".ToOptional());
+        _subscription.ManagedQuotas.Should().BeNone();
+        _subscription.Events.Count.Should().Be(2);
+        _subscription.Events.Last().Should().BeOfType<ProviderChanged>();
     }
 
     [Fact]
-    public async Task WhenIncrementUsageAsyncAndIncludedEvent_ThenIncrements()
+    public async Task
+        WhenInitializeSubscriptionForManagedQuotaOnUnsubscribed_ThenSavesQuotas()
     {
         var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
-        _interpreter.Setup(bsi => bsi.ProviderName)
-            .Returns("aprovidername");
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty).Value);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                MeteredEvents = ["aneventname"]
+                QuotaManagement = ManagementOptions.RequiresManaged,
+                ManagedQuotas = null
             });
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
-        var wasIncremented = false;
-        var result =
-            await _subscription.IncrementUsageAsync(_interpreter.Object, "aneventname",
-                _ =>
-                {
-                    wasIncremented = true;
-                    return Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State);
-                });
+        var result = await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
 
         result.Should().BeSuccess();
-        wasIncremented.Should().BeTrue();
+        _subscription.Provider.Should().Be(initialProvider);
+        _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference".ToOptional());
+        _subscription.ManagedQuotas.Value.Tier.Should().Be(BillingSubscriptionTier.Unsubscribed);
+        _subscription.ManagedQuotas.Value.Quotas.Should().BeNone();
+        _subscription.Events.Count.Should().Be(3);
+        _subscription.Events.Last().Should().BeOfType<ManagedQuotasStarted>();
+    }
+
+    [Fact]
+    public async Task
+        WhenInitializeSubscriptionForManagedQuotaOnStandard_ThenSavesQuotas()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        _interpreter.Setup(bsi => bsi.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty,
+                ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
+                ProviderPaymentMethod.Empty).Value);
+
+        var standardQuotas = ProviderTierQuotas.Create(BillingSubscriptionTier.Standard,
+            ProviderPlanQuotas.Create("aquotaid", ProviderPlanQuota.Create("adescription").Value).Value).Value;
+        var quotas = ProviderQuotas.Create(new Dictionary<BillingSubscriptionTier, ProviderPlanQuotas>
+        {
+            { standardQuotas.Tier, standardQuotas.Quotas }
+        }).Value;
+        _interpreter.Setup(bsi => bsi.Capabilities)
+            .Returns(new BillingProviderCapabilities
+            {
+                QuotaManagement = ManagementOptions.RequiresManaged,
+                ManagedQuotas = quotas
+            });
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+
+        var result = await _subscription.InitializeSubscriptionAsync(_interpreter.Object, initialProvider,
+            "auserid".ToId(), (_, _, _) => Task.FromResult(Result.Ok), (_, _, _) => Task.FromResult(Result.Ok));
+
+        result.Should().BeSuccess();
+        _subscription.Provider.Should().Be(initialProvider);
+        _subscription.ProviderSubscriptionReference.Should().Be("asubscriptionreference".ToOptional());
+        _subscription.ManagedQuotas.Should().Be(standardQuotas);
+        _subscription.Events.Count.Should().Be(3);
+        _subscription.Events.Last().Should().BeOfType<ManagedQuotasStarted>();
     }
 }

@@ -24,4 +24,7 @@ public sealed class BuyerRestored : DomainEvent
     public required Dictionary<string, string> ProviderState { get; set; }
 
     public string? SubscriptionReference { get; set; }
+
+    public required string ModifiedById { get; set; }
+
 }

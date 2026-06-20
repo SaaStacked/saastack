@@ -13,7 +13,7 @@ using FluentAssertions;
 namespace SubscriptionsInfrastructure.IntegrationTests.Stubs;
 
 /// <summary>
-///     A stub billing provider to help testing a billing provider that requires a managed trial
+///     A stub billing provider to help testing a billing provider that requires a managed trial, or managed quotas
 ///     For this provider:
 ///     1. Has a customerId (from external provider system)
 ///     2. Supports adding a payment method
@@ -23,9 +23,12 @@ namespace SubscriptionsInfrastructure.IntegrationTests.Stubs;
 ///     6. Defines a trial period of 7 days, and an event schedule with three events for the active state, expiry state and
 ///     conversion state,
 ///     7. Requires the API to manage its trial expiry and schedule of events
+///     8. Requires the API to manage its quotas
 /// </summary>
 public class StubManagedTrialBillingProvider : IBillingProvider
 {
+    public const string QuotaId1 = "aquotaid1";
+    public const string QuotaId2 = "aquotaid2";
     private const int TrialDurationDays = 7;
     private static TimeSpan _timeMachineOffset = TimeSpan.Zero;
 
@@ -104,11 +107,34 @@ public class StubManagedTrialBillingProvider : IBillingProvider
             convertedEvent1, convertedEvent2, convertedEvent3
         ]).Value;
 
+        var quotas = ProviderQuotas.Create(
+            new Dictionary<BillingSubscriptionTier, ProviderPlanQuotas>
+            {
+                {
+                    BillingSubscriptionTier.Standard, ProviderPlanQuotas.Create(
+                        new Dictionary<string, ProviderPlanQuota>
+                        {
+                            { QuotaId1, ProviderPlanQuota.Create("A Standard Quota 1", 1).Value },
+                            { QuotaId2, ProviderPlanQuota.Create("A Standard Quota 2", 1).Value }
+                        }).Value
+                },
+                {
+                    BillingSubscriptionTier.Professional, ProviderPlanQuotas.Create(
+                        new Dictionary<string, ProviderPlanQuota>
+                        {
+                            { QuotaId1, ProviderPlanQuota.Create("A Professional Quota 1", 2).Value },
+                            { QuotaId2, ProviderPlanQuota.Create("A Professional Quota 2").Value }
+                        }).Value
+                }
+            }).Value;
+
         return new BillingProviderCapabilities
         {
-            TrialManagement = TrialManagementOptions.RequiresManaged,
+            TrialManagement = ManagementOptions.RequiresManaged,
+            QuotaManagement = ManagementOptions.RequiresManaged,
             ManagedTrialDurationDays = TrialDurationDays,
-            ManagedTrialSchedule = schedule
+            ManagedTrialSchedule = schedule,
+            ManagedQuotas = quotas
         };
     }
 }
@@ -144,12 +170,7 @@ public class StubManagedTrialBillingProviderStateInterpreter : IBillingStateInte
         if (current.State.TryGetValue(TriallessBillingProviderConstants.MetadataProperties.PlanId,
                 out var planId))
         {
-            var tier = planId switch
-            {
-                StubManagedTrialBillingGatewayService.InitialPlanId => BillingSubscriptionTier.Standard,
-                "apaid2" => BillingSubscriptionTier.Professional,
-                _ => BillingSubscriptionTier.Unsubscribed
-            };
+            var tier = LookupTier(planId).Value;
             plan = ProviderPlan.Create(planId, tier).Value;
         }
 
@@ -219,11 +240,22 @@ public class StubManagedTrialBillingProviderStateInterpreter : IBillingStateInte
     {
         _hasPaymentMethod = false;
     }
+
+    private static Result<BillingSubscriptionTier, Error> LookupTier(string planId)
+    {
+        return planId switch
+        {
+            StubManagedTrialBillingGatewayService.InitialPlanId => BillingSubscriptionTier.Standard,
+            StubManagedTrialBillingGatewayService.Tier2PlanId => BillingSubscriptionTier.Professional,
+            _ => BillingSubscriptionTier.Unsubscribed
+        };
+    }
 }
 
 public class StubManagedTrialBillingGatewayService : IBillingGatewayService
 {
-    public const string InitialPlanId = "1234567890";
+    public const string InitialPlanId = "1234567891";
+    public const string Tier2PlanId = "1234567892";
     private readonly Func<BillingProviderCapabilities> _capabilities;
 
     public StubManagedTrialBillingGatewayService(Func<BillingProviderCapabilities> capabilities)

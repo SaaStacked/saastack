@@ -146,7 +146,8 @@ partial class SubscriptionsApplication
                 return provider.Error;
             }
 
-            var provided = subscription.SetProvider(provider.Value, buyerId, _billingProvider.StateInterpreter);
+            var provided = await subscription.SetProviderAsync(provider.Value, buyerId,
+                _billingProvider.StateInterpreter);
             if (provided.IsFailure)
             {
                 return provided.Error;
@@ -154,7 +155,8 @@ partial class SubscriptionsApplication
 
             var configured =
                 await subscription.InitializeSubscriptionAsync(_billingProvider.StateInterpreter, subscription.Provider,
-                    OnDispatchTrialEvent);
+                    caller.ToCallerId(), OnDispatchTrialEvent, OnPrepareTierQuotas);
+
             if (configured.IsFailure)
             {
                 return configured.Error;
@@ -187,7 +189,7 @@ partial class SubscriptionsApplication
                 subscription.Id, subscription.BuyerId);
             _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.SubscriptionCreated,
                 subscription.ToSubscriptionChangedUsageEvent());
-            if (_billingProvider.Capabilities.TrialManagement is TrialManagementOptions.RequiresManaged
+            if (_billingProvider.Capabilities.TrialManagement is ManagementOptions.RequiresManaged
                 && subscription.ManagedTrial.HasValue)
             {
                 _recorder.TrackUsage(caller.ToCall(),
@@ -213,6 +215,14 @@ partial class SubscriptionsApplication
             async Task<Result<Error>> OnDispatchSignal(SubscriptionRoot root)
             {
                 return await OnDispatchManagedTrialSignalAsync(caller, root, cancellationToken);
+            }
+
+            async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root,
+                Optional<BillingSubscriptionTier> fromTier,
+                BillingSubscriptionTier toTier)
+            {
+                return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier,
+                    cancellationToken);
             }
         }
 

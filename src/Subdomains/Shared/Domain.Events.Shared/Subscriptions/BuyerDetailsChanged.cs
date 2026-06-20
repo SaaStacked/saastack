@@ -20,4 +20,6 @@ public sealed class BuyerDetailsChanged : DomainEvent
     public required string ProviderName { get; set; }
 
     public required Dictionary<string, string> ProviderState { get; set; }
+
+    public required string ModifiedById { get; set; }
 }

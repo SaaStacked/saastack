@@ -132,6 +132,15 @@ namespace Domain.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The feature Description is invalid.
+        /// </summary>
+        internal static string FeatureDefinition_InvalidDescription {
+            get {
+                return ResourceManager.GetString("FeatureDefinition_InvalidDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Feature value is invalid.
         /// </summary>
         internal static string Features_InvalidFeature {
@@ -173,6 +182,69 @@ namespace Domain.Shared {
         internal static string ProviderPlan_InvalidPlanId {
             get {
                 return ResourceManager.GetString("ProviderPlan_InvalidPlanId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The features must have at least one item.
+        /// </summary>
+        internal static string ProviderPlanFeatures_EmptyItems {
+            get {
+                return ResourceManager.GetString("ProviderPlanFeatures_EmptyItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The feature must have at least one item.
+        /// </summary>
+        internal static string ProviderPlanFeatureSection_EmptyItems {
+            get {
+                return ResourceManager.GetString("ProviderPlanFeatureSection_EmptyItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The feature section Name is invalid.
+        /// </summary>
+        internal static string ProviderPlanFeatureSection_InvalidName {
+            get {
+                return ResourceManager.GetString("ProviderPlanFeatureSection_InvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The quota Description is invalid.
+        /// </summary>
+        internal static string ProviderPlanQuota_InvalidDescription {
+            get {
+                return ResourceManager.GetString("ProviderPlanQuota_InvalidDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The quotas must have at least one item.
+        /// </summary>
+        internal static string ProviderPlanQuotas_EmptyItems {
+            get {
+                return ResourceManager.GetString("ProviderPlanQuotas_EmptyItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The quotas must have at least one tier.
+        /// </summary>
+        internal static string ProviderQuotas_EmptyItems {
+            get {
+                return ResourceManager.GetString("ProviderQuotas_EmptyItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The quotas cannot contain any items in the &apos;{0}&apos; tier.
+        /// </summary>
+        internal static string ProviderQuotas_UnsubscribedItems {
+            get {
+                return ResourceManager.GetString("ProviderQuotas_UnsubscribedItems", resourceCulture);
             }
         }
         

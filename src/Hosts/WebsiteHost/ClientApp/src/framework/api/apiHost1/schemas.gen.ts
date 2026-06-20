@@ -44,7 +44,8 @@ export const ApiHealthCheckResponseSchema = {
 export const ApiHostHealthSchema = {
     required: [
         'name',
-        'status'
+        'status',
+        'version'
     ],
     type: 'object',
     properties: {
@@ -53,6 +54,9 @@ export const ApiHostHealthSchema = {
         },
         status: {
             type: 'string'
+        },
+        version: {
+            $ref: '#/components/schemas/HostVersions'
         }
     },
     additionalProperties: false
@@ -643,6 +647,30 @@ export const ChangeSubscriptionPlanRequestSchema = {
     additionalProperties: false
 } as const;
 
+export const CheckQuotaRequestSchema = {
+    type: 'object',
+    properties: {
+        quotaId: {
+            type: 'string',
+            nullable: true
+        },
+        total: {
+            type: 'integer',
+            format: 'int64'
+        },
+        id: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const CheckQuotaResponseSchema = {
+    type: 'object',
+    additionalProperties: false
+} as const;
+
 export const CompleteOnboardingWorkflowRequestSchema = {
     required: [
         'id'
@@ -831,14 +859,6 @@ export const ConsentOAuth2ClientForCallerRequestSchema = {
             nullable: true
         }
     },
-    additionalProperties: false
-} as const;
-
-export const ConvertSubscriptionRequestSchema = {
-    required: [
-        'id'
-    ],
-    type: 'object',
     additionalProperties: false
 } as const;
 
@@ -1989,6 +2009,44 @@ export const GetUserInfoForCallerResponseSchema = {
     properties: {
         user: {
             $ref: '#/components/schemas/OpenIdConnectUserInfo'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const HostDeploymentVersionSchema = {
+    required: [
+        'hash',
+        'version'
+    ],
+    type: 'object',
+    properties: {
+        deployed: {
+            type: 'string',
+            format: 'date-time'
+        },
+        hash: {
+            type: 'string'
+        },
+        version: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const HostVersionsSchema = {
+    required: [
+        'productVersion',
+        'runtimeVersion'
+    ],
+    type: 'object',
+    properties: {
+        productVersion: {
+            $ref: '#/components/schemas/HostDeploymentVersion'
+        },
+        runtimeVersion: {
+            type: 'string'
         }
     },
     additionalProperties: false
@@ -3872,6 +3930,7 @@ export const PricingPlanSchema = {
         'id',
         'isRecommended',
         'period',
+        'quotas',
         'setupCost'
     ],
     type: 'object',
@@ -3904,6 +3963,12 @@ export const PricingPlanSchema = {
         period: {
             $ref: '#/components/schemas/PlanPeriod'
         },
+        quotas: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/PricingPlanQuota'
+            }
+        },
         setupCost: {
             type: 'number',
             format: 'double'
@@ -3913,6 +3978,28 @@ export const PricingPlanSchema = {
         },
         id: {
             type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const PricingPlanQuotaSchema = {
+    required: [
+        'description',
+        'limit',
+        'period'
+    ],
+    type: 'object',
+    properties: {
+        description: {
+            type: 'string'
+        },
+        limit: {
+            type: 'integer',
+            format: 'int64'
+        },
+        period: {
+            $ref: '#/components/schemas/SubscriptionQuotaPeriod'
         }
     },
     additionalProperties: false
@@ -4833,6 +4920,36 @@ export const SubscriptionPlanSchema = {
     additionalProperties: false
 } as const;
 
+export const SubscriptionQuotaSchema = {
+    required: [
+        'definition',
+        'remaining',
+        'total'
+    ],
+    type: 'object',
+    properties: {
+        definition: {
+            $ref: '#/components/schemas/PricingPlanQuota'
+        },
+        remaining: {
+            type: 'integer',
+            format: 'int64'
+        },
+        total: {
+            type: 'integer',
+            format: 'int64'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const SubscriptionQuotaPeriodSchema = {
+    enum: [
+        'eternity'
+    ],
+    type: 'string'
+} as const;
+
 export const SubscriptionStatusSchema = {
     enum: [
         'unsubscribed',
@@ -4973,8 +5090,8 @@ export const SubscriptionWithPlanSchema = {
             type: 'string',
             format: 'date-time'
         },
-        upcomingInvoice: {
-            $ref: '#/components/schemas/InvoiceSummary'
+        checkoutUrl: {
+            type: 'string'
         },
         paymentMethod: {
             $ref: '#/components/schemas/SubscriptionPaymentMethod'
@@ -4985,14 +5102,20 @@ export const SubscriptionWithPlanSchema = {
         plan: {
             $ref: '#/components/schemas/SubscriptionPlan'
         },
+        remainingQuotas: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/SubscriptionQuota'
+            }
+        },
         status: {
             $ref: '#/components/schemas/SubscriptionStatus'
         },
         subscriptionReference: {
             type: 'string'
         },
-        checkoutUrl: {
-            type: 'string'
+        upcomingInvoice: {
+            $ref: '#/components/schemas/InvoiceSummary'
         }
     },
     additionalProperties: false

@@ -15,6 +15,8 @@ public sealed class SubscriptionUnsubscribed : DomainEvent
     {
     }
 
+    public required string UnsubscribedById { get; set; }
+
     public required string OwningEntityId { get; set; }
 
     public required string ProviderName { get; set; }

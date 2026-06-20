@@ -416,6 +416,8 @@
     "organizations": {
       "labels": {
         "roles": {
+          "tnt_aud": "Auditor",
+          "tnt_hsld": "H&S Lead",
           "tnt_own": "Org Owner",
           "tnt_mem": "Member",
           "tnt_bill_adm": "Billing Admin"
@@ -469,7 +471,7 @@
         },
         "tabs": {
           "details": {
-            "title": "Details",
+            "title": "General",
             "form": {
               "fields": {
                 "name": {
@@ -487,7 +489,7 @@
             }
           },
           "members": {
-            "title": "Members",
+            "title": "People",
             "loader": "Loading members",
             "labels": {
               "self": "You",
@@ -546,6 +548,18 @@
               }
             },
             "empty": "No members found"
+          },
+          "subscription": {
+            "title": "Billing",
+            "loaders": {
+              "subscriptions": "Loading Subscriptions",
+              "pricing": "Loading Pricing Plans"
+            },
+            "errors": {
+              "get": {
+                "forbidden": "You must be an billing admin of this organization to view billing information."
+              }
+            }
           }
         },
         "links": {

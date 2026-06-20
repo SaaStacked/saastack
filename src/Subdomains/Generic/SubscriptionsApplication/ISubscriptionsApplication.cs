@@ -10,13 +10,7 @@ public partial interface ISubscriptionsApplication
         CancellationToken cancellationToken);
 
     Task<Result<SubscriptionWithPlan, Error>> ChangePlanAsync(ICallerContext caller, string owningEntityId,
-        string planId,
-        CancellationToken cancellationToken);
-
-#if TESTINGONLY
-    Task<Result<SubscriptionWithPlan, Error>> ConvertSubscriptionAsync(ICallerContext caller, string owningEntityId,
-        CancellationToken cancellationToken);
-#endif
+        string planId, CancellationToken cancellationToken);
 
     Task<Result<bool, Error>> DeliverSubscriptionTrialEventAsync(ICallerContext caller, string messageAsJson,
         CancellationToken cancellationToken);
@@ -44,7 +38,8 @@ public partial interface ISubscriptionsApplication
         string owningEntityId,
         CancellationToken cancellationToken);
 
-    Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId, string eventName,
+    Task<Result<Error>> IncrementSubscriptionMeteredUsageAsync(ICallerContext caller, string owningEntityId,
+        string eventName,
         CancellationToken cancellationToken);
 
     Task<Result<PricingPlans, Error>> ListPricingPlansAsync(ICallerContext caller, CancellationToken cancellationToken);

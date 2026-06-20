@@ -127,19 +127,18 @@ public class TrialEventsApiSpec : WebApiSpec<Program>
     {
         // Creating new subscription (personal) organization, already starts the trial, and dispatches the first Active event 
         var login = await LoginUserAsync(LoginUser.Operator);
-        var organizationId = login.DefaultOrganizationId!;
 
 #if TESTINGONLY
         await DeliverAllTrialEventsAsync();
         _stubBillingProvider.LastTrialEvent.Should().NotBeNull();
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("anactiveeventid1");
 
-        await ExpireTrialAsync(organizationId);
+        await ExpireTrialAsync(login.DefaultOrganizationId!);
         await DeliverAllTrialEventsAsync();
         _stubBillingProvider.LastTrialEvent.Should().NotBeNull();
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("anexpiredeventid1");
 
-        await ConvertSubscriptionAsync(organizationId);
+        await ConvertSubscriptionAsync(login);
         await DeliverAllTrialEventsAsync();
         _stubBillingProvider.LastTrialEvent.Should().NotBeNull();
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("aconvertedeventid1");
@@ -213,20 +212,19 @@ public class TrialEventsApiSpec : WebApiSpec<Program>
     {
         // Creating new subscription (personal) organization, already starts the trial, and dispatches the first Active event 
         var login = await LoginUserAsync(LoginUser.Operator);
-        var organizationId = login.DefaultOrganizationId!;
 
 #if TESTINGONLY
         await DeliverAllTrialEventsAsync();
         _stubBillingProvider.LastTrialEvent.Should().NotBeNull();
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("anactiveeventid1");
 
-        await ConvertSubscriptionAsync(organizationId);
+        await ConvertSubscriptionAsync(login);
         await DeliverAllTrialEventsAsync();
         _stubBillingProvider.LastTrialEvent.Should().NotBeNull();
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("aconvertedeventid1");
 
         // We manually deliver this event to the API, as the same event is waiting on the queue, scheduled for the far future
-        await DeliverTrialEventNotificationAsync(organizationId, "aconvertedeventid2",
+        await DeliverTrialEventNotificationAsync(login.DefaultOrganizationId!, "aconvertedeventid2",
             TrialScheduledEventTrack.Converted);
 
         await DeliverAllTrialEventsAsync();
@@ -234,7 +232,7 @@ public class TrialEventsApiSpec : WebApiSpec<Program>
         _stubBillingProvider.LastTrialEvent!.Id.Should().Be("aconvertedeventid2");
 
         // We manually deliver this event to the API, as the same event is waiting on the queue, scheduled for the far future
-        await DeliverTrialEventNotificationAsync(organizationId, "aconvertedeventid3",
+        await DeliverTrialEventNotificationAsync(login.DefaultOrganizationId!, "aconvertedeventid3",
             TrialScheduledEventTrack.Converted);
 
         await DeliverAllTrialEventsAsync();
@@ -287,16 +285,18 @@ public class TrialEventsApiSpec : WebApiSpec<Program>
 #endif
     }
 
-    private async Task ConvertSubscriptionAsync(string organizationId)
+    private async Task ConvertSubscriptionAsync(LoginDetails login)
     {
 #if TESTINGONLY
         _stubBillingProvider.AddPaymentMethod();
-        var converted = await Api.PatchAsync(new ConvertSubscriptionRequest
-        {
-            Id = organizationId
-        });
 
-        converted.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        var upgraded = await Api.PutAsync(new ChangeSubscriptionPlanRequest
+        {
+            Id = login.DefaultOrganizationId,
+            PlanId = StubManagedTrialBillingGatewayService.Tier2PlanId
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        upgraded.StatusCode.Should().Be(HttpStatusCode.Accepted);
 #endif
     }
 

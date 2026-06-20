@@ -2,12 +2,14 @@ using System.Net;
 using ApiHost1;
 using Application.Resources.Shared;
 using CarsDomain;
+using Common;
 using Domain.Shared.Cars;
 using FluentAssertions;
 using Infrastructure.Web.Api.Common.Extensions;
 using Infrastructure.Web.Api.Operations.Shared.Cars;
 using Infrastructure.Web.Common.Extensions;
 using IntegrationTesting.WebApi.Common;
+using IntegrationTesting.WebApi.Common.Stubs;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -89,6 +91,29 @@ public class CarsApiSpec : WebApiSpec<Program>
         car.Owner!.Id.Should().Be(login.User.Id);
         car.Managers![0].Id.Should().Be(login.User.Id);
         car.Status.Should().Be(CarStatus.Registered.ToString());
+    }
+
+    [Fact]
+    public async Task WhenRegisterCarAndExceedsQuota_ThenReturnsError()
+    {
+        var login = await LoginUserAsync();
+
+        await Repeat.TimesAsync(async count =>
+        {
+            var car1 = await RegisterNewCarAsync(login, $"aplate{count}");
+            car1.Plate!.Number.Should().Be($"aplate{count}");
+        }, (int)StubBillingProvider.QuotaLimit);
+
+        var result = await Api.PostAsync(new RegisterCarRequest
+        {
+            Make = Manufacturer.AllowedMakes[0],
+            Model = Manufacturer.AllowedModels[0],
+            Year = 2023,
+            Jurisdiction = Jurisdiction.AllowedCountries[0],
+            NumberPlate = "aplate"
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        result.StatusCode.Should().Be(HttpStatusCode.PaymentRequired);
     }
 
     [Fact]
@@ -192,7 +217,7 @@ public class CarsApiSpec : WebApiSpec<Program>
         // do nothing
     }
 
-    private async Task<Car> RegisterNewCarAsync(LoginDetails login)
+    private async Task<Car> RegisterNewCarAsync(LoginDetails login, string plateName = "aplate")
     {
         var car = await Api.PostAsync(new RegisterCarRequest
         {
@@ -200,7 +225,7 @@ public class CarsApiSpec : WebApiSpec<Program>
             Model = Manufacturer.AllowedModels[0],
             Year = 2023,
             Jurisdiction = Jurisdiction.AllowedCountries[0],
-            NumberPlate = "aplate"
+            NumberPlate = plateName
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
         return car.Content.Value.Car;

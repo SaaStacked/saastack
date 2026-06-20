@@ -9,6 +9,6 @@ public interface ISubscriptionsService
     Task<Result<SubscriptionWithPlan, Error>> GetSubscriptionByIdAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 
-    Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId, string eventName,
-        CancellationToken cancellationToken);
+    Task<Result<Error>> IncrementSubscriptionMeteredUsageAsync(ICallerContext caller, string owningEntityId,
+        string eventName, CancellationToken cancellationToken);
 }

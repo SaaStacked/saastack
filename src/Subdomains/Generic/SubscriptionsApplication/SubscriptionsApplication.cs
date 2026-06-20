@@ -12,6 +12,7 @@ using Domain.Common.ValueObjects;
 using Domain.Shared;
 using Domain.Shared.Subscriptions;
 using SubscriptionsApplication.Persistence;
+using SubscriptionsApplication.Persistence.ReadModels;
 using SubscriptionsDomain;
 using Subscription = SubscriptionsApplication.Persistence.ReadModels.Subscription;
 using Validations = SubscriptionsDomain.Validations;
@@ -22,6 +23,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 {
     private readonly IBillingProvider _billingProvider;
     private readonly IIdentifierFactory _identifierFactory;
+    private readonly ISubscriptionQuotaRepository _quotaRepository;
     private readonly IRecorder _recorder;
     private readonly ISubscriptionRepository _repository;
     private readonly ISubscriptionOwningEntityService _subscriptionOwningEntityService;
@@ -31,6 +33,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         IUserProfilesService userProfilesService, IBillingProvider billingProvider,
         ISubscriptionOwningEntityService subscriptionOwningEntityService,
         ISubscriptionTrialEventMessageQueueRepository trialEventMessageRepository,
+        ISubscriptionQuotaRepository quotaRepository,
         ISubscriptionRepository repository)
     {
         _recorder = recorder;
@@ -38,6 +41,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         _userProfilesService = userProfilesService;
         _billingProvider = billingProvider;
         _subscriptionOwningEntityService = subscriptionOwningEntityService;
+        _quotaRepository = quotaRepository;
         _trialEventMessageRepository = trialEventMessageRepository;
         _repository = repository;
     }
@@ -70,44 +74,6 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
     }
 
 #if TESTINGONLY
-    public async Task<Result<SubscriptionWithPlan, Error>> ConvertSubscriptionAsync(ICallerContext caller,
-        string owningEntityId, CancellationToken cancellationToken)
-    {
-        var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
-        if (retrieved.IsFailure)
-        {
-            return retrieved.Error;
-        }
-
-        var subscription = retrieved.Value;
-        var providerSubscription =
-            await subscription.ForceConvertSubscriptionAsync(_billingProvider.StateInterpreter, OnDispatchTrialEvent);
-        if (providerSubscription.IsFailure)
-        {
-            return providerSubscription.Error;
-        }
-
-        var saved = await _repository.SaveAsync(subscription, cancellationToken);
-        if (saved.IsFailure)
-        {
-            return saved.Error;
-        }
-
-        _recorder.TrackUsage(caller.ToCall(),
-            UsageConstants.Events.UsageScenarios.Generic.SubscriptionConverted,
-            subscription.ToSubscriptionChangedUsageEvent());
-
-        return subscription.ToSubscription(providerSubscription.Value);
-
-        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
-            DateTime relativeTo)
-        {
-            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
-        }
-    }
-#endif
-
-#if TESTINGONLY
     public async Task<Result<SubscriptionWithPlan, Error>> ExpireTrialAsync(ICallerContext caller,
         string owningEntityId, CancellationToken cancellationToken)
     {
@@ -136,7 +102,13 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             UsageConstants.Events.UsageScenarios.Generic.SubscriptionManagedTrialExpired,
             subscription.ToSubscriptionChangedUsageEvent());
 
-        return subscription.ToSubscription(providerSubscription.Value);
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
 
         async Task<Result<Error>> OnExpired(SubscriptionRoot root)
         {
@@ -228,7 +200,8 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         return await GetSubscriptionInternalAsync(caller, subscription, cancellationToken);
     }
 
-    public async Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId,
+    public async Task<Result<Error>> IncrementSubscriptionMeteredUsageAsync(ICallerContext caller,
+        string owningEntityId,
         string eventName, CancellationToken cancellationToken)
     {
         var retrieved = await GetSubscriptionByOwningEntityAsync(owningEntityId.ToId(), cancellationToken);
@@ -239,7 +212,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         var subscription = retrieved.Value;
         var incremented =
-            await subscription.IncrementUsageAsync(_billingProvider.StateInterpreter, eventName, OnIncrement);
+            await subscription.IncrementMeteredUsageAsync(_billingProvider.StateInterpreter, eventName, OnIncrement);
         if (incremented.IsFailure)
         {
             return incremented.Error;
@@ -295,7 +268,8 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         var providerBefore = subscription.Provider.Value.Name;
         var modifierId = caller.ToCallerId();
-        var changed = subscription.ChangeProvider(provider.Value, modifierId, _billingProvider.StateInterpreter);
+        var changed = await subscription.ChangeProviderAsync(provider.Value, modifierId,
+            _billingProvider.StateInterpreter, OnPrepareTierQuotas);
         if (changed.IsFailure)
         {
             return changed.Error;
@@ -319,7 +293,19 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             return providerSubscription.Error;
         }
 
-        return subscription.ToSubscription(providerSubscription.Value);
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
+        }
     }
 
     public async Task<Result<SearchResults<Invoice>, Error>> SearchSubscriptionHistoryAsync(ICallerContext caller,
@@ -361,7 +347,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         var transfereeId = billingAdminId.ToId();
         var beforeBuyerId = subscription.BuyerId;
         var transferred = await subscription.TransferSubscriptionAsync(_billingProvider.StateInterpreter, transfererId,
-            transfereeId, CanTransfer, OnTransfer);
+            transfereeId, CanTransfer, OnTransfer, OnPrepareTierQuotas);
         if (transferred.IsFailure)
         {
             return transferred.Error;
@@ -391,7 +377,13 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             return providerSubscription.Error;
         }
 
-        return subscription.ToSubscription(providerSubscription.Value);
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
 
         async Task<Permission> CanTransfer(SubscriptionRoot root, Identifier transfererId1,
             Identifier transfereeId1)
@@ -424,6 +416,31 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
                     TransfereeBuyer = transferee.Result.Value
                 }, root.Provider, cancellationToken);
         }
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
+        }
+    }
+
+    private async Task<Result<List<SubscriptionQuotaUsage>, Error>> GetQuotasUsagesAsync(SubscriptionRoot root,
+        CancellationToken cancellationToken)
+    {
+        if (!root.ManagedQuotas.HasValue)
+        {
+            return new List<SubscriptionQuotaUsage>();
+        }
+
+        var retrievedUsages =
+            await _quotaRepository.SearchAllByOwningEntityIdAsync(root.Provider.Value.Name, root.OwningEntityId,
+                new SearchOptions(), cancellationToken);
+        if (retrievedUsages.IsFailure)
+        {
+            return retrievedUsages.Error;
+        }
+
+        return retrievedUsages.Value.Results;
     }
 
     private async Task<Result<SubscriptionWithPlan, Error>> ChangeSubscriptionPlanInternalAsync(ICallerContext caller,
@@ -432,7 +449,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
         var buyerIdBeforeChange = subscription.BuyerId;
         var modifierId = caller.ToCallerId();
         var changed = await subscription.ChangePlanAsync(_billingProvider.StateInterpreter, modifierId, planId,
-            CanChange, OnChange, OnTransfer);
+            CanChange, OnChange, OnDispatchTrialEvent, OnTransfer, OnPrepareTierQuotas);
         if (changed.IsFailure)
         {
             return changed.Error;
@@ -470,7 +487,13 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             return providerSubscription.Error;
         }
 
-        return subscription.ToSubscription(providerSubscription.Value);
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
 
         async Task<Result<SubscriptionMetadata, Error>> OnChange(SubscriptionRoot root, string planId1)
         {
@@ -527,6 +550,18 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
                     PlanId = planId
                 }, root.Provider, cancellationToken);
         }
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
+        }
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
+        }
     }
 
     private async Task<Result<SubscriptionWithPlan, Error>> CancelSubscriptionInternalAsync(ICallerContext caller,
@@ -566,7 +601,13 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
             return providerSubscription.Error;
         }
 
-        return subscription.ToSubscription(providerSubscription.Value);
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
 
         Task<Result<SubscriptionMetadata, Error>> OnCancel(SubscriptionRoot root)
         {
@@ -596,7 +637,14 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 
         _recorder.TraceInformation(caller.ToCall(), "Retrieved subscription: {Id} for entity: {OwningEntity}",
             subscription.Id, subscription.OwningEntityId);
-        return subscription.ToSubscription(providerSubscription.Value);
+
+        var quotaUsages = await GetQuotasUsagesAsync(subscription, cancellationToken);
+        if (quotaUsages.IsFailure)
+        {
+            return quotaUsages.Error;
+        }
+
+        return subscription.ToSubscription(providerSubscription.Value, quotaUsages.Value);
 
         async Task<Permission> CanView(SubscriptionRoot root, Identifier viewerId1)
         {
@@ -683,7 +731,7 @@ public partial class SubscriptionsApplication : ISubscriptionsApplication
 internal static class SubscriptionConversionExtensions
 {
     public static SubscriptionWithPlan ToSubscription(this SubscriptionRoot subscription,
-        ProviderSubscription providerSubscription)
+        ProviderSubscription providerSubscription, List<SubscriptionQuotaUsage> quotaUsages)
     {
         //Infer from provider
         var isTrial = subscription.ManagedTrial.HasValue || providerSubscription.Plan.Trial.HasValue;
@@ -700,7 +748,7 @@ internal static class SubscriptionConversionExtensions
             BuyerId = subscription.BuyerId,
             ProviderName = subscription.Provider.ToNullable(pro => pro.Name),
             ProviderState = subscription.Provider.ToNullable(pro => pro.State) ?? new Dictionary<string, string>(),
-            SubscriptionReference = providerSubscription.SubscriptionReference.ToNullable(sr => sr.Text),
+            SubscriptionReference = providerSubscription.SubscriptionReference.ToNullable(),
             BuyerReference = subscription.ProviderBuyerReference.ValueOrDefault!,
             Status = providerSubscription.Status.Status.ToEnumOrDefault(SubscriptionStatus.Unsubscribed),
             CanceledDateUtc = providerSubscription.Status.CanceledDateUtc.ToNullable(),
@@ -728,6 +776,7 @@ internal static class SubscriptionConversionExtensions
                 Type = providerSubscription.PaymentMethod.Type.ToEnumOrDefault(PaymentMethodType.None),
                 ExpiresOn = providerSubscription.PaymentMethod.ExpiresOn.ToNullable()
             },
+            RemainingQuotas = providerSubscription.ToQuotas(subscription, quotaUsages),
             CheckoutUrl = providerSubscription.PaymentMethod.CheckoutUrl,
             CanBeUnsubscribed = providerSubscription.Status.CanBeUnsubscribed,
             CanBeCanceled = providerSubscription.Status.CanBeCanceled
@@ -762,4 +811,69 @@ internal static class SubscriptionConversionExtensions
 
         return dto;
     }
+
+    private static List<SubscriptionQuota> ToQuotas(this ProviderSubscription providerSubscription,
+        SubscriptionRoot subscription, List<SubscriptionQuotaUsage> subscriptionUsages)
+    {
+        if (!subscription.ManagedQuotas.HasValue)
+        {
+            return [];
+        }
+
+        var tier = providerSubscription.Plan.Tier;
+        var subscriptionQuota = subscription.ManagedQuotas.Value;
+        if (subscriptionQuota.Tier != tier)
+        {
+            return [];
+        }
+
+        if (!subscriptionQuota.Quotas.HasValue)
+        {
+            return [];
+        }
+
+        return subscriptionQuota.Quotas.Value.Items
+            .Select(quota =>
+            {
+                var usage = subscriptionUsages
+                    .FirstOrDefault(use => use.SubscriptionTier == tier
+                                           && use.QuotaId.Value.EqualsIgnoreCase(quota.Key));
+                return new QuotaUsage(quota.Value, usage);
+            })
+            .Select(quotaUsage =>
+            {
+                var limit = quotaUsage.Definition.Limit;
+                var definition = new PricingPlanQuota
+                {
+                    Description = quotaUsage.Definition.Description,
+                    Limit = limit,
+                    Period = quotaUsage.Definition.Period
+                        .ToEnum<BillingSubscriptionQuotaPeriod, SubscriptionQuotaPeriod>()
+                };
+
+                if (quotaUsage.Usage.NotExists())
+                {
+                    return new SubscriptionQuota
+                    {
+                        Definition = definition,
+                        Remaining = limit,
+                        Total = 0
+                    };
+                }
+
+                var remaining = limit == -1
+                    ? limit
+                    : Math.Max(0L, limit - quotaUsage.Usage.Total);
+                var total = quotaUsage.Usage.Total;
+                return new SubscriptionQuota
+                {
+                    Definition = definition,
+                    Remaining = remaining,
+                    Total = total
+                };
+            })
+            .ToList();
+    }
+
+    private record QuotaUsage(ProviderPlanQuota Definition, SubscriptionQuotaUsage? Usage);
 }

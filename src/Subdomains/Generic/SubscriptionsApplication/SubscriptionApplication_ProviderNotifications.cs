@@ -168,11 +168,12 @@ partial class SubscriptionsApplication
         }
 
         var subscription = retrievedSubscription.Value.Value;
-        var added = await subscription.ConvertSubscriptionByProviderAsync(
-            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value, OnDispatchTrialEvent);
-        if (added.IsFailure)
+        var converted = await subscription.ConvertSubscriptionByProviderAsync(
+            _billingProvider.StateInterpreter, caller.ToCallerId(), provider.Value, OnDispatchTrialEvent,
+            OnPrepareTierQuotas);
+        if (converted.IsFailure)
         {
-            return added.Error;
+            return converted.Error;
         }
 
         var saved = await _repository.SaveAsync(subscription, cancellationToken);
@@ -196,6 +197,12 @@ partial class SubscriptionsApplication
             DateTime relativeTo)
         {
             return await OnDispatchManagedTrialEventAsync(caller, root, @event, relativeTo, cancellationToken);
+        }
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
         }
     }
 
@@ -270,7 +277,7 @@ partial class SubscriptionsApplication
         var subscription = retrievedSubscription.Value.Value;
         var modifierId = caller.ToCallerId();
         var changed = await subscription.UpdateSubscriptionByProviderAsync(_billingProvider.StateInterpreter,
-            modifierId, provider.Value, OnChange);
+            modifierId, provider.Value, OnChange, OnDispatchTrialEvent, OnPrepareTierQuotas);
         if (changed.IsFailure)
         {
             return changed.Error;
@@ -293,6 +300,18 @@ partial class SubscriptionsApplication
             var resynced = _billingProvider.GatewayService.ReSyncSubscriptionAsync(caller,
                 subscription1.Provider.Value, cancellationToken);
             return Task.FromResult(resynced.Result);
+        }
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
+        }
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
         }
     }
 
@@ -428,9 +447,8 @@ partial class SubscriptionsApplication
 
         var subscription = retrievedSubscription.Value.Value;
         var modifierId = caller.ToCallerId();
-        var changed =
-            subscription.ChangeSubscriptionPlanByProvider(_billingProvider.StateInterpreter, modifierId,
-                provider.Value);
+        var changed = await subscription.ChangeSubscriptionPlanByProviderAsync(_billingProvider.StateInterpreter,
+            modifierId, provider.Value, OnDispatchTrialEvent, OnPrepareTierQuotas);
         if (changed.IsFailure)
         {
             return changed.Error;
@@ -447,6 +465,18 @@ partial class SubscriptionsApplication
             subscription.Id);
 
         return Result.Ok;
+
+        async Task<Result<Error>> OnDispatchTrialEvent(SubscriptionRoot root, TrialScheduledEvent next,
+            DateTime relativeTo)
+        {
+            return await OnDispatchManagedTrialEventAsync(caller, root, next, relativeTo, cancellationToken);
+        }
+
+        async Task<Result<Error>> OnPrepareTierQuotas(SubscriptionRoot root, Optional<BillingSubscriptionTier> fromTier,
+            BillingSubscriptionTier toTier)
+        {
+            return await ResyncSubscriptionTierQuotasInternalAsync(caller, root, fromTier, toTier, cancellationToken);
+        }
     }
 
     private async Task<Result<Optional<SubscriptionRoot>, Error>> FindSubscriptionBySubscriptionReference(

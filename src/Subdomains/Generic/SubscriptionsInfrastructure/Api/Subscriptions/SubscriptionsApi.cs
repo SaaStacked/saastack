@@ -101,18 +101,4 @@ public class SubscriptionsApi : IWebApiService
                 new GetSubscriptionResponse { Subscription = sub });
     }
 #endif
-
-#if TESTINGONLY
-    public async Task<ApiPutPatchResult<SubscriptionWithPlan, GetSubscriptionResponse>> ConvertSubscription(
-        ConvertSubscriptionRequest request, CancellationToken cancellationToken)
-    {
-        var subscription =
-            await _subscriptionsApplication.ConvertSubscriptionAsync(_callerFactory.Create(), request.Id!,
-                cancellationToken);
-
-        return () =>
-            subscription.HandleApplicationResult<SubscriptionWithPlan, GetSubscriptionResponse>(sub =>
-                new GetSubscriptionResponse { Subscription = sub });
-    }
-#endif
 }

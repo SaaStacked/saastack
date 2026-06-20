@@ -1,7 +1,8 @@
 using Application.Interfaces;
 using Application.Persistence.Interfaces;
+using Application.Resources.Shared;
+using Application.Services.Shared;
 using CarsApplication.Persistence;
-using CarsApplication.Persistence.ReadModels;
 using CarsDomain;
 using Common;
 using Common.Extensions;
@@ -13,6 +14,7 @@ using FluentAssertions;
 using Moq;
 using UnitTesting.Common;
 using Xunit;
+using Car = CarsApplication.Persistence.ReadModels.Car;
 using Task = System.Threading.Tasks.Task;
 
 namespace CarsApplication.UnitTests;
@@ -23,6 +25,7 @@ public class CarsApplicationSpec
     private readonly CarsApplication _application;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IIdentifierFactory> _idFactory;
+    private readonly Mock<IQuotaUsageService> _quotaUsageService;
     private readonly Mock<IRecorder> _recorder;
     private readonly Mock<ICarRepository> _repository;
 
@@ -38,8 +41,13 @@ public class CarsApplicationSpec
         _repository.Setup(rep => rep.SaveAsync(It.IsAny<CarRoot>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((CarRoot root, CancellationToken _) => root);
         _caller = new Mock<ICallerContext>();
+        _repository.Setup(rep =>
+                rep.SearchAllCarsAsync(It.IsAny<Identifier>(), It.IsAny<SearchOptions>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new QueryResults<Car>([]));
         _caller.Setup(c => c.CallerId).Returns("acallerid");
-        _application = new CarsApplication(_recorder.Object, _idFactory.Object,
+        _quotaUsageService = new Mock<IQuotaUsageService>();
+        _application = new CarsApplication(_recorder.Object, _idFactory.Object, _quotaUsageService.Object,
             _repository.Object);
     }
 
@@ -180,6 +188,39 @@ public class CarsApplicationSpec
             && c.License.Value.Number == "aplate"
             && c.Status == CarStatus.Registered
         ), It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task WhenRegisterCarAsyncAndMoreThanQuota_ThenReturnsError()
+    {
+        _repository.Setup(rep =>
+                rep.SearchAllCarsAsync(It.IsAny<Identifier>(), It.IsAny<SearchOptions>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new QueryResults<Car>([
+                new Car
+                {
+                    Id = "acarid1"
+                },
+
+                new Car
+                {
+                    Id = "acarid2"
+                }
+            ]));
+        _quotaUsageService.Setup(qus => qus.TryCheckQuotaUsageAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Error.FeatureViolation());
+
+        var result =
+            await _application.RegisterCarAsync(_caller.Object, "anorganizationid", Manufacturer.AllowedMakes[0],
+                Manufacturer.AllowedModels[0], 2023, Jurisdiction.AllowedCountries[0], "aplate",
+                CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.FeatureViolation);
+        _quotaUsageService.Verify(qus =>
+            qus.TryCheckQuotaUsageAsync(_caller.Object, QuotaConstants.Quotas.CarCount, 3,
+                It.IsAny<CancellationToken>()));
+        _repository.Verify(rep => rep.SaveAsync(It.IsAny<CarRoot>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

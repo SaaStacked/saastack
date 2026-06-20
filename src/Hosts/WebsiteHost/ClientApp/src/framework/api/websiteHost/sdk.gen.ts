@@ -2,6 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
+import { apiHealthCheckResponseTransformer } from './transformers.gen';
 import type { ApiHealthCheckData, ApiHealthCheckErrors, ApiHealthCheckResponses, ApiStatisticsData, ApiStatisticsErrors, ApiStatisticsResponses, AuthenticateData, AuthenticateErrors, AuthenticateResponses, AuthorizeOAuth2Data, AuthorizeOAuth2Errors, AuthorizeOAuth2Responses, BeffeAnonymousDirectTestingOnlyData, BeffeAnonymousDirectTestingOnlyErrors, BeffeAnonymousDirectTestingOnlyResponses, BeffeAnonymousTestingOnlyData, BeffeAnonymousTestingOnlyErrors, BeffeAnonymousTestingOnlyResponses, BeffeHMacDirectTestingOnlyData, BeffeHMacDirectTestingOnlyErrors, BeffeHMacDirectTestingOnlyResponses, ConsentOAuth2ClientData, ConsentOAuth2ClientErrors, ConsentOAuth2ClientResponses, GetAllFeatureFlagsData, GetAllFeatureFlagsErrors, GetAllFeatureFlagsResponses, GetErrorData, GetErrorResponses, GetFeatureFlagForCallerData, GetFeatureFlagForCallerErrors, GetFeatureFlagForCallerResponses, LogoutData, LogoutErrors, LogoutResponses, RecordCrashData, RecordCrashErrors, RecordCrashResponses, RecordMeasureData, RecordMeasureErrors, RecordMeasureResponses, RecordPageViewData, RecordPageViewErrors, RecordPageViewResponses, RecordTraceData, RecordTraceErrors, RecordTraceResponses, RecordUseData, RecordUseErrors, RecordUseResponses, RefreshTokenData, RefreshTokenErrors, RefreshTokenResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
@@ -79,7 +80,11 @@ export const getFeatureFlagForCaller = <ThrowOnError extends boolean = false>(op
  *
  * (request type: ApiHealthCheckRequest)
  */
-export const apiHealthCheck = <ThrowOnError extends boolean = false>(options?: Options<ApiHealthCheckData, ThrowOnError>) => (options?.client ?? client).get<ApiHealthCheckResponses, ApiHealthCheckErrors, ThrowOnError>({ url: '/api/health', ...options });
+export const apiHealthCheck = <ThrowOnError extends boolean = false>(options?: Options<ApiHealthCheckData, ThrowOnError>) => (options?.client ?? client).get<ApiHealthCheckResponses, ApiHealthCheckErrors, ThrowOnError>({
+    responseTransformer: apiHealthCheckResponseTransformer,
+    url: '/api/health',
+    ...options
+});
 
 export const getError = <ThrowOnError extends boolean = false>(options?: Options<GetErrorData, ThrowOnError>) => (options?.client ?? client).get<GetErrorResponses, unknown, ThrowOnError>({ url: '/error', ...options });
 

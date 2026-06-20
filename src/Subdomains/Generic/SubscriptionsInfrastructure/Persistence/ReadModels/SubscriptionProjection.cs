@@ -130,6 +130,11 @@ public class SubscriptionProjection : IReadModelProjection
                     dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
                     cancellationToken);
 
+            case ManagedQuotasStarted e:
+                return await _subscriptions.HandleUpdateAsync(e.RootId,
+                    dto => { dto.ProviderState = e.ProviderState.ToJson(casing: StringExtensions.JsonCasing.Pascal); },
+                    cancellationToken);
+
             case Deleted e:
                 return await _subscriptions.HandleDeleteAsync(e.RootId, cancellationToken);
 

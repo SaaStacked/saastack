@@ -16,7 +16,8 @@ export const ApiHealthCheckResponseSchema = {
 export const ApiHostHealthSchema = {
     required: [
         'name',
-        'status'
+        'status',
+        'version'
     ],
     type: 'object',
     properties: {
@@ -25,6 +26,9 @@ export const ApiHostHealthSchema = {
         },
         status: {
             type: 'string'
+        },
+        version: {
+            $ref: '#/components/schemas/HostVersions'
         }
     },
     additionalProperties: false
@@ -357,6 +361,44 @@ export const GetFeatureFlagResponseSchema = {
     properties: {
         flag: {
             $ref: '#/components/schemas/FeatureFlag'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const HostDeploymentVersionSchema = {
+    required: [
+        'hash',
+        'version'
+    ],
+    type: 'object',
+    properties: {
+        deployed: {
+            type: 'string',
+            format: 'date-time'
+        },
+        hash: {
+            type: 'string'
+        },
+        version: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const HostVersionsSchema = {
+    required: [
+        'productVersion',
+        'runtimeVersion'
+    ],
+    type: 'object',
+    properties: {
+        productVersion: {
+            $ref: '#/components/schemas/HostDeploymentVersion'
+        },
+        runtimeVersion: {
+            type: 'string'
         }
     },
     additionalProperties: false

@@ -399,16 +399,17 @@ public class EndUsersApplicationDomainEventHandlersSpec
         member.AddMembership(member, OrganizationOwnership.Shared, "anowningentityid".ToId(),
             Roles.Create(TenantRoles.Owner).Value, Features.Create(TenantFeatures.Basic).Value);
         var domainEvent = SubscriptionsDomain.Events.SubscriptionPlanChanged("asubscriptionid".ToId(),
-            "anowningentityid".ToId(), "aplanid".ToId(),
+            "anowningentityid".ToId(), "aplanid".ToId(), BillingSubscriptionTier.Standard,
             BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } }).Value,
-            "abuyerreference", "asubscriptionreference");
+            "abuyerreference", "asubscriptionreference", "auserid".ToId(),
+            Optional<ProviderTierQuotas>.None);
 
         var result =
             await _application.HandleSubscriptionPlanChangedAsync(_caller.Object, domainEvent, CancellationToken.None);
 
         result.Should().BeSuccess();
         _subscriptionsService.Verify(ss =>
-            ss.GetSubscriptionByIdAsync(_caller.Object, "asubscriptionid".ToId(), It.IsAny<CancellationToken>()));
+            ss.GetSubscriptionByIdAsync(_caller.Object, "asubscriptionid", It.IsAny<CancellationToken>()));
         _endUserRepository.Verify(rep => rep.SearchAllMembershipsByOrganizationAsync("anowningentityid".ToId(),
             It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()));
         _endUserRepository.Verify(eur => eur.SaveAsync(It.Is<EndUserRoot>(root =>

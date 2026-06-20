@@ -37,7 +37,7 @@ public class MeteredBillingUsageDeliveryServiceSpec
                 MeteredEvents = []
             });
         _subscriptionsService = new Mock<ISubscriptionsService>();
-        _subscriptionsService.Setup(ss => ss.IncrementSubscriptionUsageAsync(It.IsAny<ICallerContext>(),
+        _subscriptionsService.Setup(ss => ss.IncrementSubscriptionMeteredUsageAsync(It.IsAny<ICallerContext>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok);
     }
@@ -55,7 +55,8 @@ public class MeteredBillingUsageDeliveryServiceSpec
         _primaryService.Setup(ps => ps.DeliverAsync(_caller.Object, "aforid", "aneventname",
             It.Is<Dictionary<string, string>>(dic => dic.HasNone()), It.IsAny<CancellationToken>()));
         _subscriptionsService.Verify(
-            ss => ss.IncrementSubscriptionUsageAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
+            ss => ss.IncrementSubscriptionMeteredUsageAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -78,7 +79,7 @@ public class MeteredBillingUsageDeliveryServiceSpec
         _primaryService.Setup(ps => ps.DeliverAsync(_caller.Object, "aforid", "aneventname",
             It.Is<Dictionary<string, string>>(dic => dic.HasNone()), It.IsAny<CancellationToken>()));
         _subscriptionsService.Verify(ss =>
-            ss.IncrementSubscriptionUsageAsync(_caller.Object, "atenantid", "aneventname",
+            ss.IncrementSubscriptionMeteredUsageAsync(_caller.Object, "atenantid", "aneventname",
                 It.IsAny<CancellationToken>()));
     }
 }

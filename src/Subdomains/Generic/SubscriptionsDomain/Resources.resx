@@ -117,4 +117,13 @@
     <data name="SubscriptionRoot_ExpireTrial_AlreadyExpired" xml:space="preserve">
         <value>Trial has already been expired</value>
     </data>
+    <data name="SubscriptionQuotaUsageRoot_InvalidProviderName" xml:space="preserve">
+        <value>The ProviderName is invalid</value>
+    </data>
+    <data name="SubscriptionQuotaUsageRoot_InvalidTotal" xml:space="preserve">
+        <value>The Total must be a positive whole number</value>
+    </data>
+    <data name="SubscriptionsQuotaUsageRoot_LimitExceeded" xml:space="preserve">
+        <value>Quota '{0}' with a limit of {1} usages, on billing plan {2}, has been exceeded</value>
+    </data>
 </root>

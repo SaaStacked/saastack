@@ -13,9 +13,36 @@ namespace IntegrationTesting.WebApi.Common.Stubs;
 /// </summary>
 public class StubBillingProvider : IBillingProvider
 {
+    public const long QuotaLimit = 4;
     public StubBillingProvider()
     {
-        Capabilities = new BillingProviderCapabilities();
+        Capabilities = new BillingProviderCapabilities
+        {
+            QuotaManagement = ManagementOptions.RequiresManaged,
+            ManagedQuotas = ProviderQuotas.Create(new Dictionary<BillingSubscriptionTier, ProviderPlanQuotas>
+            {
+                {
+                    BillingSubscriptionTier.Standard, ProviderPlanQuotas.Create(
+                        new Dictionary<string, ProviderPlanQuota>
+                        {
+                            {
+                                QuotaConstants.Quotas.CarCount,
+                                ProviderPlanQuota.Create("Maximum number of Cars", QuotaLimit).Value
+                            }
+                        }).Value
+                },
+                {
+                    BillingSubscriptionTier.Professional, ProviderPlanQuotas.Create(
+                        new Dictionary<string, ProviderPlanQuota>
+                        {
+                            {
+                                QuotaConstants.Quotas.CarCount,
+                                ProviderPlanQuota.Create("Maximum number of Cars").Value
+                            }
+                        }).Value
+                }
+            }).Value
+        };
         StateInterpreter = new StubBillingStateInterpreter(Capabilities);
         GatewayService = new StubBillingGatewayService(Capabilities);
     }

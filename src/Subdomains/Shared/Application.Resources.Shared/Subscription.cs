@@ -2,6 +2,14 @@ using Application.Interfaces.Resources;
 
 namespace Application.Resources.Shared;
 
+public static class QuotaConstants
+{
+    public static class Quotas
+    {
+        public const string CarCount = "cars.count";
+    }
+}
+
 public class Subscription : IIdentifiableResource
 {
     public required string BuyerId { get; set; }
@@ -25,7 +33,7 @@ public class SubscriptionWithPlan : Subscription
 
     public DateTime? CanceledDateUtc { get; set; }
 
-    public required InvoiceSummary UpcomingInvoice { get; set; }
+    public string? CheckoutUrl { get; set; }
 
     public required SubscriptionPaymentMethod PaymentMethod { get; set; }
 
@@ -33,11 +41,22 @@ public class SubscriptionWithPlan : Subscription
 
     public required SubscriptionPlan Plan { get; set; }
 
+    public List<SubscriptionQuota>? RemainingQuotas { get; set; }
+
     public SubscriptionStatus Status { get; set; }
 
     public string? SubscriptionReference { get; set; }
 
-    public string? CheckoutUrl { get; set; }
+    public required InvoiceSummary UpcomingInvoice { get; set; }
+}
+
+public class SubscriptionQuota
+{
+    public required PricingPlanQuota Definition { get; set; }
+
+    public long Remaining { get; set; } // -1 implies unlimited
+
+    public long Total { get; set; }
 }
 
 public class SubscriptionPlan
@@ -69,7 +88,7 @@ public enum PeriodFrequencyUnit
 
 public enum SubscriptionStatus
 {
-    Unsubscribed = 0,
+    Unsubscribed = 0, // a.k.a. Free
     Activated = 1,
     Canceled = 2,
     Canceling = 3
@@ -216,6 +235,8 @@ public class PricingPlan : IIdentifiableResource
 
     public required PlanPeriod Period { get; set; }
 
+    public List<PricingPlanQuota> Quotas { get; set; } = new();
+
     public decimal SetupCost { get; set; } // In the denomination of the Currency
 
     public SubscriptionTrialPeriod? Trial { get; set; }
@@ -239,11 +260,25 @@ public class PricingFeatureSection
     public List<PricingFeatureItem> Features { get; set; } = new();
 }
 
+public class PricingPlanQuota
+{
+    public string? Description { get; set; }
+
+    public long Limit { get; set; } = -1; //unlimited
+
+    public SubscriptionQuotaPeriod Period { get; set; }
+}
+
+public enum SubscriptionQuotaPeriod
+{
+    Eternity = 0
+}
+
 public class PricingFeatureItem
 {
     public string? Description { get; set; }
 
-    public bool IsIncluded { get; set; }
+    public bool IsIncluded { get; set; } = true;
 }
 
 public class SubscriptionToMigrate : Subscription

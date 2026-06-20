@@ -15,6 +15,8 @@ public sealed class PaymentMethodChanged : DomainEvent
     {
     }
 
+    public required string ModifiedById { get; set; }
+
     public required string OwningEntityId { get; set; }
 
     public required string ProviderName { get; set; }

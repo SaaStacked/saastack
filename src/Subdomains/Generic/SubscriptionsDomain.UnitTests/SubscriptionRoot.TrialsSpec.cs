@@ -30,7 +30,7 @@ public class SubscriptionRootTrialsSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged
+                TrialManagement = ManagementOptions.RequiresManaged
             });
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("aprovidername");
@@ -40,6 +40,8 @@ public class SubscriptionRootTrialsSpec
             .Returns("asubscriptionreference".ToOptional());
         _interpreter.Setup(bsi => bsi.SetInitialProviderState(It.IsAny<BillingProvider>()))
             .Returns((BillingProvider provider) => provider);
+        _interpreter.Setup(bp => bp.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Empty);
 
         _subscription = SubscriptionRoot.Create(recorder.Object, identifierFactory.Object, "anowningentityid".ToId(),
             "abuyerid".ToId(), _interpreter.Object).Value;
@@ -52,7 +54,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var wasDispatched = false;
         var result = await _subscription.DispatchManagedTrialFirstScheduledEventAsync(_interpreter.Object,
@@ -73,7 +75,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
 #if TESTINGONLY
         _subscription.TestingOnly_SetManagedTrial(trial);
@@ -98,7 +100,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
 #if TESTINGONLY
         _subscription.TestingOnly_SetManagedTrial(trial);
@@ -123,14 +125,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Expired,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -157,14 +159,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -194,7 +196,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Active,
@@ -216,7 +218,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
 
@@ -250,7 +252,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -288,7 +290,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -326,7 +328,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var event2 = TrialScheduledEvent.Create(1, "anid2", TrialScheduledEventTrack.Active,
@@ -335,7 +337,7 @@ public class SubscriptionRootTrialsSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -370,14 +372,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Expired,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -412,14 +414,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -458,14 +460,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Expired,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
@@ -505,14 +507,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Converted,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -556,7 +558,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid1", TrialScheduledEventTrack.Active,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var event2 = TrialScheduledEvent.Create(1, "anid2", TrialScheduledEventTrack.Active,
@@ -565,7 +567,7 @@ public class SubscriptionRootTrialsSpec
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -606,7 +608,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
@@ -625,11 +627,11 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
 
@@ -659,7 +661,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
         trial = trial.ExpireTrial().Value;
 
@@ -683,7 +685,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
 
         var wasCalled = false;
@@ -706,12 +708,12 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var schedule = TrialEventSchedule.Create([]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
@@ -747,14 +749,14 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var event1 = TrialScheduledEvent.Create(1, "anid2", TrialScheduledEventTrack.Expired,
             TrialScheduledEventAction.Notification, StringNameValues.Empty).Value;
         var schedule = TrialEventSchedule.Create([event1]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
@@ -791,11 +793,11 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
 
         var wasSignalDispatched = false;
@@ -831,7 +833,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
 
@@ -850,7 +852,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var wasSignalDispatched = false;
         var wasExpired = false;
@@ -879,7 +881,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
         trial = trial.ConvertTrial().Value;
 #if TESTINGONLY
@@ -913,7 +915,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
         trial = trial.ExpireTrial().Value;
 #if TESTINGONLY
@@ -947,12 +949,12 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var schedule = TrialEventSchedule.Create([]).Value;
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule
             });
         var trial = TrialTimeline.Create(DateTime.UtcNow.SubtractDays(10), 1).Value;
@@ -989,7 +991,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 14).Value;
 #if TESTINGONLY
         _subscription.TestingOnly_SetManagedTrial(trial);
@@ -1022,7 +1024,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.ProviderName)
             .Returns("anotherprovidername");
 
@@ -1039,11 +1041,11 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         _interpreter.Setup(bsi => bsi.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
 
         var wasDispatched = false;
@@ -1065,7 +1067,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
 
         var wasDispatched = false;
         var result = await _subscription.DispatchManagedTrialFirstExpirySignalAsync(_interpreter.Object,
@@ -1086,7 +1088,7 @@ public class SubscriptionRootTrialsSpec
         {
             { "aname", "avalue" }
         }).Value;
-        _subscription.SetProvider(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 14).Value;
 #if TESTINGONLY
         _subscription.TestingOnly_SetManagedTrial(trial);
@@ -1102,5 +1104,81 @@ public class SubscriptionRootTrialsSpec
 
         result.Should().BeSuccess();
         wasDispatched.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task WhenIncrementMeteredUsageAsyncAndNotInstalledProvider_ThenReturnsError()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bsi => bsi.ProviderName)
+            .Returns("anotherprovidername");
+
+        var result =
+            await _subscription.IncrementMeteredUsageAsync(_interpreter.Object, "aneventname",
+                _ => Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State));
+
+        result.Should().BeError(ErrorCode.RuleViolation, Resources.SubscriptionRoot_InstalledProviderMismatch);
+    }
+
+    [Fact]
+    public async Task WhenIncrementMeteredUsageAsyncAndUnknownEvent_ThenDoesNotIncrement()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bsi => bsi.ProviderName)
+            .Returns("aprovidername");
+        _interpreter.Setup(bsi => bsi.Capabilities)
+            .Returns(new BillingProviderCapabilities
+            {
+                MeteredEvents = []
+            });
+
+        var wasIncremented = false;
+        var result =
+            await _subscription.IncrementMeteredUsageAsync(_interpreter.Object, "aneventname",
+                _ =>
+                {
+                    wasIncremented = true;
+                    return Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State);
+                });
+
+        result.Should().BeSuccess();
+        wasIncremented.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task WhenIncrementMeteredUsageAsyncAndIncludedEvent_ThenIncrements()
+    {
+        var initialProvider = BillingProvider.Create("aprovidername", new SubscriptionMetadata
+        {
+            { "aname", "avalue" }
+        }).Value;
+        await _subscription.SetProviderAsync(initialProvider, "abuyerid".ToId(), _interpreter.Object);
+        _interpreter.Setup(bsi => bsi.ProviderName)
+            .Returns("aprovidername");
+        _interpreter.Setup(bsi => bsi.Capabilities)
+            .Returns(new BillingProviderCapabilities
+            {
+                MeteredEvents = ["aneventname"]
+            });
+
+        var wasIncremented = false;
+        var result =
+            await _subscription.IncrementMeteredUsageAsync(_interpreter.Object, "aneventname",
+                _ =>
+                {
+                    wasIncremented = true;
+                    return Task.FromResult<Result<SubscriptionMetadata, Error>>(initialProvider.State);
+                });
+
+        result.Should().BeSuccess();
+        wasIncremented.Should().BeTrue();
     }
 }

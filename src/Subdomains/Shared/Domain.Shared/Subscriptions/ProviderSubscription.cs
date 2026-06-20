@@ -1,6 +1,5 @@
 using Common;
 using Common.Extensions;
-using Domain.Common.Extensions;
 using Domain.Common.ValueObjects;
 using Domain.Interfaces;
 using JetBrains.Annotations;
@@ -14,28 +13,27 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
     public static Result<ProviderSubscription, Error> Create(ProviderStatus status)
 
     {
-        return new ProviderSubscription(Optional<Identifier>.None, status, ProviderPlan.Empty, ProviderPlanPeriod.Empty,
+        return new ProviderSubscription(Optional<string>.None, status, ProviderPlan.Empty, ProviderPlanPeriod.Empty,
             ProviderInvoice.Default, ProviderPaymentMethod.Empty);
     }
 
     public static Result<ProviderSubscription, Error> Create(ProviderStatus status,
         ProviderPlan plan, ProviderPlanPeriod period, ProviderPaymentMethod paymentMethod)
     {
-        return new ProviderSubscription(Optional<Identifier>.None, status, plan, period, ProviderInvoice.Default,
+        return new ProviderSubscription(Optional<string>.None, status, plan, period, ProviderInvoice.Default,
             paymentMethod);
     }
 
-    
     public static Result<ProviderSubscription, Error> Create(ProviderStatus status, ProviderPaymentMethod paymentMethod)
     {
-        return new ProviderSubscription(Optional<Identifier>.None, status, ProviderPlan.Empty, ProviderPlanPeriod.Empty,
+        return new ProviderSubscription(Optional<string>.None, status, ProviderPlan.Empty, ProviderPlanPeriod.Empty,
             ProviderInvoice.Default, paymentMethod);
     }
 
-    public static Result<ProviderSubscription, Error> Create(Identifier subscriptionReference, ProviderStatus status,
+    public static Result<ProviderSubscription, Error> Create(string subscriptionReference, ProviderStatus status,
         ProviderPlan plan, ProviderPlanPeriod period, ProviderInvoice invoice, ProviderPaymentMethod paymentMethod)
     {
-        if (subscriptionReference.IsInvalidParameter(sr => !sr.IsEmpty(), nameof(subscriptionReference),
+        if (subscriptionReference.IsInvalidParameter(sr => sr.HasValue(), nameof(subscriptionReference),
                 Resources.ProviderSubscription_InvalidSubscriptionReference, out var error))
         {
             return error;
@@ -44,7 +42,7 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
         return new ProviderSubscription(subscriptionReference, status, plan, period, invoice, paymentMethod);
     }
 
-    private ProviderSubscription(Optional<Identifier> subscriptionReference, ProviderStatus status, ProviderPlan plan,
+    private ProviderSubscription(Optional<string> subscriptionReference, ProviderStatus status, ProviderPlan plan,
         ProviderPlanPeriod period, ProviderInvoice invoice, ProviderPaymentMethod paymentMethod)
     {
         SubscriptionReference = subscriptionReference;
@@ -55,7 +53,10 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
         PaymentMethod = paymentMethod;
     }
 
-    public ProviderInvoice UpcomingInvoice { get; }
+    public bool IsConvertable => SubscriptionReference.HasValue
+                                 && PaymentMethod.Status == BillingPaymentMethodStatus.Valid
+                                 && Plan.PlanId.HasValue
+                                 && Plan.Tier is not BillingSubscriptionTier.Unsubscribed;
 
     public ProviderPaymentMethod PaymentMethod { get; }
 
@@ -65,7 +66,9 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
 
     public ProviderStatus Status { get; }
 
-    public Optional<Identifier> SubscriptionReference { get; }
+    public Optional<string> SubscriptionReference { get; }
+
+    public ProviderInvoice UpcomingInvoice { get; }
 
     [UsedImplicitly]
     public static ValueObjectFactory<ProviderSubscription> Rehydrate()
@@ -74,7 +77,7 @@ public sealed class ProviderSubscription : ValueObjectBase<ProviderSubscription>
         {
             var parts = RehydrateToList(property, false);
             return new ProviderSubscription(
-                parts[0].ToOptional(val => val.ToId()),
+                parts[0].ToOptional(),
                 ProviderStatus.Rehydrate()(parts[1], container),
                 ProviderPlan.Rehydrate()(parts[2], container),
                 ProviderPlanPeriod.Rehydrate()(parts[3], container),

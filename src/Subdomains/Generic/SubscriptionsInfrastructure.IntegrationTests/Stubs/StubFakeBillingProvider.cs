@@ -29,7 +29,7 @@ public class StubFakeBillingProvider : IBillingProvider
     {
         Capabilities = new BillingProviderCapabilities
         {
-            TrialManagement = TrialManagementOptions.SelfManaged
+            TrialManagement = ManagementOptions.SelfManaged
         };
         StateInterpreter = new StubFakeBillingProviderStateInterpreter(Capabilities);
         GatewayService = new StubFakeBillingGatewayService(Capabilities);
@@ -77,12 +77,7 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
         if (current.State.TryGetValue(FakeBillingProviderConstants.MetadataProperties.PlanId,
                 out var planId))
         {
-            var tier = planId switch
-            {
-                StubFakeBillingGatewayService.InitialPlanId => BillingSubscriptionTier.Standard,
-                "apaid2" => BillingSubscriptionTier.Professional,
-                _ => BillingSubscriptionTier.Unsubscribed
-            };
+            var tier = LookupTier(planId).Value;
             plan = ProviderPlan.Create(planId, tier).Value;
         }
 
@@ -142,11 +137,21 @@ public class StubFakeBillingProviderStateInterpreter : IBillingStateInterpreter
         // do nothing
         return provider;
     }
+
+    private static Result<BillingSubscriptionTier, Error> LookupTier(string planId)
+    {
+        return planId switch
+        {
+            StubFakeBillingGatewayService.InitialPlanId => BillingSubscriptionTier.Standard,
+            "apaid2" => BillingSubscriptionTier.Professional,
+            _ => BillingSubscriptionTier.Unsubscribed
+        };
+    }
 }
 
 public class StubFakeBillingGatewayService : IBillingGatewayService
 {
-    public const string InitialPlanId = "1234567890";
+    public const string InitialPlanId = "1234567891";
 
     public StubFakeBillingGatewayService(BillingProviderCapabilities capabilities)
     {

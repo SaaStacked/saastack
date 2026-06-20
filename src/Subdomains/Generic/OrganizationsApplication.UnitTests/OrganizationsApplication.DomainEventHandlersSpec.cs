@@ -207,8 +207,9 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = SubscriptionsDomain.Events.SubscriptionTransferred("asubscriptionid".ToId(),
             "anowningentityid".ToId(), "atransfererid".ToId(), "atransfereeid".ToId(), "aplanid",
+            BillingSubscriptionTier.Standard,
             BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } }).Value,
-            "abuyerreference", "asubscriptionreference");
+            "abuyerreference", "asubscriptionreference", "auserid".ToId(), Optional<ProviderTierQuotas>.None);
         var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;

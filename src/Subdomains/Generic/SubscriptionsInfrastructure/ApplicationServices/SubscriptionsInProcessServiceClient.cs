@@ -29,12 +29,13 @@ public class SubscriptionsInProcessServiceClient : ISubscriptionsService
         return await GetApplication().GetSubscriptionByIdAsync(caller, id, cancellationToken);
     }
 
-    public async Task<Result<Error>> IncrementSubscriptionUsageAsync(ICallerContext caller, string owningEntityId,
+    public async Task<Result<Error>> IncrementSubscriptionMeteredUsageAsync(ICallerContext caller,
+        string owningEntityId,
         string eventName,
         CancellationToken cancellationToken)
     {
         return await GetApplication()
-            .IncrementSubscriptionUsageAsync(caller, owningEntityId, eventName, cancellationToken);
+            .IncrementSubscriptionMeteredUsageAsync(caller, owningEntityId, eventName, cancellationToken);
     }
 
     private ISubscriptionsApplication GetApplication()

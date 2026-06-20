@@ -15,6 +15,17 @@ public static class Validations
                 return state.Count > 0 && state.All(pair => pair.Value.Exists());
             });
         }
+
+        public static class Quota
+        {
+            public static readonly Validation Description = CommonValidations.FreeformText(1, 250);
+        }
+
+        public static class Features
+        {
+            public static readonly Validation Name = CommonValidations.DescriptiveName(1, 250);
+            public static readonly Validation Description = CommonValidations.FreeformText(1, 250);
+        }
     }
 
     public static class Names

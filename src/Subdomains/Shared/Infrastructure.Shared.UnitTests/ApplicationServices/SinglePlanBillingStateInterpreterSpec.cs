@@ -1,6 +1,5 @@
 using Common;
 using Common.Extensions;
-using Domain.Common.ValueObjects;
 using Domain.Shared.Subscriptions;
 using FluentAssertions;
 using Infrastructure.Shared.ApplicationServices;
@@ -186,7 +185,7 @@ public class SinglePlanBillingStateInterpreterSpec
 
         var result = _interpreter.GetSubscriptionDetails(provider);
 
-        result.Value.SubscriptionReference.Should().Be("asubscriptionid".ToId());
+        result.Value.SubscriptionReference.Should().Be("asubscriptionid");
         result.Value.Status.Status.Should().Be(BillingSubscriptionStatus.Activated);
         result.Value.Status.CanceledDateUtc.Should().BeNone();
         result.Value.Status.CanBeUnsubscribed.Should().BeTrue();

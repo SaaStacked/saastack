@@ -44,7 +44,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.SelfManaged
+                TrialManagement = ManagementOptions.SelfManaged
             });
         _billingProvider.Setup(bp => bp.StateInterpreter.ProviderName)
             .Returns("aprovidername");
@@ -56,7 +56,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionReference(It.IsAny<BillingProvider>()))
             .Returns("asubscriptionreference".ToOptional());
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default, ProviderPaymentMethod.Empty).Value);
         var owningEntityService = new Mock<ISubscriptionOwningEntityService>();
@@ -69,13 +69,14 @@ public class SubscriptionsApplicationProviderNotificationsSpec
                 Name = "anowningentityname"
             });
         var subscriptionEventMessageRepository = new Mock<ISubscriptionTrialEventMessageQueueRepository>();
+        var subscriptionQuotaRepository = new Mock<ISubscriptionQuotaRepository>();
         _repository = new Mock<ISubscriptionRepository>();
         _repository.Setup(rep => rep.SaveAsync(It.IsAny<SubscriptionRoot>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((SubscriptionRoot root, CancellationToken _) => root);
 
         _application = new SubscriptionsApplication(_recorder.Object, _identifierFactory.Object,
             _userProfilesService.Object, _billingProvider.Object, owningEntityService.Object,
-            subscriptionEventMessageRepository.Object, _repository.Object);
+            subscriptionEventMessageRepository.Object, subscriptionQuotaRepository.Object, _repository.Object);
     }
 
     [Fact]
@@ -105,7 +106,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByBuyerReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -150,7 +151,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByBuyerReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -234,7 +235,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository
             .Setup(rep => rep.FindBySubscriptionReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -270,7 +271,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
     }
 
     [Fact]
-    public async Task WhenNotifySubscriptionDetailsChangedAsync_ThenChangesPaymentMethod()
+    public async Task WhenNotifySubscriptionDetailsChangedAsync_ThenChangesPaymentMethodAndConverts()
     {
         var initialMetadata = new SubscriptionMetadata(new Dictionary<string, string>
         {
@@ -281,7 +282,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository
             .Setup(rep => rep.FindBySubscriptionReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -291,7 +292,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
             { "aname2", "avalue2" }
         });
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default, ProviderPaymentMethod.Create(BillingPaymentMethodType.Card,
                     BillingPaymentMethodStatus.Valid, Optional<DateOnly>.None, Optional<string>.None).Value).Value);
@@ -307,7 +308,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
 
         result.Should().BeSuccess();
         _repository.Verify(rep => rep.SaveAsync(It.Is<SubscriptionRoot>(root =>
-            root.Events.Last() is SubscriptionPlanChanged
+            root.Events.Last() is SubscriptionConverted
         ), It.IsAny<CancellationToken>()));
     }
 
@@ -339,7 +340,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository
             .Setup(rep => rep.FindBySubscriptionReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -386,7 +387,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository
             .Setup(rep => rep.FindBySubscriptionReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -433,7 +434,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByBuyerReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -480,7 +481,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
         var subscription = SubscriptionRoot
             .Create(_recorder.Object, _identifierFactory.Object, "anowningentityid".ToId(), "abuyerid".ToId(),
                 _billingProvider.Object.StateInterpreter).Value;
-        subscription.SetProvider(BillingProvider.Create("aprovidername", initialMetadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", initialMetadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByBuyerReferenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -489,7 +490,7 @@ public class SubscriptionsApplicationProviderNotificationsSpec
             { "aname2", "avalue2" }
         });
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(),
+            .Returns(ProviderSubscription.Create("asubscriptionreference",
                 ProviderStatus.Create(BillingSubscriptionStatus.Activated, Optional<DateTime>.None, false).Value,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default,

@@ -50,7 +50,7 @@ public class MeteredBillingUsageDeliveryService : IUsageDeliveryService
         async Task<Result<Error>> IncrementUsage()
         {
             var incremented =
-                await _subscriptionsService.IncrementSubscriptionUsageAsync(caller, tenantId, eventName,
+                await _subscriptionsService.IncrementSubscriptionMeteredUsageAsync(caller, tenantId, eventName,
                     cancellationToken);
             if (incremented.IsFailure)
             {

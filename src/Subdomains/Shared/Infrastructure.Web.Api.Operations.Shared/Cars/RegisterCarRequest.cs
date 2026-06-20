@@ -6,6 +6,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Cars;
 /// <summary>
 ///     Registers a new car
 /// </summary>
+/// <response code="402">You have exceeded the maximum number of cars for your billing plan.</response>
 [Route("/cars", OperationMethod.Post, AccessType.Token)]
 [Authorize(Roles.Tenant_Member, Features.Tenant_PaidTrial)]
 public class RegisterCarRequest : TenantedRequest<RegisterCarRequest, GetCarResponse>

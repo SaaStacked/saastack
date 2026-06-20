@@ -69,7 +69,7 @@ public sealed class ProviderPlan : ValueObjectBase<ProviderPlan>
 public enum BillingSubscriptionTier
 {
     // EXTEND: define other subscription tiers related to subscription plans
-    Unsubscribed = 0,
+    Unsubscribed = 0, // a.k.a. Free
     Standard = 1,
     Professional = 2,
     Enterprise = 3

@@ -78,6 +78,7 @@ There is much that will change over time with both active subscriptions and the 
 Instead of building our own system, SaaStack has been designed to be fully two-way integrated with established 3rd party billing providers (e.g.,  [LemonSqueezy](https://www.lemonsqueezy.com), [Chargebee](https://www.chargebee.com), [Maxio](https://www.chargify.com/), or [Stripe Billing](https://www.stripe.com/billing)).
 
 All these providers offer APIs for integration, as well as management portals and tools for handling subscriptions, plans, pricing, trials, discounts, and coupons.
+
 * The API interface (and webhooks) provided by the BMS becomes the user interface of your product that your customers can self-serve with. 
 
 * The management Portal the BMS provides becomes an administrative tool your business (product, support & customer success, etc.) can use to manage customers, billing, and pricing changes long term.

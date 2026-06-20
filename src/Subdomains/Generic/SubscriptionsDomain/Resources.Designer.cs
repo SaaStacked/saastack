@@ -60,6 +60,24 @@ namespace SubscriptionsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The ProviderName is invalid.
+        /// </summary>
+        internal static string SubscriptionQuotaUsageRoot_InvalidProviderName {
+            get {
+                return ResourceManager.GetString("SubscriptionQuotaUsageRoot_InvalidProviderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Total must be a positive whole number.
+        /// </summary>
+        internal static string SubscriptionQuotaUsageRoot_InvalidTotal {
+            get {
+                return ResourceManager.GetString("SubscriptionQuotaUsageRoot_InvalidTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only a service account can add a subscription for the buyer.
         /// </summary>
         internal static string SubscriptionRoot_AddSubscriptionByProvider_NotAuthorized {
@@ -335,6 +353,15 @@ namespace SubscriptionsDomain {
         internal static string SubscriptionRoot_ViewSubscription_FailedWithReason {
             get {
                 return ResourceManager.GetString("SubscriptionRoot_ViewSubscription_FailedWithReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quota &apos;{0}&apos; with a limit of {1} usages, on billing plan {2}, has been exceeded.
+        /// </summary>
+        internal static string SubscriptionsQuotaUsageRoot_LimitExceeded {
+            get {
+                return ResourceManager.GetString("SubscriptionsQuotaUsageRoot_LimitExceeded", resourceCulture);
             }
         }
     }

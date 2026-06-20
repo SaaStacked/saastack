@@ -40,8 +40,6 @@ public delegate Task<Permission> CanViewSubscriptionCheck(SubscriptionRoot subsc
 
 public delegate Task<Permission> CanUnsubscribeCheck(SubscriptionRoot subscription, Identifier unsubscriberId);
 
-public delegate Task<Result<SubscriptionMetadata, Error>> IncrementUsageAction(SubscriptionRoot subscription);
-
 public sealed partial class SubscriptionRoot : AggregateRootBase
 {
     public static Result<SubscriptionRoot, Error> Create(IRecorder recorder, IIdentifierFactory idFactory,
@@ -158,6 +156,17 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 Provider = provider.Value;
                 ProviderBuyerReference = changed.BuyerReference;
                 ProviderSubscriptionReference = changed.SubscriptionReference;
+                if (ManagedQuotas.HasValue)
+                {
+                    var managedQuota = changed.PlanTierQuotas.ToTierQuotas(changed.PlanTier);
+                    if (managedQuota.IsFailure)
+                    {
+                        return managedQuota.Error;
+                    }
+
+                    ManagedQuotas = managedQuota.Value;
+                }
+
                 Recorder.TraceDebug(null, "Subscription {Id} changed plan to {Plan}", Id, changed.PlanId);
                 return Result.Ok;
             }
@@ -175,8 +184,19 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 ProviderBuyerReference = transferred.BuyerReference;
                 ProviderSubscriptionReference = transferred.SubscriptionReference;
                 BuyerId = transferred.ToBuyerId.ToId();
+                if (ManagedQuotas.HasValue)
+                {
+                    var managedQuota = transferred.PlanTierQuotas.ToTierQuotas(transferred.PlanTier);
+                    if (managedQuota.IsFailure)
+                    {
+                        return managedQuota.Error;
+                    }
+
+                    ManagedQuotas = managedQuota.Value;
+                }
+
                 Recorder.TraceDebug(null,
-                    "Subscription {Id} plan {Plan} was transferred from {Tranferer} to {Tranferee}", Id,
+                    "Subscription {Id} plan {Plan} was transferred from {Transferer} to {Transferee}", Id,
                     transferred.PlanId, transferred.FromBuyerId, transferred.ToBuyerId);
                 return Result.Ok;
             }
@@ -191,6 +211,17 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 }
 
                 Provider = provider.Value;
+                if (ManagedQuotas.HasValue)
+                {
+                    var managedQuota = canceled.PlanTierQuotas.ToTierQuotas(canceled.FromPlanTier);
+                    if (managedQuota.IsFailure)
+                    {
+                        return managedQuota.Error;
+                    }
+
+                    ManagedQuotas = managedQuota.Value;
+                }
+
                 Recorder.TraceDebug(null, "Subscription {Id} was canceled for {Buyer}", Id, BuyerId);
                 return Result.Ok;
             }
@@ -207,6 +238,18 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 Provider = provider.Value;
                 ProviderSubscriptionReference = Optional<string>.None;
                 IsConverted = false;
+                if (ManagedQuotas.HasValue)
+                {
+                    var managedQuota = ProviderTierQuotas.Create(BillingSubscriptionTier.Unsubscribed,
+                        new Optional<ProviderPlanQuotas>());
+                    if (managedQuota.IsFailure)
+                    {
+                        return managedQuota.Error;
+                    }
+
+                    ManagedQuotas = managedQuota.Value;
+                }
+
                 Recorder.TraceDebug(null, "Subscription {Id} was unsubscribed for {Buyer}", Id, BuyerId);
                 return Result.Ok;
             }
@@ -276,6 +319,17 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                     }
 
                     ManagedTrial = convertedTrial.Value;
+                }
+
+                if (ManagedQuotas.HasValue)
+                {
+                    var managedQuota = converted.PlanTierQuotas.ToTierQuotas(converted.PlanTier);
+                    if (managedQuota.IsFailure)
+                    {
+                        return managedQuota.Error;
+                    }
+
+                    ManagedQuotas = managedQuota.Value;
                 }
 
                 Recorder.TraceDebug(null, "Subscription {Id} was converted for {Buyer}", Id, BuyerId);
@@ -367,6 +421,19 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 return Result.Ok;
             }
 
+            case ManagedQuotasStarted started:
+            {
+                var quota = started.Quotas.ToTierQuotas(started.StartingTier);
+                if (quota.IsFailure)
+                {
+                    return quota.Error;
+                }
+
+                ManagedQuotas = quota.Value;
+                Recorder.TraceDebug(null, "Subscription {Id} started quotas for {Buyer}", Id, BuyerId);
+                return Result.Ok;
+            }
+
             default:
                 return HandleUnKnownStateChangedEvent(@event);
         }
@@ -414,6 +481,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
                 return Error.PreconditionViolation(Resources.SubscriptionRoot_CancelSubscription_NotCancellable);
             }
 
+            var previousTier = details.Value.Plan.Tier;
+            var previousPlanId = details.Value.Plan.PlanId;
+
             var canceled = await onCancel(this);
             if (canceled.IsFailure)
             {
@@ -422,8 +492,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
             var provider = Provider.Value.ChangeState(canceled.Value);
 
-            return RaiseChangeEvent(
-                SubscriptionsDomain.Events.SubscriptionCanceled(Id, OwningEntityId, provider));
+            return CancelSubscriptionInternal(provider, previousPlanId, previousTier, cancellerId);
         }
     }
 
@@ -452,8 +521,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Result.Ok;
         }
 
-        return RaiseChangeEvent(
-            SubscriptionsDomain.Events.SubscriptionCanceled(Id, OwningEntityId, changed));
+        var tierAndPlan = GetCurrentTierAndPlan(interpreter);
+
+        return CancelSubscriptionInternal(changed, tierAndPlan.Value.PlanId.Value, tierAndPlan.Value.Tier, cancellerId);
     }
 
     public Result<Error> ChangeDetailsForBuyerByProvider(IBillingStateInterpreter interpreter,
@@ -483,7 +553,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(
-            SubscriptionsDomain.Events.BuyerDetailsChanged(Id, OwningEntityId, changed));
+            SubscriptionsDomain.Events.BuyerDetailsChanged(Id, OwningEntityId, changed, modifierId));
     }
 
     public async Task<Result<Error>> ChangePaymentMethodForBuyerAsync(IBillingStateInterpreter interpreter,
@@ -509,8 +579,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         var provider = Provider.Value.ChangeState(changed.Value);
 
-        return RaiseChangeEvent(
-            SubscriptionsDomain.Events.PaymentMethodChanged(Id, OwningEntityId, provider));
+        return ChangePaymentMethodInternal(interpreter, provider, modifierId);
     }
 
     public Result<Error> ChangePaymentMethodForBuyerByProvider(IBillingStateInterpreter interpreter,
@@ -539,13 +608,13 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Result.Ok;
         }
 
-        return RaiseChangeEvent(
-            SubscriptionsDomain.Events.PaymentMethodChanged(Id, OwningEntityId, changed));
+        return ChangePaymentMethodInternal(interpreter, changed, modifierId);
     }
 
     public async Task<Result<ProviderSubscription, Error>> ChangePlanAsync(IBillingStateInterpreter interpreter,
-        Identifier modifierId, string planId, CanChangePlanCheck canChange, ChangePlanAction onChange,
-        TransferSubscriptionAction onTransfer)
+        Identifier modifierId, string planId, CanChangePlanCheck canChange,
+        ChangePlanAction onChange, DispatchTrialEventAction onDispatchEvent, TransferSubscriptionAction onTransfer,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -571,7 +640,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         if (IsBuyer(modifierId) || IsServiceAccountOrWebhookAccount(modifierId))
         {
-            var changedForBuyer = await ChangePlanForBuyerAsync(interpreter, details.Value, planId, onChange);
+            var changedForBuyer =
+                await ChangePlanForBuyerAsync(interpreter, details.Value, modifierId, planId, onChange,
+                    onDispatchEvent, onPrepareTierQuotas);
             if (changedForBuyer.IsFailure)
             {
                 return changedForBuyer.Error;
@@ -579,8 +650,8 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
         else
         {
-            var transferredToModifier = await TransferSubscriptionInternalAsync(interpreter, details.Value, onTransfer,
-                modifierId, planId, true);
+            var transferredToModifier = await TransferSubscriptionInternalAsync(interpreter, details.Value, modifierId,
+                planId, true, onTransfer, onPrepareTierQuotas);
             if (transferredToModifier.IsFailure)
             {
                 return transferredToModifier.Error;
@@ -590,15 +661,15 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         return interpreter.GetSubscriptionDetails(Provider);
     }
 
-    public Result<ProviderSubscription, Error> ChangeProvider(BillingProvider provider,
-        Identifier modifierId, IBillingStateInterpreter interpreter)
+    public async Task<Result<ProviderSubscription, Error>> ChangeProviderAsync(BillingProvider provider,
+        Identifier modifierId, IBillingStateInterpreter interpreter, PrepareTierQuotasAction onPrepareTierQuotas)
     {
         if (!IsServiceAccountOrWebhookAccount(modifierId))
         {
             return Error.RoleViolation(Resources.SubscriptionRoot_ChangeProvider_NotAuthorized);
         }
 
-        var changed = ChangeProviderInternal(false, provider, interpreter);
+        var changed = await ChangeProviderInternalAsync(false, provider, interpreter, onPrepareTierQuotas);
         if (changed.IsFailure)
         {
             return changed.Error;
@@ -607,8 +678,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         return interpreter.GetSubscriptionDetails(Provider.Value);
     }
 
-    public Result<Error> ChangeSubscriptionPlanByProvider(IBillingStateInterpreter interpreter, Identifier modifierId,
-        BillingProvider changed)
+    public async Task<Result<Error>> ChangeSubscriptionPlanByProviderAsync(IBillingStateInterpreter interpreter,
+        Identifier modifierId, BillingProvider changed, DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -632,33 +704,23 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Result.Ok;
         }
 
-        var buyerReference = interpreter.GetBuyerReference(changed);
-        if (buyerReference.IsFailure)
-        {
-            return buyerReference.Error;
-        }
-
-        var subscriptionReference = interpreter.GetSubscriptionReference(changed);
-        if (subscriptionReference.IsFailure)
-        {
-            return subscriptionReference.Error;
-        }
-
         var details = interpreter.GetSubscriptionDetails(changed);
         if (details.IsFailure)
         {
             return details.Error;
         }
 
-        var planId = details.Value.Plan.PlanId.Value;
+        var subscription = details.Value;
+        var planId = subscription.Plan.PlanId.Value;
+        var tier = subscription.Plan.Tier;
 
-        return RaiseChangeEvent(
-            SubscriptionsDomain.Events.SubscriptionPlanChanged(Id, OwningEntityId, planId,
-                changed, buyerReference.Value, subscriptionReference.Value));
+        return await ChangeSubscriptionPlanInternalAsync(interpreter, changed, subscription, modifierId, planId, tier,
+            onDispatchEvent, onPrepareTierQuotas);
     }
 
     public async Task<Result<Error>> ConvertSubscriptionByProviderAsync(IBillingStateInterpreter interpreter,
-        Identifier modifierId, BillingProvider changed, DispatchTrialEventAction onDispatchEvent)
+        Identifier modifierId, BillingProvider changed, DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -683,7 +745,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Result.Ok;
         }
 
-        return await ConvertInternalAsync(interpreter, changed, onDispatchEvent);
+        return await ConvertInternalAsync(interpreter, changed, modifierId, onDispatchEvent, onPrepareTierQuotas);
     }
 
     public Result<Error> DeleteSubscription(Identifier deleterId, Identifier owningEntityId)
@@ -723,56 +785,12 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(
-            SubscriptionsDomain.Events.SubscriptionUnsubscribed(Id, OwningEntityId, changed));
-    }
-
-#if TESTINGONLY
-    public async Task<Result<ProviderSubscription, Error>> ForceConvertSubscriptionAsync(
-        IBillingStateInterpreter interpreter, DispatchTrialEventAction onDispatchEvent)
-    {
-        var subscriptionDetails = interpreter.GetSubscriptionDetails(Provider);
-        if (subscriptionDetails.IsFailure)
-        {
-            return subscriptionDetails.Error;
-        }
-
-        var providerSubscription = subscriptionDetails.Value;
-        var converted = await ConvertInternalAsync(interpreter, Provider, onDispatchEvent);
-        if (converted.IsFailure)
-        {
-            return converted.Error;
-        }
-
-        return providerSubscription;
-    }
-#endif
-
-    public async Task<Result<Error>> IncrementUsageAsync(IBillingStateInterpreter interpreter, string eventName,
-        IncrementUsageAction onIncrement)
-    {
-        var verified = VerifyProviderIsSameAsInstalled(interpreter);
-        if (verified.IsFailure)
-        {
-            return verified.Error;
-        }
-
-        var allowedEvents = interpreter.Capabilities.MeteredEvents;
-        if (!allowedEvents.Contains(eventName))
-        {
-            return Result.Ok;
-        }
-
-        var incremented = await onIncrement(this);
-        if (incremented.IsFailure)
-        {
-            return incremented.Error;
-        }
-
-        return Result.Ok;
+            SubscriptionsDomain.Events.SubscriptionUnsubscribed(Id, OwningEntityId, changed, deleterId));
     }
 
     public async Task<Result<Error>> InitializeSubscriptionAsync(IBillingStateInterpreter interpreter,
-        BillingProvider changed, DispatchTrialEventAction onDispatchTrialEvent)
+        BillingProvider changed, Identifier modifierId, DispatchTrialEventAction onDispatchTrialEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -786,25 +804,52 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
 
         // Do we require a managed trial?
-        if (interpreter.Capabilities.TrialManagement is TrialManagementOptions.RequiresManaged)
+        var capabilities = interpreter.Capabilities;
+        if (capabilities.TrialManagement is ManagementOptions.RequiresManaged)
         {
-            var timeline = TrialTimeline.Create(DateTime.UtcNow, interpreter.Capabilities.ManagedTrialDurationDays);
+            var timeline = TrialTimeline.Create(DateTime.UtcNow, capabilities.ManagedTrialDurationDays);
             if (timeline.IsFailure)
             {
                 return timeline.Error;
             }
 
             var trial = timeline.Value;
-            var started =
+            var trialStarted =
                 RaiseChangeEvent(SubscriptionsDomain.Events.ManagedTrialStarted(Id, OwningEntityId, changed, trial));
+            if (trialStarted.IsFailure)
+            {
+                return trialStarted.Error;
+            }
+        }
+
+        // Do we require managed quotas?
+        if (capabilities.QuotaManagement is ManagementOptions.RequiresManaged)
+        {
+            var tierAndPlan = GetTierAndPlan(interpreter, changed);
+            if (tierAndPlan.IsFailure)
+            {
+                return tierAndPlan.Error;
+            }
+
+            var quotas = capabilities.ManagedQuotas ?? ProviderQuotas.Empty;
+            var started =
+                RaiseChangeEvent(SubscriptionsDomain.Events.ManagedQuotasStarted(Id, OwningEntityId, changed,
+                    quotas, tierAndPlan.Value.Tier));
             if (started.IsFailure)
             {
                 return started.Error;
             }
+
+            var synced = await ResyncTrialQuotasAsync(interpreter, Optional<BillingSubscriptionTier>.None,
+                tierAndPlan.Value.Tier, onPrepareTierQuotas);
+            if (synced.IsFailure)
+            {
+                return synced.Error;
+            }
         }
 
         // Are we already converted?
-        return await ConvertInternalAsync(interpreter, changed, onDispatchTrialEvent);
+        return await ConvertInternalAsync(interpreter, changed, modifierId, onDispatchTrialEvent, onPrepareTierQuotas);
     }
 
     public async Task<Result<Error>> RestoreBuyerAfterDeletedByProviderAsync(IBillingStateInterpreter interpreter,
@@ -848,10 +893,10 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         return RaiseChangeEvent(
             SubscriptionsDomain.Events.BuyerRestored(Id, OwningEntityId, provider, buyerReference.Value,
-                subscriptionReference.Value));
+                subscriptionReference.Value, deleterId));
     }
 
-    public Result<Error> SetProvider(BillingProvider provider, Identifier modifierId,
+    public async Task<Result<Error>> SetProviderAsync(BillingProvider provider, Identifier modifierId,
         IBillingStateInterpreter interpreter)
     {
         if (!IsBuyer(modifierId))
@@ -859,7 +904,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Error.RoleViolation(Resources.SubscriptionRoot_NotBuyer);
         }
 
-        return ChangeProviderInternal(true, provider, interpreter);
+        return await ChangeProviderInternalAsync(true, provider, interpreter, Optional<PrepareTierQuotasAction>.None);
     }
 
 #if TESTINGONLY
@@ -872,7 +917,8 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
     public async Task<Result<ProviderSubscription, Error>> TransferSubscriptionAsync(
         IBillingStateInterpreter interpreter, Identifier transfererId, Identifier transfereeId,
-        CanTransferSubscriptionCheck canTransfer, TransferSubscriptionAction onTransfer)
+        CanTransferSubscriptionCheck canTransfer, TransferSubscriptionAction onTransfer,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -898,8 +944,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
 
         var planId = details.Value.Plan.PlanId;
-        var transferredToModifier = await TransferSubscriptionInternalAsync(interpreter, details.Value, onTransfer,
-            transfereeId, planId, false);
+
+        var transferredToModifier = await TransferSubscriptionInternalAsync(interpreter, details.Value, transfereeId,
+            planId, false, onTransfer, onPrepareTierQuotas);
         if (transferredToModifier.IsFailure)
         {
             return transferredToModifier.Error;
@@ -953,14 +1000,16 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         var provider = Provider.Value.ChangeState(unsubscribed.Value);
 
         return RaiseChangeEvent(
-            SubscriptionsDomain.Events.SubscriptionUnsubscribed(Id, OwningEntityId, provider));
+            SubscriptionsDomain.Events.SubscriptionUnsubscribed(Id, OwningEntityId, provider, unsubscriberId));
     }
 
     /// <summary>
     ///     We need to defer to the OnChange delegate since we need to get the latest state from the provider.
     /// </summary>
     public async Task<Result<Error>> UpdateSubscriptionByProviderAsync(IBillingStateInterpreter interpreter,
-        Identifier modifierId, BillingProvider changed, ChangePlanAction onChange)
+        Identifier modifierId, BillingProvider changed, ChangePlanAction onChange,
+        DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsSameAsInstalled(interpreter);
         if (verified.IsFailure)
@@ -992,7 +1041,8 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         var planId = details.Value.Plan.PlanId.Value;
 
-        return await ChangePlanForBuyerAsync(interpreter, details.Value, planId, onChange);
+        return await ChangePlanForBuyerAsync(interpreter, details.Value, modifierId, planId, onChange,
+            onDispatchEvent, onPrepareTierQuotas);
     }
 
     public async Task<Result<ProviderSubscription, Error>> ViewSubscriptionAsync(IBillingStateInterpreter interpreter,
@@ -1019,40 +1069,153 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         return providerSubscription.Value;
     }
 
-    private async Task<Result<Error>> ConvertInternalAsync(IBillingStateInterpreter interpreter, BillingProvider state,
-        DispatchTrialEventAction onDispatchEvent)
+    private Result<Error> ChangePaymentMethodInternal(IBillingStateInterpreter interpreter, BillingProvider provider,
+        Identifier modifierId)
     {
-        var details = interpreter.GetSubscriptionDetails(state);
+        var changed = RaiseChangeEvent(
+            SubscriptionsDomain.Events.PaymentMethodChanged(Id, OwningEntityId, provider, modifierId));
+        if (changed.IsFailure)
+        {
+            return changed.Error;
+        }
+
+        var details = interpreter.GetSubscriptionDetails(Provider.Value);
+        if (details.IsFailure)
+        {
+            return details.Error;
+        }
+
+        var providerSubscription = details.Value;
+        var tier = providerSubscription.Plan.Tier;
+        if (CanConvert(providerSubscription))
+        {
+            var planId = providerSubscription.Plan.PlanId.Value;
+
+            var tierQuotas = interpreter.Capabilities.ToTierQuotas(tier);
+            var converted = RaiseChangeEvent(
+                SubscriptionsDomain.Events.SubscriptionConverted(Id, OwningEntityId, provider, planId, tier,
+                    providerSubscription.SubscriptionReference.Value, modifierId, tierQuotas));
+            if (converted.IsFailure)
+            {
+                return converted.Error;
+            }
+        }
+
+        return Result.Ok;
+    }
+
+    private bool CanConvert(ProviderSubscription subscription)
+    {
+        var tier = subscription.Plan.Tier;
+        return !IsConverted
+               && subscription.IsConvertable
+               && tier is not BillingSubscriptionTier.Unsubscribed;
+    }
+
+    private Result<Error> CancelSubscriptionInternal(BillingProvider changed, string previousPlanId,
+        BillingSubscriptionTier previousTier, Identifier cancellerId)
+    {
+        return RaiseChangeEvent(
+            SubscriptionsDomain.Events.SubscriptionCanceled(Id, OwningEntityId, changed, previousPlanId, previousTier,
+                cancellerId));
+    }
+
+    private async Task<Result<Error>> ChangeSubscriptionPlanInternalAsync(IBillingStateInterpreter interpreter,
+        BillingProvider provider, ProviderSubscription providerSubscription, Identifier modifierId, string planId,
+        BillingSubscriptionTier tier, DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
+    {
+        var previous = GetCurrentTierAndPlan(interpreter);
+        if (previous.IsFailure)
+        {
+            return previous.Error;
+        }
+
+        var buyerReference = interpreter.GetBuyerReference(provider);
+        if (buyerReference.IsFailure)
+        {
+            return buyerReference.Error;
+        }
+
+        var subscriptionReference = interpreter.GetSubscriptionReference(provider);
+        if (subscriptionReference.IsFailure)
+        {
+            return subscriptionReference.Error;
+        }
+
+        var tierQuotas = interpreter.Capabilities.ToTierQuotas(tier);
+        var changed = RaiseChangeEvent(SubscriptionsDomain.Events.SubscriptionPlanChanged(Id, OwningEntityId, planId,
+            tier, provider, buyerReference.Value, subscriptionReference.Value, modifierId, tierQuotas));
+        if (changed.IsFailure)
+        {
+            return changed.Error;
+        }
+
+        if (CanConvert(providerSubscription))
+        {
+            var converted = RaiseChangeEvent(
+                SubscriptionsDomain.Events.SubscriptionConverted(Id, OwningEntityId, provider, planId, tier,
+                    providerSubscription.SubscriptionReference.Value, modifierId, tierQuotas));
+            if (converted.IsFailure)
+            {
+                return converted.Error;
+            }
+        }
+
+        var synced = await ResyncTrialQuotasAsync(interpreter, previous.Value.Tier, tier, onPrepareTierQuotas);
+        if (synced.IsFailure)
+        {
+            return synced.Error;
+        }
+
+        return await DispatchManagedTrialFirstScheduledEventAsync(interpreter, onDispatchEvent);
+    }
+
+    private async Task<Result<Error>> ConvertInternalAsync(IBillingStateInterpreter interpreter,
+        BillingProvider changed, Identifier modifierId, DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
+    {
+        var previous = GetCurrentTierAndPlan(interpreter);
+        if (previous.IsFailure)
+        {
+            return previous.Error;
+        }
+
+        var details = interpreter.GetSubscriptionDetails(changed);
         if (details.IsFailure)
         {
             return details.Error;
         }
 
         var subscription = details.Value;
-        var isConverted = subscription.SubscriptionReference.HasValue
-                          && subscription.PaymentMethod.Status == BillingPaymentMethodStatus.Valid
-                          && subscription.Plan.PlanId.HasValue;
-        if (!isConverted)
+        if (!subscription.IsConvertable)
         {
             return Result.Ok;
         }
 
-        var planId = details.Value.Plan.PlanId.Value;
-        var subscriptionReference = subscription.SubscriptionReference.Value;
-
-        var methodChanged = RaiseChangeEvent(
-            SubscriptionsDomain.Events.PaymentMethodChanged(Id, OwningEntityId, state));
-        if (methodChanged.IsFailure)
+        var paymentMethodChanged = RaiseChangeEvent(
+            SubscriptionsDomain.Events.PaymentMethodChanged(Id, OwningEntityId, changed, modifierId));
+        if (paymentMethodChanged.IsFailure)
         {
-            return methodChanged.Error;
+            return paymentMethodChanged.Error;
         }
 
+        var planId = subscription.Plan.PlanId.Value;
+        var tier = subscription.Plan.Tier;
+        var subscriptionReference = subscription.SubscriptionReference.Value;
+        var tierQuotas = interpreter.Capabilities.ToTierQuotas(tier);
         var converted = RaiseChangeEvent(
-            SubscriptionsDomain.Events.SubscriptionConverted(Id, OwningEntityId, state, planId,
-                subscriptionReference));
+            SubscriptionsDomain.Events.SubscriptionConverted(Id, OwningEntityId, changed, planId, tier,
+                subscriptionReference, modifierId, tierQuotas));
         if (converted.IsFailure)
         {
             return converted.Error;
+        }
+
+        var synced = await ResyncTrialQuotasAsync(interpreter, previous.Value.Tier, tier, onPrepareTierQuotas);
+        if (synced.IsFailure)
+        {
+            return synced.Error;
         }
 
         // We assume trial just got converted for the first time too
@@ -1080,7 +1243,9 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
     }
 
     private async Task<Result<Error>> ChangePlanForBuyerAsync(IBillingStateInterpreter interpreter,
-        ProviderSubscription providerSubscription, string planId, ChangePlanAction onChange)
+        ProviderSubscription providerSubscription, Identifier modifierId, string planId,
+        ChangePlanAction onChange, DispatchTrialEventAction onDispatchEvent,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
         var paymentMethod = providerSubscription.PaymentMethod;
         if (paymentMethod.Status != BillingPaymentMethodStatus.Valid)
@@ -1097,20 +1262,17 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         var provider = Provider.Value.ChangeState(changed.Value);
 
-        var buyerReference = interpreter.GetBuyerReference(provider);
-        if (buyerReference.IsFailure)
+        var details = interpreter.GetSubscriptionDetails(provider);
+        if (details.IsFailure)
         {
-            return buyerReference.Error;
+            return details.Error;
         }
 
-        var subscriptionReference = interpreter.GetSubscriptionReference(provider);
-        if (subscriptionReference.IsFailure)
-        {
-            return subscriptionReference.Error;
-        }
+        var subscription = details.Value;
+        var tier = subscription.Plan.Tier;
 
-        return RaiseChangeEvent(SubscriptionsDomain.Events.SubscriptionPlanChanged(Id, OwningEntityId, planId,
-            provider, buyerReference.Value, subscriptionReference.Value));
+        return await ChangeSubscriptionPlanInternalAsync(interpreter, provider, subscription, modifierId, planId, tier,
+            onDispatchEvent, onPrepareTierQuotas);
     }
 
     /// <summary>
@@ -1118,9 +1280,16 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
     ///     or a billingAdmin can force it, but only if the subscription is already canceled/unsubscribed
     /// </summary>
     private async Task<Result<Error>> TransferSubscriptionInternalAsync(IBillingStateInterpreter interpreter,
-        ProviderSubscription providerSubscription, TransferSubscriptionAction onTransfer, Identifier transfereeId,
-        string planId, bool checkTransferByBillingAdmin)
+        ProviderSubscription providerSubscription, Identifier transfereeId, string planId,
+        bool checkTransferByBillingAdmin, TransferSubscriptionAction onTransfer,
+        PrepareTierQuotasAction onPrepareTierQuotas)
     {
+        var previous = GetCurrentTierAndPlan(interpreter);
+        if (previous.IsFailure)
+        {
+            return previous.Error;
+        }
+
         var paymentMethod = providerSubscription.PaymentMethod;
         if (paymentMethod.Status != BillingPaymentMethodStatus.Valid)
         {
@@ -1145,6 +1314,15 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
 
         var provider = Provider.Value.ChangeState(transferred.Value);
 
+        var details = interpreter.GetSubscriptionDetails(provider);
+        if (details.IsFailure)
+        {
+            return details.Error;
+        }
+
+        var subscription = details.Value;
+        var tier = subscription.Plan.Tier;
+
         var buyerReference = interpreter.GetBuyerReference(provider);
         if (buyerReference.IsFailure)
         {
@@ -1157,9 +1335,22 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return subscriptionReference.Error;
         }
 
-        return RaiseChangeEvent(SubscriptionsDomain.Events.SubscriptionTransferred(Id, OwningEntityId,
-            BuyerId, transfereeId, planId, provider, buyerReference.Value,
-            subscriptionReference.Value));
+        var tierQuotas = interpreter.Capabilities.ToTierQuotas(tier);
+        var raised = RaiseChangeEvent(SubscriptionsDomain.Events.SubscriptionTransferred(Id, OwningEntityId,
+            BuyerId, transfereeId, planId, tier, provider, buyerReference.Value,
+            subscriptionReference.Value, transfereeId, tierQuotas));
+        if (raised.IsFailure)
+        {
+            return raised.Error;
+        }
+
+        var synced = await ResyncTrialQuotasAsync(interpreter, previous.Value.Tier, tier, onPrepareTierQuotas);
+        if (synced.IsFailure)
+        {
+            return synced.Error;
+        }
+
+        return Result.Ok;
     }
 
     private static bool IsExecutedOnBehalfOfBuyer(Identifier userId)
@@ -1167,8 +1358,8 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         return IsServiceAccountOrWebhookAccount(userId);
     }
 
-    private Result<Error> ChangeProviderInternal(bool isRecentlySubscribed, BillingProvider provider,
-        IBillingStateInterpreter interpreter)
+    private async Task<Result<Error>> ChangeProviderInternalAsync(bool isRecentlySubscribed, BillingProvider provider,
+        IBillingStateInterpreter interpreter, Optional<PrepareTierQuotasAction> onPrepareTierQuotas)
     {
         var verified = VerifyProviderIsChangeable(interpreter, provider);
         if (verified.IsFailure)
@@ -1184,6 +1375,12 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return translatedProvider.Error;
         }
 
+        var previous = GetCurrentTierAndPlan(interpreter);
+        if (previous.IsFailure)
+        {
+            return previous.Error;
+        }
+
         var buyerReference = interpreter.GetBuyerReference(translatedProvider.Value);
         if (buyerReference.IsFailure)
         {
@@ -1197,8 +1394,31 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
         }
 
         var fromProviderName = Provider.ToNullable(prov => prov.Name);
-        return RaiseChangeEvent(SubscriptionsDomain.Events.ProviderChanged(Id, OwningEntityId, fromProviderName,
+        var changed = RaiseChangeEvent(SubscriptionsDomain.Events.ProviderChanged(Id, OwningEntityId, fromProviderName,
             translatedProvider.Value, buyerReference.Value, subscriptionReference.Value));
+        if (changed.IsFailure)
+        {
+            return changed.Error;
+        }
+
+        if (onPrepareTierQuotas.HasValue)
+        {
+            var tierAndPlan = GetTierAndPlan(interpreter, translatedProvider.Value);
+            if (tierAndPlan.IsFailure)
+            {
+                return tierAndPlan.Error;
+            }
+
+            var synced =
+                await ResyncTrialQuotasAsync(interpreter, previous.Value.Tier, tierAndPlan.Value.Tier,
+                    onPrepareTierQuotas.Value);
+            if (synced.IsFailure)
+            {
+                return synced.Error;
+            }
+        }
+
+        return Result.Ok;
     }
 
     private Result<Error> VerifyProviderIsSameAsInstalled(IBillingStateInterpreter interpreter)
@@ -1260,5 +1480,28 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
     private bool IsOwnedBy(Identifier owner)
     {
         return OwningEntityId != owner;
+    }
+
+    private Result<(BillingSubscriptionTier Tier, Optional<string> PlanId), Error> GetCurrentTierAndPlan(
+        IBillingStateInterpreter interpreter)
+    {
+        if (!Provider.HasValue)
+        {
+            return (BillingSubscriptionTier.Unsubscribed, Optional<string>.None);
+        }
+
+        return GetTierAndPlan(interpreter, Provider.Value);
+    }
+
+    private static Result<(BillingSubscriptionTier Tier, Optional<string> PlanId), Error> GetTierAndPlan(
+        IBillingStateInterpreter interpreter, BillingProvider provider)
+    {
+        var details = interpreter.GetSubscriptionDetails(provider);
+        if (details.IsFailure)
+        {
+            return details.Error;
+        }
+
+        return (details.Value.Plan.Tier, details.Value.Plan.PlanId);
     }
 }

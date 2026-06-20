@@ -12,7 +12,7 @@ public interface IBillingStateInterpreter
     ///     Returns the capabilities of the provider
     /// </summary>
     public BillingProviderCapabilities Capabilities { get; }
-    
+
     /// <summary>
     ///     Returns the name of this provider
     /// </summary>

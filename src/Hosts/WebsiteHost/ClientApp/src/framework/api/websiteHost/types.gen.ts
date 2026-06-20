@@ -11,6 +11,7 @@ export type ApiHealthCheckResponse = {
 export type ApiHostHealth = {
     name: string;
     status: string;
+    version: HostVersions;
 };
 
 export type ApiStatistics = {
@@ -112,6 +113,17 @@ export type GetAllFeatureFlagsResponse = {
 
 export type GetFeatureFlagResponse = {
     flag: FeatureFlag;
+};
+
+export type HostDeploymentVersion = {
+    deployed?: Date;
+    hash: string;
+    version: string;
+};
+
+export type HostVersions = {
+    productVersion: HostDeploymentVersion;
+    runtimeVersion: string;
 };
 
 export type LogoutRequest = {

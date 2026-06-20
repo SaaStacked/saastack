@@ -2,6 +2,7 @@ using Application.Common.Extensions;
 using Application.Interfaces;
 using Application.Persistence.Common.Extensions;
 using Application.Resources.Shared;
+using Application.Services.Shared;
 using CarsApplication.Persistence;
 using CarsDomain;
 using Common;
@@ -15,13 +16,16 @@ namespace CarsApplication;
 public class CarsApplication : ICarsApplication
 {
     private readonly IIdentifierFactory _idFactory;
+    private readonly IQuotaUsageService _quotaUsageService;
     private readonly IRecorder _recorder;
     private readonly ICarRepository _repository;
 
-    public CarsApplication(IRecorder recorder, IIdentifierFactory idFactory, ICarRepository repository)
+    public CarsApplication(IRecorder recorder, IIdentifierFactory idFactory, IQuotaUsageService quotaUsageService,
+        ICarRepository repository)
     {
         _recorder = recorder;
         _idFactory = idFactory;
+        _quotaUsageService = quotaUsageService;
         _repository = repository;
     }
 
@@ -69,6 +73,21 @@ public class CarsApplication : ICarsApplication
     public async Task<Result<Car, Error>> RegisterCarAsync(ICallerContext caller, string organizationId, string make,
         string model, int year, string location, string plate, CancellationToken cancellationToken)
     {
+        var retrievedCars =
+            await _repository.SearchAllCarsAsync(organizationId.ToId(), new SearchOptions(), cancellationToken);
+        if (retrievedCars.IsFailure)
+        {
+            return retrievedCars.Error;
+        }
+
+        var carCount = retrievedCars.Value.TotalCount + 1;
+        var quotaChecked = await _quotaUsageService.TryCheckQuotaUsageAsync(caller, QuotaConstants.Quotas.CarCount,
+            carCount, cancellationToken);
+        if (quotaChecked.IsFailure)
+        {
+            return quotaChecked.Error;
+        }
+
         var retrieved = CarRoot.Create(_recorder, _idFactory, organizationId.ToId());
         if (retrieved.IsFailure)
         {

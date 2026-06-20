@@ -32,6 +32,7 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
     private readonly Mock<IBillingProvider> _billingProvider;
     private readonly Mock<ICallerContext> _caller;
     private readonly Mock<IIdentifierFactory> _identifierFactory;
+    private readonly Mock<ISubscriptionQuotaRepository> _quotaRepository;
     private readonly Mock<IRecorder> _recorder;
     private readonly Mock<ISubscriptionRepository> _repository;
     private readonly Mock<ISubscriptionTrialEventMessageQueueRepository> _trialEventMessageRepository;
@@ -50,7 +51,7 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             .Returns("aprovidername");
         var providerCapabilities = new BillingProviderCapabilities
         {
-            TrialManagement = TrialManagementOptions.SelfManaged
+            TrialManagement = ManagementOptions.SelfManaged
         };
         _billingProvider.Setup(bp => bp.Capabilities)
             .Returns(providerCapabilities);
@@ -77,13 +78,17 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
         _trialEventMessageRepository = new Mock<ISubscriptionTrialEventMessageQueueRepository>();
         _trialEventMessageRepository.Setup(ter => ter.MaxMessageDelay)
             .Returns(TimeSpan.FromDays(2));
+        _quotaRepository = new Mock<ISubscriptionQuotaRepository>();
+        _quotaRepository.Setup(rep =>
+                rep.SaveAsync(It.IsAny<SubscriptionQuotaUsageRoot>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((SubscriptionQuotaUsageRoot root, CancellationToken _) => root);
         _repository = new Mock<ISubscriptionRepository>();
         _repository.Setup(rep => rep.SaveAsync(It.IsAny<SubscriptionRoot>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((SubscriptionRoot root, CancellationToken _) => root);
 
         _application = new SubscriptionsApplication(_recorder.Object, _identifierFactory.Object,
             _userProfilesService.Object, _billingProvider.Object, owningEntityService.Object,
-            _trialEventMessageRepository.Object, _repository.Object);
+            _trialEventMessageRepository.Object, _quotaRepository.Object, _repository.Object);
     }
 
     [Fact]
@@ -237,7 +242,7 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule.Value
             });
         var domainEvent = OrganizationsDomainEvents.Created("anowningentityid".ToId(), OrganizationOwnership.Personal,
@@ -278,6 +283,75 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
             ), It.Is<TimeSpan>(ts =>
                 ts == _trialEventMessageRepository.Object.MaxMessageDelay
             ), It.IsAny<CancellationToken>()));
+    }
+
+    [Fact]
+    public async Task
+        WhenHandleOrganizationCreatedAsyncAndProfileExistsForManagedQuotas_ThenCreatesCompletedSubscription()
+    {
+        var stateInterpreter = new Mock<IBillingStateInterpreter>();
+        _billingProvider.Setup(bp =>
+                bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty).Value);
+        var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
+            "anowningentityid".ToId(), "abuyerid".ToId(), stateInterpreter.Object).Value;
+        var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
+#if TESTINGONLY
+        subscription.TestingOnly_SetManagedTrial(trial);
+#endif
+        _repository.Setup(r =>
+                r.FindByOwningEntityIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(subscription.ToOptional());
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserProfile
+            {
+                DisplayName = "adisplayname",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
+                PhoneNumber = "aphonenumber",
+                Classification = UserProfileClassification.Person,
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                },
+                UserId = "abuyerid",
+                Id = "aprofileid"
+            });
+        _billingProvider.Setup(bp => bp.GatewayService.SubscribeAsync(It.IsAny<ICallerContext>(),
+                It.IsAny<SubscriptionBuyer>(), It.IsAny<SubscribeOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            });
+        _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
+            .Returns(new BillingProviderCapabilities
+            {
+                QuotaManagement = ManagementOptions.RequiresManaged
+            });
+        var domainEvent = OrganizationsDomainEvents.Created("anowningentityid".ToId(), OrganizationOwnership.Personal,
+            "abuyerid".ToId(), Optional<EmailAddress>.None, DisplayName.Create("aname").Value,
+            DatacenterLocations.Local);
+
+        var result =
+            await _application.HandleOrganizationCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _repository.Verify(rep => rep.SaveAsync(It.Is<SubscriptionRoot>(root =>
+            root.BuyerId == "abuyerid".ToId()
+            && root.OwningEntityId == "anowningentityid".ToId()
+            && root.Provider.Value.Name == "aprovidername"
+        ), It.IsAny<CancellationToken>()));
+        _userProfilesService.Verify(ps =>
+            ps.GetProfilePrivateAsync(_caller.Object, "abuyerid".ToId(), CancellationToken.None));
+        _billingProvider.Verify(bp => bp.StateInterpreter.GetBuyerReference(It.IsAny<BillingProvider>()));
+        _billingProvider.Verify(bp => bp.StateInterpreter.GetSubscriptionReference(It.IsAny<BillingProvider>()));
+        _quotaRepository.Verify(
+            rep => rep.SaveAsync(It.IsAny<SubscriptionQuotaUsageRoot>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -450,7 +524,7 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule.Value
             });
         var domainEvent = new UserProfileEvents.Created("aprofileid".ToId())
@@ -502,6 +576,87 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
     }
 
     [Fact]
+    public async Task
+        WhenHandleUserProfileCreatedAsyncAndPartialSubscriptionExistsForManagedQuotas_ThenCompletedSubscription()
+    {
+        var stateInterpreter = new Mock<IBillingStateInterpreter>();
+        _billingProvider.Setup(bp =>
+                bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
+            .Returns(ProviderSubscription.Create(ProviderStatus.Empty).Value);
+        var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
+            "anowningentityid".ToId(), "auserid".ToId(), stateInterpreter.Object).Value;
+        _repository.Setup(r =>
+                r.FindByBuyerIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(subscription.ToOptional());
+        _userProfilesService.Setup(ups =>
+                ups.GetProfilePrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserProfile
+            {
+                DisplayName = "adisplayname",
+                EmailAddress = new UserProfileEmailAddress
+                {
+                    Address = "anemailaddress",
+                    Classification = UserProfileEmailAddressClassification.Personal
+                },
+                PhoneNumber = "aphonenumber",
+                Classification = UserProfileClassification.Person,
+                Name = new PersonName
+                {
+                    FirstName = "afirstname"
+                },
+                UserId = "auserid",
+                Id = "aprofileid"
+            });
+        _billingProvider.Setup(bp => bp.GatewayService.SubscribeAsync(It.IsAny<ICallerContext>(),
+                It.IsAny<SubscriptionBuyer>(), It.IsAny<SubscribeOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SubscriptionMetadata
+            {
+                { "aname", "avalue" }
+            });
+        var standardQuotas = ProviderTierQuotas.Create(BillingSubscriptionTier.Standard,
+            ProviderPlanQuotas.Create("aquotaid", ProviderPlanQuota.Create("adescription").Value).Value
+        ).Value;
+        var quotas = ProviderQuotas.Create(
+            new Dictionary<BillingSubscriptionTier, ProviderPlanQuotas>
+            {
+                { standardQuotas.Tier, standardQuotas.Quotas.Value }
+            }).Value;
+        _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
+            .Returns(new BillingProviderCapabilities
+            {
+                QuotaManagement = ManagementOptions.RequiresManaged,
+                ManagedQuotas = quotas
+            });
+        var domainEvent = new UserProfileEvents.Created("aprofileid".ToId())
+        {
+            DisplayName = "adisplayname",
+            FirstName = "anemailaddress",
+            LastName = "aphonenumber",
+            Type = nameof(ProfileType.Person),
+            UserId = "auserid"
+        };
+
+        var result =
+            await _application.HandleUserProfileCreatedAsync(_caller.Object, domainEvent, CancellationToken.None);
+
+        result.Should().BeSuccess();
+        _repository.Verify(rep => rep.SaveAsync(It.Is<SubscriptionRoot>(root =>
+            root.BuyerId == "auserid".ToId()
+            && root.OwningEntityId == "anowningentityid".ToId()
+            && root.Provider.Value.Name == "aprovidername"
+            && root.ManagedQuotas.Value.Tier == BillingSubscriptionTier.Unsubscribed
+            && root.ManagedQuotas.Value.Quotas == Optional<ProviderPlanQuotas>.None
+        ), It.IsAny<CancellationToken>()));
+        _userProfilesService.Verify(ps =>
+            ps.GetProfilePrivateAsync(_caller.Object, "auserid".ToId(), CancellationToken.None));
+        _billingProvider.Verify(bp => bp.StateInterpreter.GetBuyerReference(It.IsAny<BillingProvider>()));
+        _billingProvider.Verify(bp => bp.StateInterpreter.GetSubscriptionReference(It.IsAny<BillingProvider>()));
+        _quotaRepository.Verify(
+            rep => rep.SaveAsync(It.IsAny<SubscriptionQuotaUsageRoot>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task WhenHandleUserProfileCreatedAsyncAndCompletedSubscriptionExists_ThenIgnores()
     {
         var stateInterpreter = new Mock<IBillingStateInterpreter>();
@@ -511,7 +666,7 @@ public class SubscriptionsApplicationDomainEventHandlersSpec
         var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
             "anowningentityid".ToId(), "auserid".ToId(), stateInterpreter.Object).Value;
         var metadata = new SubscriptionMetadata(new Dictionary<string, string> { { "aname", "avalue" } });
-        subscription.SetProvider(BillingProvider.Create("aprovidername", metadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", metadata).Value,
             "auserid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(r =>
                 r.FindByBuyerIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

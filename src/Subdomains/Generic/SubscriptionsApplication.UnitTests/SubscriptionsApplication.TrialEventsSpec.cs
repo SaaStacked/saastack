@@ -63,7 +63,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged
+                TrialManagement = ManagementOptions.RequiresManaged
             });
         _billingProvider.Setup(bp => bp.ProviderName)
             .Returns("aprovidername");
@@ -77,7 +77,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionReference(It.IsAny<BillingProvider>()))
             .Returns("asubscriptionreference".ToOptional());
         _billingProvider.Setup(bp => bp.StateInterpreter.GetSubscriptionDetails(It.IsAny<BillingProvider>()))
-            .Returns(ProviderSubscription.Create("asubscriptionreference".ToId(), ProviderStatus.Empty,
+            .Returns(ProviderSubscription.Create("asubscriptionreference", ProviderStatus.Empty,
                 ProviderPlan.Create("aplanid", BillingSubscriptionTier.Standard).Value, ProviderPlanPeriod.Empty,
                 ProviderInvoice.Default, ProviderPaymentMethod.Empty).Value);
         var owningEntityService = new Mock<ISubscriptionOwningEntityService>();
@@ -92,6 +92,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         _trialEventMessageRepository = new Mock<ISubscriptionTrialEventMessageQueueRepository>();
         _trialEventMessageRepository.Setup(ter => ter.MaxMessageDelay)
             .Returns(TimeSpan.FromDays(1));
+        var subscriptionQuotaRepository = new Mock<ISubscriptionQuotaRepository>();
         _repository = new Mock<ISubscriptionRepository>();
         _repository.Setup(rep => rep.SaveAsync(It.IsAny<SubscriptionRoot>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((SubscriptionRoot root, CancellationToken _) => root);
@@ -101,7 +102,7 @@ public class SubscriptionsApplicationTrialEventsSpec
 
         _application = new SubscriptionsApplication(_recorder.Object, _identifierFactory.Object,
             userProfilesService.Object, _billingProvider.Object, owningEntityService.Object,
-            _trialEventMessageRepository.Object, _repository.Object);
+            _trialEventMessageRepository.Object, subscriptionQuotaRepository.Object, _repository.Object);
     }
 
     [Fact]
@@ -199,7 +200,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
             "anowningentityid".ToId(), "abuyerid".ToId(), _billingProvider.Object.StateInterpreter).Value;
         var metadata = new SubscriptionMetadata(new Dictionary<string, string> { { "aname", "avalue" } });
-        subscription.SetProvider(BillingProvider.Create("aprovidername", metadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", metadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByOwningEntityIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -246,7 +247,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
             "anowningentityid".ToId(), "abuyerid".ToId(), _billingProvider.Object.StateInterpreter).Value;
         var metadata = new SubscriptionMetadata(new Dictionary<string, string> { { "aname", "avalue" } });
-        subscription.SetProvider(BillingProvider.Create("aprovidername", metadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", metadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         _repository.Setup(rep => rep.FindByOwningEntityIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(subscription.ToOptional());
@@ -304,7 +305,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
             "anowningentityid".ToId(), "abuyerid".ToId(), _billingProvider.Object.StateInterpreter).Value;
         var metadata = new SubscriptionMetadata(new Dictionary<string, string> { { "aname", "avalue" } });
-        subscription.SetProvider(BillingProvider.Create("aprovidername", metadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", metadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
 #if TESTINGONLY
@@ -318,7 +319,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule.Value
             });
         _billingProvider.Setup(bp => bp.GatewayService.HandleTrialScheduledEventAsync(It.IsAny<ICallerContext>(),
@@ -368,7 +369,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         var subscription = SubscriptionRoot.Create(_recorder.Object, _identifierFactory.Object,
             "anowningentityid".ToId(), "abuyerid".ToId(), _billingProvider.Object.StateInterpreter).Value;
         var metadata = new SubscriptionMetadata(new Dictionary<string, string> { { "aname", "avalue" } });
-        subscription.SetProvider(BillingProvider.Create("aprovidername", metadata).Value,
+        await subscription.SetProviderAsync(BillingProvider.Create("aprovidername", metadata).Value,
             "abuyerid".ToId(), _billingProvider.Object.StateInterpreter);
         var trial = TrialTimeline.Create(DateTime.UtcNow, 1).Value;
 #if TESTINGONLY
@@ -384,7 +385,7 @@ public class SubscriptionsApplicationTrialEventsSpec
         _billingProvider.Setup(bp => bp.StateInterpreter.Capabilities)
             .Returns(new BillingProviderCapabilities
             {
-                TrialManagement = TrialManagementOptions.RequiresManaged,
+                TrialManagement = ManagementOptions.RequiresManaged,
                 ManagedTrialSchedule = schedule.Value
             });
         _billingProvider.Setup(bp => bp.GatewayService.HandleTrialScheduledEventAsync(It.IsAny<ICallerContext>(),

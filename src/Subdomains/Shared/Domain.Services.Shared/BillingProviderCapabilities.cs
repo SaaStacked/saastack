@@ -8,6 +8,20 @@ namespace Domain.Services.Shared;
 public class BillingProviderCapabilities
 {
     /// <summary>
+    ///     When not self-managing features, return a map of features for each tier
+    /// </summary>
+    public IReadOnlyDictionary<BillingSubscriptionTier, IReadOnlyList<ProviderPlanFeatureSection>>? ManagedFeatures
+    {
+        get;
+        init;
+    }
+
+    /// <summary>
+    ///     When not self-managing quotas, return a map of quotas for each tier
+    /// </summary>
+    public ProviderQuotas? ManagedQuotas { get; init; }
+
+    /// <summary>
     ///     When not self-managing trials, return the duration of the managed trial
     /// </summary>
     public int ManagedTrialDurationDays { get; init; } = 7;
@@ -23,12 +37,17 @@ public class BillingProviderCapabilities
     public IReadOnlyList<string> MeteredEvents { get; set; } = [];
 
     /// <summary>
+    ///     Whether the provider supports quotas, and manages the state of its own quotas
+    /// </summary>
+    public ManagementOptions QuotaManagement { get; init; } = ManagementOptions.SelfManaged;
+
+    /// <summary>
     ///     Whether the provider supports trials, and manages the state of its own trials
     /// </summary>
-    public TrialManagementOptions TrialManagement { get; init; } = TrialManagementOptions.SelfManaged;
+    public ManagementOptions TrialManagement { get; init; } = ManagementOptions.SelfManaged;
 }
 
-public enum TrialManagementOptions
+public enum ManagementOptions
 {
     None = 0,
     SelfManaged = 1,

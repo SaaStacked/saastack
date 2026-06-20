@@ -56,7 +56,7 @@ partial class SubscriptionRoot
             return verified.Error;
         }
 
-        if (interpreter.Capabilities.TrialManagement is not TrialManagementOptions.RequiresManaged)
+        if (interpreter.Capabilities.TrialManagement is not ManagementOptions.RequiresManaged)
         {
             return Result.Ok;
         }
@@ -193,7 +193,7 @@ partial class SubscriptionRoot
             return verified.Error;
         }
 
-        if (interpreter.Capabilities.TrialManagement is not TrialManagementOptions.RequiresManaged)
+        if (interpreter.Capabilities.TrialManagement is not ManagementOptions.RequiresManaged)
         {
             return Result.Ok;
         }
@@ -209,7 +209,7 @@ partial class SubscriptionRoot
     public async Task<Result<Error>> DispatchManagedTrialFirstScheduledEventAsync(IBillingStateInterpreter interpreter,
         DispatchTrialEventAction onDispatchEvent)
     {
-        if (interpreter.Capabilities.TrialManagement is not TrialManagementOptions.RequiresManaged)
+        if (interpreter.Capabilities.TrialManagement is not ManagementOptions.RequiresManaged)
         {
             return Result.Ok;
         }
@@ -243,7 +243,7 @@ partial class SubscriptionRoot
             return verified.Error;
         }
 
-        if (interpreter.Capabilities.TrialManagement is not TrialManagementOptions.RequiresManaged)
+        if (interpreter.Capabilities.TrialManagement is not ManagementOptions.RequiresManaged)
         {
             return Result.Ok;
         }
@@ -315,7 +315,7 @@ partial class SubscriptionRoot
         DispatchTrialSignalAction onDispatchNextSignal, ExpireTrialAction onTrialExpired,
         DispatchTrialEventAction onDispatchNextEvent)
     {
-        if (interpreter.Capabilities.TrialManagement is not TrialManagementOptions.RequiresManaged)
+        if (interpreter.Capabilities.TrialManagement is not ManagementOptions.RequiresManaged)
         {
             return Result.Ok;
         }

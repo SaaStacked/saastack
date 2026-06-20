@@ -19,6 +19,7 @@ export type ApiHealthCheckResponse = {
 export type ApiHostHealth = {
     name: string;
     status: string;
+    version: HostVersions;
 };
 
 export type ApiStatistics = {
@@ -179,6 +180,16 @@ export type ChangeSubscriptionPlanRequest = {
     planId?: string | null;
 };
 
+export type CheckQuotaRequest = {
+    quotaId?: string | null;
+    total?: bigint;
+    id?: string | null;
+};
+
+export type CheckQuotaResponse = {
+    [key: string]: never;
+};
+
 export type CompleteOnboardingWorkflowRequest = {
     [key: string]: never;
 };
@@ -229,10 +240,6 @@ export type ConsentOAuth2ClientForCallerRequest = {
     redirectUri: string;
     scope: string;
     state?: string | null;
-};
-
-export type ConvertSubscriptionRequest = {
-    [key: string]: never;
 };
 
 export type CreateApiKeyRequest = {
@@ -580,6 +587,17 @@ export type GetTenantedTestingOnlyResponse = {
 
 export type GetUserInfoForCallerResponse = {
     user: OpenIdConnectUserInfo;
+};
+
+export type HostDeploymentVersion = {
+    deployed?: Date;
+    hash: string;
+    version: string;
+};
+
+export type HostVersions = {
+    productVersion: HostDeploymentVersion;
+    runtimeVersion: string;
 };
 
 export type Identity = {
@@ -1149,9 +1167,16 @@ export type PricingPlan = {
     isRecommended: boolean;
     notes?: string;
     period: PlanPeriod;
+    quotas: Array<PricingPlanQuota>;
     setupCost: number;
     trial?: SubscriptionTrialPeriod;
     id: string;
+};
+
+export type PricingPlanQuota = {
+    description: string;
+    limit: bigint;
+    period: SubscriptionQuotaPeriod;
 };
 
 export type PricingPlans = {
@@ -1420,6 +1445,16 @@ export type SubscriptionPlan = {
     trialEndDateUtc?: Date;
 };
 
+export type SubscriptionQuota = {
+    definition: PricingPlanQuota;
+    remaining: bigint;
+    total: bigint;
+};
+
+export const SubscriptionQuotaPeriod = { ETERNITY: 'eternity' } as const;
+
+export type SubscriptionQuotaPeriod = typeof SubscriptionQuotaPeriod[keyof typeof SubscriptionQuotaPeriod];
+
 export const SubscriptionStatus = {
     UNSUBSCRIBED: 'unsubscribed',
     ACTIVATED: 'activated',
@@ -1469,13 +1504,14 @@ export type SubscriptionWithPlan = {
     canBeCanceled: boolean;
     canBeUnsubscribed: boolean;
     canceledDateUtc?: Date;
-    upcomingInvoice: InvoiceSummary;
+    checkoutUrl?: string;
     paymentMethod: SubscriptionPaymentMethod;
     period: PlanPeriod;
     plan: SubscriptionPlan;
+    remainingQuotas?: Array<SubscriptionQuota>;
     status: SubscriptionStatus;
     subscriptionReference?: string;
-    checkoutUrl?: string;
+    upcomingInvoice: InvoiceSummary;
 };
 
 export type TakeOfflineCarRequest = {
@@ -2819,7 +2855,7 @@ export type RegisterCarErrors = {
      */
     401: unknown;
     /**
-     * Payment Required: The client must have payment information to get the requested response
+     * You have exceeded the maximum number of cars for your billing plan.
      */
     402: unknown;
     /**
@@ -9401,6 +9437,63 @@ export type NotifyProvisioningResponses = {
 
 export type NotifyProvisioningResponse = NotifyProvisioningResponses[keyof NotifyProvisioningResponses];
 
+export type CheckQuotaData = {
+    body?: CheckQuotaRequest;
+    path?: never;
+    query?: never;
+    url: '/testingonly/quotas';
+};
+
+export type CheckQuotaErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type CheckQuotaError = CheckQuotaErrors[keyof CheckQuotaErrors];
+
+export type CheckQuotaResponses = {
+    /**
+     * Created
+     */
+    201: CheckQuotaResponse;
+};
+
+export type CheckQuotaResponse2 = CheckQuotaResponses[keyof CheckQuotaResponses];
+
 export type RecordMeasureData = {
     body?: RecordMeasureRequest;
     path?: never;
@@ -10552,124 +10645,6 @@ export type ExpireSubscriptionTrialPutResponses = {
 };
 
 export type ExpireSubscriptionTrialPutResponse = ExpireSubscriptionTrialPutResponses[keyof ExpireSubscriptionTrialPutResponses];
-
-export type ConvertSubscriptionPatchData = {
-    body?: ConvertSubscriptionRequest;
-    path: {
-        Id: string;
-    };
-    query?: never;
-    url: '/subscriptions/{Id}/convert';
-};
-
-export type ConvertSubscriptionPatchErrors = {
-    /**
-     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
-     */
-    400: ProblemDetails;
-    /**
-     * Unauthorized: The client must authenticate itself to get the requested response
-     */
-    401: unknown;
-    /**
-     * Payment Required: The client must have payment information to get the requested response
-     */
-    402: unknown;
-    /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
-     */
-    403: unknown;
-    /**
-     * Not Found: The server cannot find the requested resource
-     */
-    404: unknown;
-    /**
-     * Method Not Allowed: The request is not allowed by the current state of the resource
-     */
-    405: unknown;
-    /**
-     * Conflict: The request conflicts with the current state of the resource
-     */
-    409: unknown;
-    /**
-     * Locked: The current resource is locked and cannot be accessed
-     */
-    423: unknown;
-    /**
-     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
-     */
-    500: ProblemDetails;
-};
-
-export type ConvertSubscriptionPatchError = ConvertSubscriptionPatchErrors[keyof ConvertSubscriptionPatchErrors];
-
-export type ConvertSubscriptionPatchResponses = {
-    /**
-     * Accepted
-     */
-    202: GetSubscriptionResponse;
-};
-
-export type ConvertSubscriptionPatchResponse = ConvertSubscriptionPatchResponses[keyof ConvertSubscriptionPatchResponses];
-
-export type ConvertSubscriptionPutData = {
-    body?: ConvertSubscriptionRequest;
-    path: {
-        Id: string;
-    };
-    query?: never;
-    url: '/subscriptions/{Id}/convert';
-};
-
-export type ConvertSubscriptionPutErrors = {
-    /**
-     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
-     */
-    400: ProblemDetails;
-    /**
-     * Unauthorized: The client must authenticate itself to get the requested response
-     */
-    401: unknown;
-    /**
-     * Payment Required: The client must have payment information to get the requested response
-     */
-    402: unknown;
-    /**
-     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
-     */
-    403: unknown;
-    /**
-     * Not Found: The server cannot find the requested resource
-     */
-    404: unknown;
-    /**
-     * Method Not Allowed: The request is not allowed by the current state of the resource
-     */
-    405: unknown;
-    /**
-     * Conflict: The request conflicts with the current state of the resource
-     */
-    409: unknown;
-    /**
-     * Locked: The current resource is locked and cannot be accessed
-     */
-    423: unknown;
-    /**
-     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
-     */
-    500: ProblemDetails;
-};
-
-export type ConvertSubscriptionPutError = ConvertSubscriptionPutErrors[keyof ConvertSubscriptionPutErrors];
-
-export type ConvertSubscriptionPutResponses = {
-    /**
-     * Accepted
-     */
-    202: GetSubscriptionResponse;
-};
-
-export type ConvertSubscriptionPutResponse = ConvertSubscriptionPutResponses[keyof ConvertSubscriptionPutResponses];
 
 export type GetCallerWithHmacTestingOnlyData = {
     body?: never;

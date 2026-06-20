@@ -99,4 +99,28 @@
     <data name="TrialEventSchedule_DuplicateEvents" xml:space="preserve">
         <value>At least one event has the same ID as another</value>
     </data>
+    <data name="ProviderPlanQuota_InvalidDescription" xml:space="preserve">
+        <value>The quota Description is invalid</value>
+    </data>
+    <data name="FeatureDefinition_InvalidDescription" xml:space="preserve">
+        <value>The feature Description is invalid</value>
+    </data>
+    <data name="ProviderPlanFeatureSection_EmptyItems" xml:space="preserve">
+        <value>The feature must have at least one item</value>
+    </data>
+    <data name="ProviderPlanQuotas_EmptyItems" xml:space="preserve">
+        <value>The quotas must have at least one item</value>
+    </data>
+    <data name="ProviderPlanFeatureSection_InvalidName" xml:space="preserve">
+        <value>The feature section Name is invalid</value>
+    </data>
+    <data name="ProviderPlanFeatures_EmptyItems" xml:space="preserve">
+        <value>The features must have at least one item</value>
+    </data>
+    <data name="ProviderQuotas_EmptyItems" xml:space="preserve">
+        <value>The quotas must have at least one tier</value>
+    </data>
+    <data name="ProviderQuotas_UnsubscribedItems" xml:space="preserve">
+        <value>The quotas cannot contain any items in the '{0}' tier</value>
+    </data>
 </root>
