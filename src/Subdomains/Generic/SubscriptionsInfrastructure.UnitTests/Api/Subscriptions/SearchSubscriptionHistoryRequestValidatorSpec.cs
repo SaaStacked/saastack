@@ -36,7 +36,7 @@ public class SearchSubscriptionHistoryRequestValidatorSpec
     [Fact]
     public void WhenFromUtcIsTooFarInPast_ThenThrows()
     {
-        _dto.FromUtc = DateTime.UtcNow.AddYears(-2);
+        _dto.FromUtc = Validations.Subscription.MinInvoiceDate.AddDays(-1);
 
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))
@@ -74,7 +74,7 @@ public class SearchSubscriptionHistoryRequestValidatorSpec
     [Fact]
     public void WhenToUtcIsTooFarInPast_ThenThrows()
     {
-        _dto.ToUtc = DateTime.UtcNow.AddYears(-2);
+        _dto.ToUtc = Validations.Subscription.MinInvoiceDate.AddDays(-1);
 
         _validator
             .Invoking(x => x.ValidateAndThrow(_dto))

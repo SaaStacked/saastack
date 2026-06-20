@@ -17,11 +17,10 @@ public class AuthTokensRepository : IAuthTokensRepository
     private readonly ISnapshottingQueryStore<AuthToken> _tokenQueries;
     private readonly ISnapshottingDddCommandStore<AuthTokensRoot> _tokens;
 
-    public AuthTokensRepository(IRecorder recorder, IDomainFactory domainFactory,
-        ISnapshottingDddCommandStore<AuthTokensRoot> tokensStore, IDataStore store)
+    public AuthTokensRepository(IRecorder recorder, IDomainFactory domainFactory, IDataStore store)
     {
         _tokenQueries = new SnapshottingQueryStore<AuthToken>(recorder, domainFactory, store);
-        _tokens = tokensStore;
+        _tokens = new SnapshottingDddCommandStore<AuthTokensRoot>(recorder, domainFactory, store);
     }
 
 #if TESTINGONLY

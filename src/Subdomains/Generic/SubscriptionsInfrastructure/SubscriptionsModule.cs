@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application.Interfaces.Services;
+using Application.Persistence.Interfaces;
 using Application.Persistence.Shared;
 using Application.Services.Shared;
 using Common;
@@ -50,7 +51,11 @@ public class SubscriptionsModule : ISubdomainModule
                 // EXTEND: Add any additional services for this subdomain
                 services
                     .AddPerHttpRequest<ISubscriptionsApplication, SubscriptionsApplication.SubscriptionsApplication>();
-                services.AddPerHttpRequest<ISubscriptionRepository, SubscriptionRepository>();
+                services.AddPerHttpRequest<ISubscriptionRepository>(c => new SubscriptionRepository(
+                    c.GetRequiredService<IRecorder>(),
+                    c.GetRequiredService<IDomainFactory>(),
+                    c.GetRequiredService<IEventSourcingDddCommandStore<SubscriptionRoot>>(),
+                    c.GetRequiredServiceForPlatform<IDataStore>()));
                 services
                     .AddPerHttpRequest<IDomainEventNotificationConsumer>(c =>
                         new NotificationConsumer(c.GetRequiredService<ICallerContextFactory>(),
@@ -58,7 +63,7 @@ public class SubscriptionsModule : ISubdomainModule
                 services.RegisterEventing<SubscriptionRoot, SubscriptionProjection, SubscriptionNotifier>(
                     c => new SubscriptionProjection(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
-                        c.GetRequiredService<IDataStore>()),
+                        c.GetRequiredServiceForPlatform<IDataStore>()),
                     _ => new SubscriptionNotifier()
                 );
                 services.AddPerHttpRequest<ISubscriptionTrialEventMessageQueueRepository>(c =>

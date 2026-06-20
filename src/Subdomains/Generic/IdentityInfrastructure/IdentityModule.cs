@@ -97,7 +97,6 @@ public class IdentityModule : ISubdomainModule
                 services.AddPerHttpRequest<IAuthTokensRepository>(c =>
                     new AuthTokensRepository(c.GetRequiredService<IRecorder>(),
                         c.GetRequiredService<IDomainFactory>(),
-                        c.GetRequiredService<ISnapshottingDddCommandStore<AuthTokensRoot>>(),
                         c.GetRequiredServiceForPlatform<IDataStore>()));
                 services.RegisterEventing<AuthTokensRoot>();
                 services.AddPerHttpRequest<IPersonCredentialRepository>(c =>
