@@ -1,3 +1,5 @@
+using Common;
+
 namespace Application.Resources.Shared;
 
 public class ApiHostHealth
@@ -5,6 +7,8 @@ public class ApiHostHealth
     public required string Name { get; set; }
 
     public string Status { get; set; } = "OK";
+
+    public required HostVersions Version { get; set; }
 }
 
 public class ApiStatistics

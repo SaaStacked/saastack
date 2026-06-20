@@ -1,5 +1,7 @@
+using System.Reflection;
 using Application.Resources.Shared;
 using Common;
+using Common.Extensions;
 using Infrastructure.Web.Api.Interfaces;
 using Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 using Infrastructure.Web.Hosting.Common;
@@ -19,12 +21,15 @@ public sealed class HealthApi : IWebApiService
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+        var assembly = Assembly.GetExecutingAssembly();
+        var version = assembly.GetHostVersions(); 
         return () => new Result<ApiHealthCheckResponse, Error>(new ApiHealthCheckResponse
         {
             Health = new ApiHostHealth
             {
                 Name = _webHostOptions.HostName,
-                Status = "OK"
+                Status = "OK",
+                Version = version
             }
         });
     }
