@@ -45,7 +45,7 @@ public class TestEventingAggregateRoot : IEventingAggregateRoot, IDehydratableAg
         return _changeEvents.ToList();
     }
 
-    public Result<Error> HandleStateChanged(IDomainEvent @event)
+    public Result<Error> HandleStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         throw new NotImplementedException();
     }

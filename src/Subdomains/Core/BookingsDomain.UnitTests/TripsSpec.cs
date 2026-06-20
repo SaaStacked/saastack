@@ -2,6 +2,7 @@ using Common;
 using Domain.Common.Identity;
 using FluentAssertions;
 using Moq;
+using UnitTesting.Common;
 using Xunit;
 
 namespace BookingsDomain.UnitTests;
@@ -41,6 +42,27 @@ public class TripsSpec
         _trips.Add(trip);
 
         var result = _trips.Latest();
+
+        result.Should().Be(trip);
+    }
+
+    [Fact]
+    public void WhenFindByIdAndUnknown_ThenReturnsNone()
+    {
+        var result = _trips.FindById("atripid");
+
+        result.Should().BeNone();
+    }
+
+    [Fact]
+    public void WhenFindById_ThenReturnsTrip()
+    {
+        var recorder = new Mock<IRecorder>();
+        var idFactory = new FixedIdentifierFactory("anid");
+        var trip = Trip.Create(recorder.Object, idFactory, _ => Result.Ok).Value;
+        _trips.Add(trip);
+
+        var result = _trips.FindById("anid");
 
         result.Should().Be(trip);
     }

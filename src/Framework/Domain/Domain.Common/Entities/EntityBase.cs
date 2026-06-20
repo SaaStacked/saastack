@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Reflection;
 using Common;
 using Common.Extensions;
 using Domain.Common.Extensions;
@@ -105,7 +107,7 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
 
     public Identifier Id { get; }
 
-    protected IIdentifierFactory IdFactory { get; }
+    protected internal IIdentifierFactory IdFactory { get; set; }
 
     protected IRecorder Recorder { get; }
 
@@ -120,7 +122,7 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
     /// <summary>
     ///     Handles domain events and updates in-memory state of the entity.
     /// </summary>
-    protected abstract Result<Error> OnStateChanged(IDomainEvent @event);
+    protected abstract Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting);
 
     /// <summary>
     ///     Dehydrates the entity to a set of persistable properties
@@ -143,9 +145,9 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
 
     public DateTime CreatedAtUtc { get; }
 
-    Result<Error> IDomainEventConsumingEntity.HandleStateChanged(IDomainEvent @event)
+    Result<Error> IDomainEventConsumingEntity.HandleStateChanged(IDomainEvent @event, bool isReconstituting)
     {
-        return OnStateChanged(@event);
+        return OnStateChanged(@event, isReconstituting);
     }
 
     ISingleValueObject<string> IIdentifiableEntity.Id => Id;
@@ -157,7 +159,7 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
     /// </summary>
     Result<Error> IDomainEventProducingEntity.RaiseEvent(IDomainEvent @event, bool validate)
     {
-        var onStateChanged = OnStateChanged(@event);
+        var onStateChanged = OnStateChanged(@event, false);
         if (onStateChanged.IsFailure)
         {
             return onStateChanged;
@@ -203,6 +205,59 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
     public Result<Error> RaiseChangeEvent(IDomainEvent @event)
     {
         return ((IDomainEventProducingEntity)this).RaiseEvent(@event, true);
+    }
+
+    /// <summary>
+    ///     Raises the <see cref="@event" /> to a new instance of the <see cref="childEntityFactory" />
+    /// </summary>
+    protected Result<TEntity, Error> RaiseEventToChildEntity<TEntity, TDomainEvent>(bool isReconstituting,
+        TDomainEvent @event,
+        Func<IIdentifierFactory, Result<TEntity, Error>> childEntityFactory,
+        Expression<Func<TDomainEvent, string?>> eventChildId)
+        where TEntity : IEventingEntity
+        where TDomainEvent : IDomainEvent
+    {
+        var identifierFactory = isReconstituting
+            ? GetChildId().ToIdentifierFactory()
+            : IdFactory;
+        var createdChild = childEntityFactory(identifierFactory);
+        if (createdChild.IsFailure)
+        {
+            return createdChild.Error;
+        }
+
+        if (!isReconstituting)
+        {
+            SetChildId(createdChild.Value.Id);
+        }
+
+        if (isReconstituting)
+        {
+            ResetIdFactory(createdChild.Value, IdFactory);
+        }
+
+        return createdChild.Value.HandleStateChanged(@event, isReconstituting)
+            .Match<Result<TEntity, Error>>(() => createdChild, error => error);
+
+        string GetChildId()
+        {
+            var property = (PropertyInfo)((MemberExpression)eventChildId.Body).Member;
+            return (string)property.GetValue(@event)!;
+        }
+
+        void SetChildId(ISingleValueObject<string> entityId)
+        {
+            var property = (PropertyInfo)((MemberExpression)eventChildId.Body).Member;
+            property.SetValue(@event, entityId.Value);
+        }
+
+        void ResetIdFactory(TEntity entity, IIdentifierFactory idFactory)
+        {
+            if (entity is EntityBase baseEntity)
+            {
+                baseEntity.IdFactory = idFactory;
+            }
+        }
     }
 
     /// <summary>

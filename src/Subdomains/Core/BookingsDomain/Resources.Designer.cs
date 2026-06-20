@@ -96,6 +96,15 @@ namespace BookingsDomain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No trip exists for the trip &apos;{0}&apos;.
+        /// </summary>
+        internal static string BookingRoot_NoTrip {
+            get {
+                return ResourceManager.GetString("BookingRoot_NoTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The booking requires a car.
         /// </summary>
         internal static string BookingRoot_ReservationRequiresCar {

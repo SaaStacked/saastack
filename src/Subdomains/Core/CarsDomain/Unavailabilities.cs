@@ -11,8 +11,14 @@ public class Unavailabilities : IReadOnlyList<Unavailability>
 
     public Result<Error> EnsureInvariants()
     {
-        _unavailabilities
-            .ForEach(una => una.EnsureInvariants());
+        foreach (var unavailability in _unavailabilities)
+        {
+            var ensured = unavailability.EnsureInvariants();
+            if (ensured.IsFailure)
+            {
+                return ensured.Error;
+            }
+        }
 
         if (HasIncompatibleOverlaps())
         {

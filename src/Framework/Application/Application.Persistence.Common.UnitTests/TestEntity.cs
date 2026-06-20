@@ -16,7 +16,7 @@ public class TestEntity : EntityBase
 
     public string APropertyName { get; private set; } = null!;
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         return Result.Ok;
     }

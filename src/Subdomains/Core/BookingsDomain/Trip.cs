@@ -68,7 +68,7 @@ public sealed class Trip : EntityBase
         return properties;
     }
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         switch (@event)
         {

@@ -354,7 +354,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.PersonCredentialRoot_NoMfaAuthenticator);
                 }
 
-                var forwarded = RaiseEventToChildEntity(associated, authenticator.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, associated, authenticator.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -373,7 +373,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.PersonCredentialRoot_NoMfaAuthenticator);
                 }
 
-                var forwarded = RaiseEventToChildEntity(challenged, authenticator.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, challenged, authenticator.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -392,7 +392,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.PersonCredentialRoot_NoMfaAuthenticator);
                 }
 
-                var forwarded = RaiseEventToChildEntity(confirmed, authenticator.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, confirmed, authenticator.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -412,7 +412,7 @@ public sealed class PersonCredentialRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.PersonCredentialRoot_NoMfaAuthenticator);
                 }
 
-                var forwarded = RaiseEventToChildEntity(verified, authenticator.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, verified, authenticator.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;

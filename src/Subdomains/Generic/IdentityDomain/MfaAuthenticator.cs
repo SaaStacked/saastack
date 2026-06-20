@@ -85,7 +85,7 @@ public sealed class MfaAuthenticator : EntityBase
     /// </summary>
     public Optional<string> VerifiedState { get; private set; } = Optional<string>.None;
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         switch (@event)
         {

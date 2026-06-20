@@ -192,7 +192,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                         return Error.RuleViolation(Resources.EndUserRoot_MissingMembership);
                     }
 
-                    var from = RaiseEventToChildEntity(changed, fromMembership.Value);
+                    var from = RaiseEventToChildEntity(isReconstituting, changed, fromMembership.Value);
                     if (from.IsFailure)
                     {
                         return from.Error;
@@ -205,7 +205,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var to = RaiseEventToChildEntity(changed, toMembership.Value);
+                var to = RaiseEventToChildEntity(isReconstituting, changed, toMembership.Value);
                 if (to.IsFailure)
                 {
                     return to.Error;
@@ -227,7 +227,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var forwarded = RaiseEventToChildEntity(assigned, membership.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, assigned, membership.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -248,7 +248,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var forwarded = RaiseEventToChildEntity(unassigned, membership.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, unassigned, membership.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -269,7 +269,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var forwarded = RaiseEventToChildEntity(assigned, membership.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, assigned, membership.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -289,7 +289,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var forwarded = RaiseEventToChildEntity(unassigned, membership.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, unassigned, membership.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;
@@ -310,7 +310,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                     return Error.RuleViolation(Resources.EndUserRoot_NoMembership);
                 }
 
-                var forwarded = RaiseEventToChildEntity(reset, membership.Value);
+                var forwarded = RaiseEventToChildEntity(isReconstituting, reset, membership.Value);
                 if (forwarded.IsFailure)
                 {
                     return forwarded.Error;

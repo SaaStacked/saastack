@@ -620,7 +620,7 @@ then, in the `UnavailabilityEntity` class, the entity will also handle the same 
     }
 
     // Note: this is called next by the RaiseEventToChildEntity() method of the aggregate
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         switch (@event)
         {

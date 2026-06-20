@@ -60,10 +60,10 @@ public sealed class CarRoot : AggregateRootBase
             return ensureInvariants.Error;
         }
 
-        var unavailabilityInvariants = Unavailabilities.EnsureInvariants();
-        if (unavailabilityInvariants.IsFailure)
+        var unavailabilities = Unavailabilities.EnsureInvariants();
+        if (unavailabilities.IsFailure)
         {
-            return unavailabilityInvariants.Error;
+            return unavailabilities.Error;
         }
 
         if (Unavailabilities.Count > 0)

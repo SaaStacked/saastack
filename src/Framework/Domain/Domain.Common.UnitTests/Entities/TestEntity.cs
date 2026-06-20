@@ -20,7 +20,7 @@ public sealed class TestEntity : EntityBase
     // ReSharper disable once UnusedAutoPropertyAccessor.Local
     public string? APropertyName { get; private set; }
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         //Not used in testing
         return Result.Ok;

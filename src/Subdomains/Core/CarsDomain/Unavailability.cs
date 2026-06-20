@@ -45,7 +45,7 @@ public sealed class Unavailability : EntityBase
         return Result.Ok;
     }
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         switch (@event)
         {

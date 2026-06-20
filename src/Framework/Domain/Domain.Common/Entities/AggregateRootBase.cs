@@ -183,9 +183,9 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
         return changes;
     }
 
-    Result<Error> IDomainEventConsumingEntity.HandleStateChanged(IDomainEvent @event)
+    Result<Error> IDomainEventConsumingEntity.HandleStateChanged(IDomainEvent @event, bool isReconstituting)
     {
-        return OnStateChanged(@event, false);
+        return OnStateChanged(@event, isReconstituting);
     }
 
     ISingleValueObject<string> IIdentifiableEntity.Id => Id;
@@ -322,8 +322,17 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
             return createdChild.Error;
         }
 
-        SetChildId(createdChild.Value.Id);
-        return createdChild.Value.HandleStateChanged(@event)
+        if (!isReconstituting)
+        {
+            SetChildId(createdChild.Value.Id);
+        }
+
+        if (isReconstituting)
+        {
+            ResetIdFactory(createdChild.Value, IdFactory);
+        }
+
+        return createdChild.Value.HandleStateChanged(@event, isReconstituting)
             .Match<Result<TEntity, Error>>(() => createdChild, error => error);
 
         string GetChildId()
@@ -337,17 +346,26 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
             var property = (PropertyInfo)((MemberExpression)eventChildId.Body).Member;
             property.SetValue(@event, entityId.Value);
         }
+
+        void ResetIdFactory(TEntity entity, IIdentifierFactory idFactory)
+        {
+            if (entity is EntityBase baseEntity)
+            {
+                baseEntity.IdFactory = idFactory;
+            }
+        }
     }
 
     /// <summary>
     ///     Raises the <see cref="@event" /> to an new instance of the <see cref="childEntity" />
     /// </summary>
     // ReSharper disable once MemberCanBeMadeStatic.Global
-    protected Result<Error> RaiseEventToChildEntity<TEntity, TDomainEvent>(TDomainEvent @event, TEntity childEntity)
+    protected Result<Error> RaiseEventToChildEntity<TEntity, TDomainEvent>(bool isReconstituting, TDomainEvent @event,
+        TEntity childEntity)
         where TEntity : IEventingEntity
         where TDomainEvent : IDomainEvent
     {
-        return childEntity.HandleStateChanged(@event);
+        return childEntity.HandleStateChanged(@event, isReconstituting);
     }
 
     /// <summary>

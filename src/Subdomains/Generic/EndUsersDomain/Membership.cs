@@ -41,7 +41,7 @@ public sealed class Membership : EntityBase
 
     public Optional<Identifier> RootId { get; private set; } = Optional<Identifier>.None;
 
-    protected override Result<Error> OnStateChanged(IDomainEvent @event)
+    protected override Result<Error> OnStateChanged(IDomainEvent @event, bool isReconstituting)
     {
         switch (@event)
         {

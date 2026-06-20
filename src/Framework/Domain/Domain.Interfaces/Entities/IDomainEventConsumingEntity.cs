@@ -7,5 +7,5 @@ namespace Domain.Interfaces.Entities;
 /// </summary>
 public interface IDomainEventConsumingEntity : IIdentifiableEntity
 {
-    Result<Error> HandleStateChanged(IDomainEvent @event);
+    Result<Error> HandleStateChanged(IDomainEvent @event, bool isReconstituting);
 }

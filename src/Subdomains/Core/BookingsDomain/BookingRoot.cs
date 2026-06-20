@@ -79,6 +79,12 @@ public sealed class BookingRoot : AggregateRootBase
             return ensureInvariants.Error;
         }
 
+        var trips = Trips.EnsureInvariants();
+        if (trips.IsFailure)
+        {
+            return trips.Error;
+        }
+
         if (BorrowerId.Exists())
         {
             if (!CarId.HasValue)
@@ -130,6 +136,21 @@ public sealed class BookingRoot : AggregateRootBase
 
             case TripBegan changed:
             {
+                if (isReconstituting)
+                {
+                    var trip = Trips.FindById(changed.TripId);
+                    if (!trip.HasValue)
+                    {
+                        return Error.RuleViolation(Resources.BookingRoot_NoTrip.Format(changed.TripId));
+                    }
+
+                    var raised = RaiseEventToChildEntity(isReconstituting, changed, trip.Value);
+                    if (raised.IsFailure)
+                    {
+                        return raised.Error;
+                    }
+                }
+
                 Recorder.TraceDebug(null, "Booking {Id} has started trip {TripId} from {From}",
                     Id, changed.TripId, changed.BeganFrom);
                 return Result.Ok;
@@ -137,6 +158,21 @@ public sealed class BookingRoot : AggregateRootBase
 
             case TripEnded changed:
             {
+                if (isReconstituting)
+                {
+                    var trip = Trips.FindById(changed.TripId);
+                    if (!trip.HasValue)
+                    {
+                        return Error.RuleViolation(Resources.BookingRoot_NoTrip.Format(changed.TripId));
+                    }
+
+                    var raised = RaiseEventToChildEntity(isReconstituting, changed, trip.Value);
+                    if (raised.IsFailure)
+                    {
+                        return raised.Error;
+                    }
+                }
+
                 Recorder.TraceDebug(null, "Booking {Id} has ended trip {TripId} at {To}",
                     Id, changed.TripId, changed.EndedTo);
                 return Result.Ok;

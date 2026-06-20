@@ -54,4 +54,7 @@
     <data name="TripEntity_AlreadyEnded" xml:space="preserve">
         <value>The trip has already ended</value>
     </data>
+    <data name="BookingRoot_NoTrip" xml:space="preserve">
+        <value>No trip exists for the trip '{0}'</value>
+    </data>
 </root>
