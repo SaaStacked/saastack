@@ -4,7 +4,7 @@ import { useActionQuery } from '../../../framework/actions/ActionQuery';
 import subscriptionCacheKeys from './responseCache';
 
 export enum SubscriptionErrorCodes {
-  forbidden = 'forbidden'
+  not_billingadmin = 'not_billingadmin'
 }
 
 export function GetSubscriptionAction() {
@@ -12,7 +12,7 @@ export function GetSubscriptionAction() {
     request: request => getSubscription(request),
     transform: res => res.subscription,
     passThroughErrors: {
-      403: SubscriptionErrorCodes.forbidden
+      403: SubscriptionErrorCodes.not_billingadmin
     },
     cacheKey: request => subscriptionCacheKeys.subscription.query(request.path.Id)
   });

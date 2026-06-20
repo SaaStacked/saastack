@@ -503,8 +503,7 @@
             },
             "errors": {
               "list": {
-                "not_member": "You are not a member of this organization",
-                "not_owner": "You must be an owner of this organization to view and manage members."
+                "not_owner": "You must be an owner of this organization to view and manage its members."
               },
               "invite": {
                 "personal_organization": "You cannot invite members to a personal organization",
@@ -557,7 +556,7 @@
             },
             "errors": {
               "get": {
-                "forbidden": "You must be an billing admin of this organization to view billing information."
+                "not_billingadmin": "You must be an billing admin of this organization to view billing information."
               }
             }
           }
