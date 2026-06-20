@@ -23,7 +23,7 @@ public sealed class TrialTimeline : ValueObjectBase<TrialTimeline>
     public static Result<TrialTimeline, Error> Create(DateTime startsAt, int durationDays)
     {
         var now = DateTime.UtcNow;
-        if (startsAt.IsInvalidParameter(time => time.IsBefore(now), nameof(startsAt),
+        if (startsAt.IsInvalidParameter(time => time.IsBefore(now) || time.Equals(now), nameof(startsAt),
                 Resources.TrialTimeline_StartsAtInFuture, out var error1))
         {
             return error1;

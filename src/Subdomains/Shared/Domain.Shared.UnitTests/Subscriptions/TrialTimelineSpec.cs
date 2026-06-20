@@ -43,9 +43,28 @@ public class TrialTimelineSpec
 
             result.Should().BeError(ErrorCode.Validation, Resources.TrialTimeline_InvalidDuration);
         }
+        
+        [Fact]
+        public void WhenCreateAndStartsNow_ThenReturnsTimeline()
+        {
+            var now = DateTime.UtcNow;
+
+            var result = TrialTimeline.Create(now, 1);
+
+            result.Should().BeSuccess();
+            result.Value.StartedAt.Should().Be(now.ToNearestHour());
+            result.Value.DurationDays.Should().Be(1);
+            result.Value.ConvertedAt.Should().BeNone();
+            result.Value.IsConverted.Should().BeFalse();
+            result.Value.ExpiryDueAt.Should().Be(now.ToNearestHour().AddDays(1));
+            result.Value.ExpiredAt.Should().BeNone();
+            result.Value.IsExpirable.Should().BeFalse();
+            result.Value.IsExpired.Should().BeFalse();
+            result.Value.Status.Should().Be(TrialStatus.Active);
+        }
 
         [Fact]
-        public void WhenCreate_ThenReturnsTimeline()
+        public void WhenCreateAndStartsPast_ThenReturnsTimeline()
         {
             var past = DateTime.UtcNow.SubtractSeconds(1);
 
