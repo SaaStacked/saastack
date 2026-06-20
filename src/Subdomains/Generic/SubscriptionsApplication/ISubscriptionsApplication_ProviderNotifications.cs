@@ -11,6 +11,9 @@ public partial interface ISubscriptionsApplication
     Task<Result<SubscriptionMetadata, Error>> GetProviderStateForSubscriptionAsync(ICallerContext caller,
         string subscriptionReference, CancellationToken cancellationToken);
 
+    Task<Result<Error>> NotifyBuyerDeletedAsync(ICallerContext caller, string providerName, SubscriptionMetadata state,
+        CancellationToken cancellationToken);
+
     Task<Result<Error>> NotifyBuyerDetailsChangedAsync(ICallerContext caller, string providerName,
         SubscriptionMetadata state, CancellationToken cancellationToken);
 
@@ -23,6 +26,12 @@ public partial interface ISubscriptionsApplication
     Task<Result<Error>> NotifySubscriptionCanceledAsync(ICallerContext caller, string providerName,
         SubscriptionMetadata state, CancellationToken cancellationToken);
 
+    Task<Result<Error>> NotifySubscriptionDeletedAsync(ICallerContext caller, string providerName,
+        SubscriptionMetadata state, CancellationToken cancellationToken);
+
     Task<Result<Error>> NotifySubscriptionDetailsChangedAsync(ICallerContext caller, string providerName,
+        SubscriptionMetadata state, CancellationToken cancellationToken);
+
+    Task<Result<Error>> NotifySubscriptionPlanChangedAsync(ICallerContext caller, string providerName,
         SubscriptionMetadata state, CancellationToken cancellationToken);
 }
