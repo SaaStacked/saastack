@@ -65,6 +65,8 @@ public sealed partial class EndUserRoot : AggregateRootBase
 
     public UserStatus Status { get; private set; }
 
+    public Optional<string> ReferralCode { get; private set; }
+
     [UsedImplicitly]
     public static AggregateRootFactory<EndUserRoot> Rehydrate()
     {
@@ -147,6 +149,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
                 }
 
                 Features = features.Value;
+                ReferralCode = changed.ReferralCode;
                 Recorder.TraceDebug(null, "EndUser {Id} was registered", Id);
                 return Result.Ok;
             }
@@ -533,7 +536,8 @@ public sealed partial class EndUserRoot : AggregateRootBase
         return await onInvited(inviterId, token);
     }
 
-    public Result<Error> Register(Roles roles, Features levels, EndUserProfile profile, Optional<EmailAddress> username)
+    public Result<Error> Register(Roles roles, Features levels, EndUserProfile profile, Optional<EmailAddress> username,
+        Optional<string> referralCode)
     {
         if (Status != UserStatus.Unregistered)
         {
@@ -553,7 +557,7 @@ public sealed partial class EndUserRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(EndUsersDomain.Events.Registered(Id, profile, username, Classification,
-            UserAccess.Enabled, UserStatus.Registered, roles, levels));
+            UserAccess.Enabled, UserStatus.Registered, roles, levels, referralCode));
     }
 
     public async Task<Result<Error>> ReInviteGuestAsync(ITokensService tokensService, Identifier inviterId,

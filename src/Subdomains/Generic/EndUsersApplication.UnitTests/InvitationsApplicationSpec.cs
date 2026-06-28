@@ -72,7 +72,7 @@ public class InvitationsApplicationSpec
             .Create(_recorder.Object, "aninviteeid".ToIdentifierFactory(), UserClassification.Person,
                 DatacenterLocations.Local).Value;
         invitee.Register(Roles.Empty, Features.Empty, EndUserProfile.Create("afirstname").Value,
-            EmailAddress.Create("aninvitee@company.com").Value);
+            EmailAddress.Create("aninvitee@company.com").Value, Optional<string>.None);
         _repository.Setup(rep =>
                 rep.FindInvitedGuestByEmailAddressAsync(It.IsAny<EmailAddress>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(invitee.ToOptional());

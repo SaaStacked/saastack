@@ -21,5 +21,5 @@ public interface IEndUsersService
 
     Task<Result<EndUserWithProfile, Error>> RegisterPersonPrivateAsync(ICallerContext caller, string? invitationToken,
         string emailAddress, string firstName, string? lastName, string? timezone, string? locale, string? countryCode,
-        bool termsAndConditionsAccepted, CancellationToken cancellationToken);
+        bool termsAndConditionsAccepted, string? referralCode, CancellationToken cancellationToken);
 }

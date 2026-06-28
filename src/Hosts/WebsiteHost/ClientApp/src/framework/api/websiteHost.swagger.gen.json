@@ -1663,7 +1663,9 @@
   "components": {
     "schemas": {
       "ApiHealthCheckResponse": {
-        "required": ["health"],
+        "required": [
+          "health"
+        ],
         "type": "object",
         "properties": {
           "health": {
@@ -1673,7 +1675,11 @@
         "additionalProperties": false
       },
       "ApiHostHealth": {
-        "required": ["name", "status", "version"],
+        "required": [
+          "name",
+          "status",
+          "version"
+        ],
         "type": "object",
         "properties": {
           "name": {
@@ -1689,7 +1695,13 @@
         "additionalProperties": false
       },
       "ApiStatistics": {
-        "required": ["apiVersion", "baseUrl", "methods", "name", "total"],
+        "required": [
+          "apiVersion",
+          "baseUrl",
+          "methods",
+          "name",
+          "total"
+        ],
         "type": "object",
         "properties": {
           "apiVersion": {
@@ -1712,7 +1724,9 @@
         "additionalProperties": false
       },
       "ApiStatisticsResponse": {
-        "required": ["statistics"],
+        "required": [
+          "statistics"
+        ],
         "type": "object",
         "properties": {
           "statistics": {
@@ -1722,7 +1736,9 @@
         "additionalProperties": false
       },
       "AuthenticateRequest": {
-        "required": ["provider"],
+        "required": [
+          "provider"
+        ],
         "type": "object",
         "properties": {
           "authCode": {
@@ -1744,12 +1760,22 @@
           "username": {
             "type": "string",
             "nullable": true
+          },
+          "invitationToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "referralCode": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "AuthenticateResponse": {
-        "required": ["userId"],
+        "required": [
+          "userId"
+        ],
         "type": "object",
         "properties": {
           "userId": {
@@ -1759,7 +1785,12 @@
         "additionalProperties": false
       },
       "AuthorizeOAuth2Request": {
-        "required": ["clientId", "redirectUri", "responseType", "scope"],
+        "required": [
+          "clientId",
+          "redirectUri",
+          "responseType",
+          "scope"
+        ],
         "type": "object",
         "properties": {
           "clientId": {
@@ -1796,7 +1827,9 @@
         "additionalProperties": false
       },
       "AuthorizeOAuth2Response": {
-        "required": ["redirect"],
+        "required": [
+          "redirect"
+        ],
         "type": "object",
         "properties": {
           "redirect": {
@@ -1806,7 +1839,12 @@
         "additionalProperties": false
       },
       "AuthorizeRedirect": {
-        "required": ["isConsent", "isExternal", "isLogin", "redirectUri"],
+        "required": [
+          "isConsent",
+          "isExternal",
+          "isLogin",
+          "redirectUri"
+        ],
         "type": "object",
         "properties": {
           "redirectUri": {
@@ -1837,7 +1875,9 @@
         "additionalProperties": false
       },
       "BeffeTestingOnlyResponse": {
-        "required": ["callerId"],
+        "required": [
+          "callerId"
+        ],
         "type": "object",
         "properties": {
           "callerId": {
@@ -1847,7 +1887,12 @@
         "additionalProperties": false
       },
       "ConsentOAuth2ClientRequest": {
-        "required": ["consented", "id", "redirectUri", "scope"],
+        "required": [
+          "consented",
+          "id",
+          "redirectUri",
+          "scope"
+        ],
         "type": "object",
         "properties": {
           "consented": {
@@ -1869,7 +1914,9 @@
         "additionalProperties": false
       },
       "ConsentOAuth2ClientResponse": {
-        "required": ["redirect"],
+        "required": [
+          "redirect"
+        ],
         "type": "object",
         "properties": {
           "redirect": {
@@ -1879,7 +1926,10 @@
         "additionalProperties": false
       },
       "ConsentRedirect": {
-        "required": ["isConsented", "redirectUri"],
+        "required": [
+          "isConsented",
+          "redirectUri"
+        ],
         "type": "object",
         "properties": {
           "redirectUri": {
@@ -1896,7 +1946,11 @@
         "additionalProperties": false
       },
       "EndpointStatistic": {
-        "required": ["description", "path", "tags"],
+        "required": [
+          "description",
+          "path",
+          "tags"
+        ],
         "type": "object",
         "properties": {
           "description": {
@@ -1908,7 +1962,10 @@
           "tags": {
             "type": "array",
             "items": {
-              "required": ["chars", "length"],
+              "required": [
+                "chars",
+                "length"
+              ],
               "type": "string"
             }
           }
@@ -1916,7 +1973,10 @@
         "additionalProperties": false
       },
       "FeatureFlag": {
-        "required": ["isEnabled", "name"],
+        "required": [
+          "isEnabled",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "isEnabled": {
@@ -1929,7 +1989,9 @@
         "additionalProperties": false
       },
       "GetAllFeatureFlagsResponse": {
-        "required": ["flags"],
+        "required": [
+          "flags"
+        ],
         "type": "object",
         "properties": {
           "flags": {
@@ -1942,7 +2004,9 @@
         "additionalProperties": false
       },
       "GetFeatureFlagResponse": {
-        "required": ["flag"],
+        "required": [
+          "flag"
+        ],
         "type": "object",
         "properties": {
           "flag": {
@@ -1952,7 +2016,10 @@
         "additionalProperties": false
       },
       "HostDeploymentVersion": {
-        "required": ["hash", "version"],
+        "required": [
+          "hash",
+          "version"
+        ],
         "type": "object",
         "properties": {
           "deployed": {
@@ -1969,7 +2036,10 @@
         "additionalProperties": false
       },
       "HostVersions": {
-        "required": ["productVersion", "runtimeVersion"],
+        "required": [
+          "productVersion",
+          "runtimeVersion"
+        ],
         "type": "object",
         "properties": {
           "productVersion": {
@@ -1986,7 +2056,9 @@
         "additionalProperties": false
       },
       "MethodGroupEndpointStatistics": {
-        "required": ["total"],
+        "required": [
+          "total"
+        ],
         "type": "object",
         "properties": {
           "endpoints": {
@@ -2003,7 +2075,14 @@
         "additionalProperties": false
       },
       "MethodGroupStatistics": {
-        "required": ["deletes", "gets", "patches", "posts", "puts", "total"],
+        "required": [
+          "deletes",
+          "gets",
+          "patches",
+          "posts",
+          "puts",
+          "total"
+        ],
         "type": "object",
         "properties": {
           "deletes": {
@@ -2029,15 +2108,27 @@
         "additionalProperties": false
       },
       "OAuth2ResponseType": {
-        "enum": ["code", "id_Token", "token"],
+        "enum": [
+          "code",
+          "id_Token",
+          "token"
+        ],
         "type": "string"
       },
       "OpenIdConnectCodeChallengeMethod": {
-        "enum": ["plain", "s256"],
+        "enum": [
+          "plain",
+          "s256"
+        ],
         "type": "string"
       },
       "ProblemDetails": {
-        "required": ["detail", "instance", "title", "type"],
+        "required": [
+          "detail",
+          "instance",
+          "title",
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
@@ -2057,10 +2148,12 @@
             "type": "string"
           }
         },
-        "additionalProperties": {}
+        "additionalProperties": { }
       },
       "RecordCrashRequest": {
-        "required": ["message"],
+        "required": [
+          "message"
+        ],
         "type": "object",
         "properties": {
           "message": {
@@ -2071,7 +2164,9 @@
         "additionalProperties": false
       },
       "RecordMeasureRequest": {
-        "required": ["eventName"],
+        "required": [
+          "eventName"
+        ],
         "type": "object",
         "properties": {
           "additional": {
@@ -2089,7 +2184,9 @@
         "additionalProperties": false
       },
       "RecordPageViewRequest": {
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "type": "object",
         "properties": {
           "path": {
@@ -2100,7 +2197,10 @@
         "additionalProperties": false
       },
       "RecordTraceRequest": {
-        "required": ["level", "messageTemplate"],
+        "required": [
+          "level",
+          "messageTemplate"
+        ],
         "type": "object",
         "properties": {
           "arguments": {
@@ -2122,7 +2222,9 @@
         "additionalProperties": false
       },
       "RecordUseRequest": {
-        "required": ["eventName"],
+        "required": [
+          "eventName"
+        ],
         "type": "object",
         "properties": {
           "additional": {

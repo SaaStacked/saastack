@@ -1,3 +1,4 @@
+using Application.Interfaces;
 using Application.Persistence.Interfaces;
 using Common;
 using Common.Extensions;
@@ -70,6 +71,15 @@ public class OrganizationRepository : IOrganizationRepository
         }
 
         return organization;
+    }
+
+    public Task<Result<QueryResults<Organization>, Error>> SearchAllReferralsAsync(SearchOptions searchOptions,
+        CancellationToken cancellationToken)
+    {
+        var query = Query.From<Organization>()
+            .Where<string>(at => at.ReferralCode, ConditionOperator.NotEqualTo, null!);
+
+        return _organizationQueries.QueryAsync(query, false, cancellationToken);
     }
 
     private async Task<Result<Optional<OrganizationRoot>, Error>> FindFirstByQueryAsync(QueryClause<Organization> query,

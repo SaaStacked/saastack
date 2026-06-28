@@ -4,7 +4,6 @@ using Application.Services.Shared;
 using Common;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
-using Domain.Events.Shared.Images;
 using Domain.Interfaces.Entities;
 using Domain.Interfaces.Services;
 using Domain.Shared;
@@ -18,6 +17,7 @@ using OrganizationsDomain;
 using OrganizationsDomain.DomainServices;
 using UnitTesting.Common;
 using Xunit;
+using Deleted = Domain.Events.Shared.Images.Deleted;
 using Events = EndUsersDomain.Events;
 using OrganizationOwnership = Domain.Shared.Organizations.OrganizationOwnership;
 
@@ -28,13 +28,13 @@ public class OrganizationsApplicationDomainEventHandlersSpec
 {
     private readonly OrganizationsApplication _application;
     private readonly Mock<ICallerContext> _caller;
+    private readonly Mock<IOrganizationEmailDomainService> _emailDomainService;
     private readonly Mock<IIdentifierFactory> _identifierFactory;
     private readonly Mock<IImagesService> _imagesService;
     private readonly Mock<IRecorder> _recorder;
     private readonly Mock<IOrganizationRepository> _repository;
     private readonly Mock<ITenantSettingService> _tenantSettingService;
     private readonly Mock<ITenantSettingsService> _tenantSettingsService;
-    private readonly Mock<IOrganizationEmailDomainService> _emailDomainService;
 
     public OrganizationsApplicationDomainEventHandlersSpec()
     {
@@ -66,7 +66,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
         var subscriptionService = new Mock<ISubscriptionsService>();
 
         _application = new OrganizationsApplication(_recorder.Object, _identifierFactory.Object,
-            _tenantSettingsService.Object,_tenantSettingService.Object, endUsersService.Object, _imagesService.Object, subscriptionService.Object,
+            _tenantSettingsService.Object, _tenantSettingService.Object, endUsersService.Object, _imagesService.Object,
+            subscriptionService.Object,
             userProfilesService.Object, _emailDomainService.Object, _repository.Object);
     }
 
@@ -75,7 +76,7 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("auserid".ToId(), EndUserProfile.Create("afirstname", "alastname").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result =
             await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -98,7 +99,7 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("auserid".ToId(), EndUserProfile.Create("amachinename").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Machine, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result =
             await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -121,7 +122,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.MembershipAdded("auserid".ToId(), "anorganizationid".ToId(),
             OrganizationOwnership.Shared, false, Roles.Empty, Features.Empty);
-        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
+        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -142,7 +144,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.MembershipRemoved("auserid".ToId(), "amembershipid".ToId(), "anorganizationid".ToId(),
             "auserid".ToId());
-        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
+        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         org.AddMembership("auserid".ToId());
@@ -162,7 +165,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     public async Task WhenHandleImageDeletedAsync_ThenRemovesAvatarImage()
     {
         var domainEvent = new Deleted("animageid".ToId(), "auserid".ToId());
-        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
+        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         _repository.Setup(rep => rep.FindByAvatarIdAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -186,7 +190,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
     {
         var domainEvent = SubscriptionsDomain.Events.Created("asubscriptionid".ToId(),
             "anowningentityid".ToId(), "abuyerid".ToId(), "aprovidername".ToId());
-        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
+        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         _repository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -210,7 +215,8 @@ public class OrganizationsApplicationDomainEventHandlersSpec
             BillingSubscriptionTier.Standard,
             BillingProvider.Create("aprovidername", new SubscriptionMetadata { { "aname", "avalue" } }).Value,
             "abuyerreference", "asubscriptionreference", "auserid".ToId(), Optional<ProviderTierQuotas>.None);
-        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,_emailDomainService.Object,
+        var org = OrganizationRoot.Create(_recorder.Object, _identifierFactory.Object, _tenantSettingService.Object,
+            _emailDomainService.Object,
             OrganizationOwnership.Shared, "anownerid".ToId(), Optional<EmailAddress>.None, UserClassification.Person,
             DisplayName.Create("aname").Value, DatacenterLocations.Local).Value;
         org.SubscribeBilling("asubscriptionid".ToId(), "atransfererid".ToId());

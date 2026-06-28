@@ -102,7 +102,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value,
+            Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         var domainEvent = Events.Created("anorganizationid".ToId(), OrganizationOwnership.Shared,
@@ -133,7 +134,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var machine = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Machine,
             DatacenterLocations.Local).Value;
         machine.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value,
+            Optional<string>.None);
         machine.AddMembership(machine, OrganizationOwnership.Shared, "anorganizationid2".ToId(),
             Roles.Create(TenantRoles.Member).Value, Features.Create(TenantFeatures.Basic).Value);
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
@@ -185,7 +187,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value,
+            Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         var domainEvent = Events.Created("anorganizationid1".ToId(), OrganizationOwnership.Personal,
@@ -214,7 +217,8 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value,
+            Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         var domainEvent = Events.Created("anorganizationid1".ToId(), OrganizationOwnership.Personal,
@@ -263,7 +267,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var assigner = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assigner.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Empty,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         assigner.AddMembership(assigner, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Owner).Value,
             Features.Create(TenantFeatures.Basic).Value);
@@ -272,7 +276,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var assignee = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assignee.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         assignee.AddMembership(assignee, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Member).Value,
             Features.Create(TenantFeatures.Basic).Value);
@@ -300,7 +304,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var assigner = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assigner.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Empty,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         assigner.AddMembership(assigner, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Owner).Value,
             Features.Create(TenantFeatures.Basic).Value);
@@ -309,7 +313,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var assignee = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assignee.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         assignee.AddMembership(assignee, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Member).Value,
             Features.Create(TenantFeatures.Basic).Value);
@@ -340,7 +344,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         var deleter = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         deleter.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Create(TenantFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         deleter.AddMembership(deleter, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Owner).Value, Features.Create(TenantFeatures.Basic).Value);
         _endUserRepository.Setup(rep => rep.LoadAsync("adeleterid".ToId(), It.IsAny<CancellationToken>()))
@@ -395,7 +399,7 @@ public class EndUsersApplicationDomainEventHandlersSpec
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(member);
         member.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         member.AddMembership(member, OrganizationOwnership.Shared, "anowningentityid".ToId(),
             Roles.Create(TenantRoles.Owner).Value, Features.Create(TenantFeatures.Basic).Value);
         var domainEvent = SubscriptionsDomain.Events.SubscriptionPlanChanged("asubscriptionid".ToId(),

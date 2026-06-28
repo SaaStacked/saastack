@@ -102,6 +102,14 @@ export const AuthenticateRequestSchema = {
         username: {
             type: 'string',
             nullable: true
+        },
+        invitationToken: {
+            type: 'string',
+            nullable: true
+        },
+        referralCode: {
+            type: 'string',
+            nullable: true
         }
     },
     additionalProperties: false

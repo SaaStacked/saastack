@@ -7,7 +7,8 @@ namespace WebsiteHost.Application;
 public interface IAuthenticationApplication
 {
     Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string provider,
-        string? authCode, string? username, string? password, string? codeVerifier,
+        string? authCode, string? username, string? password, string? codeVerifier, string? invitationToken,
+        string? referralCode,
         CancellationToken cancellationToken);
 
     Task<Result<Error>> LogoutAsync(ICallerContext caller, CancellationToken cancellationToken);

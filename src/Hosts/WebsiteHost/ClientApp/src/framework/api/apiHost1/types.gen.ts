@@ -77,6 +77,7 @@ export type AuthenticateSingleSignOnRequest = {
     code_verifier?: string | null;
     invitationToken?: string | null;
     provider: string;
+    referralCode?: string | null;
     termsAndConditionsAccepted?: boolean | null;
 };
 
@@ -550,6 +551,11 @@ export type GetOnboardingResponse = {
     workflow: OrganizationOnboardingWorkflow;
 };
 
+export type GetOrganizationReferralsResponse = {
+    metadata: SearchResultMetadata;
+    organizations: Array<OrganizationWithReferralCode>;
+};
+
 export type GetOrganizationResponse = {
     organization: Organization;
 };
@@ -960,9 +966,9 @@ export type Organization = {
     avatarUrl?: string;
     createdById: string;
     name: string;
+    onboardingStatus: OrganizationOnboardingStatus;
     ownership: OrganizationOwnership;
     id: string;
-    onboardingStatus: OrganizationOnboardingStatus;
 };
 
 export type OrganizationMember = {
@@ -1077,6 +1083,16 @@ export type OrganizationOnboardingWorkflowSchema = {
 export const OrganizationOwnership = { SHARED: 'shared', PERSONAL: 'personal' } as const;
 
 export type OrganizationOwnership = typeof OrganizationOwnership[keyof typeof OrganizationOwnership];
+
+export type OrganizationWithReferralCode = {
+    avatarUrl?: string;
+    createdById: string;
+    name: string;
+    onboardingStatus: OrganizationOnboardingStatus;
+    ownership: OrganizationOwnership;
+    id: string;
+    referralCode: string;
+};
 
 export const PaymentMethodStatus = { INVALID: 'invalid', VALID: 'valid' } as const;
 
@@ -1267,6 +1283,7 @@ export type RegisterPersonCredentialRequest = {
     lastName: string;
     locale?: string | null;
     password: string;
+    referralCode?: string | null;
     termsAndConditionsAccepted?: boolean;
     timezone?: string | null;
 };
@@ -1608,6 +1625,9 @@ export type UserProfile = {
     timezone?: string;
     userId: string;
     id: string;
+    attributes: {
+        [key: string]: string;
+    };
 };
 
 export const UserProfileClassification = { PERSON: 'person', MACHINE: 'machine' } as const;
@@ -1635,6 +1655,9 @@ export type UserProfileForCaller = {
     timezone?: string;
     userId: string;
     id: string;
+    attributes: {
+        [key: string]: string;
+    };
     defaultOrganizationId: string;
     features: Array<string>;
     isAuthenticated: boolean;
@@ -8832,6 +8855,84 @@ export type CreateOrganizationResponses = {
 };
 
 export type CreateOrganizationResponse = CreateOrganizationResponses[keyof CreateOrganizationResponses];
+
+export type SearchAllOrganizationReferralsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * List of child resources to embed in the resource
+         */
+        Embed?: string;
+        /**
+         * List of fields to include and exclude in the search result
+         */
+        Filter?: string;
+        /**
+         * The maximum number of search results to return
+         */
+        Limit?: number;
+        /**
+         * The zero-based index of the first search result
+         */
+        Offset?: number;
+        /**
+         * List of fields to sort the results on
+         */
+        Sort?: string;
+    };
+    url: '/organizations/{Id}/referrals';
+};
+
+export type SearchAllOrganizationReferralsErrors = {
+    /**
+     * Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error
+     */
+    400: ProblemDetails;
+    /**
+     * Unauthorized: The client must authenticate itself to get the requested response
+     */
+    401: unknown;
+    /**
+     * Payment Required: The client must have payment information to get the requested response
+     */
+    402: unknown;
+    /**
+     * Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource
+     */
+    403: unknown;
+    /**
+     * Not Found: The server cannot find the requested resource
+     */
+    404: unknown;
+    /**
+     * Method Not Allowed: The request is not allowed by the current state of the resource
+     */
+    405: unknown;
+    /**
+     * Conflict: The request conflicts with the current state of the resource
+     */
+    409: unknown;
+    /**
+     * Locked: The current resource is locked and cannot be accessed
+     */
+    423: unknown;
+    /**
+     * Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation
+     */
+    500: ProblemDetails;
+};
+
+export type SearchAllOrganizationReferralsError = SearchAllOrganizationReferralsErrors[keyof SearchAllOrganizationReferralsErrors];
+
+export type SearchAllOrganizationReferralsResponses = {
+    /**
+     * OK
+     */
+    200: GetOrganizationReferralsResponse;
+};
+
+export type SearchAllOrganizationReferralsResponse = SearchAllOrganizationReferralsResponses[keyof SearchAllOrganizationReferralsResponses];
 
 export type GetOrganizationSettingsData = {
     body?: never;

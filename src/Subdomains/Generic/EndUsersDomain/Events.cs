@@ -180,7 +180,8 @@ public static class Events
     }
 
     public static Registered Registered(Identifier id, EndUserProfile userProfile, Optional<EmailAddress> username,
-        UserClassification classification, UserAccess access, UserStatus status, Roles roles, Features features)
+        UserClassification classification, UserAccess access, UserStatus status, Roles roles, Features features,
+        string? referralCode)
     {
         return new Registered(id)
         {
@@ -197,7 +198,8 @@ public static class Events
                 Timezone = userProfile.Timezone.Code.ToString(),
                 Locale = userProfile.Locale.Code.ToString(),
                 CountryCode = userProfile.Address.CountryCode.ToString()
-            }
+            },
+            ReferralCode = referralCode
         };
     }
 }

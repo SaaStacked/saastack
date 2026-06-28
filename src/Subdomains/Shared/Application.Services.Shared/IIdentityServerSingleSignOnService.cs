@@ -14,6 +14,7 @@ public interface IIdentityServerSingleSignOnService
     /// </summary>
     Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string? invitationToken,
         string providerName, string authCode, string? codeVerifier, bool? termsAndConditionsAccepted,
+        string? referralCode,
         CancellationToken cancellationToken);
 
     /// <summary>

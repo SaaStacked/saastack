@@ -21,5 +21,7 @@ public class AuthenticateSingleSignOnRequest : UnTenantedRequest<AuthenticateSin
 
     [Required] public string? Provider { get; set; }
 
+    public string? ReferralCode { get; set; }
+
     public bool? TermsAndConditionsAccepted { get; set; }
 }

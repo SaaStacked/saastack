@@ -48,7 +48,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             .ReturnsAsync(Error.NotAuthenticated("amessage"));
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
@@ -106,7 +106,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
@@ -114,7 +114,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         _endUsersService.Verify(
             eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<bool>(),
+                It.IsAny<bool>(), It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         _ssoProvidersService.Verify(
             sps => sps.SaveInfoOnBehalfOfUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -145,8 +145,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             .ReturnsAsync(Optional<SSOUser>.None);
         _endUsersService.Setup(eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EndUserWithProfile
             {
                 Id = "aregistereduserid"
@@ -199,7 +198,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.NotAuthenticated);
         _ssoProvidersService.Verify(sps =>
@@ -232,8 +231,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             .ReturnsAsync(Optional.None<SSOUser>());
         _endUsersService.Setup(eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EndUserWithProfile
             {
                 Id = "aregistereduserid"
@@ -279,7 +277,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -290,8 +288,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             sps.FindUserByProviderAsync(_caller.Object, "aprovidername", authUserInfo, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus => eus.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
             "auser@company.com", "afirstname", null, Timezones.Sydney.ToString(), Locales.Default.ToString(),
-            CountryCodes.Australia.ToString(),
-            true, It.IsAny<CancellationToken>()));
+            CountryCodes.Australia.ToString(), true, It.IsAny<string?>(), It.IsAny<CancellationToken>()));
         _ssoProvidersService.Verify(sps => sps.SaveInfoOnBehalfOfUserAsync(_caller.Object, "aprovidername",
             "aregistereduserid".ToId(),
             It.Is<SSOAuthUserInfo>(ui => ui == authUserInfo), It.IsAny<CancellationToken>()));
@@ -350,7 +347,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityLocked, Resources.SingleSignOnApplication_AccountSuspended);
         _ssoProvidersService.Verify(sps =>
@@ -358,8 +355,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         _endUsersService.Verify(
             eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<bool>(),
-                It.IsAny<CancellationToken>()), Times.Never);
+                It.IsAny<bool>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()), Times.Never);
         _ssoProvidersService.Verify(
             sps => sps.SaveInfoOnBehalfOfUserAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<SSOAuthUserInfo>(),
@@ -431,7 +427,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
             });
 
         var result = await _service.AuthenticateAsync(_caller.Object, "aninvitationtoken", "aprovidername",
-            "anauthcode", null, null, CancellationToken.None);
+            "anauthcode", null, null, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -443,8 +439,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         _endUsersService.Verify(
             eus => eus.RegisterPersonPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<bool>(),
-                It.IsAny<CancellationToken>()), Times.Never);
+                It.IsAny<bool>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()), Times.Never);
         _ssoProvidersService.Verify(sps => sps.SaveInfoOnBehalfOfUserAsync(_caller.Object, "aprovidername",
             "anexistinguserid".ToId(),
             It.Is<SSOAuthUserInfo>(ui => ui == authUserInfo), It.IsAny<CancellationToken>()));

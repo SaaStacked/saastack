@@ -26,7 +26,8 @@ public class RegisterPersonPasswordRequestValidatorSpec
             Timezone = Timezones.Default.Id,
             CountryCode = CountryCodes.Default.Alpha3,
             Locale = Locales.Default.ToString(),
-            TermsAndConditionsAccepted = true
+            TermsAndConditionsAccepted = true,
+            ReferralCode = null
         };
     }
 
@@ -198,5 +199,16 @@ public class RegisterPersonPasswordRequestValidatorSpec
             .Invoking(x => x.ValidateAndThrow(_dto))
             .Should().Throw<ValidationException>()
             .WithMessageLike(Resources.RegisterPersonPasswordRequestValidator_InvalidTermsAndConditionsAccepted);
+    }
+
+    [Fact]
+    public void WhenReferralCodeIsInvalid_ThenThrows()
+    {
+        _dto.ReferralCode = "^aninvalidreferralcode^";
+
+        _validator
+            .Invoking(x => x.ValidateAndThrow(_dto))
+            .Should().Throw<ValidationException>()
+            .WithMessageLike(Resources.RegisterPersonPasswordRequestValidator_InvalidReferralCode);
     }
 }

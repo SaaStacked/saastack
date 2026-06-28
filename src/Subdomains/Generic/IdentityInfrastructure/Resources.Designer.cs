@@ -592,6 +592,15 @@ namespace IdentityInfrastructure {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;ReferralCode&apos; is invalid.
+        /// </summary>
+        internal static string RegisterPersonPasswordRequestValidator_InvalidReferralCode {
+            get {
+                return ResourceManager.GetString("RegisterPersonPasswordRequestValidator_InvalidReferralCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;TermsAndConditionsAccepted&apos; must be True.
         /// </summary>
         internal static string RegisterPersonPasswordRequestValidator_InvalidTermsAndConditionsAccepted {

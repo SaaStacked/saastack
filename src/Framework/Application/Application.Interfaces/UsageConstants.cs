@@ -59,6 +59,7 @@ public static class UsageConstants
         public const string OnboardingWorkflowName = "WorkflowName";
         public const string OnboardingStepId = "StepId";
         public const string EmailClassification = "EmailClassification";
+        public const string ReferralCode = "ReferralCode";
     }
 
     public static class Events

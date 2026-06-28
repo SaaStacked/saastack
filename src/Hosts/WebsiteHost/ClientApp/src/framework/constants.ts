@@ -26,6 +26,8 @@ export const anonymousUser = {
 export namespace LocalStorageKeys {
   export const Theme = 'theme';
   export const IsPendingOAuth2Authorization = 'isPendingOAuth2Authorization';
+  export const SsoLogin_Refer = 'ssoLogin.refer';
+  export const SsoLogin_Token = 'ssoLogin.token';
 }
 
 export namespace SessionStorageKeys {

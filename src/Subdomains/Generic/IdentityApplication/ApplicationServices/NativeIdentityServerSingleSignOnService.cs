@@ -30,9 +30,81 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
         _authTokensService = authTokensService;
     }
 
+    public async Task<Result<IReadOnlyList<ProviderAuthenticationTokens>, Error>> GetTokensForUserAsync(
+        ICallerContext caller, string userId, CancellationToken cancellationToken)
+    {
+        return await _ssoProvidersService.GetTokensForUserAsync(caller, userId, cancellationToken);
+    }
+
+    public async Task<Result<ProviderAuthenticationTokens, Error>> RefreshTokenForUserAsync(ICallerContext caller,
+        string userId, string providerName, string refreshToken, CancellationToken cancellationToken)
+    {
+        var retrievedProvider =
+            await _ssoProvidersService.FindProviderByUserIdAsync(caller, userId, providerName, cancellationToken);
+        if (retrievedProvider.IsFailure)
+        {
+            return retrievedProvider.Error;
+        }
+
+        if (!retrievedProvider.Value.HasValue)
+        {
+            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
+        }
+
+        var provider = retrievedProvider.Value.Value;
+        var retrievedUser =
+            await _endUsersService.GetUserPrivateAsync(caller, userId, cancellationToken);
+        if (retrievedUser.IsFailure)
+        {
+            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
+        }
+
+        var user = retrievedUser.Value;
+        if (user.Classification != EndUserClassification.Person)
+        {
+            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
+        }
+
+        if (user.Access == EndUserAccess.Suspended)
+        {
+            _recorder.AuditAgainst(caller.ToCall(), user.Id,
+                Audits.SingleSignOnApplication_Refresh_AccountSuspended,
+                "User {Id} tried to refresh tokens with SSO {Provider} with a suspended account", user.Id,
+                providerName);
+            return Error.EntityExists(Resources.SingleSignOnApplication_AccountSuspended);
+        }
+
+        var refreshed = await provider.RefreshTokenAsync(caller, refreshToken, cancellationToken);
+        if (refreshed.IsFailure)
+        {
+            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
+        }
+
+        var tokens = refreshed.Value;
+        var saved = await _ssoProvidersService.SaveTokensOnBehalfOfUserAsync(caller, providerName, userId, tokens,
+            cancellationToken);
+        if (saved.IsFailure)
+        {
+            return saved.Error;
+        }
+
+        _recorder.AuditAgainst(caller.ToCall(), user.Id,
+            Audits.SingleSignOnApplication_Refresh_Succeeded,
+            "User {Id} succeeded to refresh token with SSO {Provider}", user.Id, providerName);
+        _recorder.TrackUsageFor(caller.ToCall(), user.Id,
+            UsageConstants.Events.UsageScenarios.Generic.UserExtendedLogin,
+            new Dictionary<string, object>
+            {
+                { UsageConstants.Properties.AuthProvider, providerName },
+                { UsageConstants.Properties.UserIdOverride, user.Id }
+            });
+
+        return tokens;
+    }
+
     public async Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller,
         string? invitationToken, string providerName, string authCode, string? codeVerifier,
-        bool? termsAndConditionsAccepted, CancellationToken cancellationToken)
+        bool? termsAndConditionsAccepted, string? referralCode, CancellationToken cancellationToken)
     {
         var authenticated =
             await _ssoProvidersService.AuthenticateUserAsync(caller, providerName, authCode, codeVerifier,
@@ -65,7 +137,7 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
             var autoRegistered = await _endUsersService.RegisterPersonPrivateAsync(caller, invitationToken,
                 authUserInfo.EmailAddress, authUserInfo.FirstName, authUserInfo.LastName,
                 authUserInfo.Timezone.ToString(), authUserInfo.Locale.ToString(), authUserInfo.CountryCode.ToString(),
-                !termsAndConditionsAccepted.HasValue || termsAndConditionsAccepted.Value,
+                !termsAndConditionsAccepted.HasValue || termsAndConditionsAccepted.Value, referralCode,
                 cancellationToken);
             if (autoRegistered.IsFailure)
             {
@@ -180,78 +252,6 @@ public class NativeIdentityServerSingleSignOnService : IIdentityServerSingleSign
 
             return retrievedUser.Value;
         }
-    }
-
-    public async Task<Result<IReadOnlyList<ProviderAuthenticationTokens>, Error>> GetTokensForUserAsync(
-        ICallerContext caller, string userId, CancellationToken cancellationToken)
-    {
-        return await _ssoProvidersService.GetTokensForUserAsync(caller, userId, cancellationToken);
-    }
-
-    public async Task<Result<ProviderAuthenticationTokens, Error>> RefreshTokenForUserAsync(ICallerContext caller,
-        string userId, string providerName, string refreshToken, CancellationToken cancellationToken)
-    {
-        var retrievedProvider =
-            await _ssoProvidersService.FindProviderByUserIdAsync(caller, userId, providerName, cancellationToken);
-        if (retrievedProvider.IsFailure)
-        {
-            return retrievedProvider.Error;
-        }
-
-        if (!retrievedProvider.Value.HasValue)
-        {
-            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
-        }
-
-        var provider = retrievedProvider.Value.Value;
-        var retrievedUser =
-            await _endUsersService.GetUserPrivateAsync(caller, userId, cancellationToken);
-        if (retrievedUser.IsFailure)
-        {
-            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
-        }
-
-        var user = retrievedUser.Value;
-        if (user.Classification != EndUserClassification.Person)
-        {
-            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
-        }
-
-        if (user.Access == EndUserAccess.Suspended)
-        {
-            _recorder.AuditAgainst(caller.ToCall(), user.Id,
-                Audits.SingleSignOnApplication_Refresh_AccountSuspended,
-                "User {Id} tried to refresh tokens with SSO {Provider} with a suspended account", user.Id,
-                providerName);
-            return Error.EntityExists(Resources.SingleSignOnApplication_AccountSuspended);
-        }
-
-        var refreshed = await provider.RefreshTokenAsync(caller, refreshToken, cancellationToken);
-        if (refreshed.IsFailure)
-        {
-            return Error.NotAuthenticated(additionalData: GetAuthenticationErrorData(providerName));
-        }
-
-        var tokens = refreshed.Value;
-        var saved = await _ssoProvidersService.SaveTokensOnBehalfOfUserAsync(caller, providerName, userId, tokens,
-            cancellationToken);
-        if (saved.IsFailure)
-        {
-            return saved.Error;
-        }
-
-        _recorder.AuditAgainst(caller.ToCall(), user.Id,
-            Audits.SingleSignOnApplication_Refresh_Succeeded,
-            "User {Id} succeeded to refresh token with SSO {Provider}", user.Id, providerName);
-        _recorder.TrackUsageFor(caller.ToCall(), user.Id,
-            UsageConstants.Events.UsageScenarios.Generic.UserExtendedLogin,
-            new Dictionary<string, object>
-            {
-                { UsageConstants.Properties.AuthProvider, providerName },
-                { UsageConstants.Properties.UserIdOverride, user.Id }
-            });
-
-        return tokens;
     }
 
     private static Dictionary<string, object> GetAuthenticationErrorData(string providerName)

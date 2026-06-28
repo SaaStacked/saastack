@@ -28,13 +28,6 @@ public partial class PersonCredentialsApplication : IPersonCredentialsApplicatio
             cancellationToken);
     }
 
-    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
-        CancellationToken cancellationToken)
-    {
-        return await _identityServerProvider.CredentialsService.ResendConfirmationPersonRegistrationAsync(caller, token,
-            cancellationToken);
-    }
-
 #if TESTINGONLY
     public async Task<Result<PersonCredentialEmailConfirmation, Error>> GetPersonRegistrationConfirmationAsync(
         ICallerContext caller, string userId, CancellationToken cancellationToken)
@@ -46,13 +39,19 @@ public partial class PersonCredentialsApplication : IPersonCredentialsApplicatio
 #endif
 
     public async Task<Result<PersonCredentialRegistrationVerificationResult, Error>> RegisterPersonAsync(
-        ICallerContext caller,
-        string? invitationToken, string firstName, string lastName, string emailAddress, string password,
-        string? timezone, string? locale, string? countryCode, bool termsAndConditionsAccepted,
-        CancellationToken cancellationToken)
+        ICallerContext caller, string? invitationToken, string firstName, string lastName, string emailAddress,
+        string password, string? timezone, string? locale, string? countryCode, bool termsAndConditionsAccepted,
+        string? referralCode, CancellationToken cancellationToken)
     {
         return await _identityServerProvider.CredentialsService.RegisterPersonAsync(caller, invitationToken, firstName,
-            lastName, emailAddress, password, timezone, locale, countryCode, termsAndConditionsAccepted,
+            lastName, emailAddress, password, timezone, locale, countryCode, termsAndConditionsAccepted, referralCode,
+            cancellationToken);
+    }
+
+    public async Task<Result<Error>> ResendConfirmationPersonRegistrationAsync(ICallerContext caller, string token,
+        CancellationToken cancellationToken)
+    {
+        return await _identityServerProvider.CredentialsService.ResendConfirmationPersonRegistrationAsync(caller, token,
             cancellationToken);
     }
 }

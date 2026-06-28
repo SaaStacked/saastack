@@ -64,8 +64,8 @@ public class AuthenticationApiSpec
         var accessTokenExpiresOn = DateTime.UtcNow;
         var refreshTokenExpiresOn = DateTime.UtcNow.AddMinutes(1);
         _application.Setup(app => app.AuthenticateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AuthenticateTokens
             {
                 UserId = "auserid",
@@ -88,11 +88,13 @@ public class AuthenticationApiSpec
             Provider = "aprovider",
             Username = "ausername",
             Password = "apassword",
-            CodeVerifier = "acodeverifier"
+            CodeVerifier = "acodeverifier",
+            InvitationToken = "aninvitationtoken",
+            ReferralCode = "areferralcode"
         }, CancellationToken.None);
 
         _application.Verify(app => app.AuthenticateAsync(_caller.Object, "aprovider",
-            null, "ausername", "apassword", "acodeverifier",
+            null, "ausername", "apassword", "acodeverifier", "aninvitationtoken", "areferralcode",
             It.IsAny<CancellationToken>()));
         _httpResponseCookies.Verify(c =>
             c.Append(AuthenticationConstants.Cookies.Token, It.Is<string>(s =>

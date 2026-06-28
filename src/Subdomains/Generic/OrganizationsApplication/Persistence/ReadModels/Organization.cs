@@ -29,5 +29,7 @@ public class Organization : ReadModelEntity
 
     public Optional<OrganizationOwnership> Ownership { get; set; }
 
+    public Optional<string> ReferralCode { get; set; }
+
     public Optional<string> RegisteredRegion { get; set; }
 }

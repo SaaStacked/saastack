@@ -7,6 +7,16 @@ namespace UserProfilesDomain;
 
 public static class Events
 {
+    public static AttributeAdded AttributeAdded(Identifier id, Identifier userId, string name, string value)
+    {
+        return new AttributeAdded(id)
+        {
+            UserId = userId,
+            Name = name,
+            Value = value
+        };
+    }
+
     public static AvatarAdded AvatarAdded(Identifier id, Identifier userId, Avatar avatar)
     {
         return new AvatarAdded(id)

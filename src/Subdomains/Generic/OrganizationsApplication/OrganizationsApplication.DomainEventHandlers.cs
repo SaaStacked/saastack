@@ -33,7 +33,8 @@ partial class OrganizationsApplication
     {
         var name = GetPersonalOrganizationName(domainEvent);
         var organization = await CreateOrganizationInternalAsync(caller, domainEvent.RootId.ToId(),
-            domainEvent.Classification, name, domainEvent.Username, OrganizationOwnership.Personal, cancellationToken);
+            domainEvent.Classification, name, domainEvent.Username, OrganizationOwnership.Personal,
+            Optional<string>.None, cancellationToken);
         if (organization.IsFailure)
         {
             return organization.Error;
@@ -163,7 +164,7 @@ partial class OrganizationsApplication
         org = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Organization {Id} avatar was removed", org.Id);
         _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.OrganizationChanged,
-            org.ToOrganizationChangedUsageEvent(caller));
+            org.ToOrganizationChangedUsageEvent());
 
         return Result.Ok;
     }

@@ -220,6 +220,7 @@ Organizations are the primary way that users are grouped together on the platfor
 9. Unassign roles from a member <sup>$$$</sup>
 10. List all members of the organization
 11. Delete the organization (must be no remaining members) <sup>$$$</sup>
+12. Retrieve all referred registrations <sup>OPS</sup>
 
 #### Onboarding
 

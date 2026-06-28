@@ -8,6 +8,7 @@ public interface ISingleSignOnApplication
 {
     Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string? invitationToken,
         string providerName, string authCode, string? codeVerifier, bool? termsAndConditionsAccepted,
+        string? referralCode,
         CancellationToken cancellationToken);
 
     Task<Result<IReadOnlyList<ProviderAuthenticationTokens>, Error>> GetTokensAsync(ICallerContext caller,

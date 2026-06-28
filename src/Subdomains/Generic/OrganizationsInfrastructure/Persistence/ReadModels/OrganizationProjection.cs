@@ -46,6 +46,13 @@ public class OrganizationProjection : IReadModelProjection
                         {
                             dto.EmailDomain = e.StringValue;
                         }
+
+                        if (e.Name.EqualsIgnoreCase(nameof(OrganizationRoot.ReferralCode))
+                            && e.StringValue.NotEqualsIgnoreCase(OrganizationsApplication.OrganizationsApplication
+                                .DefaultReferralCode))
+                        {
+                            dto.ReferralCode = e.StringValue;
+                        }
                     },
                     cancellationToken);
 
@@ -55,6 +62,13 @@ public class OrganizationProjection : IReadModelProjection
                         if (e.Name.EqualsIgnoreCase(nameof(OrganizationRoot.EmailDomain)))
                         {
                             dto.EmailDomain = e.To;
+                        }
+
+                        if (e.Name.EqualsIgnoreCase(nameof(OrganizationRoot.ReferralCode))
+                            && e.To.NotEqualsIgnoreCase(OrganizationsApplication.OrganizationsApplication
+                                .DefaultReferralCode))
+                        {
+                            dto.ReferralCode = e.To;
                         }
                     },
                     cancellationToken);

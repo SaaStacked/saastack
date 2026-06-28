@@ -35,7 +35,8 @@ partial class UserProfilesApplication
         var profile =
             await CreateProfileAsync(caller, classification, domainEvent.RootId, domainEvent.Username,
                 domainEvent.UserProfile.FirstName, domainEvent.UserProfile.LastName, domainEvent.UserProfile.Timezone,
-                domainEvent.UserProfile.Locale, domainEvent.UserProfile.CountryCode, cancellationToken);
+                domainEvent.UserProfile.Locale, domainEvent.UserProfile.CountryCode, domainEvent.ReferralCode,
+                cancellationToken);
         if (profile.IsFailure)
         {
             return profile.Error;
@@ -88,7 +89,8 @@ partial class UserProfilesApplication
 
     private async Task<Result<UserProfile, Error>> CreateProfileAsync(ICallerContext caller,
         UserProfileClassification classification, string userId, string? emailAddress, string firstName,
-        string? lastName, string? timezone, string? locale, string? countryCode, CancellationToken cancellationToken)
+        string? lastName, string? timezone, string? locale, string? countryCode, string? referralCode,
+        CancellationToken cancellationToken)
     {
         if (classification == UserProfileClassification.Person && emailAddress.HasNoValue())
         {
@@ -206,6 +208,15 @@ partial class UserProfilesApplication
                 if (avatared.IsFailure)
                 {
                     return avatared.Error;
+                }
+            }
+
+            if (referralCode.HasValue())
+            {
+                var attributed = profile.SetAttribute(userId.ToId(), nameof(Registered.ReferralCode), referralCode);
+                if (attributed.IsFailure)
+                {
+                    return attributed.Error;
                 }
             }
         }

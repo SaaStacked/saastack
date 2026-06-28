@@ -111,6 +111,21 @@ public class OrganizationsApi : IWebApiService
                 new GetOrganizationResponse { Organization = org });
     }
 
+    public async Task<ApiSearchResult<OrganizationWithReferralCode, SearchAllOrganizationReferralsResponse>>
+        GetReferralCodes(
+        SearchAllOrganizationReferralsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var organizations =
+            await _organizationsApplication.SearchAllOrganizationReferralsAsync(_callerFactory.Create(),
+                request.ToSearchOptions(), request.ToGetOptions(),
+                cancellationToken);
+
+        return () =>
+            organizations.HandleApplicationResult(o =>
+                new SearchAllOrganizationReferralsResponse { Organizations = o.Results, Metadata = o.Metadata });
+    }
+
 #if TESTINGONLY
     public async Task<ApiGetResult<OrganizationWithSettings, GetOrganizationSettingsResponse>> GetSettings(
         GetOrganizationSettingsRequest request, CancellationToken cancellationToken)

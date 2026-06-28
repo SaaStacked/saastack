@@ -68,7 +68,8 @@ public class AuthenticationApplicationSpec
             });
 
         var result = await _application.AuthenticateAsync(_caller.Object, AuthenticationConstants.Providers.Credentials,
-            null, "ausername", "apassword", "acodeverifier", CancellationToken.None);
+            null, "ausername", "apassword", "acodeverifier", "aninvitationtoken", "areferralcode",
+            CancellationToken.None);
 
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
@@ -111,7 +112,7 @@ public class AuthenticationApplicationSpec
             });
 
         var result = await _application.AuthenticateAsync(_caller.Object, "aprovider", "anauthcode",
-            null, null, "acodeverifier",
+            null, null, "acodeverifier", "aninvitationtoken", "areferralcode",
             CancellationToken.None);
 
         result.Value.UserId.Should().Be("auserid");
@@ -123,7 +124,8 @@ public class AuthenticationApplicationSpec
             req.AuthCode == "anauthcode"
             && req.CodeVerifier == "acodeverifier"
             && req.Provider == "aprovider"
-            && req.InvitationToken == null
+            && req.InvitationToken == "aninvitationtoken"
+            && req.ReferralCode == "areferralcode"
             && req.TermsAndConditionsAccepted == true
             ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),
             It.IsAny<CancellationToken>()));

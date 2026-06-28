@@ -50,5 +50,9 @@ public class RegisterPersonPasswordRequestValidator : AbstractValidator<Register
             .NotEmpty()
             .Must(req => req)
             .WithMessage(Resources.RegisterPersonPasswordRequestValidator_InvalidTermsAndConditionsAccepted);
+        RuleFor(req => req.ReferralCode)
+            .Matches(Validations.Credentials.ReferralCode)
+            .WithMessage(Resources.RegisterPersonPasswordRequestValidator_InvalidReferralCode)
+            .When(req => req.ReferralCode.HasValue());
     }
 }

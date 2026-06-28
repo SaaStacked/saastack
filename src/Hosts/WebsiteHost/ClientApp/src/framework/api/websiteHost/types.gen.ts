@@ -32,6 +32,8 @@ export type AuthenticateRequest = {
     password?: string | null;
     provider: string;
     username?: string | null;
+    invitationToken?: string | null;
+    referralCode?: string | null;
 };
 
 export type AuthenticateResponse = {

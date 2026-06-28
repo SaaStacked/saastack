@@ -7,7 +7,7 @@ import Alert from '../../../framework/components/alert/Alert.tsx';
 import FormPage from '../../../framework/components/form/FormPage.tsx';
 import Loader from '../../../framework/components/loader/Loader.tsx';
 import PageAction, { PageActionRef } from '../../../framework/components/page/PageAction.tsx';
-import { RoutePaths } from '../../../framework/constants.ts';
+import { LocalStorageKeys, RoutePaths } from '../../../framework/constants.ts';
 import { recorder } from '../../../framework/recorder.ts';
 import { LoginSsoAction, LoginSsoErrors } from '../actions/loginSso.ts';
 import {
@@ -52,6 +52,8 @@ export const SsoLoginPage: React.FC<SsoLoginPageProps> = ({
 }: SsoLoginPageProps) => {
   const { t: translate } = useTranslation();
   const [searchParams] = useSearchParams();
+  const invitationToken = searchParams.get('token');
+  const referralCode = searchParams.get('refer');
   const location = useLocation();
   const login = LoginSsoAction();
 
@@ -70,6 +72,17 @@ export const SsoLoginPage: React.FC<SsoLoginPageProps> = ({
   }, [oAuth2AuthCode, oAuth2Error]);
 
   function authorizeWithProvider() {
+    if (referralCode) {
+      localStorage.setItem(LocalStorageKeys.SsoLogin_Refer, referralCode);
+    } else {
+      localStorage.removeItem(LocalStorageKeys.SsoLogin_Refer);
+    }
+    if (invitationToken) {
+      localStorage.setItem(LocalStorageKeys.SsoLogin_Token, invitationToken);
+    } else {
+      localStorage.removeItem(LocalStorageKeys.SsoLogin_Token);
+    }
+
     const state = generateOAuth2State();
     function authorizeProvider(codeChallenge: string | null) {
       const redirectUri = encodeURIComponent(`${window.location.origin}${location.pathname}`);
@@ -187,6 +200,11 @@ function HandleAuthentication({
   loginAction,
   authenticateTrigger
 }: AuthenticateHandlerProps) {
+  const referralCode = localStorage.getItem(LocalStorageKeys.SsoLogin_Refer);
+  const invitationToken = localStorage.getItem(LocalStorageKeys.SsoLogin_Token);
+  localStorage.removeItem(LocalStorageKeys.SsoLogin_Refer);
+  localStorage.removeItem(LocalStorageKeys.SsoLogin_Token);
+  
   const hasExecuted = useRef(false);
 
   let codeVerifier = null;
@@ -221,7 +239,9 @@ function HandleAuthentication({
   const requestData = {
     provider: providerId,
     authCode: oAuth2AuthCode,
-    codeVerifier
+    codeVerifier,
+    referralCode,
+    invitationToken,
   } as AuthenticateRequest;
 
   useEffect(() => {

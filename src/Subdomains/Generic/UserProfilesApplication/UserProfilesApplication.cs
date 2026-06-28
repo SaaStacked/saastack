@@ -354,7 +354,8 @@ public partial class UserProfilesApplication : IUserProfilesApplication
                 DefaultOrganizationId = null,
                 IsAuthenticated = false,
                 Features = [],
-                Roles = []
+                Roles = [],
+                Attributes = []
             };
         }
 
@@ -457,7 +458,8 @@ internal static class UserProfileConversionExtensions
             Address = profile.Address.ToAddress(),
             Timezone = profile.Timezone.Code.ToString(),
             Locale = profile.Locale.Code.ToString(),
-            AvatarUrl = profile.Avatar.ToNullable(ava => ava.Url)
+            AvatarUrl = profile.Avatar.ToNullable(ava => ava.Url),
+            Attributes = profile.Attributes.Items.ToDictionary()
         };
     }
 

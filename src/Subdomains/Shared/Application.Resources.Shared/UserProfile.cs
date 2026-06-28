@@ -26,6 +26,8 @@ public class UserProfile : IIdentifiableResource
     public required string UserId { get; set; }
 
     public required string Id { get; set; }
+
+    public Dictionary<string, string> Attributes { get; set; } = new();
 }
 
 public class UserProfileEmailAddress

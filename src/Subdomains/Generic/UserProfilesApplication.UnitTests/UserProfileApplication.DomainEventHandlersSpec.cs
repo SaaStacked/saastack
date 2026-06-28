@@ -4,7 +4,7 @@ using Application.Services.Shared;
 using Common;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
-using Domain.Events.Shared.Images;
+using Domain.Events.Shared.EndUsers;
 using Domain.Interfaces.Entities;
 using Domain.Shared;
 using Domain.Shared.EndUsers;
@@ -14,6 +14,7 @@ using UnitTesting.Common;
 using UserProfilesApplication.Persistence;
 using UserProfilesDomain;
 using Xunit;
+using Deleted = Domain.Events.Shared.Images.Deleted;
 using Events = EndUsersDomain.Events;
 using PersonName = Domain.Shared.PersonName;
 
@@ -59,7 +60,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("apersonid".ToId(), EndUserProfile.Create("afirstname").Value,
             Optional<EmailAddress>.None, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result = await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent,
             CancellationToken.None);
@@ -76,12 +77,33 @@ public class UserProfileApplicationDomainEventHandlersSpec
             .ReturnsAsync(profile.ToOptional());
         var domainEvent = Events.Registered("apersonid".ToId(), EndUserProfile.Create("afirstname").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result = await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent,
             CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityExists, Resources.UserProfilesApplication_ProfileExistsForUser);
+    }
+
+    [Fact]
+    public async Task WhenHandleEndUserRegisteredAsyncAndDifferentClassificationProfileExists_ThenReturnsEntityExists()
+    {
+        var existingProfile = UserProfileRoot.Create(_recorder.Object, _idFactory.Object, ProfileType.Machine,
+            "auserid".ToId(), PersonName.Create("amachine", Optional<string>.None).Value).Value;
+        _repository.Setup(rep => rep.FindByUserIdAsync(It.Is<Identifier>(id => id == "auserid".ToId()),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingProfile.ToOptional());
+        var domainEvent = Events.Registered("auserid".ToId(), EndUserProfile.Create("afirstname").Value,
+            EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
+
+        var result = await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent,
+            CancellationToken.None);
+
+        result.Should().BeError(ErrorCode.EntityExists,
+            Resources.UserProfilesApplication_ProfileExistsForUser);
+        _repository.Verify(rep => rep.SaveAsync(It.IsAny<UserProfileRoot>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
@@ -93,7 +115,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
             .ReturnsAsync(profile.ToOptional());
         var domainEvent = Events.Registered("apersonid".ToId(), EndUserProfile.Create("afirstname").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result =
             await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -106,7 +128,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("amachineid".ToId(), EndUserProfile.Create("afirstname").Value,
             EmailAddress.Create("amachine@company.com").Value, UserClassification.Machine, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
 
         var result =
             await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -127,6 +149,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
             && up.Timezone == Timezones.Default
             && up.Locale == Locales.Default
             && up.Avatar.HasValue == false
+            && up.Attributes.Items.Count == 0
         ), It.IsAny<CancellationToken>()));
     }
 
@@ -135,7 +158,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("apersonid".ToId(), EndUserProfile.Create("afirstname", "alastname").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, "areferralcode");
 
         var result =
             await _application.HandleEndUserRegisteredAsync(_caller.Object, domainEvent, CancellationToken.None);
@@ -155,6 +178,8 @@ public class UserProfileApplicationDomainEventHandlersSpec
             && up.Timezone == Timezones.Default
             && up.Locale == Locales.Default
             && up.Avatar.HasValue == false
+            && up.Attributes.Items.Count == 1
+            && up.Attributes.Items[nameof(Registered.ReferralCode)] == "areferralcode"
         ), It.IsAny<CancellationToken>()));
     }
 
@@ -163,7 +188,7 @@ public class UserProfileApplicationDomainEventHandlersSpec
     {
         var domainEvent = Events.Registered("apersonid".ToId(), EndUserProfile.Create("afirstname", "alastname").Value,
             EmailAddress.Create("auser@company.com").Value, UserClassification.Person, UserAccess.Enabled,
-            UserStatus.Registered, Roles.Empty, Features.Empty);
+            UserStatus.Registered, Roles.Empty, Features.Empty, Optional<string>.None);
         var upload = new FileUpload
         {
             Content = new MemoryStream(),

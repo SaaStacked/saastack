@@ -5,6 +5,7 @@ using Common;
 using Common.Configuration;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
+using Domain.Events.Shared.EndUsers;
 using Domain.Interfaces;
 using Domain.Interfaces.Authorization;
 using Domain.Interfaces.Entities;
@@ -97,9 +98,8 @@ public class EndUsersApplicationSpec
     public async Task WhenRegisterPersonAsyncAndNotAcceptedTerms_ThenReturnsError()
     {
         var result = await _application.RegisterPersonAsync(_caller.Object, null, "auser@company.com",
-            "afirstname",
-            "alastname",
-            "atimezone", "alocale", "acountrycode", false, CancellationToken.None);
+            "afirstname", "alastname", "atimezone", "alocale", "acountrycode", false, "areferralcode",
+            CancellationToken.None);
 
         result.Should().BeError(ErrorCode.RuleViolation, Resources.EndUsersApplication_NotAcceptedTerms);
     }
@@ -145,8 +145,7 @@ public class EndUsersApplicationSpec
             });
 
         var result = await _application.RegisterPersonAsync(_caller.Object, null, "auser@company.com",
-            "afirstname",
-            "alastname", null, "alocale", null, true, CancellationToken.None);
+            "afirstname", "alastname", null, "alocale", null, true, "areferralcode", CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.Id.Should().Be("anid");
@@ -216,7 +215,7 @@ public class EndUsersApplicationSpec
             });
 
         var result = await _application.RegisterPersonAsync(_caller.Object, TestingToken, "auser@company.com",
-            "afirstname", "alastname", null, "alocale", null, true, CancellationToken.None);
+            "afirstname", "alastname", null, "alocale", null, true, "areferralcode", CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.Id.Should().Be("anid");
@@ -275,7 +274,8 @@ public class EndUsersApplicationSpec
             });
 
         var result = await _application.RegisterPersonAsync(_caller.Object, "anunknowninvitationtoken",
-            "auser@company.com", "afirstname", "alastname", null, "alocale", null, true, CancellationToken.None);
+            "auser@company.com", "afirstname", "alastname", null, "alocale", null, true, "areferralcode",
+            CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.Id.Should().Be("anid");
@@ -330,7 +330,7 @@ public class EndUsersApplicationSpec
             .ReturnsAsync(invitee.ToOptional());
 
         var result = await _application.RegisterPersonAsync(_caller.Object, "aninvitationtoken", "auser@company.com",
-            "afirstname", "alastname", null, "alocale", null, true, CancellationToken.None);
+            "afirstname", "alastname", null, "alocale", null, true, "areferralcode", CancellationToken.None);
 
         result.Should().BeError(ErrorCode.EntityExists,
             Resources.EndUsersApplication_AcceptedInvitationWithExistingEmailAddress);
@@ -351,7 +351,7 @@ public class EndUsersApplicationSpec
         var endUser = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         endUser.Register(Roles.Empty, Features.Empty, EndUserProfile.Create("afirstname").Value,
-            EmailAddress.Create("auser@company.com").Value);
+            EmailAddress.Create("auser@company.com").Value, Optional<string>.None);
         _userProfilesService.Setup(ups =>
                 ups.FindPersonByEmailAddressPrivateAsync(It.IsAny<ICallerContext>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -375,7 +375,8 @@ public class EndUsersApplicationSpec
                 {
                     CountryCode = "acountrycode"
                 },
-                Timezone = "atimezone"
+                Timezone = "atimezone",
+                Attributes = { { nameof(Registered.ReferralCode), "areferralcode" } }
             }.ToOptional());
         endUser.AddMembership(endUser, OrganizationOwnership.Shared, "anorganizationid".ToId(), Roles.Empty,
             Features.Empty);
@@ -384,7 +385,7 @@ public class EndUsersApplicationSpec
             .ReturnsAsync(endUser);
 
         var result = await _application.RegisterPersonAsync(_caller.Object, null, "auser@company.com",
-            "afirstname", "alastname", null, "alocale", null, true, CancellationToken.None);
+            "afirstname", "alastname", null, "alocale", null, true, "areferralcode", CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.Id.Should().Be("anid");
@@ -398,6 +399,9 @@ public class EndUsersApplicationSpec
         result.Value.Profile.Name.LastName.Should().Be("alastname");
         result.Value.Profile.Timezone.Should().Be("atimezone");
         result.Value.Profile.Address.CountryCode.Should().Be("acountrycode");
+        result.Value.Profile.Attributes.Count.Should().Be(1);
+        result.Value.Profile.Attributes.Should().ContainSingle(pair =>
+            pair.Key == nameof(Registered.ReferralCode) && pair.Value == "areferralcode");
         _invitationRepository.Verify(rep =>
             rep.FindInvitedGuestByTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _userProfilesService.Verify(ups =>
@@ -446,7 +450,7 @@ public class EndUsersApplicationSpec
 
         var result = await _application.RegisterPersonAsync(_caller.Object, null, "auser@company.com",
             "afirstname",
-            "alastname", null, "alocale", null, true, CancellationToken.None);
+            "alastname", null, "alocale", null, true, null, CancellationToken.None);
 
         result.Should().BeSuccess();
         result.Value.Id.Should().Be("anid");
@@ -517,7 +521,7 @@ public class EndUsersApplicationSpec
         _endUserRepository.Setup(rep => rep.LoadAsync(It.IsAny<Identifier>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(adder);
         adder.Register(Roles.Empty, Features.Empty, EndUserProfile.Create("afirstname").Value,
-            EmailAddress.Create("auser@company.com").Value);
+            EmailAddress.Create("auser@company.com").Value, Optional<string>.None);
         adder.AddMembership(adder, OrganizationOwnership.Shared, "anotherorganizationid".ToId(), Roles.Empty,
             Features.Empty);
         _userProfilesService.Setup(ups =>
@@ -569,13 +573,13 @@ public class EndUsersApplicationSpec
         var assignee = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assignee.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync("anassigneeid".ToId(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(assignee);
         var assigner = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assigner.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Empty,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync("anassignerid".ToId(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(assigner);
 
@@ -598,13 +602,13 @@ public class EndUsersApplicationSpec
             DatacenterLocations.Local).Value;
         assignee.Register(Roles.Create(PlatformRoles.Standard, PlatformRoles.TestingOnly).Value,
             Features.Create(PlatformFeatures.Basic).Value, EndUserProfile.Create("afirstname").Value,
-            Optional<EmailAddress>.None);
+            Optional<EmailAddress>.None, Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync("anassigneeid".ToId(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(assignee);
         var assigner = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         assigner.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Empty,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         _endUserRepository.Setup(rep => rep.LoadAsync("anassignerid".ToId(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(assigner);
 
@@ -643,7 +647,8 @@ public class EndUsersApplicationSpec
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         user.Register(Roles.Create(PlatformRoles.Standard).Value, Features.Create(PlatformFeatures.Basic).Value,
-            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value);
+            EndUserProfile.Create("afirstname").Value, EmailAddress.Create("auser@company.com").Value,
+            Optional<string>.None);
         user.AddMembership(user, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Member).Value,
             Features.Create(TenantFeatures.PaidTrial).Value);
@@ -675,7 +680,7 @@ public class EndUsersApplicationSpec
         var user = EndUserRoot.Create(_recorder.Object, _idFactory.Object, UserClassification.Person,
             DatacenterLocations.Local).Value;
         user.Register(Roles.Create(PlatformRoles.Operations).Value, Features.Empty,
-            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None);
+            EndUserProfile.Create("afirstname").Value, Optional<EmailAddress>.None, Optional<string>.None);
         user.AddMembership(user, OrganizationOwnership.Shared, "anorganizationid".ToId(),
             Roles.Create(TenantRoles.Owner).Value,
             Features.Create(TenantFeatures.Basic).Value);

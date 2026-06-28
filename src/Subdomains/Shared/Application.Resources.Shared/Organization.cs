@@ -11,17 +11,22 @@ public class Organization : IIdentifiableResource
 
     public required string Name { get; set; }
 
+    public required OrganizationOnboardingStatus OnboardingStatus { get; set; }
+
     public OrganizationOwnership Ownership { get; set; }
 
     public required string Id { get; set; }
-
-    public required OrganizationOnboardingStatus OnboardingStatus { get; set; }
 }
 
 [UsedImplicitly]
 public class OrganizationWithSettings : Organization
 {
     public required Dictionary<string, string> Settings { get; set; }
+}
+
+public class OrganizationWithReferralCode : Organization
+{
+    public string? ReferralCode { get; set; }
 }
 
 public enum OrganizationOwnership

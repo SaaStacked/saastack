@@ -25,4 +25,8 @@ public class AuthenticateRequest : UnTenantedRequest<AuthenticateRequest, Authen
     [Required] public string? Provider { get; set; }
 
     public string? Username { get; set; }
+
+    public string? InvitationToken { get; set; }
+
+    public string? ReferralCode { get; set; }
 }

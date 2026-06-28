@@ -19,6 +19,7 @@ public static class Validations
     public static class Credentials
     {
         public static readonly Validation InvitationToken = CommonValidations.RandomToken();
+        public static readonly Validation ReferralCode = new(@"^[a-zA-Z0-9_\-\.]{4,20}$", 1, 20);
 
         public static class Person
         {
@@ -47,8 +48,8 @@ public static class Validations
             public static readonly Validation MfaToken = CommonValidations.RandomToken();
             public static readonly Validation OobCode = CommonValidations.RandomToken();
             public static readonly Validation RecoveryConfirmationCode = new(@"^[a-fA-F0-9]{8}$");
-            public static readonly Validation ResetToken = CommonValidations.RandomToken();
             public static readonly Validation ResendToken = CommonValidations.RandomToken();
+            public static readonly Validation ResetToken = CommonValidations.RandomToken();
             public static readonly Validation VerificationToken = CommonValidations.RandomToken();
         }
     }
@@ -94,7 +95,6 @@ public static class Validations
         public static readonly char[] Delimiters = [' ', ';', ','];
         public static readonly Validation Nonce = new(@"^[a-zA-Z0-9_\-\.\~]{1,500}$", 1, 500);
         public static readonly Validation RefreshToken = CommonValidations.RandomToken();
-
         public static readonly Validation State = new(@"^[a-zA-Z0-9_\-\.\~]{1,500}$", 1, 500);
 
         public static class Logo

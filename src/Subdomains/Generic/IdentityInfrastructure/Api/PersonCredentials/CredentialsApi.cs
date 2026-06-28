@@ -92,6 +92,7 @@ public class CredentialsApi : IWebApiService
         var credential = await _personCredentialsApplication.RegisterPersonAsync(_callerFactory.Create(),
             request.InvitationToken, request.FirstName!, request.LastName!, request.EmailAddress!, request.Password!,
             request.Timezone, request.Locale, request.CountryCode, request.TermsAndConditionsAccepted,
+            request.ReferralCode,
             cancellationToken);
 
         return () =>

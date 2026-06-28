@@ -25,6 +25,8 @@ public class
 
     [Required] public string? Password { get; set; }
 
+    public string? ReferralCode { get; set; }
+
     public bool TermsAndConditionsAccepted { get; set; }
 
     public string? Timezone { get; set; }

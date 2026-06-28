@@ -85,8 +85,10 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
             },
             req => req.SetJWTBearerToken(login.AccessToken));
 
-        settings.Content.Value.Settings.Count.Should().Be(1);
+        settings.Content.Value.Settings.Count.Should().Be(2);
         settings.Content.Value.Settings[nameof(OrganizationRoot.EmailDomain)].Should().Be("company.com");
+        settings.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should()
+            .Be(OrganizationsApplication.OrganizationsApplication.DefaultReferralCode);
 #endif
     }
 
@@ -114,9 +116,105 @@ public class OrganizationsApiSpec : WebApiSpec<Program>
             Id = organizationId
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
-        settings.Content.Value.Settings.Count.Should().Be(0);
+        settings.Content.Value.Settings.Count.Should().Be(1);
         settings.Content.Value.Settings.Should().NotContainKey(nameof(OrganizationRoot.EmailDomain));
+        settings.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should()
+            .Be(OrganizationsApplication.OrganizationsApplication.DefaultReferralCode);
 #endif
+    }
+
+    [Fact]
+    public async Task WhenCreateSharedOrganizationForCompanyEmailPersonWithReferralCode_ThenCreatesShared()
+    {
+        var login = await LoginUserAsync(referralCode: "areferralcode");
+
+        var result = await Api.PostAsync(new CreateOrganizationRequest
+        {
+            Name = "aname"
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        var organizationId = result.Content.Value.Organization.Id;
+        result.Content.Value.Organization.CreatedById.Should().Be(login.User.Id);
+        result.Content.Value.Organization.Name.Should().Be("aname");
+        result.Content.Value.Organization.Ownership.Should().Be(OrganizationOwnership.Shared);
+
+        login = await ReAuthenticateUserAsync(login);
+        login.DefaultOrganizationId.Should().Be(organizationId);
+
+        var members = await Api.GetAsync(new ListMembersForOrganizationRequest
+        {
+            Id = organizationId
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        members.Content.Value.Members.Count.Should().Be(1);
+        members.Content.Value.Members[0].IsDefault.Should().BeTrue();
+        members.Content.Value.Members[0].IsOwner.Should().BeTrue();
+        members.Content.Value.Members[0].IsRegistered.Should().BeTrue();
+        members.Content.Value.Members[0].UserId.Should().Be(login.User.Id);
+        members.Content.Value.Members[0].EmailAddress.Should().Be(login.Profile!.EmailAddress!.Address);
+        members.Content.Value.Members[0].Name.FirstName.Should().Be("persona");
+        members.Content.Value.Members[0].Name.LastName.Should().Be("alastname");
+        members.Content.Value.Members[0].Classification.Should().Be(UserProfileClassification.Person);
+        members.Content.Value.Members[0].Roles.Should().ContainInOrder(TenantRoles.BillingAdmin.Name,
+            TenantRoles.Owner.Name, TenantRoles.Member.Name);
+
+#if TESTINGONLY
+        var settings = await Api.GetAsync(new GetOrganizationSettingsRequest
+            {
+                Id = organizationId
+            },
+            req => req.SetJWTBearerToken(login.AccessToken));
+
+        settings.Content.Value.Settings.Count.Should().Be(2);
+        settings.Content.Value.Settings[nameof(OrganizationRoot.EmailDomain)].Should().Be("company.com");
+        settings.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should().Be("areferralcode");
+#endif
+
+        var operations = await LoginUserAsync(LoginUser.Operator);
+        var organizations = await Api.GetAsync(new SearchAllOrganizationReferralsRequest(),
+            req => req.SetJWTBearerToken(operations.AccessToken));
+
+        organizations.Content.Value.Organizations.Count.Should().Be(1);
+        organizations.Content.Value.Organizations[0].Id.Should().Be(organizationId);
+        organizations.Content.Value.Organizations[0].ReferralCode.Should().Be("areferralcode");
+    }
+
+    [Fact]
+    public async Task WhenCreateSharedOrganizationForPersonalEmailPersonWithReferralCode_ThenCreatesShared()
+    {
+        var login = await LoginUserAsync("user@personal.com", "afirstname", "areferralcode");
+
+        var result = await Api.PostAsync(new CreateOrganizationRequest
+        {
+            Name = "aname"
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        var organizationId = result.Content.Value.Organization.Id;
+        result.Content.Value.Organization.Name.Should().Be("aname");
+        result.Content.Value.Organization.Ownership.Should().Be(OrganizationOwnership.Shared);
+        result.Content.Value.Organization.CreatedById.Should().Be(login.User.Id);
+
+        login = await ReAuthenticateUserAsync(login);
+        login.DefaultOrganizationId.Should().Be(result.Content.Value.Organization.Id);
+
+#if TESTINGONLY
+        var settings = await Api.GetAsync(new GetOrganizationSettingsRequest
+        {
+            Id = organizationId
+        }, req => req.SetJWTBearerToken(login.AccessToken));
+
+        settings.Content.Value.Settings.Count.Should().Be(1);
+        settings.Content.Value.Settings.Should().NotContainKey(nameof(OrganizationRoot.EmailDomain));
+        settings.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should().Be("areferralcode");
+#endif
+
+        var operations = await LoginUserAsync(LoginUser.Operator);
+        var organizations = await Api.GetAsync(new SearchAllOrganizationReferralsRequest(),
+            req => req.SetJWTBearerToken(operations.AccessToken));
+
+        organizations.Content.Value.Organizations.Count.Should().Be(1);
+        organizations.Content.Value.Organizations[0].Id.Should().Be(organizationId);
+        organizations.Content.Value.Organizations[0].ReferralCode.Should().Be("areferralcode");
     }
 
     [Fact]

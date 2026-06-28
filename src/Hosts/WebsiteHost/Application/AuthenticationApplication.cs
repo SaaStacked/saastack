@@ -21,7 +21,8 @@ public class AuthenticationApplication : IAuthenticationApplication
     }
 
     public async Task<Result<AuthenticateTokens, Error>> AuthenticateAsync(ICallerContext caller, string provider,
-        string? authCode, string? username, string? password, string? codeVerifier, CancellationToken cancellationToken)
+        string? authCode, string? username, string? password, string? codeVerifier, string? invitationToken,
+        string? referralCode, CancellationToken cancellationToken)
     {
         Task<Result<AuthenticateResponse, ResponseProblem>> request;
         switch (provider)
@@ -40,6 +41,8 @@ public class AuthenticationApplication : IAuthenticationApplication
                     AuthCode = authCode,
                     Provider = provider,
                     CodeVerifier = codeVerifier,
+                    ReferralCode = referralCode,
+                    InvitationToken = invitationToken,
                     TermsAndConditionsAccepted = true
                 }, req => req.RemoveAuthorization(), null, cancellationToken);
                 break;

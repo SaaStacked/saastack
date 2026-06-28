@@ -20,7 +20,8 @@ public class AuthenticateSingleSignOnRequestValidatorSpec
         {
             Provider = "aprovider",
             AuthCode = "anauthcode",
-            CodeVerifier = null
+            CodeVerifier = null,
+            ReferralCode = null
         };
     }
 
@@ -112,5 +113,16 @@ public class AuthenticateSingleSignOnRequestValidatorSpec
         _dto.CodeVerifier = new string('a', 128); // Maximum valid length
 
         _validator.ValidateAndThrow(_dto);
+    }
+
+    [Fact]
+    public void WhenReferralCodeIsInvalid_ThenThrows()
+    {
+        _dto.ReferralCode = "^aninvalidreferralcode^";
+
+        _validator
+            .Invoking(x => x.ValidateAndThrow(_dto))
+            .Should().Throw<ValidationException>()
+            .WithMessageLike(Resources.RegisterPersonPasswordRequestValidator_InvalidReferralCode);
     }
 }

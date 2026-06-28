@@ -353,4 +353,22 @@ public class UserProfileRootSpec
         _profile.Avatar.HasValue.Should().BeFalse();
         _profile.Events.Last().Should().BeOfType<AvatarRemoved>();
     }
+
+    [Fact]
+    public void WhenSetAttributeAndNotOwner_ThenReturnsError()
+    {
+        var result = _profile.SetAttribute("anotheruserid".ToId(), "aname", "avalue");
+
+        result.Should().BeError(ErrorCode.RoleViolation, Resources.UserProfileRoot_NotOwner);
+    }
+
+    [Fact]
+    public void WhenSetAttribute_ThenAdds()
+    {
+        var result = _profile.SetAttribute("auserid".ToId(), "aname", "avalue");
+
+        result.Should().BeSuccess();
+        _profile.Attributes.Items.Should().ContainSingle(a => a.Key == "aname" && a.Value == "avalue");
+        _profile.Events.Last().Should().BeOfType<AttributeAdded>();
+    }
 }

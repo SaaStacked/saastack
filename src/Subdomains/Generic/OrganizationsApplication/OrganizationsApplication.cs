@@ -1,12 +1,14 @@
 using Application.Common.Extensions;
 using Application.Interfaces;
 using Application.Interfaces.Services;
+using Application.Persistence.Common.Extensions;
 using Application.Resources.Shared;
 using Application.Services.Shared;
 using Common;
 using Common.Extensions;
 using Domain.Common.Identity;
 using Domain.Common.ValueObjects;
+using Domain.Events.Shared.EndUsers;
 using Domain.Interfaces.Authorization;
 using Domain.Interfaces.Services;
 using Domain.Shared;
@@ -21,6 +23,7 @@ namespace OrganizationsApplication;
 
 public partial class OrganizationsApplication : IOrganizationsApplication
 {
+    public const string DefaultReferralCode = "none";
     private readonly IOrganizationEmailDomainService _emailDomainService;
     private readonly IEndUsersService _endUsersService;
     private readonly IIdentifierFactory _identifierFactory;
@@ -123,7 +126,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         org = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Changed avatar for organization: {Id}", org.Id);
         _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.OrganizationChanged,
-            org.ToOrganizationChangedUsageEvent(caller));
+            org.ToOrganizationChangedUsageEvent());
 
         return org.ToOrganization();
     }
@@ -168,7 +171,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         org = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Changed organization: {Id}", org.Id);
         _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.OrganizationChanged,
-            org.ToOrganizationChangedUsageEvent(caller));
+            org.ToOrganizationChangedUsageEvent());
 
         return org.ToOrganization();
     }
@@ -229,9 +232,14 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         }
 
         var profile = retrievedProfile.Value;
+
+        var referralCode = profile.Attributes.TryGetValue(nameof(Registered.ReferralCode), out var referralCodeValue)
+            ? referralCodeValue.ToOptional()
+            : Optional<string>.None;
+
         var created = await CreateOrganizationInternalAsync(caller, user.Id,
             user.Classification.ToEnumOrDefault(UserClassification.Person), name, profile.EmailAddress?.Address,
-            OrganizationOwnership.Shared, cancellationToken);
+            OrganizationOwnership.Shared, referralCode, cancellationToken);
         if (created.IsFailure)
         {
             return created.Error;
@@ -277,7 +285,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         org = saved.Value;
         _recorder.TraceInformation(caller.ToCall(), "Organization {Id} avatar was deleted", org.Id);
         _recorder.TrackUsage(caller.ToCall(), UsageConstants.Events.UsageScenarios.Generic.OrganizationChanged,
-            org.ToOrganizationChangedUsageEvent(caller));
+            org.ToOrganizationChangedUsageEvent());
 
         return org.ToOrganization();
     }
@@ -563,6 +571,22 @@ public partial class OrganizationsApplication : IOrganizationsApplication
         };
     }
 
+    public async Task<Result<SearchResults<OrganizationWithReferralCode>, Error>> SearchAllOrganizationReferralsAsync(
+        ICallerContext caller, SearchOptions searchOptions, GetOptions getOptions,
+        CancellationToken cancellationToken)
+    {
+        var searched = await _repository.SearchAllReferralsAsync(searchOptions, cancellationToken);
+        if (searched.IsFailure)
+        {
+            return searched.Error;
+        }
+
+        var orgs = searched.Value;
+        _recorder.TraceInformation(caller.ToCall(), "All orgs with referrals were fetched");
+
+        return orgs.ToSearchResults(searchOptions, org => org.ToOrganizationWithReferralCode());
+    }
+
     public async Task<Result<Organization, Error>> UnassignRolesFromOrganizationAsync(ICallerContext caller, string id,
         string userId, List<string> roles, CancellationToken cancellationToken)
     {
@@ -641,7 +665,7 @@ public partial class OrganizationsApplication : IOrganizationsApplication
 
     private async Task<Result<Organization, Error>> CreateOrganizationInternalAsync(ICallerContext caller,
         string creatorId, UserClassification classification, string name, Optional<string> creatorEmailAddress,
-        OrganizationOwnership ownership, CancellationToken cancellationToken)
+        OrganizationOwnership ownership, Optional<string> referralCode, CancellationToken cancellationToken)
     {
         var displayName = DisplayName.Create(name);
         if (displayName.IsFailure)
@@ -681,6 +705,18 @@ public partial class OrganizationsApplication : IOrganizationsApplication
             return settings.Error;
         }
 
+        if (ownership == OrganizationOwnership.Shared)
+        {
+            if (referralCode.HasValue)
+            {
+                var referred = SaveReferralCodeSetting();
+                if (referred.IsFailure)
+                {
+                    return referred.Error;
+                }
+            }
+        }
+
         var configured = org.CreateSettings(settings.Value);
         if (configured.IsFailure)
         {
@@ -713,9 +749,40 @@ public partial class OrganizationsApplication : IOrganizationsApplication
                 { UsageConstants.Properties.Ownership, ownership },
                 { UsageConstants.Properties.CreatedById, org.CreatedById },
                 { UsageConstants.Properties.UserIdOverride, org.CreatedById }
-            });
+            }.WithIfTrue(UsageConstants.Properties.ReferralCode, org.ReferralCode,
+                val => val.HasValue,
+                val => val.Value));
 
         return org.ToOrganization();
+
+        Result<Error> SaveReferralCodeSetting()
+        {
+            if (settings.Value.TryGet(nameof(Registered.ReferralCode), out var tenantReferralCode))
+            {
+                // Only update if not already referred
+                var existingCode = tenantReferralCode?.Value.ToString()!;
+                if (existingCode.EqualsIgnoreCase(DefaultReferralCode))
+                {
+                    settings = settings.Value.AddOrUpdate(nameof(Registered.ReferralCode), referralCode.Value,
+                        false);
+                    if (settings.IsFailure)
+                    {
+                        return settings.Error;
+                    }
+                }
+            }
+            else
+            {
+                settings = settings.Value.AddOrUpdate(nameof(Registered.ReferralCode), referralCode.Value,
+                    false);
+                if (settings.IsFailure)
+                {
+                    return settings.Error;
+                }
+            }
+
+            return Result.Ok;
+        }
     }
 
     private async Task<Result<Error>> ChangeAvatarInternalAsync(ICallerContext caller, Identifier modifierId,
@@ -782,8 +849,7 @@ internal static class OrganizationConversionExtensions
         };
     }
 
-    public static Dictionary<string, object> ToOrganizationChangedUsageEvent(this OrganizationRoot organization,
-        ICallerContext caller)
+    public static Dictionary<string, object> ToOrganizationChangedUsageEvent(this OrganizationRoot organization)
     {
         var context = new Dictionary<string, object>
         {
@@ -799,6 +865,23 @@ internal static class OrganizationConversionExtensions
         }
 
         return context;
+    }
+
+    public static OrganizationWithReferralCode ToOrganizationWithReferralCode(
+        this Persistence.ReadModels.Organization organization)
+    {
+        return new OrganizationWithReferralCode
+        {
+            Id = organization.Id,
+            Name = organization.Name,
+            CreatedById = organization.CreatedById,
+            OnboardingStatus =
+                organization.OnboardingStatus.Value.ToEnum<OnboardingStatus, OrganizationOnboardingStatus>(),
+            Ownership = organization.Ownership.Value
+                .ToEnum<OrganizationOwnership, Application.Resources.Shared.OrganizationOwnership>(),
+            AvatarUrl = organization.AvatarUrl,
+            ReferralCode = organization.ReferralCode.ToNullable()
+        };
     }
 
     public static OrganizationWithSettings ToOrganizationWithSettings(this OrganizationRoot organization)

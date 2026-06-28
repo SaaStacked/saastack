@@ -11,6 +11,7 @@ using Infrastructure.Web.Api.Operations.Shared.Organizations;
 using Infrastructure.Web.Common.Extensions;
 using IntegrationTesting.WebApi.Common;
 using Microsoft.Extensions.DependencyInjection;
+using OrganizationsDomain;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
 
@@ -63,7 +64,9 @@ public class ProvisioningsApiSpec : WebApiSpec<Program>
             Id = tenantId
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
-        organization.Content.Value.Settings.Count.Should().Be(3);
+        organization.Content.Value.Settings.Count.Should().Be(4);
+        organization.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should()
+            .Be(OrganizationsApplication.OrganizationsApplication.DefaultReferralCode);
         organization.Content.Value.Settings["aname1"].Should().Be("avalue");
         organization.Content.Value.Settings["aname2"].Should().Be("99");
         organization.Content.Value.Settings["aname3"].Should().Be("True");
@@ -108,7 +111,9 @@ public class ProvisioningsApiSpec : WebApiSpec<Program>
             Id = tenantId!
         }, req => req.SetJWTBearerToken(login.AccessToken));
 
-        organization.Content.Value.Settings.Count.Should().Be(3);
+        organization.Content.Value.Settings.Count.Should().Be(4);
+        organization.Content.Value.Settings[nameof(OrganizationRoot.ReferralCode)].Should()
+            .Be(OrganizationsApplication.OrganizationsApplication.DefaultReferralCode);
         organization.Content.Value.Settings["aname1"].Should().Be("avalue1");
         organization.Content.Value.Settings["aname2"].Should().Be("99");
         organization.Content.Value.Settings["aname3"].Should().Be("True");

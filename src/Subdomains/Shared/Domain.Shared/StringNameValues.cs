@@ -2,6 +2,7 @@ using Common;
 using Common.Extensions;
 using Domain.Common.ValueObjects;
 using Domain.Interfaces;
+using Domain.Interfaces.ValueObjects;
 using JetBrains.Annotations;
 
 namespace Domain.Shared;
@@ -41,5 +42,17 @@ public sealed class StringNameValues : SingleValueObjectBase<StringNameValues, I
             var parts = RehydrateToList(property, true);
             return new StringNameValues(parts[0].Value.FromJson<Dictionary<string, string>>()!);
         };
+    }
+
+    public Result<StringNameValues, Error> Append(string name, string value)
+    {
+        var appended = new Dictionary<string, string>(Items) { [name] = value };
+        return Create(appended);
+    }
+
+    [SkipImmutabilityCheck]
+    public bool TryGetValue(string name, out string? value)
+    {
+        return Items.TryGetValue(name, out value);
     }
 }

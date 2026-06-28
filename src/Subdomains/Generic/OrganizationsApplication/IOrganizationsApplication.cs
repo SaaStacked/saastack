@@ -41,18 +41,21 @@ public partial interface IOrganizationsApplication
     Task<Result<TenantSettings, Error>> GetSettingsAsync(ICallerContext caller, string id,
         CancellationToken cancellationToken);
 
+    Task<Result<Organization, Error>> GetSharedOrganizationForCallerEmailDomainAsync(ICallerContext caller,
+        CancellationToken cancellationToken);
+
     Task<Result<Organization, Error>> InviteMemberToOrganizationAsync(ICallerContext caller, string id, string? userId,
         string? emailAddress, CancellationToken cancellationToken);
 
     Task<Result<SearchResults<OrganizationMember>, Error>> ListMembersForOrganizationAsync(ICallerContext caller,
         string? id, SearchOptions searchOptions, GetOptions getOptions, CancellationToken cancellationToken);
 
+    Task<Result<SearchResults<OrganizationWithReferralCode>, Error>> SearchAllOrganizationReferralsAsync(
+        ICallerContext caller, SearchOptions searchOptions, GetOptions getOptions, CancellationToken cancellationToken);
+
     Task<Result<Organization, Error>> UnassignRolesFromOrganizationAsync(ICallerContext caller, string id,
         string userId, List<string> roles, CancellationToken cancellationToken);
 
     Task<Result<Organization, Error>> UnInviteMemberFromOrganizationAsync(ICallerContext caller, string id,
         string userId, CancellationToken cancellationToken);
-
-    Task<Result<Organization, Error>> GetSharedOrganizationForCallerEmailDomainAsync(ICallerContext caller,
-        CancellationToken cancellationToken);
 }

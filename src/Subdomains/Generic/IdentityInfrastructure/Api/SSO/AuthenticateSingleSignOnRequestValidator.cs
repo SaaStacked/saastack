@@ -27,5 +27,10 @@ public class AuthenticateSingleSignOnRequestValidator : AbstractValidator<Authen
             .Matches(Validations.OAuth2.CodeVerifier)
             .WithMessage(Resources.AuthenticateSingleSignOnRequestValidator_InvalidCodeVerifier)
             .When(req => req.CodeVerifier.HasValue());
+
+        RuleFor(req => req.ReferralCode)
+            .Matches(Validations.Credentials.ReferralCode)
+            .WithMessage(Resources.RegisterPersonPasswordRequestValidator_InvalidReferralCode)
+            .When(req => req.ReferralCode.HasValue());
     }
 }

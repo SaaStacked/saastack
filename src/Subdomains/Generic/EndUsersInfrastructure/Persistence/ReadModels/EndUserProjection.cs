@@ -56,6 +56,7 @@ public class EndUserProjection : IReadModelProjection
                         dto.Username = e.Username;
                         dto.Roles = Roles.Create(e.Roles.ToArray()).Value;
                         dto.Features = Features.Create(e.Features.ToArray()).Value;
+                        dto.ReferralCode = e.ReferralCode;
                     }, cancellationToken),
                     _invitations.HandleUpdateAsync(e.RootId, dto => { dto.Status = e.Status; },
                         cancellationToken));

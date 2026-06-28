@@ -86,6 +86,19 @@ public sealed class OrganizationRoot : AggregateRootBase
         }
     }
 
+    public Optional<string> ReferralCode
+    {
+        get
+        {
+            if (Settings.Properties.TryGetValue(nameof(ReferralCode), out var setting))
+            {
+                return ((string)setting.Value).ToOptional();
+            }
+
+            return Optional<string>.None;
+        }
+    }
+
     public DatacenterLocation HostRegion { get; private set; } = DatacenterLocations.Unknown;
 
     public Memberships Memberships { get; private set; } = Memberships.Empty;

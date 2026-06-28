@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import z from 'zod';
 import FormAction from '../../../framework/components/form/FormAction.tsx';
 import FormCheckbox from '../../../framework/components/form/formCheckbox/FormCheckbox.tsx';
@@ -13,6 +13,9 @@ import { RegisterCredentialsAction } from '../actions/registerCredentials.ts';
 
 export const CredentialsRegisterPage: React.FC = () => {
   const { t: translate } = useTranslation();
+  const [queryString] = useSearchParams();
+  const invitationToken = queryString.get('token');
+  const referralCode = queryString.get('refer');
   const register = RegisterCredentialsAction();
   return (
     <FormPage title={translate('pages.identity.credentials_register.title')}>
@@ -43,7 +46,9 @@ export const CredentialsRegisterPage: React.FC = () => {
             ),
             locale: z.string().optional(),
             timezone: z.string().optional(),
-            countryCode: z.string().optional()
+            countryCode: z.string().optional(),
+            referralCode: z.string().optional(),
+            invitationToken: z.string().optional()
           })
           .refine((data) => data.password === data.confirmPassword, {
             message: translate('pages.identity.credentials_register.form.fields.confirm_password.validation'),
@@ -52,7 +57,9 @@ export const CredentialsRegisterPage: React.FC = () => {
         defaultValues={{
           timezone: getBrowserTimezone(),
           locale: getBrowserLocale(),
-          countryCode: getBrowserCountry()
+          countryCode: getBrowserCountry(),
+          referralCode,
+          invitationToken
         }}
         onSuccess={() => {
           window.location.replace(RoutePaths.RegisterRedirect); // no browser history

@@ -93,6 +93,9 @@ public class UserProfileProjection : IReadModelProjection
                     dto => { dto.DefaultOrganizationId = e.ToOrganizationId; },
                     cancellationToken);
 
+            case AttributeAdded _:
+                return true;
+
             default:
                 return false;
         }

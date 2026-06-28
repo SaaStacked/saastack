@@ -282,9 +282,10 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     /// <summary>
     ///     Registers the user and authenticates them
     /// </summary>
-    protected async Task<LoginDetails> LoginUserAsync(string emailAddress, string firstName)
+    protected async Task<LoginDetails> LoginUserAsync(string emailAddress, string firstName,
+        string? referralCode = null)
     {
-        var person = await RegisterUserAsync(emailAddress, firstName);
+        var person = await RegisterUserAsync(emailAddress, firstName, referralCode: referralCode);
 
         var user = person.Person.User;
         return await ReAuthenticateUserAsync(user, emailAddress);
@@ -293,7 +294,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     /// <summary>
     ///     Registers the user and authenticates them
     /// </summary>
-    protected async Task<LoginDetails> LoginUserAsync(LoginUser who = LoginUser.PersonA)
+    protected async Task<LoginDetails> LoginUserAsync(LoginUser who = LoginUser.PersonA, string? referralCode = null)
     {
         var emailAddress = GetEmailForPerson(who);
         var firstName = who switch
@@ -304,7 +305,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
             _ => throw new ArgumentOutOfRangeException(nameof(who), who, null)
         };
 
-        return await LoginUserAsync(emailAddress, firstName);
+        return await LoginUserAsync(emailAddress, firstName, referralCode);
     }
 
     /// <summary>
@@ -350,7 +351,7 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
     }
 
     protected async Task<RegisterPersonCredentialResponse> RegisterUserAsync(string emailAddress,
-        string firstName = "afirstname", string lastName = "alastname")
+        string firstName = "afirstname", string lastName = "alastname", string? referralCode = null)
     {
         var person = await Api.PostAsync(new RegisterPersonCredentialRequest
         {
@@ -358,7 +359,8 @@ public abstract class WebApiSpec<THost> : IClassFixture<WebApiSetup<THost>>, IDi
             FirstName = firstName,
             LastName = lastName,
             Password = PasswordForPerson,
-            TermsAndConditionsAccepted = true
+            TermsAndConditionsAccepted = true,
+            ReferralCode = referralCode
         });
 
         var token = UserNotificationsService.LastRegistrationConfirmationToken;

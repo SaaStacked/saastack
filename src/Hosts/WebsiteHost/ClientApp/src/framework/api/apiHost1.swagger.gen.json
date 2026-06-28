@@ -12982,6 +12982,148 @@
         ]
       }
     },
+    "/organizations/{Id}/referrals": {
+      "get": {
+        "tags": [
+          "OrganizationsApi"
+        ],
+        "summary": "Fetches the organizations that have referral codes",
+        "description": "(request type: SearchAllOrganizationReferralsRequest)",
+        "operationId": "SearchAllOrganizationReferrals",
+        "parameters": [
+          {
+            "name": "Embed",
+            "in": "query",
+            "description": "List of child resources to embed in the resource",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Filter",
+            "in": "query",
+            "description": "List of fields to include and exclude in the search result",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The maximum number of search results to return",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "The zero-based index of the first search result",
+            "style": "simple",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "description": "List of fields to sort the results on",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrganizationReferralsResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrganizationReferralsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Validation": {
+                    "summary": "Validation Error",
+                    "description": "The incoming request is invalid in some way. The 'errors' will contain the details of each of the validation errors.",
+                    "value": "{\n  \"type\": \"https://datatracker.ietf.org/doc/html/rfc9110#section-15.5\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"The error for FieldA\",\n  \"instance\": \"https://api.server.com/resource/123\",\n  \"errors\": [\n    {\n      \"reason\": \"The error for FieldA\",\n      \"rule\": \"The Code for FieldA\"\n    },\n    {\n      \"reason\": \"The error for FieldB\",\n      \"rule\": \"The Code for FieldB\"\n    }\n  ]\n}"
+                  },
+                  "RuleViolation": {
+                    "summary": "Rule Violation",
+                    "description": "A violation of a rule about whether this operation can be executed by this caller, or in the state the resource is in, at this time.",
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"A description of the violation\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized: The client must authenticate itself to get the requested response"
+          },
+          "402": {
+            "description": "Payment Required: The client must have payment information to get the requested response"
+          },
+          "403": {
+            "description": "Forbidden: The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource"
+          },
+          "404": {
+            "description": "Not Found: The server cannot find the requested resource"
+          },
+          "405": {
+            "description": "Method Not Allowed: The request is not allowed by the current state of the resource"
+          },
+          "409": {
+            "description": "Conflict: The request conflicts with the current state of the resource"
+          },
+          "423": {
+            "description": "Locked: The current resource is locked and cannot be accessed"
+          },
+          "500": {
+            "description": "Internal Server Error: An unexpected error occured on the server, which should not have happened in normal operation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "Unexpected": {
+                    "summary": "Unexpected Error",
+                    "description": "An unexpected error occured on the server, which should not have happened in normal operation. Please report this error, and the conditions under which it was discovered, to the support team.",
+                    "value": "{\n  \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.6.1\",\n  \"title\": \"An error occurred while processing your request.\",\n  \"status\": 500,\n  \"detail\": \"A description of the error\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          },
+          {
+            "APIKey": [ ]
+          }
+        ]
+      }
+    },
     "/organizations/{Id}/settings": {
       "get": {
         "tags": [
@@ -22129,6 +22271,10 @@
             "minLength": 1,
             "type": "string"
           },
+          "referralCode": {
+            "type": "string",
+            "nullable": true
+          },
           "termsAndConditionsAccepted": {
             "type": "boolean",
             "nullable": true
@@ -23646,6 +23792,25 @@
         },
         "additionalProperties": false
       },
+      "GetOrganizationReferralsResponse": {
+        "required": [
+          "metadata",
+          "organizations"
+        ],
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/SearchResultMetadata"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationWithReferralCode"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "GetOrganizationResponse": {
         "required": [
           "organization"
@@ -25040,14 +25205,14 @@
           "name": {
             "type": "string"
           },
+          "onboardingStatus": {
+            "$ref": "#/components/schemas/OrganizationOnboardingStatus"
+          },
           "ownership": {
             "$ref": "#/components/schemas/OrganizationOwnership"
           },
           "id": {
             "type": "string"
-          },
-          "onboardingStatus": {
-            "$ref": "#/components/schemas/OrganizationOnboardingStatus"
           }
         },
         "additionalProperties": false
@@ -25398,6 +25563,41 @@
           "personal"
         ],
         "type": "string"
+      },
+      "OrganizationWithReferralCode": {
+        "required": [
+          "createdById",
+          "id",
+          "name",
+          "onboardingStatus",
+          "ownership",
+          "referralCode"
+        ],
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string"
+          },
+          "createdById": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "onboardingStatus": {
+            "$ref": "#/components/schemas/OrganizationOnboardingStatus"
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/OrganizationOwnership"
+          },
+          "id": {
+            "type": "string"
+          },
+          "referralCode": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       },
       "PaymentMethodStatus": {
         "enum": [
@@ -25976,6 +26176,10 @@
           "password": {
             "minLength": 1,
             "type": "string"
+          },
+          "referralCode": {
+            "type": "string",
+            "nullable": true
           },
           "termsAndConditionsAccepted": {
             "type": "boolean"
@@ -26976,6 +27180,7 @@
       "UserProfile": {
         "required": [
           "address",
+          "attributes",
           "classification",
           "displayName",
           "id",
@@ -27016,6 +27221,16 @@
           },
           "id": {
             "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
           }
         },
         "additionalProperties": false
@@ -27053,6 +27268,7 @@
       "UserProfileForCaller": {
         "required": [
           "address",
+          "attributes",
           "classification",
           "defaultOrganizationId",
           "displayName",
@@ -27097,6 +27313,16 @@
           },
           "id": {
             "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "required": [
+                "chars",
+                "length"
+              ],
+              "type": "string"
+            }
           },
           "defaultOrganizationId": {
             "type": "string"

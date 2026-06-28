@@ -234,7 +234,8 @@ public partial class EndUsersApplication : IEndUsersApplication
         var (platformRoles, platformFeatures, _, _) =
             EndUserRoot.GetInitialRolesAndFeatures(RolesAndFeaturesUseCase.CreatingMachine, caller.IsAuthenticated);
         var registered =
-            machine.Register(platformRoles, platformFeatures, userProfile.Value, Optional<EmailAddress>.None);
+            machine.Register(platformRoles, platformFeatures, userProfile.Value, Optional<EmailAddress>.None,
+                Optional<string>.None);
         if (registered.IsFailure)
         {
             return registered.Error;
@@ -299,7 +300,8 @@ public partial class EndUsersApplication : IEndUsersApplication
 
     public async Task<Result<EndUserWithProfile, Error>> RegisterPersonAsync(ICallerContext caller,
         string? invitationToken, string emailAddress, string firstName, string? lastName, string? timezone,
-        string? locale, string? countryCode, bool termsAndConditionsAccepted, CancellationToken cancellationToken)
+        string? locale, string? countryCode, bool termsAndConditionsAccepted, string? referralCode,
+        CancellationToken cancellationToken)
     {
         if (!termsAndConditionsAccepted)
         {
@@ -403,7 +405,8 @@ public partial class EndUsersApplication : IEndUsersApplication
         var (platformRoles, platformFeatures, _, _) =
             EndUserRoot.GetInitialRolesAndFeatures(RolesAndFeaturesUseCase.CreatingPerson, caller.IsAuthenticated,
                 username, permittedOperators);
-        var registered = unregisteredUser.Register(platformRoles, platformFeatures, userProfile.Value, username);
+        var registered =
+            unregisteredUser.Register(platformRoles, platformFeatures, userProfile.Value, username, referralCode);
         if (registered.IsFailure)
         {
             return registered.Error;

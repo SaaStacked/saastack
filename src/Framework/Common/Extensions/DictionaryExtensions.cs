@@ -24,6 +24,23 @@ public static class DictionaryExtensions
         return properties;
     }
 
+    /// <summary>
+    ///     Appends a new item to the dictionary, with the specified <see cref="converter" />,
+    ///     if the specified <see cref="condition" /> resolves to true
+    /// </summary>
+    public static Dictionary<TKey, TValue> WithIfTrue<TExpression, TKey, TValue>(
+        this Dictionary<TKey, TValue> properties, TKey key,
+        TExpression value, Predicate<TExpression> condition, Func<TExpression, TValue> converter)
+        where TKey : notnull
+    {
+        if (condition(value))
+        {
+            properties[key] = converter(value);
+        }
+
+        return properties;
+    }
+
 #if !GENERATORS_WORKERS_PROJECT
     /// <summary>
     ///     Converts the instance of the <see cref="TObject" /> to a <see cref="IReadOnlyDictionary{String,String}" />,

@@ -284,6 +284,10 @@ export const AuthenticateSingleSignOnRequestSchema = {
             minLength: 1,
             type: 'string'
         },
+        referralCode: {
+            type: 'string',
+            nullable: true
+        },
         termsAndConditionsAccepted: {
             type: 'boolean',
             nullable: true
@@ -1886,6 +1890,26 @@ export const GetOnboardingResponseSchema = {
     additionalProperties: false
 } as const;
 
+export const GetOrganizationReferralsResponseSchema = {
+    required: [
+        'metadata',
+        'organizations'
+    ],
+    type: 'object',
+    properties: {
+        metadata: {
+            $ref: '#/components/schemas/SearchResultMetadata'
+        },
+        organizations: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/OrganizationWithReferralCode'
+            }
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GetOrganizationResponseSchema = {
     required: [
         'organization'
@@ -3342,14 +3366,14 @@ export const OrganizationSchema = {
         name: {
             type: 'string'
         },
+        onboardingStatus: {
+            $ref: '#/components/schemas/OrganizationOnboardingStatus'
+        },
         ownership: {
             $ref: '#/components/schemas/OrganizationOwnership'
         },
         id: {
             type: 'string'
-        },
-        onboardingStatus: {
-            $ref: '#/components/schemas/OrganizationOnboardingStatus'
         }
     },
     additionalProperties: false
@@ -3712,6 +3736,42 @@ export const OrganizationOwnershipSchema = {
         'personal'
     ],
     type: 'string'
+} as const;
+
+export const OrganizationWithReferralCodeSchema = {
+    required: [
+        'createdById',
+        'id',
+        'name',
+        'onboardingStatus',
+        'ownership',
+        'referralCode'
+    ],
+    type: 'object',
+    properties: {
+        avatarUrl: {
+            type: 'string'
+        },
+        createdById: {
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        },
+        onboardingStatus: {
+            $ref: '#/components/schemas/OrganizationOnboardingStatus'
+        },
+        ownership: {
+            $ref: '#/components/schemas/OrganizationOwnership'
+        },
+        id: {
+            type: 'string'
+        },
+        referralCode: {
+            type: 'string'
+        }
+    },
+    additionalProperties: false
 } as const;
 
 export const PaymentMethodStatusSchema = {
@@ -4319,6 +4379,10 @@ export const RegisterPersonCredentialRequestSchema = {
         password: {
             minLength: 1,
             type: 'string'
+        },
+        referralCode: {
+            type: 'string',
+            nullable: true
         },
         termsAndConditionsAccepted: {
             type: 'boolean'
@@ -5374,6 +5438,7 @@ export const UploadImageResponseSchema = {
 export const UserProfileSchema = {
     required: [
         'address',
+        'attributes',
         'classification',
         'displayName',
         'id',
@@ -5414,6 +5479,16 @@ export const UserProfileSchema = {
         },
         id: {
             type: 'string'
+        },
+        attributes: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
         }
     },
     additionalProperties: false
@@ -5455,6 +5530,7 @@ export const UserProfileEmailAddressClassificationSchema = {
 export const UserProfileForCallerSchema = {
     required: [
         'address',
+        'attributes',
         'classification',
         'defaultOrganizationId',
         'displayName',
@@ -5499,6 +5575,16 @@ export const UserProfileForCallerSchema = {
         },
         id: {
             type: 'string'
+        },
+        attributes: {
+            type: 'object',
+            additionalProperties: {
+                required: [
+                    'chars',
+                    'length'
+                ],
+                type: 'string'
+            }
         },
         defaultOrganizationId: {
             type: 'string'

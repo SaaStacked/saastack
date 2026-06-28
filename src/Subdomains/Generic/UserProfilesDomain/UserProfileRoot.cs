@@ -34,6 +34,8 @@ public sealed class UserProfileRoot : AggregateRootBase
 
     public Address Address { get; private set; } = Address.Default;
 
+    public StringNameValues Attributes { get; private set; } = StringNameValues.Empty;
+
     public Optional<Avatar> Avatar { get; private set; }
 
     public Optional<Identifier> DefaultOrganizationId { get; private set; }
@@ -240,6 +242,19 @@ public sealed class UserProfileRoot : AggregateRootBase
                 return Result.Ok;
             }
 
+            case AttributeAdded added:
+            {
+                var appended = Attributes.Append(added.Name, added.Value);
+                if (appended.IsFailure)
+                {
+                    return appended.Error;
+                }
+
+                Attributes = appended.Value;
+                Recorder.TraceDebug(null, "Profile {Id} added attribute {Attribute}", Id, added.Name);
+                return Result.Ok;
+            }
+
             default:
                 return HandleUnKnownStateChangedEvent(@event);
         }
@@ -422,6 +437,22 @@ public sealed class UserProfileRoot : AggregateRootBase
         }
 
         return RaiseChangeEvent(UserProfilesDomain.Events.AvatarRemoved(Id, UserId, avatarId));
+    }
+
+    public Result<Error> SetAttribute(Identifier modifierId, string name, string value)
+    {
+        if (IsNotOwner(modifierId))
+        {
+            return Error.RoleViolation(Resources.UserProfileRoot_NotOwner);
+        }
+
+        var nothingHasChanged = Attributes.TryGetValue(name, out var oldValue) && oldValue == value;
+        if (nothingHasChanged)
+        {
+            return Result.Ok;
+        }
+
+        return RaiseChangeEvent(UserProfilesDomain.Events.AttributeAdded(Id, UserId, name, value));
     }
 
     public Result<Error> SetContactAddress(Identifier modifierId, Address address)

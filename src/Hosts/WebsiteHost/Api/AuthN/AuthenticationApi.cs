@@ -28,7 +28,8 @@ public sealed class AuthenticationApi : IWebApiService
         AuthenticateRequest request, CancellationToken cancellationToken)
     {
         var tokens = await _authenticationApplication.AuthenticateAsync(_callerFactory.Create(), request.Provider!,
-            request.AuthCode, request.Username, request.Password, request.CodeVerifier, cancellationToken);
+            request.AuthCode, request.Username, request.Password, request.CodeVerifier, request.InvitationToken,
+            request.ReferralCode, cancellationToken);
         if (tokens.IsSuccessful)
         {
             var response = _httpContextAccessor.HttpContext!.Response;

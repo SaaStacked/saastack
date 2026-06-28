@@ -29,4 +29,6 @@ public sealed class Registered : DomainEvent
     public string? Username { get; set; }
 
     public required RegisteredUserProfile UserProfile { get; set; }
+
+    public string? ReferralCode { get; set; }
 }
