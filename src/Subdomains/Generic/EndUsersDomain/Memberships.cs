@@ -90,7 +90,7 @@ public class Memberships : IReadOnlyList<Membership>
         var next = _memberships
             .Except(new[] { DefaultMembership })
             // ReSharper disable once SimplifyLinqExpressionUseMinByAndMaxBy
-            .OrderByDescending(ms => ms.CreatedAtUtc)
+            .OrderByDescending(ms => ms.CreatedAt)
             .FirstOrDefault();
 
         if (next.NotExists())

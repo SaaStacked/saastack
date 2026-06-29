@@ -46,10 +46,10 @@ public class AuthTokensApiSpec : WebApiSpec<Program>
         });
 
         initialTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        initialTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        initialTokens.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         initialTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        initialTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        initialTokens.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
 
         await Task.Delay(TimeSpan
@@ -63,10 +63,10 @@ public class AuthTokensApiSpec : WebApiSpec<Program>
         });
 
         firstTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull().And.NotBe(initialAccessToken);
-        firstTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        firstTokens.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         firstTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull().And.NotBe(initialRefreshToken);
-        firstTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        firstTokens.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
 
         await Task.Delay(TimeSpan
@@ -80,10 +80,10 @@ public class AuthTokensApiSpec : WebApiSpec<Program>
         });
 
         secondTokens.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull().And.NotBe(firstAccessToken);
-        secondTokens.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        secondTokens.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         secondTokens.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull().And.NotBe(firstRefreshToken);
-        secondTokens.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        secondTokens.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
     }
 

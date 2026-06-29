@@ -15,7 +15,7 @@ public class DomainEventNotification : IIdentifiableResource
 
     public required string EventTypeFullName { get; set; }
 
-    public DateTime? LastPersistedAtUtc { get; set; }
+    public DateTime? LastPersistedAt { get; set; }
 
     public required string StreamName { get; set; }
 

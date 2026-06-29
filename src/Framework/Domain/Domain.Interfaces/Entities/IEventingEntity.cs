@@ -5,7 +5,7 @@
 /// </summary>
 public interface IEventingEntity : IDomainEventProducingEntity, IDomainEventConsumingEntity
 {
-    DateTime CreatedAtUtc { get; }
+    DateTime CreatedAt { get; }
 
-    DateTime LastModifiedAtUtc { get; }
+    DateTime LastModifiedAt { get; }
 }

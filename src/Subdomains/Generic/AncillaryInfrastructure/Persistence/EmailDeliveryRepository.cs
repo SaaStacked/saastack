@@ -75,7 +75,7 @@ public class EmailDeliveryRepository : IEmailDeliveryRepository
         var query = Query.From<EmailDelivery>().WhereNoOp();
         if (sinceUtc.HasValue)
         {
-            query = query.AndWhere<DateTime?>(ed => ed.Created, ConditionOperator.GreaterThan, sinceUtc);
+            query = query.AndWhere<DateTime?>(ed => ed.CreatedAt, ConditionOperator.GreaterThan, sinceUtc);
         }
 
         if (organizationId.HasValue())

@@ -48,9 +48,9 @@ public class AggregateRootBaseSpec
     {
         var now = DateTime.UtcNow;
 
-        _aggregate.LastPersistedAtUtc.Should().BeNone();
-        _aggregate.CreatedAtUtc.Should().BeNear(now);
-        _aggregate.LastModifiedAtUtc.Should().BeAfter(_aggregate.CreatedAtUtc);
+        _aggregate.LastPersistedAt.Should().BeNone();
+        _aggregate.CreatedAt.Should().BeNear(now);
+        _aggregate.LastModifiedAt.Should().BeAfter(_aggregate.CreatedAt);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class AggregateRootBaseSpec
     {
         _aggregate.Events.Count.Should().Be(1);
         _aggregate.Events.Last().Should().BeOfType<TestAggregateRoot.CreateEvent>();
-        _aggregate.LastModifiedAtUtc.Should().BeAfter(_aggregate.CreatedAtUtc);
+        _aggregate.LastModifiedAt.Should().BeAfter(_aggregate.CreatedAt);
     }
 
     [Fact]
@@ -146,9 +146,9 @@ public class AggregateRootBaseSpec
                 new HydrationProperties());
 
         created.GetChanges().Value.Should().BeEmpty();
-        created.LastPersistedAtUtc.Should().BeNone();
-        created.CreatedAtUtc.Should().Be(DateTime.MinValue);
-        created.LastModifiedAtUtc.Should().Be(DateTime.MinValue);
+        created.LastPersistedAt.Should().BeNone();
+        created.CreatedAt.Should().Be(DateTime.MinValue);
+        created.LastModifiedAt.Should().Be(DateTime.MinValue);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class AggregateRootBaseSpec
         _aggregate.Events[0].Should().BeOfType<TestAggregateRoot.CreateEvent>();
         _aggregate.Events.Last().As<TestAggregateRoot.ChangeEvent>().APropertyName.Should().Be("achangedvalue");
         _aggregate.Events.Last().OccurredUtc.Should().BeNear(DateTime.UtcNow);
-        _aggregate.LastModifiedAtUtc.Should().BeNear(DateTime.UtcNow);
+        _aggregate.LastModifiedAt.Should().BeNear(DateTime.UtcNow);
     }
 
     [Fact]
@@ -226,7 +226,7 @@ public class AggregateRootBaseSpec
     {
         _aggregate.ClearChanges();
 
-        _aggregate.LastPersistedAtUtc.Value.Should().BeNear(DateTime.UtcNow);
+        _aggregate.LastPersistedAt.Value.Should().BeNear(DateTime.UtcNow);
     }
 
     private static EventSourcedChangeEvent CreateEventEntity(string id, int version)

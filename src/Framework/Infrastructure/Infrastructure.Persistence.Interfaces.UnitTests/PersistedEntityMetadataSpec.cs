@@ -61,7 +61,7 @@ public class PersistedEntityMetadataSpec
         result.Types.Count.Should().Be(17);
         result.Types[nameof(TestCommandDomainEntity.Id)].Should().Be(typeof(string));
         result.Types[nameof(TestCommandDomainEntity.IsDeleted)].Should().Be(typeof(Optional<bool>));
-        result.Types[nameof(TestCommandDomainEntity.LastPersistedAtUtc)].Should().Be(typeof(Optional<DateTime>));
+        result.Types[nameof(TestCommandDomainEntity.LastPersistedAt)].Should().Be(typeof(Optional<DateTime>));
         result.Types[nameof(TestCommandDomainEntity.AStringValue)].Should().Be(typeof(string));
         result.Types[nameof(TestCommandDomainEntity.AnIntegerValue)].Should().Be(typeof(int));
         result.Types[nameof(TestCommandDomainEntity.ABooleanValue)].Should().Be(typeof(bool));
@@ -89,7 +89,7 @@ public class PersistedEntityMetadataSpec
         result.Types.Count.Should().Be(17);
         result.Types[nameof(TestCommandDomainEntity.Id)].Should().Be(typeof(string));
         result.Types[nameof(TestCommandDomainEntity.IsDeleted)].Should().Be(typeof(Optional<bool>));
-        result.Types[nameof(TestCommandDomainEntity.LastPersistedAtUtc)].Should().Be(typeof(Optional<DateTime>));
+        result.Types[nameof(TestCommandDomainEntity.LastPersistedAt)].Should().Be(typeof(Optional<DateTime>));
         result.Types[nameof(TestCommandDomainEntity.AStringValue)].Should().Be(typeof(string));
         result.Types[nameof(TestCommandDomainEntity.AnIntegerValue)].Should().Be(typeof(int));
         result.Types[nameof(TestCommandDomainEntity.ABooleanValue)].Should().Be(typeof(bool));
@@ -232,7 +232,7 @@ public class TestEntityWithNoMappingsEntity : IDehydratableEntity
 
     public Optional<bool> IsDeleted { get; } = false;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 }
 
 public class TestEntityWithNoSortFieldEntity : IDehydratableEntity
@@ -246,7 +246,7 @@ public class TestEntityWithNoSortFieldEntity : IDehydratableEntity
 
     public Optional<bool> IsDeleted { get; } = false;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 }
 
 public class TestEntityWithMappingsEntity : IDehydratableEntity
@@ -260,7 +260,7 @@ public class TestEntityWithMappingsEntity : IDehydratableEntity
 
     public Optional<bool> IsDeleted { get; } = false;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 
     [UsedImplicitly]
     public static Dictionary<string, Func<IReadOnlyDictionary<string, object?>, object?>> FieldReadMappings()
@@ -283,7 +283,7 @@ public class TestEntityWithDefaultOrderingFieldEntity : IDehydratableEntity
 
     public Optional<bool> IsDeleted { get; } = false;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 
     [UsedImplicitly]
     public static string DefaultOrderingField()

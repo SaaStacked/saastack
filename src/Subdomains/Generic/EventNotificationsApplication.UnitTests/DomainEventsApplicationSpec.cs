@@ -58,7 +58,7 @@ public class DomainEventsApplicationSpec
         var eventNotification = new DomainEventNotification
         {
             Id = "anid",
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = "astreamname",
             Version = 1,
             AggregateTypeFullName = "anaggregatetypefullname",
@@ -127,7 +127,7 @@ public class DomainEventsApplicationSpec
         var eventNotification1 = new DomainEventNotification
         {
             Id = "anid1",
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = "astreamname",
             Version = 1,
             AggregateTypeFullName = "anaggregatetypefullname",
@@ -143,7 +143,7 @@ public class DomainEventsApplicationSpec
         var eventNotification2 = new DomainEventNotification
         {
             Id = "anid2",
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = "astreamname",
             Version = 1,
             AggregateTypeFullName = "anaggregatetypefullname",

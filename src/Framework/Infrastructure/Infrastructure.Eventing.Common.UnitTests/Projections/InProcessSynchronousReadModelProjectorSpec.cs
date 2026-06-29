@@ -82,7 +82,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 RootAggregateType = typeof(TestAggregateRoot),
                 EventType = typeof(TestEvent),
                 Id = null!,
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!,
                 Version = 0
             }
@@ -113,7 +113,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                     RootAggregateType = typeof(TestAggregateRoot),
                     EventType = typeof(TestEvent),
                     Id = null!,
-                    LastPersistedAtUtc = null,
+                    LastPersistedAt = null,
                     StreamName = null!,
                     Version = 6
                 }
@@ -136,7 +136,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 4,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -147,7 +147,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = 5,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -158,7 +158,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = 6,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -191,7 +191,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = startingCheckpoint,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -202,7 +202,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = startingCheckpoint + 1,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -213,7 +213,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = startingCheckpoint + 2,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -248,7 +248,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 3,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             }
         ], CancellationToken.None);
@@ -279,7 +279,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid1" },
                 Version = 3,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -290,7 +290,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid2" },
                 Version = 4,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             },
 
@@ -301,7 +301,7 @@ public sealed class InProcessSynchronousReadModelProjectorSpec : IDisposable
                 OriginalEvent = new TestEvent { RootId = "aneventid3" },
                 Version = 5,
                 EventType = typeof(TestEvent),
-                LastPersistedAtUtc = null,
+                LastPersistedAt = null,
                 StreamName = null!
             }
         ], CancellationToken.None);

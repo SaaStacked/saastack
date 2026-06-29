@@ -92,7 +92,7 @@ public static class EventNotifyingStoreExtensions
             RootAggregateType = changeEvent.AggregateType,
             EventType = changeEvent.EventType,
             Id = changeEvent.Id,
-            LastPersistedAtUtc = changeEvent.LastPersistedAtUtc,
+            LastPersistedAt = changeEvent.LastPersistedAt,
             StreamName = streamName,
             Version = changeEvent.Version
         };

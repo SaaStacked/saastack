@@ -56,7 +56,7 @@ export type AssociateCredentialMfaAuthenticatorForCallerResponse = {
 export type Audit = {
     againstId?: string;
     auditCode: string;
-    created: Date;
+    createdUtc: Date;
     messageTemplate: string;
     organizationId?: string;
     templateArguments: Array<string>;
@@ -89,7 +89,7 @@ export type AuthenticateTokens = {
 };
 
 export type AuthenticationToken = {
-    expiresOn?: Date;
+    expiresOnUtc?: Date;
     type: TokenType;
     value: string;
 };
@@ -329,15 +329,15 @@ export type DeliverUsageRequest = {
 export type DeliveredEmail = {
     attempts: Array<Date>;
     body: string;
-    created: Date;
-    deliveredAt?: Date;
-    failedDeliveryAt?: Date;
+    createdAtUtc: Date;
+    deliveredAtUtc?: Date;
+    failedDeliveryAtUtc?: Date;
     failedDeliveryReason?: string;
     isDelivered: boolean;
     isDeliveryFailed: boolean;
     isSent: boolean;
     organizationId?: string;
-    sentAt?: Date;
+    sentAtUtc?: Date;
     subject: string;
     tags: Array<string>;
     toDisplayName: string;
@@ -348,15 +348,15 @@ export type DeliveredEmail = {
 export type DeliveredSms = {
     attempts: Array<Date>;
     body: string;
-    created: Date;
-    deliveredAt?: Date;
-    failedDeliveryAt?: Date;
+    createdAtUtc: Date;
+    deliveredAtUtc?: Date;
+    failedDeliveryAtUtc?: Date;
     failedDeliveryReason?: string;
     isDelivered: boolean;
     isDeliveryFailed: boolean;
     isSent: boolean;
     organizationId?: string;
-    sentAt?: Date;
+    sentAtUtc?: Date;
     tags: Array<string>;
     toPhoneNumber: string;
     id: string;
@@ -429,7 +429,7 @@ export type EventNotification = {
     aggregateTypeFullName: string;
     eventJsonData: string;
     eventTypeFullName: string;
-    lastPersistedAtUtc?: Date;
+    lastPersistedAt?: Date;
     streamName: string;
     version: number;
     id: string;
@@ -549,11 +549,6 @@ export type GetOAuth2ClientWithSecretsResponse = {
 
 export type GetOnboardingResponse = {
     workflow: OrganizationOnboardingWorkflow;
-};
-
-export type GetOrganizationReferralsResponse = {
-    metadata: SearchResultMetadata;
-    organizations: Array<OrganizationWithReferralCode>;
 };
 
 export type GetOrganizationResponse = {
@@ -1007,14 +1002,14 @@ export type OrganizationOnboardingBranchSchema = {
 };
 
 export type OrganizationOnboardingState = {
-    completedAt?: Date;
+    completedAtUtc?: Date;
     completedBy?: string;
     completedWeight: number;
     currentStep: OrganizationOnboardingStep;
     pathAhead: Array<OrganizationOnboardingStep>;
     pathTaken: Array<OrganizationOnboardingStep>;
     progressPercentage: number;
-    startedAt: Date;
+    startedAtUtc: Date;
     status: OrganizationOnboardingStatus;
     totalWeight: number;
     values: {
@@ -1031,9 +1026,9 @@ export const OrganizationOnboardingStatus = {
 export type OrganizationOnboardingStatus = typeof OrganizationOnboardingStatus[keyof typeof OrganizationOnboardingStatus];
 
 export type OrganizationOnboardingStep = {
-    enteredAt?: Date;
+    enteredAtUtc?: Date;
     id: string;
-    lastUpdatedAt?: Date;
+    lastUpdatedAtUtc?: Date;
     title: string;
     values: {
         [key: string]: string;
@@ -1360,6 +1355,11 @@ export type SearchAllEventNotificationsResponse = {
 export type SearchAllOAuth2ClientsResponse = {
     metadata: SearchResultMetadata;
     clients: Array<OAuth2Client>;
+};
+
+export type SearchAllOrganizationReferralsResponse = {
+    metadata: SearchResultMetadata;
+    organizations: Array<OrganizationWithReferralCode>;
 };
 
 export type SearchAllSmsDeliveriesResponse = {
@@ -8929,10 +8929,10 @@ export type SearchAllOrganizationReferralsResponses = {
     /**
      * OK
      */
-    200: GetOrganizationReferralsResponse;
+    200: SearchAllOrganizationReferralsResponse;
 };
 
-export type SearchAllOrganizationReferralsResponse = SearchAllOrganizationReferralsResponses[keyof SearchAllOrganizationReferralsResponses];
+export type SearchAllOrganizationReferralsResponse2 = SearchAllOrganizationReferralsResponses[keyof SearchAllOrganizationReferralsResponses];
 
 export type GetOrganizationSettingsData = {
     body?: never;

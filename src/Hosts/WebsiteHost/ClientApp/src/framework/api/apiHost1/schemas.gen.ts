@@ -189,7 +189,7 @@ export const AssociateCredentialMfaAuthenticatorForCallerResponseSchema = {
 export const AuditSchema = {
     required: [
         'auditCode',
-        'created',
+        'createdUtc',
         'id',
         'messageTemplate',
         'templateArguments'
@@ -202,7 +202,7 @@ export const AuditSchema = {
         auditCode: {
             type: 'string'
         },
-        created: {
+        createdUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -327,7 +327,7 @@ export const AuthenticationTokenSchema = {
     ],
     type: 'object',
     properties: {
-        expiresOn: {
+        expiresOnUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -1117,7 +1117,7 @@ export const DeliveredEmailSchema = {
     required: [
         'attempts',
         'body',
-        'created',
+        'createdAtUtc',
         'id',
         'isDelivered',
         'isDeliveryFailed',
@@ -1159,15 +1159,15 @@ export const DeliveredEmailSchema = {
         body: {
             type: 'string'
         },
-        created: {
+        createdAtUtc: {
             type: 'string',
             format: 'date-time'
         },
-        deliveredAt: {
+        deliveredAtUtc: {
             type: 'string',
             format: 'date-time'
         },
-        failedDeliveryAt: {
+        failedDeliveryAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -1186,7 +1186,7 @@ export const DeliveredEmailSchema = {
         organizationId: {
             type: 'string'
         },
-        sentAt: {
+        sentAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -1220,7 +1220,7 @@ export const DeliveredSmsSchema = {
     required: [
         'attempts',
         'body',
-        'created',
+        'createdAtUtc',
         'id',
         'isDelivered',
         'isDeliveryFailed',
@@ -1260,15 +1260,15 @@ export const DeliveredSmsSchema = {
         body: {
             type: 'string'
         },
-        created: {
+        createdAtUtc: {
             type: 'string',
             format: 'date-time'
         },
-        deliveredAt: {
+        deliveredAtUtc: {
             type: 'string',
             format: 'date-time'
         },
-        failedDeliveryAt: {
+        failedDeliveryAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -1287,7 +1287,7 @@ export const DeliveredSmsSchema = {
         organizationId: {
             type: 'string'
         },
-        sentAt: {
+        sentAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -1476,7 +1476,7 @@ export const EventNotificationSchema = {
         eventTypeFullName: {
             type: 'string'
         },
-        lastPersistedAtUtc: {
+        lastPersistedAt: {
             type: 'string',
             format: 'date-time'
         },
@@ -1885,26 +1885,6 @@ export const GetOnboardingResponseSchema = {
     properties: {
         workflow: {
             $ref: '#/components/schemas/OrganizationOnboardingWorkflow'
-        }
-    },
-    additionalProperties: false
-} as const;
-
-export const GetOrganizationReferralsResponseSchema = {
-    required: [
-        'metadata',
-        'organizations'
-    ],
-    type: 'object',
-    properties: {
-        metadata: {
-            $ref: '#/components/schemas/SearchResultMetadata'
-        },
-        organizations: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/OrganizationWithReferralCode'
-            }
         }
     },
     additionalProperties: false
@@ -3504,14 +3484,14 @@ export const OrganizationOnboardingStateSchema = {
         'pathAhead',
         'pathTaken',
         'progressPercentage',
-        'startedAt',
+        'startedAtUtc',
         'status',
         'totalWeight',
         'values'
     ],
     type: 'object',
     properties: {
-        completedAt: {
+        completedAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -3541,7 +3521,7 @@ export const OrganizationOnboardingStateSchema = {
             type: 'integer',
             format: 'int32'
         },
-        startedAt: {
+        startedAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -3584,14 +3564,14 @@ export const OrganizationOnboardingStepSchema = {
     ],
     type: 'object',
     properties: {
-        enteredAt: {
+        enteredAtUtc: {
             type: 'string',
             format: 'date-time'
         },
         id: {
             type: 'string'
         },
-        lastUpdatedAt: {
+        lastUpdatedAtUtc: {
             type: 'string',
             format: 'date-time'
         },
@@ -4644,6 +4624,26 @@ export const SearchAllOAuth2ClientsResponseSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/OAuth2Client'
+            }
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const SearchAllOrganizationReferralsResponseSchema = {
+    required: [
+        'metadata',
+        'organizations'
+    ],
+    type: 'object',
+    properties: {
+        metadata: {
+            $ref: '#/components/schemas/SearchResultMetadata'
+        },
+        organizations: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/OrganizationWithReferralCode'
             }
         }
     },

@@ -393,7 +393,7 @@ internal static class SSOProvidersServiceConversionExtensions
         {
             var tok = IdentityDomain.AuthToken.Create(token.Type.ToEnumOrDefault(AuthTokenType.AccessToken),
                 token.Value,
-                token.ExpiresOn, encryptionService);
+                token.ExpiresOnUtc, encryptionService);
             if (tok.IsFailure)
             {
                 return tok.Error;
@@ -442,14 +442,14 @@ internal static class SSOProvidersServiceConversionExtensions
             Provider = providerTokens.ProviderName,
             AccessToken = new AuthenticationToken
             {
-                ExpiresOn = accessToken.ExpiresOn,
+                ExpiresOnUtc = accessToken.ExpiresOn,
                 Type = TokenType.AccessToken,
                 Value = accessToken.GetDecryptedValue(encryptionService)
             },
             RefreshToken = refreshToken.Exists()
                 ? new AuthenticationToken
                 {
-                    ExpiresOn = refreshToken.ExpiresOn,
+                    ExpiresOnUtc = refreshToken.ExpiresOn,
                     Type = TokenType.RefreshToken,
                     Value = refreshToken.GetDecryptedValue(encryptionService)
                 }
@@ -459,7 +459,7 @@ internal static class SSOProvidersServiceConversionExtensions
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = otherToken.Value.ExpiresOn,
+                        ExpiresOnUtc = otherToken.Value.ExpiresOn,
                         Type = TokenType.OtherToken,
                         Value = otherToken.Value.GetDecryptedValue(encryptionService)
                     }
@@ -481,6 +481,6 @@ internal static class SSOProvidersServiceConversionExtensions
 
     private static AuthToken ToAuthToken(this AuthenticationToken token)
     {
-        return new AuthToken(token.Type, token.Value, token.ExpiresOn);
+        return new AuthToken(token.Type, token.Value, token.ExpiresOnUtc);
     }
 }

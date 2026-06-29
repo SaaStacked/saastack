@@ -22,7 +22,7 @@ public abstract class PersistedEntity
     {
         Metadata = new PersistedEntityMetadata();
         Add(nameof(Id), id);
-        Add(nameof(LastPersistedAtUtc), Optional<DateTime>.None);
+        Add(nameof(LastPersistedAt), Optional<DateTime>.None);
         Add(nameof(IsDeleted), Optional<bool>.None);
     }
 
@@ -38,10 +38,10 @@ public abstract class PersistedEntity
         set => PropertyValues.AddOrUpdate(nameof(IsDeleted), value);
     }
 
-    public Optional<DateTime> LastPersistedAtUtc
+    public Optional<DateTime> LastPersistedAt
     {
-        get => PropertyValues.GetValueOrDefault<DateTime>(nameof(LastPersistedAtUtc));
-        set => PropertyValues.AddOrUpdate(nameof(LastPersistedAtUtc), value);
+        get => PropertyValues.GetValueOrDefault<DateTime>(nameof(LastPersistedAt));
+        set => PropertyValues.AddOrUpdate(nameof(LastPersistedAt), value);
     }
 
     public PersistedEntityMetadata Metadata { get; }

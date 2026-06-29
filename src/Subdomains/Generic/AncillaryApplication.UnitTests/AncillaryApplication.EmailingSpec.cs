@@ -352,14 +352,14 @@ public class AncillaryApplicationEmailingSpec
         {
             Id = "anid",
             Body = "abody",
-            Sent = datum,
-            SendFailed = Optional<DateTime?>.None,
+            SentAt = datum,
+            SendFailedAt = Optional<DateTime?>.None,
             Attempts = SendingAttempts.Create([datum]).Value,
             MessageId = "amessageid",
             Subject = "asubject",
             ToDisplayName = "arecipient",
             ToEmailAddress = "arecipient@company.com",
-            LastAttempted = datum
+            LastAttemptedAt = datum
         };
         _emailDeliveryRepository.Setup(edr =>
                 edr.SearchAllAsync(It.IsAny<DateTime?>(), It.IsAny<string?>(),

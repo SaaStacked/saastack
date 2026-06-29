@@ -235,7 +235,7 @@ public static class DomainEventConversionExtensions
             AggregateTypeFullName = notification.AggregateTypeFullName,
             EventTypeFullName = notification.EventTypeFullName,
             EventJsonData = notification.EventJsonData,
-            LastPersistedAtUtc = notification.LastPersistedAtUtc,
+            LastPersistedAt = notification.LastPersistedAt,
             StreamName = notification.StreamName,
             Version = notification.Version,
             SubscriberRef = notification.SubscriberRef

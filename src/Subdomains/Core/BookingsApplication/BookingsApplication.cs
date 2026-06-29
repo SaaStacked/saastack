@@ -45,7 +45,7 @@ public class BookingsApplication : IBookingsApplication
         }
 
         var released = await _carsService.ReleaseCarAvailabilityAsync(caller, organizationId, booking.CarId.Value,
-            booking.Start.Value, booking.End.Value, cancellationToken);
+            booking.StartedAt.Value, booking.EndsAt.Value, cancellationToken);
         if (released.IsFailure)
         {
             return released.Error;
@@ -64,10 +64,10 @@ public class BookingsApplication : IBookingsApplication
             {
                 { UsageConstants.Properties.Id, booking.Id },
                 { UsageConstants.Properties.TenantId, booking.OrganizationId },
-                { UsageConstants.Properties.Started, booking.Start.Value.Hour },
+                { UsageConstants.Properties.Started, booking.StartedAt.Value.Hour },
                 {
                     UsageConstants.Properties.Duration,
-                    booking.End.Value.Subtract(booking.Start.Value).Hours
+                    booking.EndsAt.Value.Subtract(booking.StartedAt.Value).Hours
                 }
             });
 
@@ -120,10 +120,10 @@ public class BookingsApplication : IBookingsApplication
             {
                 { UsageConstants.Properties.Id, booking.Id },
                 { UsageConstants.Properties.TenantId, booking.OrganizationId },
-                { UsageConstants.Properties.Started, booking.Start.Value.Hour },
+                { UsageConstants.Properties.Started, booking.StartedAt.Value.Hour },
                 {
                     UsageConstants.Properties.Duration,
-                    booking.End.Value.Subtract(booking.Start.Value).Hours
+                    booking.EndsAt.Value.Subtract(booking.StartedAt.Value).Hours
                 }
             });
 
@@ -155,8 +155,8 @@ internal static class BookingConversionExtensions
         return new Booking
         {
             Id = booking.Id,
-            StartUtc = booking.Start.ValueOrDefault,
-            EndUtc = booking.End.ValueOrDefault,
+            StartUtc = booking.StartedAt.ValueOrDefault,
+            EndUtc = booking.EndsAt.ValueOrDefault,
             BorrowerId = booking.BorrowerId.ValueOrDefault!,
             CarId = booking.CarId.ValueOrDefault!
         };
@@ -167,8 +167,8 @@ internal static class BookingConversionExtensions
         return new Booking
         {
             Id = booking.Id.ValueOrDefault!,
-            StartUtc = booking.Start.ValueOrDefault,
-            EndUtc = booking.End.ValueOrDefault,
+            StartUtc = booking.StartedAt.ValueOrDefault,
+            EndUtc = booking.EndsAt.ValueOrDefault,
             BorrowerId = booking.BorrowerId.ValueOrDefault!,
             CarId = booking.CarId.ValueOrDefault!
         };

@@ -57,7 +57,7 @@ public class OnboardingApiSpec : WebApiSpec<Program>
 
         var state = result.Content.Value.Workflow.State!;
         state.Status.Should().Be(OrganizationOnboardingStatus.Complete);
-        state.CompletedAt.Should().BeNear(DateTime.UtcNow);
+        state.CompletedAtUtc.Should().BeNear(DateTime.UtcNow);
         state.CompletedBy.Should().Be(login.User.Id);
         state.Values.Should().ContainInOrder(new KeyValuePair<string, string>("aname1", "avalue1"));
     }
@@ -100,7 +100,7 @@ public class OnboardingApiSpec : WebApiSpec<Program>
 
         var state = result.Content.Value.Workflow.State!;
         state.Status.Should().Be(OrganizationOnboardingStatus.Complete);
-        state.CompletedAt.Should().BeNear(DateTime.UtcNow);
+        state.CompletedAtUtc.Should().BeNear(DateTime.UtcNow);
         state.CompletedBy.Should().Be(login.User.Id);
         state.Values.Should().ContainInOrder(new KeyValuePair<string, string>("aname1", "avalue1"));
     }

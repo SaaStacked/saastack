@@ -60,10 +60,10 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
             identifier)
     {
         Id = rehydratingProperties.GetValueOrDefault(nameof(Id), Identifier.Empty());
-        LastPersistedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastPersistedAtUtc));
+        LastPersistedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastPersistedAt));
         IsDeleted = rehydratingProperties.GetValueOrDefault<bool>(nameof(IsDeleted));
-        CreatedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(CreatedAtUtc));
-        LastModifiedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastModifiedAtUtc));
+        CreatedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(CreatedAt));
+        LastModifiedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastModifiedAt));
     }
 
     /// <summary>
@@ -95,12 +95,12 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
         }
 
         var now = DateTime.UtcNow;
-        LastPersistedAtUtc = Optional<DateTime>.None;
+        LastPersistedAt = Optional<DateTime>.None;
         IsDeleted = Optional<bool>.None;
-        CreatedAtUtc = isInstantiating
+        CreatedAt = isInstantiating
             ? now
             : DateTime.MinValue;
-        LastModifiedAtUtc = isInstantiating
+        LastModifiedAt = isInstantiating
             ? now
             : DateTime.MinValue;
     }
@@ -132,18 +132,18 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
         return new HydrationProperties
         {
             { nameof(Id), Id },
-            { nameof(LastPersistedAtUtc), LastPersistedAtUtc },
+            { nameof(LastPersistedAt), LastPersistedAt },
             { nameof(IsDeleted), IsDeleted },
-            { nameof(CreatedAtUtc), CreatedAtUtc },
-            { nameof(LastModifiedAtUtc), LastModifiedAtUtc }
+            { nameof(CreatedAt), CreatedAt },
+            { nameof(LastModifiedAt), LastModifiedAt }
         };
     }
 
     public Optional<bool> IsDeleted { get; private protected set; }
 
-    public Optional<DateTime> LastPersistedAtUtc { get; }
+    public Optional<DateTime> LastPersistedAt { get; }
 
-    public DateTime CreatedAtUtc { get; }
+    public DateTime CreatedAt { get; }
 
     Result<Error> IDomainEventConsumingEntity.HandleStateChanged(IDomainEvent @event, bool isReconstituting)
     {
@@ -152,7 +152,7 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
 
     ISingleValueObject<string> IIdentifiableEntity.Id => Id;
 
-    public DateTime LastModifiedAtUtc { get; private set; }
+    public DateTime LastModifiedAt { get; private set; }
 
     /// <summary>
     ///     Raises an @event, and then validates the invariants
@@ -183,7 +183,7 @@ public abstract class EntityBase : IEntity, IEventingEntity, IDehydratableEntity
             }
         }
 
-        LastModifiedAtUtc = DateTime.UtcNow;
+        LastModifiedAt = DateTime.UtcNow;
         return Result.Ok;
     }
 

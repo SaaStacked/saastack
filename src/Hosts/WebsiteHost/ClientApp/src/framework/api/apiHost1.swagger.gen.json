@@ -13043,12 +13043,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetOrganizationReferralsResponse"
+                  "$ref": "#/components/schemas/SearchAllOrganizationReferralsResponse"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetOrganizationReferralsResponse"
+                  "$ref": "#/components/schemas/SearchAllOrganizationReferralsResponse"
                 }
               }
             }
@@ -22179,7 +22179,7 @@
       "Audit": {
         "required": [
           "auditCode",
-          "created",
+          "createdUtc",
           "id",
           "messageTemplate",
           "templateArguments"
@@ -22192,7 +22192,7 @@
           "auditCode": {
             "type": "string"
           },
-          "created": {
+          "createdUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -22312,7 +22312,7 @@
         ],
         "type": "object",
         "properties": {
-          "expiresOn": {
+          "expiresOnUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -23058,7 +23058,7 @@
         "required": [
           "attempts",
           "body",
-          "created",
+          "createdAtUtc",
           "id",
           "isDelivered",
           "isDeliveryFailed",
@@ -23100,15 +23100,15 @@
           "body": {
             "type": "string"
           },
-          "created": {
+          "createdAtUtc": {
             "type": "string",
             "format": "date-time"
           },
-          "deliveredAt": {
+          "deliveredAtUtc": {
             "type": "string",
             "format": "date-time"
           },
-          "failedDeliveryAt": {
+          "failedDeliveryAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -23127,7 +23127,7 @@
           "organizationId": {
             "type": "string"
           },
-          "sentAt": {
+          "sentAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -23160,7 +23160,7 @@
         "required": [
           "attempts",
           "body",
-          "created",
+          "createdAtUtc",
           "id",
           "isDelivered",
           "isDeliveryFailed",
@@ -23200,15 +23200,15 @@
           "body": {
             "type": "string"
           },
-          "created": {
+          "createdAtUtc": {
             "type": "string",
             "format": "date-time"
           },
-          "deliveredAt": {
+          "deliveredAtUtc": {
             "type": "string",
             "format": "date-time"
           },
-          "failedDeliveryAt": {
+          "failedDeliveryAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -23227,7 +23227,7 @@
           "organizationId": {
             "type": "string"
           },
-          "sentAt": {
+          "sentAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -23401,7 +23401,7 @@
           "eventTypeFullName": {
             "type": "string"
           },
-          "lastPersistedAtUtc": {
+          "lastPersistedAt": {
             "type": "string",
             "format": "date-time"
           },
@@ -23788,25 +23788,6 @@
         "properties": {
           "workflow": {
             "$ref": "#/components/schemas/OrganizationOnboardingWorkflow"
-          }
-        },
-        "additionalProperties": false
-      },
-      "GetOrganizationReferralsResponse": {
-        "required": [
-          "metadata",
-          "organizations"
-        ],
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/components/schemas/SearchResultMetadata"
-          },
-          "organizations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrganizationWithReferralCode"
-            }
           }
         },
         "additionalProperties": false
@@ -25338,14 +25319,14 @@
           "pathAhead",
           "pathTaken",
           "progressPercentage",
-          "startedAt",
+          "startedAtUtc",
           "status",
           "totalWeight",
           "values"
         ],
         "type": "object",
         "properties": {
-          "completedAt": {
+          "completedAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -25375,7 +25356,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "startedAt": {
+          "startedAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -25416,14 +25397,14 @@
         ],
         "type": "object",
         "properties": {
-          "enteredAt": {
+          "enteredAtUtc": {
             "type": "string",
             "format": "date-time"
           },
           "id": {
             "type": "string"
           },
-          "lastUpdatedAt": {
+          "lastUpdatedAtUtc": {
             "type": "string",
             "format": "date-time"
           },
@@ -26426,6 +26407,25 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/OAuth2Client"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchAllOrganizationReferralsResponse": {
+        "required": [
+          "metadata",
+          "organizations"
+        ],
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/SearchResultMetadata"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationWithReferralCode"
             }
           }
         },

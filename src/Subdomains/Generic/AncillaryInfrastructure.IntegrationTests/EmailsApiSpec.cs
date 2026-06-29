@@ -80,11 +80,11 @@ public class EmailsApiSpec : WebApiSpec<Program>
         deliveries.Content.Value.Emails[0].Attempts.Should()
             .ContainSingle(x => x.IsNear(DateTime.UtcNow, TimeSpan.FromMinutes(1)));
         deliveries.Content.Value.Emails[0].IsSent.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].SentAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].SentAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].IsDelivered.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].DeliveredAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].DeliveredAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].IsDeliveryFailed.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].FailedDeliveryAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].FailedDeliveryAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].Tags.Count.Should().Be(1);
         deliveries.Content.Value.Emails[0].Tags[0].Should().Be("atag");
     }
@@ -130,11 +130,11 @@ public class EmailsApiSpec : WebApiSpec<Program>
         deliveries.Content.Value.Emails[0].Attempts.Should()
             .ContainSingle(x => x.IsNear(now, TimeSpan.FromMinutes(1)));
         deliveries.Content.Value.Emails[0].IsSent.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].SentAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].SentAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].IsDelivered.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].DeliveredAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].DeliveredAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].IsDeliveryFailed.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].FailedDeliveryAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].FailedDeliveryAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].Tags.Count.Should().Be(1);
         deliveries.Content.Value.Emails[0].Tags[0].Should().Be("atag");
     }
@@ -183,11 +183,11 @@ public class EmailsApiSpec : WebApiSpec<Program>
         deliveries.Content.Value.Emails[0].ToDisplayName.Should().Be("atodisplayname");
         deliveries.Content.Value.Emails[0].Attempts.Should().HaveCount(2);
         deliveries.Content.Value.Emails[0].IsSent.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].SentAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].SentAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].IsDelivered.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].DeliveredAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].DeliveredAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].IsDeliveryFailed.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].FailedDeliveryAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].FailedDeliveryAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].Tags.Count.Should().Be(1);
         deliveries.Content.Value.Emails[0].Tags[0].Should().Be("atag");
     }
@@ -241,11 +241,11 @@ public class EmailsApiSpec : WebApiSpec<Program>
         deliveries.Content.Value.Emails[0].Attempts.Should()
             .ContainSingle(x => x.IsNear(now, TimeSpan.FromMinutes(1)));
         deliveries.Content.Value.Emails[0].IsSent.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].SentAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].SentAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].IsDelivered.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].DeliveredAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].DeliveredAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].IsDeliveryFailed.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].FailedDeliveryAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].FailedDeliveryAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].Tags.Count.Should().Be(1);
         deliveries.Content.Value.Emails[0].Tags[0].Should().Be("atag");
     }
@@ -300,11 +300,11 @@ public class EmailsApiSpec : WebApiSpec<Program>
         deliveries.Content.Value.Emails[0].Attempts.Should()
             .ContainSingle(x => x.IsNear(now, TimeSpan.FromMinutes(1)));
         deliveries.Content.Value.Emails[0].IsSent.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].SentAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].SentAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].IsDelivered.Should().BeFalse();
-        deliveries.Content.Value.Emails[0].DeliveredAt.Should().BeNull();
+        deliveries.Content.Value.Emails[0].DeliveredAtUtc.Should().BeNull();
         deliveries.Content.Value.Emails[0].IsDeliveryFailed.Should().BeTrue();
-        deliveries.Content.Value.Emails[0].FailedDeliveryAt.Should().BeNear(now, TimeSpan.FromMinutes(1));
+        deliveries.Content.Value.Emails[0].FailedDeliveryAtUtc.Should().BeNear(now, TimeSpan.FromMinutes(1));
         deliveries.Content.Value.Emails[0].FailedDeliveryReason.Should().Be("areason");
         deliveries.Content.Value.Emails[0].Tags.Count.Should().Be(1);
         deliveries.Content.Value.Emails[0].Tags[0].Should().Be("atag");

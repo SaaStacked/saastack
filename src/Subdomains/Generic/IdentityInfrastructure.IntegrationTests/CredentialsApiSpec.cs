@@ -154,10 +154,10 @@ public class CredentialsApiSpec : WebApiSpec<Program>
         });
 
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
     }
 

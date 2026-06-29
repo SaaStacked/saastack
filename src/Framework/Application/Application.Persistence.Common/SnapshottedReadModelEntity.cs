@@ -12,9 +12,9 @@ public class SnapshottedReadModelEntity : IReadModelEntity, ISnapshottedDto
 
     public Optional<bool> IsDeleted { get; set; }
 
-    public Optional<DateTime> LastPersistedAtUtc { get; set; }
+    public Optional<DateTime> LastPersistedAt { get; set; }
 
-    public Optional<DateTime> CreatedAtUtc { get; set; }
+    public Optional<DateTime> CreatedAt { get; set; }
 
-    public Optional<DateTime> LastModifiedAtUtc { get; set; }
+    public Optional<DateTime> LastModifiedAt { get; set; }
 }

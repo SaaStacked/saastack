@@ -106,8 +106,8 @@ public static class AncillaryAuditingConversionExtensions
     {
         return new Audit
         {
-            Created = audit.Created.HasValue
-                ? audit.Created.Value!.Value
+            CreatedUtc = audit.CreatedAt.HasValue
+                ? audit.CreatedAt.Value!.Value
                 : DateTime.UtcNow,
             Id = audit.Id,
             AuditCode = audit.AuditCode,

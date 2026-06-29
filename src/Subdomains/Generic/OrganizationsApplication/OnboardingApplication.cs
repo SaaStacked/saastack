@@ -557,10 +557,10 @@ internal static class OnboardingConversionExtensions
             CompletedWeight = currentStepState.CompletedWeight,
             ProgressPercentage = currentStepState.ProgressPercentage,
             Values = currentStepState.AllValues.Items.ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            StartedAt = currentStepState.HasValue()
+            StartedAtUtc = currentStepState.HasValue()
                 ? currentStepState.StartedAt.Value
                 : DateTime.UtcNow,
-            CompletedAt = currentStepState.CompletedAt.ToNullable(),
+            CompletedAtUtc = currentStepState.CompletedAt.ToNullable(),
             CompletedBy = currentStepState.CompletedBy
         };
     }
@@ -572,8 +572,8 @@ internal static class OnboardingConversionExtensions
             Id = step.StepId,
             Title = step.Title,
             Weight = step.Weight,
-            EnteredAt = step.EnteredAt.ToNullable(),
-            LastUpdatedAt = step.LastUpdatedAt.ToNullable(),
+            EnteredAtUtc = step.EnteredAt.ToNullable(),
+            LastUpdatedAtUtc = step.LastUpdatedAt.ToNullable(),
             Values = step.Values.Items.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
         };
     }

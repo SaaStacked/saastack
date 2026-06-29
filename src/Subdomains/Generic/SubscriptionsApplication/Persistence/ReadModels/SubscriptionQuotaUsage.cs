@@ -6,7 +6,7 @@ using QueryAny;
 namespace SubscriptionsApplication.Persistence.ReadModels;
 
 [EntityName("SubscriptionQuotaUsage")]
-public class SubscriptionQuotaUsage : ReadModelEntity
+public class SubscriptionQuotaUsage : SnapshottedReadModelEntity
 {
     public Optional<DateTime> LastResetAt { get; set; }
 

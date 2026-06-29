@@ -154,7 +154,7 @@ public static class RequestExtensions
     /// </summary>
     public static void SetTokensToAuthNCookies(this HttpResponse response, AuthenticateTokens tokens)
     {
-        var expiresOn = tokens.RefreshToken.ExpiresOn;
+        var expiresOn = tokens.RefreshToken.ExpiresOnUtc;
         var authToken = new AuthNTokenCookieValue
         {
             Token = tokens.AccessToken.Value,

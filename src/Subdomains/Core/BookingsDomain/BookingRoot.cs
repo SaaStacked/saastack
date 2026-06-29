@@ -33,8 +33,8 @@ public sealed class BookingRoot : AggregateRootBase
         HydrationProperties rehydratingProperties) : base(
         identifier, container, rehydratingProperties)
     {
-        Start = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(Start));
-        End = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(End));
+        StartedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(StartedAt));
+        EndsAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(EndsAt));
         CarId = rehydratingProperties.GetValueOrDefault<Identifier>(nameof(CarId));
         BorrowerId = rehydratingProperties.GetValueOrDefault<Identifier>(nameof(BorrowerId));
         OrganizationId = rehydratingProperties.GetValueOrDefault<Identifier>(nameof(OrganizationId));
@@ -42,23 +42,23 @@ public sealed class BookingRoot : AggregateRootBase
 
     public Optional<Identifier> BorrowerId { get; private set; }
 
-    private bool CanBeCanceled => Start.HasValue && Start.Value > DateTime.UtcNow;
+    private bool CanBeCanceled => StartedAt.HasValue && StartedAt.Value > DateTime.UtcNow;
 
     public Optional<Identifier> CarId { get; private set; }
 
-    public Optional<DateTime> End { get; private set; }
+    public Optional<DateTime> EndsAt { get; private set; }
 
     public Identifier OrganizationId { get; private set; } = Identifier.Empty();
 
-    public Optional<DateTime> Start { get; private set; }
+    public Optional<DateTime> StartedAt { get; private set; }
 
     public Trips Trips { get; } = new();
 
     public override HydrationProperties Dehydrate()
     {
         var properties = base.Dehydrate();
-        properties.Add(nameof(Start), Start);
-        properties.Add(nameof(End), End);
+        properties.Add(nameof(StartedAt), StartedAt);
+        properties.Add(nameof(EndsAt), EndsAt);
         properties.Add(nameof(CarId), CarId);
         properties.Add(nameof(BorrowerId), BorrowerId);
         properties.Add(nameof(OrganizationId), OrganizationId);
@@ -109,8 +109,8 @@ public sealed class BookingRoot : AggregateRootBase
             case ReservationMade changed:
             {
                 BorrowerId = changed.BorrowerId.ToId();
-                Start = changed.Start;
-                End = changed.End;
+                StartedAt = changed.Start;
+                EndsAt = changed.End;
                 return Result.Ok;
             }
 
@@ -229,8 +229,8 @@ public sealed class BookingRoot : AggregateRootBase
         }
 
         var nothingHasChanged = borrowerId == BorrowerId
-                                && start == Start
-                                && end == End;
+                                && start == StartedAt
+                                && end == EndsAt;
         if (nothingHasChanged)
         {
             return Result.Ok;

@@ -61,7 +61,7 @@ public class AuditRepository : IAuditRepository
         var query = Query.From<Audit>().WhereNoOp();
         if (sinceUtc.HasValue)
         {
-            query = query.AndWhere<DateTime?>(aud => aud.Created, ConditionOperator.GreaterThan, sinceUtc);
+            query = query.AndWhere<DateTime?>(aud => aud.CreatedAt, ConditionOperator.GreaterThan, sinceUtc);
         }
 
         if (organizationId.HasValue())

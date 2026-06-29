@@ -93,13 +93,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -185,13 +185,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -264,13 +264,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -281,9 +281,9 @@ public class NativeIdentityServerSingleSignOnServiceSpec
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _ssoProvidersService.Verify(sps =>
             sps.FindUserByProviderAsync(_caller.Object, "aprovidername", authUserInfo, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(eus => eus.RegisterPersonPrivateAsync(_caller.Object, "aninvitationtoken",
@@ -334,13 +334,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -414,13 +414,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -431,9 +431,9 @@ public class NativeIdentityServerSingleSignOnServiceSpec
 
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _ssoProvidersService.Verify(sps =>
             sps.FindUserByProviderAsync(_caller.Object, "aprovidername", authUserInfo, It.IsAny<CancellationToken>()));
         _endUsersService.Verify(
@@ -581,13 +581,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -595,7 +595,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = default,
+                        ExpiresOnUtc = default,
                         Type = TokenType.OtherToken,
                         Value = "anothertoken"
                     }
@@ -643,13 +643,13 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                     Provider = "aprovidername",
                     AccessToken = new AuthenticationToken
                     {
-                        ExpiresOn = datum,
+                        ExpiresOnUtc = datum,
                         Type = TokenType.AccessToken,
                         Value = "anaccesstoken"
                     },
                     RefreshToken = new AuthenticationToken
                     {
-                        ExpiresOn = datum,
+                        ExpiresOnUtc = datum,
                         Type = TokenType.RefreshToken,
                         Value = "arefreshtoken"
                     },
@@ -657,7 +657,7 @@ public class NativeIdentityServerSingleSignOnServiceSpec
                     [
                         new AuthenticationToken
                         {
-                            ExpiresOn = datum,
+                            ExpiresOnUtc = datum,
                             Type = TokenType.OtherToken,
                             Value = "anothertoken"
                         }
@@ -670,14 +670,14 @@ public class NativeIdentityServerSingleSignOnServiceSpec
         result.Should().BeSuccess();
         result.Value.Count.Should().Be(1);
         result.Value[0].Provider.Should().Be("aprovidername");
-        result.Value[0].AccessToken.ExpiresOn.Should().Be(datum);
+        result.Value[0].AccessToken.ExpiresOnUtc.Should().Be(datum);
         result.Value[0].AccessToken.Type.Should().Be(TokenType.AccessToken);
         result.Value[0].AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value[0].RefreshToken!.ExpiresOn.Should().Be(datum);
+        result.Value[0].RefreshToken!.ExpiresOnUtc.Should().Be(datum);
         result.Value[0].RefreshToken!.Type.Should().Be(TokenType.RefreshToken);
         result.Value[0].RefreshToken!.Value.Should().Be("arefreshtoken");
         result.Value[0].OtherTokens.Count.Should().Be(1);
-        result.Value[0].OtherTokens[0].ExpiresOn.Should().Be(datum);
+        result.Value[0].OtherTokens[0].ExpiresOnUtc.Should().Be(datum);
         result.Value[0].OtherTokens[0].Type.Should().Be(TokenType.OtherToken);
         result.Value[0].OtherTokens[0].Value.Should().Be("anothertoken");
     }

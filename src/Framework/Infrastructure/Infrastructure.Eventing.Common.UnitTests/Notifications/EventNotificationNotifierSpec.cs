@@ -85,7 +85,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -113,7 +113,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -144,7 +144,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -176,7 +176,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid1" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
         var changeEvent2 = new EventStreamChangeEvent
@@ -186,7 +186,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid2" },
             Version = 1,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
         var changeEvent3 = new EventStreamChangeEvent
@@ -196,7 +196,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid3" },
             Version = 2,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -245,7 +245,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -280,7 +280,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 
@@ -313,7 +313,7 @@ public sealed class EventNotificationNotifierSpec : IDisposable
             OriginalEvent = new TestDomainEvent { RootId = "aneventid" },
             Version = 0,
             EventType = typeof(TestDomainEvent),
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!
         };
 

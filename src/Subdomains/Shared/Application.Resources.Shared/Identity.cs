@@ -37,7 +37,7 @@ public class ProviderAuthenticationTokens
 
 public class AuthenticationToken
 {
-    public required DateTime? ExpiresOn { get; set; }
+    public required DateTime? ExpiresOnUtc { get; set; }
 
     public required TokenType Type { get; set; }
 
@@ -59,14 +59,14 @@ public class APIKey : IIdentifiableResource
 
 public class AuthToken
 {
-    public AuthToken(TokenType type, string value, DateTime? expiresOn)
+    public AuthToken(TokenType type, string value, DateTime? expiresOnUtc)
     {
         Type = type;
         Value = value;
-        ExpiresOn = expiresOn;
+        ExpiresOnUtc = expiresOnUtc;
     }
 
-    public DateTime? ExpiresOn { get; }
+    public DateTime? ExpiresOnUtc { get; }
 
     public TokenType Type { get; }
 

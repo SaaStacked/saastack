@@ -702,21 +702,21 @@ public static class NativeIdentityServerOpenIdConnectServiceConversionExtensions
         IEncryptionService encryptionService)
     {
         var accessToken = AuthToken.Create(AuthTokenType.AccessToken, issued.AccessToken.Value,
-            issued.AccessToken.ExpiresOn, encryptionService);
+            issued.AccessToken.ExpiresOnUtc, encryptionService);
         if (accessToken.IsFailure)
         {
             return accessToken.Error;
         }
 
         var refreshToken = AuthToken.Create(AuthTokenType.RefreshToken, issued.RefreshToken.Value,
-            issued.RefreshToken.ExpiresOn, encryptionService);
+            issued.RefreshToken.ExpiresOnUtc, encryptionService);
         if (refreshToken.IsFailure)
         {
             return refreshToken.Error;
         }
 
         var idToken = AuthToken.Create(AuthTokenType.OtherToken, issued.IdToken!.Value,
-            issued.IdToken.ExpiresOn, encryptionService);
+            issued.IdToken.ExpiresOnUtc, encryptionService);
         if (idToken.IsFailure)
         {
             return idToken.Error;

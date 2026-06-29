@@ -72,13 +72,13 @@ public class AuthenticationApiSpec
                 AccessToken = new AuthenticationToken
                 {
                     Value = "anaccesstoken",
-                    ExpiresOn = accessTokenExpiresOn,
+                    ExpiresOnUtc = accessTokenExpiresOn,
                     Type = TokenType.AccessToken
                 },
                 RefreshToken = new AuthenticationToken
                 {
                     Value = "arefreshtoken",
-                    ExpiresOn = refreshTokenExpiresOn,
+                    ExpiresOnUtc = refreshTokenExpiresOn,
                     Type = TokenType.RefreshToken
                 }
             });
@@ -150,13 +150,13 @@ public class AuthenticationApiSpec
                 AccessToken = new AuthenticationToken
                 {
                     Value = "anaccesstoken",
-                    ExpiresOn = accessTokenExpiresOn,
+                    ExpiresOnUtc = accessTokenExpiresOn,
                     Type = TokenType.AccessToken
                 },
                 RefreshToken = new AuthenticationToken
                 {
                     Value = "arefreshtoken",
-                    ExpiresOn = refreshTokenExpiresOn,
+                    ExpiresOnUtc = refreshTokenExpiresOn,
                     Type = TokenType.RefreshToken
                 }
             });

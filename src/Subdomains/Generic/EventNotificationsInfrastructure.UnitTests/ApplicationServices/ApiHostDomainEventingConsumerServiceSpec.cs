@@ -96,7 +96,7 @@ public class ApiHostDomainEventingConsumerServiceSpec
         var eventNotification = new DomainEventNotification
         {
             Id = "anid",
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = "astreamname",
             Version = 1,
             AggregateTypeFullName = "anaggregatetypefullname",
@@ -120,7 +120,7 @@ public class ApiHostDomainEventingConsumerServiceSpec
         var eventNotification = new DomainEventNotification
         {
             Id = "anid",
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = "astreamname",
             Version = 1,
             AggregateTypeFullName = "anaggregatetypefullname",

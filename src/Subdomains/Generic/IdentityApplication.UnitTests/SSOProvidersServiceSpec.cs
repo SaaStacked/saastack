@@ -322,13 +322,13 @@ public class SSOProvidersServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -336,7 +336,7 @@ public class SSOProvidersServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = default,
+                        ExpiresOnUtc = default,
                         Type = TokenType.OtherToken,
                         Value = "anothertoken"
                     }
@@ -367,13 +367,13 @@ public class SSOProvidersServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = default,
+                    ExpiresOnUtc = default,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -381,7 +381,7 @@ public class SSOProvidersServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = default,
+                        ExpiresOnUtc = default,
                         Type = TokenType.OtherToken,
                         Value = "anothertoken"
                     }
@@ -418,13 +418,13 @@ public class SSOProvidersServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -432,7 +432,7 @@ public class SSOProvidersServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = datum,
+                        ExpiresOnUtc = datum,
                         Type = TokenType.OtherToken,
                         Value = "eyJanidtoken"
                     }
@@ -483,13 +483,13 @@ public class SSOProvidersServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -497,7 +497,7 @@ public class SSOProvidersServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = datum,
+                        ExpiresOnUtc = datum,
                         Type = TokenType.OtherToken,
                         Value = "eyJanidtoken"
                     }
@@ -555,13 +555,13 @@ public class SSOProvidersServiceSpec
                 Provider = "aprovidername",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = datum,
+                    ExpiresOnUtc = datum,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
@@ -569,7 +569,7 @@ public class SSOProvidersServiceSpec
                 [
                     new AuthenticationToken
                     {
-                        ExpiresOn = datum,
+                        ExpiresOnUtc = datum,
                         Type = TokenType.OtherToken,
                         Value = "eyJanidtoken"
                     }
@@ -705,15 +705,15 @@ public class SSOProvidersServiceSpec
             result.Should().BeSuccess();
             result.Value.Count.Should().Be(1);
             result.Value[0].Provider.Should().Be(TestSSOAuthenticationProvider.Name);
-            result.Value[0].AccessToken.ExpiresOn.Should().Be(datum);
+            result.Value[0].AccessToken.ExpiresOnUtc.Should().Be(datum);
             result.Value[0].AccessToken.Type.Should().Be(TokenType.AccessToken);
             result.Value[0].AccessToken.Value.Should().Be("adecryptedvalue");
-            result.Value[0].RefreshToken!.ExpiresOn.Should().Be(datum);
+            result.Value[0].RefreshToken!.ExpiresOnUtc.Should().Be(datum);
             result.Value[0].RefreshToken!.Type.Should().Be(TokenType.RefreshToken);
             result.Value[0].RefreshToken!.Value.Should().Be("adecryptedvalue");
             result.Value[0].OtherTokens.Count.Should().Be(1);
             result.Value[0].OtherTokens[0].Type.Should().Be(TokenType.OtherToken);
-            result.Value[0].OtherTokens[0].ExpiresOn.Should().Be(datum);
+            result.Value[0].OtherTokens[0].ExpiresOnUtc.Should().Be(datum);
             result.Value[0].OtherTokens[0].Value.Should().Be("adecryptedvalue");
             _encryptionService.Verify(es => es.Decrypt("anencryptedvalue"), Times.Exactly(3));
             _repository.Verify(rep => rep.FindByUserIdAsync(TestSSOAuthenticationProvider.Name, "auserid".ToId(),

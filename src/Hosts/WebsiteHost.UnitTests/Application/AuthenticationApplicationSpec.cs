@@ -55,13 +55,13 @@ public class AuthenticationApplicationSpec
                     AccessToken = new AuthenticationToken
                     {
                         Value = "anaccesstoken",
-                        ExpiresOn = accessTokenExpiresOn,
+                        ExpiresOnUtc = accessTokenExpiresOn,
                         Type = TokenType.AccessToken
                     },
                     RefreshToken = new AuthenticationToken
                     {
                         Value = "arefreshtoken",
-                        ExpiresOn = refreshTokenExpiresOn,
+                        ExpiresOnUtc = refreshTokenExpiresOn,
                         Type = TokenType.RefreshToken
                     }
                 }
@@ -73,9 +73,9 @@ public class AuthenticationApplicationSpec
 
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(accessTokenExpiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(accessTokenExpiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateCredentialRequest>(req =>
             req.Username == "ausername"
             && req.Password == "apassword"
@@ -99,13 +99,13 @@ public class AuthenticationApplicationSpec
                     AccessToken = new AuthenticationToken
                     {
                         Value = "anaccesstoken",
-                        ExpiresOn = accessTokenExpiresOn,
+                        ExpiresOnUtc = accessTokenExpiresOn,
                         Type = TokenType.AccessToken
                     },
                     RefreshToken = new AuthenticationToken
                     {
                         Value = "arefreshtoken",
-                        ExpiresOn = refreshTokenExpiresOn,
+                        ExpiresOnUtc = refreshTokenExpiresOn,
                         Type = TokenType.RefreshToken
                     }
                 }
@@ -117,9 +117,9 @@ public class AuthenticationApplicationSpec
 
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(accessTokenExpiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(accessTokenExpiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<AuthenticateSingleSignOnRequest>(req =>
             req.AuthCode == "anauthcode"
             && req.CodeVerifier == "acodeverifier"
@@ -161,13 +161,13 @@ public class AuthenticationApplicationSpec
                     AccessToken = new AuthenticationToken
                     {
                         Value = "anaccesstoken",
-                        ExpiresOn = accessTokenExpiresOn,
+                        ExpiresOnUtc = accessTokenExpiresOn,
                         Type = TokenType.AccessToken
                     },
                     RefreshToken = new AuthenticationToken
                     {
                         Value = "arefreshtoken",
-                        ExpiresOn = refreshTokenExpiresOn,
+                        ExpiresOnUtc = refreshTokenExpiresOn,
                         Type = TokenType.RefreshToken
                     }
                 }
@@ -178,9 +178,9 @@ public class AuthenticationApplicationSpec
         result.Should().BeSuccess();
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(accessTokenExpiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(accessTokenExpiresOn);
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(refreshTokenExpiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(refreshTokenExpiresOn);
         _serviceClient.Verify(sc => sc.PostAsync(_caller.Object, It.Is<RefreshTokenRequest>(req =>
             req.RefreshToken == "arefreshtoken"
             ), It.IsAny<Action<HttpRequestMessage>>(), It.IsAny<Action<HttpResponseMessage>>(),

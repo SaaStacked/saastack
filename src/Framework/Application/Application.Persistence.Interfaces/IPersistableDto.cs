@@ -16,5 +16,5 @@ public interface IPersistableDto : IHasIdentity, IQueryableEntity
     /// <summary>
     ///     Returns the date that the record was last persisted to a store
     /// </summary>
-    Optional<DateTime> LastPersistedAtUtc { get; }
+    Optional<DateTime> LastPersistedAt { get; }
 }

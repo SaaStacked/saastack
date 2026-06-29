@@ -11,7 +11,7 @@ namespace Infrastructure.External.Persistence.Common.Extensions;
 public static class StoreExtensions
 {
     public const string BackupOrderingPropertyName = nameof(QueryEntity.Id);
-    public const string DefaultOrderingFieldName = nameof(QueryEntity.LastPersistedAtUtc);
+    public const string DefaultOrderingFieldName = nameof(QueryEntity.LastPersistedAt);
 
     /// <summary>
     ///     Converts the JSON serialized <see cref="propertyValue" /> to a value the appropriate
@@ -162,10 +162,10 @@ public static class StoreExtensions
     ///     1. <see cref="QueryAny.ResultOptions.OrderBy" />, but must exist in the metadata
     ///     2. If we have an override, and it exists in the metadata
     ///     3. The first selected field, if we have any
-    ///     4. Else, <see cref="PersistedEntity.LastPersistedAtUtc" /> if exists in the metadata
+    ///     4. Else, <see cref="PersistedEntity.LastPersistedAt" /> if exists in the metadata
     ///     5. Else, <see cref="PersistedEntity.Id" /> if exists in the metadata
     ///     6. Else, the last property of the <see cref="TQueryableEntity" />
-    ///     (likely not being the <see cref="PersistedEntity.LastPersistedAtUtc" /> or <see cref="PersistedEntity.Id" />)
+    ///     (likely not being the <see cref="PersistedEntity.LastPersistedAt" /> or <see cref="PersistedEntity.Id" />)
     /// </summary>
     public static string GetDefaultOrdering<TQueryableEntity>(this QueryClause<TQueryableEntity> query,
         PersistedEntityMetadata metadata)

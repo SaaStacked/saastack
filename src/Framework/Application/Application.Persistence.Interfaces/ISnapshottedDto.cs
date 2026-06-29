@@ -10,10 +10,10 @@ public interface ISnapshottedDto
     /// <summary>
     ///     Returns the date that the record was created
     /// </summary>
-    Optional<DateTime> CreatedAtUtc { get; set; }
+    Optional<DateTime> CreatedAt { get; set; }
 
     /// <summary>
     ///     Returns the date that the record was last modified
     /// </summary>
-    Optional<DateTime> LastModifiedAtUtc { get; set; }
+    Optional<DateTime> LastModifiedAt { get; set; }
 }

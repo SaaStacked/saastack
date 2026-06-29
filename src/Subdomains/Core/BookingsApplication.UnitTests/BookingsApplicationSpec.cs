@@ -219,8 +219,8 @@ public class BookingsApplicationSpec
             && booking.OrganizationId == "anorganizationid"
             && booking.CarId == "acarid".ToId()
             && booking.BorrowerId == "acallerid".ToId()
-            && booking.Start == start
-            && booking.End == end
+            && booking.StartedAt == start
+            && booking.EndsAt == end
         ), It.IsAny<CancellationToken>()));
     }
 
@@ -264,8 +264,8 @@ public class BookingsApplicationSpec
             && booking.OrganizationId == "anorganizationid"
             && booking.CarId == "acarid".ToId()
             && booking.BorrowerId == "acallerid".ToId()
-            && booking.Start == start
-            && booking.End == expectedEnd
+            && booking.StartedAt == start
+            && booking.EndsAt == expectedEnd
         ), It.IsAny<CancellationToken>()));
     }
 
@@ -282,9 +282,9 @@ public class BookingsApplicationSpec
                     Id = "abookingid",
                     BorrowerId = "aborrowerid",
                     CarId = "acarid",
-                    End = end,
+                    EndsAt = end,
                     OrganizationId = "anorganizationid",
-                    Start = start
+                    StartedAt = start
                 }
             ]));
 

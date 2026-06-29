@@ -738,13 +738,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -759,8 +759,8 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
         result.Value.Tokens!.UserId.Should().Be("auserid");
         result.Value.Tokens.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.Tokens.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.Tokens.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.Tokens.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.Tokens.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.Tokens.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == Optional<string>.None
@@ -815,13 +815,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -896,13 +896,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -977,13 +977,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -1210,13 +1210,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -1231,8 +1231,8 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == recoveryCode
@@ -1269,13 +1269,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -1290,8 +1290,8 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == Optional<string>.None
@@ -1328,13 +1328,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -1348,8 +1348,8 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == Optional<string>.None
@@ -1387,13 +1387,13 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -1407,8 +1407,8 @@ public class NativeIdentityServerCredentialsMfaServiceSpec
         result.Value.UserId.Should().Be("auserid");
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _repository.Verify(s => s.SaveAsync(It.Is<PersonCredentialRoot>(cred =>
             cred.MfaAuthenticators.Count == 2
             && cred.MfaAuthenticators[0].VerifiedState == Optional<string>.None

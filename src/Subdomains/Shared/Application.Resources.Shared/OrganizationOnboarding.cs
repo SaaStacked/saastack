@@ -84,7 +84,7 @@ public class OrganizationOnboardingWorkflow : IIdentifiableResource
 
 public class OrganizationOnboardingState
 {
-    public DateTime? CompletedAt { get; set; }
+    public DateTime? CompletedAtUtc { get; set; }
 
     public string? CompletedBy { get; set; }
 
@@ -98,7 +98,7 @@ public class OrganizationOnboardingState
 
     public required int ProgressPercentage { get; set; }
 
-    public required DateTime StartedAt { get; set; }
+    public required DateTime StartedAtUtc { get; set; }
 
     public required OrganizationOnboardingStatus Status { get; set; }
 
@@ -109,11 +109,11 @@ public class OrganizationOnboardingState
 
 public class OrganizationOnboardingStep
 {
-    public DateTime? EnteredAt { get; set; }
+    public DateTime? EnteredAtUtc { get; set; }
 
     public required string Id { get; set; }
 
-    public DateTime? LastUpdatedAt { get; set; }
+    public DateTime? LastUpdatedAtUtc { get; set; }
 
     public required string Title { get; set; }
 

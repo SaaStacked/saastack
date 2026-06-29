@@ -25,7 +25,7 @@ const searchAllAuditsResponseSchemaResponseTransformer = (data: any) => {
 };
 
 const auditSchemaResponseTransformer = (data: any) => {
-    data.created = new Date(data.created);
+    data.createdUtc = new Date(data.createdUtc);
     return data;
 };
 
@@ -49,8 +49,8 @@ const authenticateTokensSchemaResponseTransformer = (data: any) => {
 };
 
 const authenticationTokenSchemaResponseTransformer = (data: any) => {
-    if (data.expiresOn) {
-        data.expiresOn = new Date(data.expiresOn);
+    if (data.expiresOnUtc) {
+        data.expiresOnUtc = new Date(data.expiresOnUtc);
     }
     return data;
 };
@@ -141,8 +141,8 @@ const searchAllEventNotificationsResponseSchemaResponseTransformer = (data: any)
 };
 
 const eventNotificationSchemaResponseTransformer = (data: any) => {
-    if (data.lastPersistedAtUtc) {
-        data.lastPersistedAtUtc = new Date(data.lastPersistedAtUtc);
+    if (data.lastPersistedAt) {
+        data.lastPersistedAt = new Date(data.lastPersistedAt);
     }
     return data;
 };
@@ -162,15 +162,15 @@ const deliveredEmailSchemaResponseTransformer = (data: any) => {
         new Date(item);
         return item;
     });
-    data.created = new Date(data.created);
-    if (data.deliveredAt) {
-        data.deliveredAt = new Date(data.deliveredAt);
+    data.createdAtUtc = new Date(data.createdAtUtc);
+    if (data.deliveredAtUtc) {
+        data.deliveredAtUtc = new Date(data.deliveredAtUtc);
     }
-    if (data.failedDeliveryAt) {
-        data.failedDeliveryAt = new Date(data.failedDeliveryAt);
+    if (data.failedDeliveryAtUtc) {
+        data.failedDeliveryAtUtc = new Date(data.failedDeliveryAtUtc);
     }
-    if (data.sentAt) {
-        data.sentAt = new Date(data.sentAt);
+    if (data.sentAtUtc) {
+        data.sentAtUtc = new Date(data.sentAtUtc);
     }
     return data;
 };
@@ -262,22 +262,22 @@ const organizationOnboardingWorkflowSchemaResponseTransformer = (data: any) => {
 };
 
 const organizationOnboardingStateSchemaResponseTransformer = (data: any) => {
-    if (data.completedAt) {
-        data.completedAt = new Date(data.completedAt);
+    if (data.completedAtUtc) {
+        data.completedAtUtc = new Date(data.completedAtUtc);
     }
     data.currentStep = organizationOnboardingStepSchemaResponseTransformer(data.currentStep);
     data.pathAhead = data.pathAhead.map((item: any) => organizationOnboardingStepSchemaResponseTransformer(item));
     data.pathTaken = data.pathTaken.map((item: any) => organizationOnboardingStepSchemaResponseTransformer(item));
-    data.startedAt = new Date(data.startedAt);
+    data.startedAtUtc = new Date(data.startedAtUtc);
     return data;
 };
 
 const organizationOnboardingStepSchemaResponseTransformer = (data: any) => {
-    if (data.enteredAt) {
-        data.enteredAt = new Date(data.enteredAt);
+    if (data.enteredAtUtc) {
+        data.enteredAtUtc = new Date(data.enteredAtUtc);
     }
-    if (data.lastUpdatedAt) {
-        data.lastUpdatedAt = new Date(data.lastUpdatedAt);
+    if (data.lastUpdatedAtUtc) {
+        data.lastUpdatedAtUtc = new Date(data.lastUpdatedAtUtc);
     }
     return data;
 };
@@ -386,15 +386,15 @@ const deliveredSmsSchemaResponseTransformer = (data: any) => {
         new Date(item);
         return item;
     });
-    data.created = new Date(data.created);
-    if (data.deliveredAt) {
-        data.deliveredAt = new Date(data.deliveredAt);
+    data.createdAtUtc = new Date(data.createdAtUtc);
+    if (data.deliveredAtUtc) {
+        data.deliveredAtUtc = new Date(data.deliveredAtUtc);
     }
-    if (data.failedDeliveryAt) {
-        data.failedDeliveryAt = new Date(data.failedDeliveryAt);
+    if (data.failedDeliveryAtUtc) {
+        data.failedDeliveryAtUtc = new Date(data.failedDeliveryAtUtc);
     }
-    if (data.sentAt) {
-        data.sentAt = new Date(data.sentAt);
+    if (data.sentAtUtc) {
+        data.sentAtUtc = new Date(data.sentAtUtc);
     }
     return data;
 };

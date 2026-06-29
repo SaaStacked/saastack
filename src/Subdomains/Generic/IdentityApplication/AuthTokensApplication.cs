@@ -314,20 +314,20 @@ public static class AuthTokensApplicationConversionExtensions
             AccessToken = new AuthenticationToken
             {
                 Value = tokens.AccessToken,
-                ExpiresOn = tokens.AccessTokenExpiresOn,
+                ExpiresOnUtc = tokens.AccessTokenExpiresOn,
                 Type = TokenType.AccessToken
             },
             RefreshToken = new AuthenticationToken
             {
                 Value = tokens.RefreshToken,
-                ExpiresOn = tokens.RefreshTokenExpiresOn,
+                ExpiresOnUtc = tokens.RefreshTokenExpiresOn,
                 Type = TokenType.RefreshToken
             },
             IdToken = tokens.IdToken.Exists()
                 ? new AuthenticationToken
                 {
                     Value = tokens.IdToken!,
-                    ExpiresOn = tokens.IdTokenExpiresOn,
+                    ExpiresOnUtc = tokens.IdTokenExpiresOn,
                     Type = TokenType.OtherToken
                 }
                 : null

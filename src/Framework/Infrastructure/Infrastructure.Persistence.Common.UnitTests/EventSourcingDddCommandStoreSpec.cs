@@ -102,7 +102,7 @@ public class EventSourcingDddCommandStoreSpec
             It.Is<HydrationProperties>(dic =>
                 dic.Count == 2
                 && dic[nameof(CommandEntity.Id)].Value.As<Identifier>() == "anid".ToId()
-                && dic[nameof(CommandEntity.LastPersistedAtUtc)].Value.As<DateTime>() == lastPersisted
+                && dic[nameof(CommandEntity.LastPersistedAt)].Value.As<DateTime>() == lastPersisted
             )));
     }
 
@@ -185,7 +185,7 @@ public class EventSourcingDddCommandStoreSpec
         var versioned = new TestEvent()
             .ToVersioned(new FixedIdentifierFactory(id), typeof(TestEventingAggregateRoot), version);
         var eventSourcedChangeEvent = versioned.Value;
-        eventSourcedChangeEvent.LastPersistedAtUtc = lastPersisted;
+        eventSourcedChangeEvent.LastPersistedAt = lastPersisted;
 
         return eventSourcedChangeEvent;
     }
@@ -195,7 +195,7 @@ public class EventSourcingDddCommandStoreSpec
         var versioned = new TestTombstoneEvent(id.ToId())
             .ToVersioned(new FixedIdentifierFactory(id), typeof(TestEventingAggregateRoot), version);
         var eventSourcedChangeEvent = versioned.Value;
-        eventSourcedChangeEvent.LastPersistedAtUtc = DateTime.UtcNow;
+        eventSourcedChangeEvent.LastPersistedAt = DateTime.UtcNow;
 
         return eventSourcedChangeEvent;
     }

@@ -65,7 +65,7 @@ public class DomainEventsApiSpec : WebApiSpec<Program>
                     EventJsonData = @event.ToEventJson(),
                     Version = 1,
                     EventTypeFullName = typeof(Happened).AssemblyQualifiedName!,
-                    LastPersistedAtUtc = null,
+                    LastPersistedAt = null,
                     StreamName = "astreamname"
                 }
             }.ToJson()!

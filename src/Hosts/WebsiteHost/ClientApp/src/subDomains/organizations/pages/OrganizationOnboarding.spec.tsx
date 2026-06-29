@@ -3,7 +3,14 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionResult } from '../../../framework/actions/Actions';
-import { GetOnboardingResponse, Organization, OrganizationOnboardingStatus, OrganizationOnboardingStepSchemaType, OrganizationOnboardingWorkflow, OrganizationOwnership } from '../../../framework/api/apiHost1';
+import {
+  GetOnboardingResponse,
+  Organization,
+  OrganizationOnboardingStatus,
+  OrganizationOnboardingStepSchemaType,
+  OrganizationOnboardingWorkflow,
+  OrganizationOwnership
+} from '../../../framework/api/apiHost1';
 import { RoutePaths } from '../../../framework/constants.ts';
 import { renderWithTestingProviders } from '../../../framework/testing/TestingProviders';
 import { OrganizationOnboardingPage } from './OrganizationOnboarding';
@@ -78,7 +85,7 @@ const mockWorkflow: OrganizationOnboardingWorkflow = {
     progressPercentage: 0,
     completedWeight: 0,
     totalWeight: 100,
-    startedAt: new Date('2024-01-01T00:00:00Z')
+    startedAtUtc: new Date('2024-01-01T00:00:00Z')
   }
 };
 

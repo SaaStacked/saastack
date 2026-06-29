@@ -342,20 +342,20 @@ public static class AncillaryEmailingConversionExtensions
     {
         return new DeliveredEmail
         {
-            Created = email.Created.ToNullable<DateTime?, DateTime>(x => x!.Value) ?? DateTime.UtcNow,
+            CreatedAtUtc = email.CreatedAt.ToNullable<DateTime?, DateTime>(x => x!.Value) ?? DateTime.UtcNow,
             Attempts = email.Attempts.ToNullable(att => att.Attempts.ToList()) ?? [],
             Body = email.Body,
-            IsSent = email.Sent.HasValue,
-            SentAt = email.Sent.ToNullable<DateTime?, DateTime>(),
+            IsSent = email.SentAt.HasValue,
+            SentAtUtc = email.SentAt.ToNullable<DateTime?, DateTime>(),
             Subject = email.Subject,
             ToDisplayName = email.ToDisplayName,
             ToEmailAddress = email.ToEmailAddress,
             Id = email.Id,
             OrganizationId = email.OrganizationId,
-            IsDelivered = email.Delivered.HasValue,
-            DeliveredAt = email.Delivered.ToNullable<DateTime?, DateTime>(),
-            IsDeliveryFailed = email.DeliveryFailed.HasValue,
-            FailedDeliveryAt = email.DeliveryFailed.ToNullable<DateTime?, DateTime>(),
+            IsDelivered = email.DeliveredAt.HasValue,
+            DeliveredAtUtc = email.DeliveredAt.ToNullable<DateTime?, DateTime>(),
+            IsDeliveryFailed = email.DeliveryFailedAt.HasValue,
+            FailedDeliveryAtUtc = email.DeliveryFailedAt.ToNullable<DateTime?, DateTime>(),
             FailedDeliveryReason = email.DeliveryFailedReason.ToNullable(),
             Tags = email.Tags.ToNullable(tags => tags.FromJson<List<string>>()!) ?? []
         };

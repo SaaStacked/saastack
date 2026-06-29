@@ -56,7 +56,7 @@ public class FakeOAuth2Service : IOAuth2Service
             Provider = providerName,
             AccessToken = new AuthenticationToken
             {
-                ExpiresOn = accessToken.ExpiresOn,
+                ExpiresOnUtc = accessToken.ExpiresOnUtc,
                 Type = TokenType.AccessToken,
                 Value = accessToken.Value
             },

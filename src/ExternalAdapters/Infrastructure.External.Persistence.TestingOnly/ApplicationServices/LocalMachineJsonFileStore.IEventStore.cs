@@ -176,10 +176,10 @@ internal static class LocalMachineJsonFileEventStoreConversionExtensions
         var eventTypeFullName = entity.GetValueOrDefault(nameof(EventStoreEntity.EventTypeFullName), string.Empty)!;
         var eventJson = entity.GetValueOrDefault(nameof(EventStoreEntity.EventJsonData), string.Empty)!;
         var eventVersion = entity.GetValueOrDefault(nameof(EventStoreEntity.Version), 1);
-        var lastPersistedAtUtc = entity.GetValueOrDefault(nameof(EventStoreEntity.LastPersistedAtUtc), DateTime.UtcNow);
+        var lastPersistedAt = entity.GetValueOrDefault(nameof(EventStoreEntity.LastPersistedAt), DateTime.UtcNow);
 
         return migrator.FromEventStoreJson<TAggregateRoot>(eventId, eventVersion, eventJson, eventTypeFullName,
-            lastPersistedAtUtc);
+            lastPersistedAt);
     }
 
     public static string GetEventStreamName<TAggregateRoot>(this string aggregateRootId)

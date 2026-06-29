@@ -31,11 +31,11 @@ public class EmailDeliveryProjection : IReadModelProjection
                     {
                         dto.OrganizationId = e.OrganizationId;
                         dto.MessageId = e.MessageId;
-                        dto.Created = e.When;
+                        dto.CreatedAt = e.When;
                         dto.Attempts = SendingAttempts.Empty;
-                        dto.LastAttempted = Optional<DateTime?>.None;
-                        dto.SendFailed = Optional<DateTime?>.None;
-                        dto.Sent = Optional<DateTime?>.None;
+                        dto.LastAttemptedAt = Optional<DateTime?>.None;
+                        dto.SendFailedAt = Optional<DateTime?>.None;
+                        dto.SentAt = Optional<DateTime?>.None;
                         dto.RegisteredRegion = e.HostRegion;
                     },
                     cancellationToken);
@@ -68,17 +68,17 @@ public class EmailDeliveryProjection : IReadModelProjection
                         dto.Attempts = SendingAttempts.Empty;
                     }
 
-                    dto.LastAttempted = e.When;
+                    dto.LastAttemptedAt = e.When;
                 }, cancellationToken);
 
             case SendingFailed e:
-                return await _deliveries.HandleUpdateAsync(e.RootId, dto => { dto.SendFailed = e.When; },
+                return await _deliveries.HandleUpdateAsync(e.RootId, dto => { dto.SendFailedAt = e.When; },
                     cancellationToken);
 
             case SendingSucceeded e:
                 return await _deliveries.HandleUpdateAsync(e.RootId, dto =>
                     {
-                        dto.Sent = e.When;
+                        dto.SentAt = e.When;
                         dto.ReceiptId = e.ReceiptId;
                     },
                     cancellationToken);
@@ -86,8 +86,8 @@ public class EmailDeliveryProjection : IReadModelProjection
             case DeliveryConfirmed e:
                 return await _deliveries.HandleUpdateAsync(e.RootId, dto =>
                     {
-                        dto.Delivered = e.When;
-                        dto.DeliveryFailed = Optional<DateTime?>.None;
+                        dto.DeliveredAt = e.When;
+                        dto.DeliveryFailedAt = Optional<DateTime?>.None;
                         dto.DeliveryFailedReason = Optional<string>.None;
                     },
                     cancellationToken);
@@ -95,8 +95,8 @@ public class EmailDeliveryProjection : IReadModelProjection
             case DeliveryFailureConfirmed e:
                 return await _deliveries.HandleUpdateAsync(e.RootId, dto =>
                     {
-                        dto.DeliveryFailed = e.When;
-                        dto.Delivered = Optional<DateTime?>.None;
+                        dto.DeliveryFailedAt = e.When;
+                        dto.DeliveredAt = Optional<DateTime?>.None;
                         dto.DeliveryFailedReason = e.Reason;
                     },
                     cancellationToken);

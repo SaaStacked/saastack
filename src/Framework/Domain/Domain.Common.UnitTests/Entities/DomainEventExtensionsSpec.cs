@@ -65,7 +65,7 @@ public class DomainEventExtensionsSpec
         var result = @event.ToVersioned("anid".ToIdentifierFactory(), typeof(TestEntity), 6).Value;
 
         result.Id.Should().Be("anid".ToId());
-        result.LastPersistedAtUtc.Should().BeNone();
+        result.LastPersistedAt.Should().BeNone();
         result.OriginalEvent.Should().Be(@event);
         result.Version.Should().Be(6);
         result.AggregateType.Should().Be(typeof(TestEntity));

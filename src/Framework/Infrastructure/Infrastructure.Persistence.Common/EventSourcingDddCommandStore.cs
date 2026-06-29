@@ -82,8 +82,8 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
                     return Error.EntityDeleted(Resources.EventSourcingDddCommandStore_StreamTombstoned);
                 }
 
-                var lastPersistedAtUtc = events.Last().LastPersistedAtUtc;
-                var aggregate = RehydrateAggregateRoot(id, lastPersistedAtUtc);
+                var lastPersistedAt = events.Last().LastPersistedAt;
+                var aggregate = RehydrateAggregateRoot(id, lastPersistedAt);
                 var loaded = aggregate.LoadChanges(events);
                 if (loaded.IsFailure)
                 {
@@ -152,15 +152,15 @@ public class EventSourcingDddCommandStore<TAggregateRoot> : IEventSourcingDddCom
         return lastEvent.IsTombstone;
     }
 
-    private TAggregateRoot RehydrateAggregateRoot(ISingleValueObject<string> id, Optional<DateTime> lastPersistedAtUtc)
+    private TAggregateRoot RehydrateAggregateRoot(ISingleValueObject<string> id, Optional<DateTime> lastPersistedAt)
     {
         return (TAggregateRoot)_domainFactory.RehydrateAggregateRoot(typeof(TAggregateRoot),
             new HydrationProperties
             {
                 { nameof(IEventingAggregateRoot.Id), id.ToOptional<object>() },
                 {
-                    nameof(IEventingAggregateRoot.LastPersistedAtUtc),
-                    lastPersistedAtUtc.ValueOrDefault.ToOptional<object>()
+                    nameof(IEventingAggregateRoot.LastPersistedAt),
+                    lastPersistedAt.ValueOrDefault.ToOptional<object>()
                 }
             });
     }

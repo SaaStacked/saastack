@@ -63,10 +63,10 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
         container.GetRequiredService<IIdentifierFactory>(), identifier)
     {
         Id = rehydratingProperties.GetValueOrDefault(nameof(Id), Identifier.Empty());
-        LastPersistedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastPersistedAtUtc));
+        LastPersistedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastPersistedAt));
         IsDeleted = rehydratingProperties.GetValueOrDefault<bool>(nameof(IsDeleted));
-        CreatedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(CreatedAtUtc));
-        LastModifiedAtUtc = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastModifiedAtUtc));
+        CreatedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(CreatedAt));
+        LastModifiedAt = rehydratingProperties.GetValueOrDefault<DateTime>(nameof(LastModifiedAt));
     }
 
     /// <summary>
@@ -83,12 +83,12 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
         _isInstantiating = identifier.Value == string.Empty;
 
         var now = DateTime.UtcNow;
-        LastPersistedAtUtc = Optional<DateTime>.None;
+        LastPersistedAt = Optional<DateTime>.None;
         IsDeleted = Optional<bool>.None;
-        CreatedAtUtc = _isInstantiating
+        CreatedAt = _isInstantiating
             ? now
             : DateTime.MinValue;
-        LastModifiedAtUtc = _isInstantiating
+        LastModifiedAt = _isInstantiating
             ? now
             : DateTime.MinValue;
         EventStream = EventStream.Create();
@@ -128,10 +128,10 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
         return new HydrationProperties
         {
             { nameof(Id), Id },
-            { nameof(LastPersistedAtUtc), LastPersistedAtUtc },
+            { nameof(LastPersistedAt), LastPersistedAt },
             { nameof(IsDeleted), IsDeleted },
-            { nameof(CreatedAtUtc), CreatedAtUtc },
-            { nameof(LastModifiedAtUtc), LastModifiedAtUtc }
+            { nameof(CreatedAt), CreatedAt },
+            { nameof(LastModifiedAt), LastModifiedAt }
         };
     }
 
@@ -142,13 +142,13 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
     /// </summary>
     public Result<Error> ClearChanges()
     {
-        LastPersistedAtUtc = DateTime.UtcNow;
+        LastPersistedAt = DateTime.UtcNow;
         _events.Clear();
         EventStream = EventStream.Create();
         return Result.Ok;
     }
 
-    public DateTime CreatedAtUtc { get; }
+    public DateTime CreatedAt { get; }
 
     public IReadOnlyList<IDomainEvent> Events => _events;
 
@@ -190,9 +190,9 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
 
     ISingleValueObject<string> IIdentifiableEntity.Id => Id;
 
-    public DateTime LastModifiedAtUtc { get; private set; }
+    public DateTime LastModifiedAt { get; private set; }
 
-    public Optional<DateTime> LastPersistedAtUtc { get; private set; }
+    public Optional<DateTime> LastPersistedAt { get; private set; }
 
     /// <summary>
     ///     Reconstitutes the aggregates in-memory state from the past <see cref="history" /> of events,
@@ -437,7 +437,7 @@ public abstract class AggregateRootBase : IAggregateRoot, IEventingAggregateRoot
             }
         }
 
-        LastModifiedAtUtc = DateTime.UtcNow;
+        LastModifiedAt = DateTime.UtcNow;
         _events.Add(@event);
 
         return Result.Ok;

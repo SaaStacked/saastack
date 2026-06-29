@@ -82,10 +82,10 @@ public class EndUserRepository : IEndUserRepository
             .Select(mje => mje.OrganizationId)
             .Select(mje => mje.Ownership)
             .Select(mje => mje.IsDefault)
-            .Select(mje => mje.LastPersistedAtUtc)
+            .Select(mje => mje.LastPersistedAt)
             .SelectFromJoin<Invitation, string>(mje => mje.InvitedEmailAddress, inv => inv.InvitedEmailAddress)
             .SelectFromJoin<Invitation, UserStatus>(mje => mje.Status, inv => inv.Status)
-            .OrderBy(mje => mje.LastPersistedAtUtc)
+            .OrderBy(mje => mje.LastPersistedAt)
             .WithSearchOptions(searchOptions);
 
         var queried = await _membershipUserQueries.QueryAsync(query, cancellationToken: cancellationToken);

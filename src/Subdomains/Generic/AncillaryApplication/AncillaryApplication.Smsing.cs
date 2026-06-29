@@ -269,18 +269,18 @@ public static class AncillaryMSmsingConversionExtensions
     {
         return new DeliveredSms
         {
-            Created = sms.Created.ToNullable<DateTime?, DateTime>(x => x!.Value) ?? DateTime.UtcNow,
+            CreatedAtUtc = sms.CreatedAt.ToNullable<DateTime?, DateTime>(x => x!.Value) ?? DateTime.UtcNow,
             Attempts = sms.Attempts.ToNullable(att => att.Attempts.ToList()) ?? [],
             Body = sms.Body,
-            IsSent = sms.Sent.HasValue,
-            SentAt = sms.Sent.ToNullable<DateTime?, DateTime>(),
+            IsSent = sms.SentAt.HasValue,
+            SentAtUtc = sms.SentAt.ToNullable<DateTime?, DateTime>(),
             ToPhoneNumber = sms.ToPhoneNumber,
             Id = sms.Id,
             OrganizationId = sms.OrganizationId,
-            IsDelivered = sms.Delivered.HasValue,
-            DeliveredAt = sms.Delivered.ToNullable<DateTime?, DateTime>(),
-            IsDeliveryFailed = sms.DeliveryFailed.HasValue,
-            FailedDeliveryAt = sms.DeliveryFailed.ToNullable<DateTime?, DateTime>(),
+            IsDelivered = sms.DeliveredAt.HasValue,
+            DeliveredAtUtc = sms.DeliveredAt.ToNullable<DateTime?, DateTime>(),
+            IsDeliveryFailed = sms.DeliveryFailedAt.HasValue,
+            FailedDeliveryAtUtc = sms.DeliveryFailedAt.ToNullable<DateTime?, DateTime>(),
             FailedDeliveryReason = sms.DeliveryFailedReason.ToNullable(),
             Tags = sms.Tags.ToNullable(tags => tags.FromJson<List<string>>()!) ?? []
         };

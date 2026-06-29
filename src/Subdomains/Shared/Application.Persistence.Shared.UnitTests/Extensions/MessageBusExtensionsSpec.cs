@@ -16,7 +16,7 @@ public class MessageBusExtensionsSpec
         var changeEvent = new EventStreamChangeEvent
         {
             Id = "anid",
-            LastPersistedAtUtc = DateTime.UtcNow,
+            LastPersistedAt = DateTime.UtcNow,
             OriginalEvent = new TestDomainEvent(),
             EventType = typeof(TestDomainEvent),
             RootAggregateType = typeof(TestAggregateRoot),
@@ -27,7 +27,7 @@ public class MessageBusExtensionsSpec
         var result = changeEvent.ToDomainEventingMessage();
 
         result.Event!.Id.Should().Be("anid");
-        result.Event.LastPersistedAtUtc.Should().Be(changeEvent.LastPersistedAtUtc);
+        result.Event.LastPersistedAt.Should().Be(changeEvent.LastPersistedAt);
         result.Event.EventJsonData.Should().Be(changeEvent.OriginalEvent.ToEventJson());
         result.Event.EventTypeFullName.Should().Be(typeof(TestDomainEvent).AssemblyQualifiedName!);
         result.Event.AggregateTypeFullName.Should().Be(typeof(TestAggregateRoot).AssemblyQualifiedName);

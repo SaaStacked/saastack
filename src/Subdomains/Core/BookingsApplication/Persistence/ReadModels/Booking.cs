@@ -11,9 +11,9 @@ public class Booking : SnapshottedReadModelEntity
 
     public Optional<string> CarId { get; set; }
 
-    public Optional<DateTime> End { get; set; }
+    public Optional<DateTime> EndsAt { get; set; }
 
     public Optional<string> OrganizationId { get; set; }
 
-    public Optional<DateTime> Start { get; set; }
+    public Optional<DateTime> StartedAt { get; set; }
 }

@@ -20,15 +20,15 @@ public class QueryEntitySpec
 
         result.Id.Should().BeNone();
         result.IsDeleted.Should().BeNone();
-        result.LastPersistedAtUtc.Should().BeNone();
+        result.LastPersistedAt.Should().BeNone();
         result.Metadata.Types.Count.Should().Be(3);
         result.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         result.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         result.Properties.Count.Should().Be(3);
         result.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         result.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        result.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        result.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class QueryEntitySpec
 
         result.Id.Should().BeSome("anid");
         result.IsDeleted.Should().BeNone();
-        result.LastPersistedAtUtc.Should().BeNone();
+        result.LastPersistedAt.Should().BeNone();
         result.Metadata.Types.Count.Should().Be(11);
         result.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         result.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         result.Metadata.Types[nameof(TestQueryDto.AStringValue)].Should().Be(typeof(string));
         result.Metadata.Types[nameof(TestQueryDto.AnIntegerValue)].Should().Be(typeof(int));
         result.Metadata.Types[nameof(TestQueryDto.ABooleanValue)].Should().Be(typeof(bool));
@@ -62,7 +62,7 @@ public class QueryEntitySpec
         result.Properties.Count.Should().Be(11);
         result.Properties[nameof(PersistedEntity.Id)].Should().BeSome("anid");
         result.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        result.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        result.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         result.Properties[nameof(TestQueryDto.AStringValue)].Should().BeSome("avalue");
         result.Properties[nameof(TestQueryDto.AnIntegerValue)].Should().BeSome(1);
         result.Properties[nameof(TestQueryDto.ABooleanValue)].Should().BeSome(true);
@@ -96,17 +96,17 @@ public class QueryEntitySpec
 
         result.Id.Should().BeSome("anid");
         result.IsDeleted.Should().BeNone();
-        result.LastPersistedAtUtc.Should().BeNone();
+        result.LastPersistedAt.Should().BeNone();
         result.Metadata.Types.Count.Should().Be(5);
         result.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         result.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        result.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         result.Metadata.Types[nameof(TestDto.AStringValue)].Should().Be(typeof(string));
         result.Metadata.Types[nameof(TestDto.ANullableString)].Should().Be(typeof(string));
         result.Properties.Count.Should().Be(5);
         result.Properties[nameof(PersistedEntity.Id)].Should().BeSome("anid");
         result.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        result.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        result.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         result.Properties[nameof(TestQueryDto.AStringValue)].Should().BeSome("avalue");
         result.Properties[nameof(TestQueryDto.ANullableString)].Should().BeNone();
     }
@@ -120,16 +120,16 @@ public class QueryEntitySpec
 
         entity.Id.Should().BeNone();
         entity.IsDeleted.Should().BeNone();
-        entity.LastPersistedAtUtc.Should().BeNone();
+        entity.LastPersistedAt.Should().BeNone();
         entity.Metadata.Types.Count.Should().Be(4);
         entity.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         entity.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         entity.Metadata.Types["aname"].Should().Be(typeof(string));
         entity.Properties.Count.Should().Be(4);
         entity.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         entity.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        entity.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        entity.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         entity.Properties["aname"].Should().BeNone();
     }
 
@@ -142,16 +142,16 @@ public class QueryEntitySpec
 
         entity.Id.Should().BeNone();
         entity.IsDeleted.Should().BeNone();
-        entity.LastPersistedAtUtc.Should().BeNone();
+        entity.LastPersistedAt.Should().BeNone();
         entity.Metadata.Types.Count.Should().Be(4);
         entity.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         entity.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         entity.Metadata.Types["aname"].Should().Be(typeof(string));
         entity.Properties.Count.Should().Be(4);
         entity.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         entity.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        entity.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        entity.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         entity.Properties["aname"].Should().BeSome("avalue");
     }
 
@@ -164,16 +164,16 @@ public class QueryEntitySpec
 
         entity.Id.Should().BeNone();
         entity.IsDeleted.Should().BeNone();
-        entity.LastPersistedAtUtc.Should().BeNone();
+        entity.LastPersistedAt.Should().BeNone();
         entity.Metadata.Types.Count.Should().Be(4);
         entity.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         entity.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         entity.Metadata.Types["aname"].Should().Be(typeof(TestValueObject));
         entity.Properties.Count.Should().Be(4);
         entity.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         entity.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        entity.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        entity.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         entity.Properties["aname"].Should().BeSome("avalue");
     }
 
@@ -187,16 +187,16 @@ public class QueryEntitySpec
 
         entity.Id.Should().BeNone();
         entity.IsDeleted.Should().BeNone();
-        entity.LastPersistedAtUtc.Should().BeNone();
+        entity.LastPersistedAt.Should().BeNone();
         entity.Metadata.Types.Count.Should().Be(4);
         entity.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         entity.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         entity.Metadata.Types["aname"].Should().Be(typeof(string));
         entity.Properties.Count.Should().Be(4);
         entity.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         entity.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        entity.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        entity.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         entity.Properties["aname"].Should().BeSome("avalue2");
     }
 
@@ -210,16 +210,16 @@ public class QueryEntitySpec
 
         entity.Id.Should().BeNone();
         entity.IsDeleted.Should().BeNone();
-        entity.LastPersistedAtUtc.Should().BeNone();
+        entity.LastPersistedAt.Should().BeNone();
         entity.Metadata.Types.Count.Should().Be(4);
         entity.Metadata.Types[nameof(PersistedEntity.Id)].Should().Be(typeof(string));
         entity.Metadata.Types[nameof(PersistedEntity.IsDeleted)].Should().Be(typeof(bool?));
-        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAtUtc)].Should().Be(typeof(DateTime?));
+        entity.Metadata.Types[nameof(PersistedEntity.LastPersistedAt)].Should().Be(typeof(DateTime?));
         entity.Metadata.Types["aname"].Should().Be(typeof(int));
         entity.Properties.Count.Should().Be(4);
         entity.Properties[nameof(PersistedEntity.Id)].Should().BeNone();
         entity.Properties[nameof(PersistedEntity.IsDeleted)].Should().BeNone();
-        entity.Properties[nameof(PersistedEntity.LastPersistedAtUtc)].Should().BeNone();
+        entity.Properties[nameof(PersistedEntity.LastPersistedAt)].Should().BeNone();
         entity.Properties["aname"].Should().BeSome(1);
     }
 

@@ -13,7 +13,7 @@ public class TestPersistableEntity : IDehydratableEntity
     {
         var id = properties.GetValueOrDefault<Identifier>(nameof(Id));
         Id = id.ValueOrDefault!;
-        LastPersistedAtUtc = properties.GetValueOrDefault<DateTime>(nameof(LastPersistedAtUtc));
+        LastPersistedAt = properties.GetValueOrDefault<DateTime>(nameof(LastPersistedAt));
         APropertyValue = properties.GetValueOrDefault<string>(nameof(APropertyValue));
     }
 
@@ -29,7 +29,7 @@ public class TestPersistableEntity : IDehydratableEntity
         return new HydrationProperties
         {
             { nameof(Id), Id },
-            { nameof(LastPersistedAtUtc), LastPersistedAtUtc },
+            { nameof(LastPersistedAt), LastPersistedAt },
             { nameof(APropertyValue), APropertyValue }
         };
     }
@@ -39,5 +39,5 @@ public class TestPersistableEntity : IDehydratableEntity
     // ReSharper disable once UnassignedGetOnlyAutoProperty
     public Optional<bool> IsDeleted { get; }
 
-    public Optional<DateTime> LastPersistedAtUtc { get; private set; }
+    public Optional<DateTime> LastPersistedAt { get; }
 }

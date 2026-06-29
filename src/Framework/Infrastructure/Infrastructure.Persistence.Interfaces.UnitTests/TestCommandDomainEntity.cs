@@ -64,5 +64,5 @@ public class TestCommandDomainEntity : IDehydratableEntity
 
     public Optional<bool> IsDeleted { get; } = Optional<bool>.None;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 }

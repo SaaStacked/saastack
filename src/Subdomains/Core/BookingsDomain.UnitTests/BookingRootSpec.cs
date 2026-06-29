@@ -32,8 +32,8 @@ public class BookingRootSpec
         _booking.OrganizationId.Should().Be("anorganizationid".ToId());
         _booking.CarId.Should().BeNone();
         _booking.BorrowerId.Should().BeNone();
-        _booking.Start.Should().BeNone();
-        _booking.End.Should().BeNone();
+        _booking.StartedAt.Should().BeNone();
+        _booking.EndsAt.Should().BeNone();
     }
 
     [Fact]
@@ -103,8 +103,8 @@ public class BookingRootSpec
 
         _booking.CarId.Should().Be("acarid".ToId());
         _booking.BorrowerId.Should().Be("aborrowerid".ToId());
-        _booking.Start.Should().Be(start);
-        _booking.End.Should().Be(end);
+        _booking.StartedAt.Should().Be(start);
+        _booking.EndsAt.Should().Be(end);
         _booking.Events.Last().Should().BeOfType<ReservationMade>();
     }
 

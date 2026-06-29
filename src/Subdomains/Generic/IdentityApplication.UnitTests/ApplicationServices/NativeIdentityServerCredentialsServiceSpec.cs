@@ -362,13 +362,13 @@ public class NativeIdentityServerCredentialsServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -450,13 +450,13 @@ public class NativeIdentityServerCredentialsServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "anaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 }
@@ -468,8 +468,8 @@ public class NativeIdentityServerCredentialsServiceSpec
         result.Should().BeSuccess();
         result.Value.AccessToken.Value.Should().Be("anaccesstoken");
         result.Value.RefreshToken.Value.Should().Be("arefreshtoken");
-        result.Value.AccessToken.ExpiresOn.Should().Be(expiresOn);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(expiresOn);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(expiresOn);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(expiresOn);
         _userProfilesService.Verify(ups =>
             ups.GetProfilePrivateAsync(It.Is<ICallerContext>(cc =>
                 cc.CallId == "acallid"

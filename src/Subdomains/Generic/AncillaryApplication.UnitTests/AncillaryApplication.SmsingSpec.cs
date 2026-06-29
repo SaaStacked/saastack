@@ -198,12 +198,12 @@ public class AncillaryApplicationSmsingSpec
         {
             Id = "anid",
             Body = "abody",
-            Sent = datum,
-            SendFailed = Optional<DateTime?>.None,
+            SentAt = datum,
+            SendFailedAt = Optional<DateTime?>.None,
             Attempts = SendingAttempts.Create([datum]).Value,
             MessageId = "amessageid",
             ToPhoneNumber = "+6498876986",
-            LastAttempted = datum
+            LastAttemptedAt = datum
         };
         _smsDeliveryRepository.Setup(edr =>
                 edr.SearchAllAsync(It.IsAny<DateTime?>(), It.IsAny<string?>(),

@@ -36,7 +36,7 @@ public class InProcessSynchronousConsumerRelaySpec
             RootAggregateType = typeof(TestAggregateRoot),
             EventType = typeof(TestDomainEvent),
             Id = null!,
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);
@@ -58,7 +58,7 @@ public class InProcessSynchronousConsumerRelaySpec
             RootAggregateType = typeof(TestAggregateRoot),
             EventType = typeof(TestDomainEvent),
             Id = null!,
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);
@@ -84,7 +84,7 @@ public class InProcessSynchronousConsumerRelaySpec
             RootAggregateType = typeof(TestAggregateRoot),
             EventType = null!,
             Id = null!,
-            LastPersistedAtUtc = null,
+            LastPersistedAt = null,
             StreamName = null!,
             Version = 0
         }, CancellationToken.None);

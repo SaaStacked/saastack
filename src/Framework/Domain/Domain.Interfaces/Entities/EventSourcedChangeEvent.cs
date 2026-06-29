@@ -40,12 +40,12 @@ public struct EventSourcedChangeEvent : IIdentifiableEntity, IQueryableEntity
     ///     Used by Event Stores to create <see cref="EventSourcedChangeEvent" /> for rehydrating aggregates.
     /// </summary>
     public static EventSourcedChangeEvent Create(string id, Type aggregateType, IDomainEvent domainEvent, int version,
-        DateTime lastPersistedAtUtc)
+        DateTime lastPersistedAt)
     {
         return new EventSourcedChangeEvent(id, aggregateType, domainEvent)
         {
             Version = version,
-            LastPersistedAtUtc = lastPersistedAtUtc
+            LastPersistedAt = lastPersistedAt
         };
     }
 
@@ -74,7 +74,7 @@ public struct EventSourcedChangeEvent : IIdentifiableEntity, IQueryableEntity
 
     ISingleValueObject<string> IIdentifiableEntity.Id => _identifier;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; set; }
+    public Optional<DateTime> LastPersistedAt { get; set; }
 
     public int Version { get; private init; }
 

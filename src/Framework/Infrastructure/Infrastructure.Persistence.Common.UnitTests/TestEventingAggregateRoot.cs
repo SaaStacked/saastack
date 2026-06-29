@@ -34,7 +34,7 @@ public class TestEventingAggregateRoot : IEventingAggregateRoot, IDehydratableAg
         return Result.Ok;
     }
 
-    public DateTime CreatedAtUtc { get; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; } = DateTime.UtcNow;
 
     public IReadOnlyList<IDomainEvent> Events { get; } = new List<IDomainEvent>();
 
@@ -50,9 +50,9 @@ public class TestEventingAggregateRoot : IEventingAggregateRoot, IDehydratableAg
 
     public ISingleValueObject<string> Id { get; }
 
-    public DateTime LastModifiedAtUtc { get; } = DateTime.UtcNow;
+    public DateTime LastModifiedAt { get; } = DateTime.UtcNow;
 
-    public Optional<DateTime> LastPersistedAtUtc { get; } = Optional<DateTime>.None;
+    public Optional<DateTime> LastPersistedAt { get; } = Optional<DateTime>.None;
 
     public Result<Error> LoadChanges(IEnumerable<EventSourcedChangeEvent> history)
     {

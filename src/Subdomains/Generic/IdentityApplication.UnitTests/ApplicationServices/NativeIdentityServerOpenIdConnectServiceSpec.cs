@@ -381,19 +381,19 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
                 IdToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.OtherToken,
                     Value = "eyJanidtoken"
                 }
@@ -460,19 +460,19 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
                 IdToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.OtherToken,
                     Value = "eyJanidtoken"
                 }
@@ -551,19 +551,19 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
                 IdToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.OtherToken,
                     Value = "eyJanidtoken"
                 }
@@ -870,19 +870,19 @@ public class NativeIdentityServerOpenIdConnectServiceSpec
                 UserId = "auserid",
                 AccessToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.AccessToken,
                     Value = "eyJanaccesstoken"
                 },
                 RefreshToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.RefreshToken,
                     Value = "arefreshtoken"
                 },
                 IdToken = new AuthenticationToken
                 {
-                    ExpiresOn = expiresOn,
+                    ExpiresOnUtc = expiresOn,
                     Type = TokenType.OtherToken,
                     Value = "eyJanidtoken"
                 }

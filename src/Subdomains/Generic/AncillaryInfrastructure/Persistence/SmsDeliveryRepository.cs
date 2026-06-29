@@ -75,7 +75,7 @@ public class SmsDeliveryRepository : ISmsDeliveryRepository
         var query = Query.From<SmsDelivery>().WhereNoOp();
         if (sinceUtc.HasValue)
         {
-            query = query.AndWhere<DateTime?>(sd => sd.Created, ConditionOperator.GreaterThan, sinceUtc);
+            query = query.AndWhere<DateTime?>(sd => sd.CreatedAt, ConditionOperator.GreaterThan, sinceUtc);
         }
 
         if (organizationId.HasValue())

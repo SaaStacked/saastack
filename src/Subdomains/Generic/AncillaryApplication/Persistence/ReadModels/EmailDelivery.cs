@@ -15,15 +15,15 @@ public class EmailDelivery : ReadModelEntity
 
     public DeliveredEmailContentType ContentType { get; set; }
 
-    public Optional<DateTime?> Created { get; set; }
+    public Optional<DateTime?> CreatedAt { get; set; }
 
-    public Optional<DateTime?> Delivered { get; set; }
+    public Optional<DateTime?> DeliveredAt { get; set; }
 
-    public Optional<DateTime?> DeliveryFailed { get; set; }
+    public Optional<DateTime?> DeliveryFailedAt { get; set; }
 
     public Optional<string> DeliveryFailedReason { get; set; }
 
-    public Optional<DateTime?> LastAttempted { get; set; }
+    public Optional<DateTime?> LastAttemptedAt { get; set; }
 
     public Optional<string> MessageId { get; set; }
 
@@ -33,9 +33,9 @@ public class EmailDelivery : ReadModelEntity
 
     public Optional<string> RegisteredRegion { get; set; }
 
-    public Optional<DateTime?> SendFailed { get; set; }
+    public Optional<DateTime?> SendFailedAt { get; set; }
 
-    public Optional<DateTime?> Sent { get; set; }
+    public Optional<DateTime?> SentAt { get; set; }
 
     public Optional<string> Subject { get; set; }
 

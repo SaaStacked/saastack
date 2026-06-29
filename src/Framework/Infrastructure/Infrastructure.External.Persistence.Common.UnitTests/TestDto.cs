@@ -13,5 +13,5 @@ public class TestDto : IPersistableDto
 
     public Optional<bool> IsDeleted { get; set; }
 
-    public Optional<DateTime> LastPersistedAtUtc { get; set; }
+    public Optional<DateTime> LastPersistedAt { get; set; }
 }

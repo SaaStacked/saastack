@@ -128,11 +128,11 @@ public class AuthTokensApplicationSpec
                 CancellationToken.None);
 
         result.Value.AccessToken.Value.Should().StartWith("eyJ");
-        result.Value.AccessToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.RefreshToken.Value.Should().StartWith("eyJ");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.IdToken!.Value.Should().StartWith("eyJ");
-        result.Value.IdToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.IdToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         _endUsersService.Verify(eus =>
             eus.GetMembershipsPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
         _userProfilesService.Verify(ups =>
@@ -181,11 +181,11 @@ public class AuthTokensApplicationSpec
                 CancellationToken.None);
 
         result.Value.AccessToken.Value.Should().StartWith("eyJ");
-        result.Value.AccessToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.RefreshToken.Value.Should().StartWith("eyJ");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.IdToken!.Value.Should().StartWith("eyJ");
-        result.Value.IdToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.IdToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         _endUsersService.Verify(eus =>
             eus.GetMembershipsPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
         _userProfilesService.Verify(ups =>
@@ -248,11 +248,11 @@ public class AuthTokensApplicationSpec
                 CancellationToken.None);
 
         result.Value.AccessToken.Value.Should().StartWith("eyJ");
-        result.Value.AccessToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.RefreshToken.Value.Should().StartWith("eyJ");
-        result.Value.RefreshToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         result.Value.IdToken!.Value.Should().StartWith("eyJ");
-        result.Value.IdToken.ExpiresOn.Should().Be(_expiresOn1);
+        result.Value.IdToken.ExpiresOnUtc.Should().Be(_expiresOn1);
         _endUsersService.Verify(eus =>
             eus.GetMembershipsPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
         _userProfilesService.Verify(ups =>
@@ -400,11 +400,11 @@ public class AuthTokensApplicationSpec
             CancellationToken.None);
 
         result.Value.AccessToken.Value.Should().Be(_accessToken2);
-        result.Value.AccessToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         result.Value.RefreshToken.Value.Should().Be(_refreshToken2);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         result.Value.IdToken!.Value.Should().Be(_idToken2);
-        result.Value.IdToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.IdToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         _tokensService.Verify(ts => ts.CreateTokenDigest(_refreshToken1));
         _endUsersService.Verify(eus =>
             eus.GetMembershipsPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));
@@ -469,11 +469,11 @@ public class AuthTokensApplicationSpec
             CancellationToken.None);
 
         result.Value.AccessToken.Value.Should().Be(_accessToken2);
-        result.Value.AccessToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.AccessToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         result.Value.RefreshToken.Value.Should().Be(_refreshToken2);
-        result.Value.RefreshToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.RefreshToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         result.Value.IdToken!.Value.Should().Be(_idToken2);
-        result.Value.IdToken.ExpiresOn.Should().Be(_expiresOn2);
+        result.Value.IdToken.ExpiresOnUtc.Should().Be(_expiresOn2);
         _tokensService.Verify(ts => ts.CreateTokenDigest(_refreshToken1));
         _endUsersService.Verify(eus =>
             eus.GetMembershipsPrivateAsync(_caller.Object, "auserid", It.IsAny<CancellationToken>()));

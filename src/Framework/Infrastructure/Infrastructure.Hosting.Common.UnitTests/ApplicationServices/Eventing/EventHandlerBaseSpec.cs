@@ -68,7 +68,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 },
                 new()
                 {
@@ -78,7 +78,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 },
                 new()
                 {
@@ -88,7 +88,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 }
             });
             _handler.OnEventStreamStateChanged(null, args, CancellationToken.None);
@@ -126,7 +126,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 }
             });
 
@@ -158,7 +158,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 },
                 new()
                 {
@@ -168,7 +168,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 },
                 new()
                 {
@@ -178,7 +178,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 }
             });
             _handler.OnEventStreamStateChanged(null,
@@ -238,7 +238,7 @@ public sealed class EventHandlerBaseSpec
                     OriginalEvent = null!,
                     RootAggregateType = null!,
                     EventType = null!,
-                    LastPersistedAtUtc = default
+                    LastPersistedAt = default
                 }
             });
 

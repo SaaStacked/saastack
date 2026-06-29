@@ -13,13 +13,13 @@ public static class EventSourcedChangeEventExtensions
     /// </summary>
     public static EventSourcedChangeEvent FromEventStoreJson<TAggregateRoot>(
         this IEventSourcedChangeEventMigrator migrator, string eventId, int eventVersion, string eventJson,
-        string eventTypeAssemblyQualifiedName, DateTime lastPersistedAtUtc)
+        string eventTypeAssemblyQualifiedName, DateTime lastPersistedAt)
         where TAggregateRoot : class, IEventingAggregateRoot
     {
         var @event = migrator.Rehydrate(eventId, eventJson, eventTypeAssemblyQualifiedName).Value;
         var aggregateType = typeof(TAggregateRoot);
 
-        return EventSourcedChangeEvent.Create(eventId, aggregateType, @event, eventVersion, lastPersistedAtUtc);
+        return EventSourcedChangeEvent.Create(eventId, aggregateType, @event, eventVersion, lastPersistedAt);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public static class EventSourcedChangeEventExtensions
         var dto = new EventStoreEntity
         {
             Id = @event.Id.ToOptional(),
-            LastPersistedAtUtc = @event.LastPersistedAtUtc,
+            LastPersistedAt = @event.LastPersistedAt,
             IsDeleted = Optional<bool>.None,
             StreamName = streamName,
             Version = @event.Version,

@@ -44,17 +44,17 @@ public class FakeSSOAuthenticationProviderSpec
         result.Value.Tokens.Count.Should().Be(3);
         result.Value.Tokens[0].Type.Should().Be(TokenType.AccessToken);
         result.Value.Tokens[0].Value.Should().NotBeNull();
-        result.Value.Tokens[0].ExpiresOn.Should()
+        result.Value.Tokens[0].ExpiresOnUtc.Should()
             .BeCloseTo(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry),
                 TimeSpan.FromMinutes(1));
         result.Value.Tokens[1].Type.Should().Be(TokenType.RefreshToken);
         result.Value.Tokens[1].Value.Should().NotBeNull();
-        result.Value.Tokens[1].ExpiresOn.Should()
+        result.Value.Tokens[1].ExpiresOnUtc.Should()
             .BeCloseTo(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry),
                 TimeSpan.FromMinutes(1));
         result.Value.Tokens[2].Type.Should().Be(TokenType.OtherToken);
         result.Value.Tokens[2].Value.Should().NotBeNull();
-        result.Value.Tokens[2].ExpiresOn.Should()
+        result.Value.Tokens[2].ExpiresOnUtc.Should()
             .BeCloseTo(DateTime.UtcNow.Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry),
                 TimeSpan.FromMinutes(1));
         result.Value.UId.Should().Be("6Afx/PgtEy+bsBjKZzihnw==");

@@ -7,7 +7,7 @@ using QueryAny;
 namespace IdentityApplication.Persistence.ReadModels;
 
 [EntityName("OpenIdConnectAuthorization")]
-public class OpenIdConnectAuthorization : ReadModelEntity
+public class OpenIdConnectAuthorization : SnapshottedReadModelEntity
 {
     public Optional<string> AccessTokenDigest { get; set; }
 

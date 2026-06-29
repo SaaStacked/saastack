@@ -40,7 +40,7 @@ public class AsynchronousQueueConsumerRelaySpec
             RootAggregateType = typeof(TestAggregateRoot),
             EventType = typeof(TestDomainEvent),
             Id = "anid",
-            LastPersistedAtUtc = DateTime.UtcNow,
+            LastPersistedAt = DateTime.UtcNow,
             StreamName = "astreamname",
             Version = 9
         };
@@ -55,7 +55,7 @@ public class AsynchronousQueueConsumerRelaySpec
         _messageRepository.Verify(c => c.SendAsync(It.Is<ICallContext>(call =>
             call.HostRegion == DatacenterLocations.Local), It.Is<DomainEventingMessage>(msg =>
             msg.Event!.Id == changeEvent.Id
-            && msg.Event.LastPersistedAtUtc == changeEvent.LastPersistedAtUtc
+            && msg.Event.LastPersistedAt == changeEvent.LastPersistedAt
             && msg.Event.EventTypeFullName == changeEvent.EventType.AssemblyQualifiedName
             && msg.Event.AggregateTypeFullName == changeEvent.RootAggregateType.AssemblyQualifiedName
             && msg.Event.StreamName == changeEvent.StreamName

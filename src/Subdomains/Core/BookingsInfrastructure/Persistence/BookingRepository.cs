@@ -93,8 +93,8 @@ public class BookingRepository : IBookingRepository
     {
         var queried = await _bookingQueries.QueryAsync(Query.From<Booking>()
             .Where<string>(u => u.OrganizationId, ConditionOperator.EqualTo, organizationId)
-            .AndWhere<DateTime>(u => u.Start, ConditionOperator.GreaterThanEqualTo, from)
-            .AndWhere<DateTime>(u => u.End, ConditionOperator.LessThanEqualTo, to)
+            .AndWhere<DateTime>(u => u.StartedAt, ConditionOperator.GreaterThanEqualTo, from)
+            .AndWhere<DateTime>(u => u.EndsAt, ConditionOperator.LessThanEqualTo, to)
             .WithSearchOptions(searchOptions), cancellationToken: cancellationToken);
         if (queried.IsFailure)
         {

@@ -76,10 +76,10 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
 
         result.Content.Value.Tokens.UserId.Should().NotBeNullOrEmpty();
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond()
                 .Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
@@ -127,10 +127,10 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
 
         result.Content.Value.Tokens.UserId.Should().Be(userId);
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
 #endif
@@ -161,10 +161,10 @@ public class SingleSignOnApiSpec : WebApiSpec<Program>
 
         result.Content.Value.Tokens.UserId.Should().Be(userId);
         result.Content.Value.Tokens.AccessToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.AccessToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.AccessToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultAccessTokenExpiry));
         result.Content.Value.Tokens.RefreshToken.Value.Should().NotBeNull();
-        result.Content.Value.Tokens.RefreshToken.ExpiresOn.Should()
+        result.Content.Value.Tokens.RefreshToken.ExpiresOnUtc.Should()
             .BeNear(DateTime.UtcNow.ToNearestSecond().Add(AuthenticationConstants.Tokens.DefaultRefreshTokenExpiry));
         _userNotificationsService.LastReRegistrationCourtesyEmailRecipient.Should().BeNull();
     }

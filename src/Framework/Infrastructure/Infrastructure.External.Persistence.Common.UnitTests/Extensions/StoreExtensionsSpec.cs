@@ -159,14 +159,14 @@ public class StoreExtensionsSpec
     }
 
     [Fact]
-    public void WhenGetDefaultOrderingForEntityWithAllReadModelFields_ThenReturnsLastPersistedAtUtcColumn()
+    public void WhenGetDefaultOrderingForEntityWithAllReadModelFields_ThenReturnsLastPersistedAtColumn()
     {
         var query = Query.From<TestQueryEntityWithReadModelFields>().WhereAll();
         var metadata = PersistedEntityMetadata.FromType<TestQueryEntityWithReadModelFields>();
 
         var result = query.GetDefaultOrdering(metadata);
 
-        result.Should().Be(nameof(TestQueryEntityWithReadModelFields.LastPersistedAtUtc));
+        result.Should().Be(nameof(TestQueryEntityWithReadModelFields.LastPersistedAt));
     }    
     
     [Fact]
@@ -204,7 +204,7 @@ public class StoreExtensionsSpec
 
         var result = query.GetDefaultOrdering(metadata);
 
-        result.Should().Be(nameof(TestQueryEntityWithSortDefaultOverride.DefaultSortByUtc));
+        result.Should().Be(nameof(TestQueryEntityWithSortDefaultOverride.DefaultSortBy));
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public class StoreExtensionsSpec
     {
         var query = Query.From<TestQueryEntityWithReadModelFields>()
             .WhereAll()
-            .OrderBy(x => x.LastPersistedAtUtc);
+            .OrderBy(x => x.LastPersistedAt);
         var metadata = PersistedEntityMetadata.FromType<TestQueryEntityWithoutAnyReadModelFields>();
 
         var result = query.GetDefaultOrdering(metadata);
@@ -328,7 +328,7 @@ public class TestQueryEntityWithReadModelFields : IQueryableEntity
 {
     public string? AProperty { get; set; }
 
-    public DateTime? LastPersistedAtUtc { get; set; }
+    public DateTime? LastPersistedAt { get; set; }
 
     public bool IsDeleted { get; set; }
 
@@ -340,7 +340,7 @@ public class TestQueryEntityWithoutId : IQueryableEntity
 {
     public string? AProperty { get; set; }
 
-    public DateTime? LastPersistedAtUtc { get; set; }
+    public DateTime? LastPersistedAt { get; set; }
 }
 
 [UsedImplicitly]
@@ -356,12 +356,12 @@ public class TestQueryEntityWithSortDefaultOverride : IQueryableEntity
 {
     public string? AProperty { get; set; }
 
-    public DateTime? DefaultSortByUtc { get; set; }
+    public DateTime? DefaultSortBy { get; set; }
 
     // ReSharper disable once UnusedMember.Global
     public static string DefaultOrderingField()
     {
-        return nameof(DefaultSortByUtc);
+        return nameof(DefaultSortBy);
     }
 }
 
@@ -370,7 +370,7 @@ public class TestQueryEntityWithSortDefaultOverrideNull : IQueryableEntity
 {
     public string? AProperty { get; set; }
 
-    public DateTime? DefaultSortByUtc { get; set; }
+    public DateTime? DefaultSortBy { get; set; }
 
     // ReSharper disable once UnusedMember.Global
     public static string DefaultOrderingField()

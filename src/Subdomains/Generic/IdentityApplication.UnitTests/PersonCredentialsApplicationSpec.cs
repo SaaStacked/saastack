@@ -37,13 +37,13 @@ public class PersonCredentialsApplicationSpec
         {
             AccessToken = new AuthenticationToken
             {
-                ExpiresOn = null,
+                ExpiresOnUtc = null,
                 Type = TokenType.AccessToken,
                 Value = "avalue1"
             },
             RefreshToken = new AuthenticationToken
             {
-                ExpiresOn = null,
+                ExpiresOnUtc = null,
                 Type = TokenType.RefreshToken,
                 Value = "avalue2"
             },

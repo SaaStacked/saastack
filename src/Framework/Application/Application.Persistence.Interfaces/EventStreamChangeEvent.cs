@@ -11,7 +11,7 @@ public class EventStreamChangeEvent
 
     public required string Id { get; set; }
 
-    public DateTime? LastPersistedAtUtc { get; set; }
+    public DateTime? LastPersistedAt { get; set; }
 
     public required IDomainEvent OriginalEvent { get; set; }
 

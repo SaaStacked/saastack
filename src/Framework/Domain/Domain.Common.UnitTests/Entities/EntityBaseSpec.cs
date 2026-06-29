@@ -42,9 +42,9 @@ public class EntityBaseSpec
     {
         var now = DateTime.UtcNow;
 
-        _entity.LastPersistedAtUtc.Should().BeNone();
-        _entity.CreatedAtUtc.Should().BeNear(now);
-        _entity.LastModifiedAtUtc.Should().Be(_entity.CreatedAtUtc);
+        _entity.LastPersistedAt.Should().BeNone();
+        _entity.CreatedAt.Should().BeNear(now);
+        _entity.LastModifiedAt.Should().Be(_entity.CreatedAt);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class EntityBaseSpec
     {
         _entity.ChangeProperty("avalue");
 
-        _entity.LastModifiedAtUtc.Should().BeNear(DateTime.UtcNow);
+        _entity.LastModifiedAt.Should().BeNear(DateTime.UtcNow);
     }
 
     [Fact]
@@ -71,6 +71,6 @@ public class EntityBaseSpec
         {
             APropertyName = "avalue"
         });
-        _entity.LastModifiedAtUtc.Should().BeNear(DateTime.UtcNow);
+        _entity.LastModifiedAt.Should().BeNear(DateTime.UtcNow);
     }
 }

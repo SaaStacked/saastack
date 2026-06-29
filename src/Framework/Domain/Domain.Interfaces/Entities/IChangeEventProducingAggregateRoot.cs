@@ -9,7 +9,7 @@ public interface IChangeEventProducingAggregateRoot : IIdentifiableEntity
 {
     IReadOnlyList<IDomainEvent> Events { get; }
 
-    Optional<DateTime> LastPersistedAtUtc { get; }
+    Optional<DateTime> LastPersistedAt { get; }
 
     Result<Error> ClearChanges();
 

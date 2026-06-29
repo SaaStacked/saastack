@@ -22,7 +22,7 @@ public static class MessageBusExtensions
             Event = new DomainEventNotification
             {
                 Id = changeEvent.Id,
-                LastPersistedAtUtc = changeEvent.LastPersistedAtUtc,
+                LastPersistedAt = changeEvent.LastPersistedAt,
                 AggregateTypeFullName = aggregateType.AssemblyQualifiedName!,
                 EventJsonData = @event.ToEventJson(),
                 EventTypeFullName = eventType.AssemblyQualifiedName!,

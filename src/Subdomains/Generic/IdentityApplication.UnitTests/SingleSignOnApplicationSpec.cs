@@ -36,13 +36,13 @@ public class SingleSignOnApplicationSpec
             AccessToken = new AuthenticationToken
             {
                 Value = "anaccesstoken",
-                ExpiresOn = DateTime.UtcNow.AddHours(1),
+                ExpiresOnUtc = DateTime.UtcNow.AddHours(1),
                 Type = TokenType.AccessToken
             },
             RefreshToken = new AuthenticationToken
             {
                 Value = "arefreshtoken",
-                ExpiresOn = DateTime.UtcNow.AddDays(30),
+                ExpiresOnUtc = DateTime.UtcNow.AddDays(30),
                 Type = TokenType.RefreshToken
             },
             UserId = "auserid"
@@ -73,13 +73,13 @@ public class SingleSignOnApplicationSpec
                 AccessToken = new AuthenticationToken
                 {
                     Value = "anaccesstoken",
-                    ExpiresOn = DateTime.UtcNow.AddHours(1),
+                    ExpiresOnUtc = DateTime.UtcNow.AddHours(1),
                     Type = TokenType.AccessToken
                 },
                 RefreshToken = new AuthenticationToken
                 {
                     Value = "arefreshtoken",
-                    ExpiresOn = DateTime.UtcNow.AddDays(30),
+                    ExpiresOnUtc = DateTime.UtcNow.AddDays(30),
                     Type = TokenType.RefreshToken
                 },
                 OtherTokens = new List<AuthenticationToken>()
@@ -109,13 +109,13 @@ public class SingleSignOnApplicationSpec
                 AccessToken = new AuthenticationToken
                 {
                     Value = "anaccesstoken",
-                    ExpiresOn = DateTime.UtcNow.AddHours(1),
+                    ExpiresOnUtc = DateTime.UtcNow.AddHours(1),
                     Type = TokenType.AccessToken
                 },
                 RefreshToken = new AuthenticationToken
                 {
                     Value = "arefreshtoken",
-                    ExpiresOn = DateTime.UtcNow.AddDays(30),
+                    ExpiresOnUtc = DateTime.UtcNow.AddDays(30),
                     Type = TokenType.RefreshToken
                 },
                 OtherTokens = new List<AuthenticationToken>()
@@ -143,13 +143,13 @@ public class SingleSignOnApplicationSpec
             AccessToken = new AuthenticationToken
             {
                 Value = "anewccesstoken",
-                ExpiresOn = DateTime.UtcNow.AddHours(1),
+                ExpiresOnUtc = DateTime.UtcNow.AddHours(1),
                 Type = TokenType.AccessToken
             },
             RefreshToken = new AuthenticationToken
             {
                 Value = "anewrefreshtoken",
-                ExpiresOn = DateTime.UtcNow.AddDays(30),
+                ExpiresOnUtc = DateTime.UtcNow.AddDays(30),
                 Type = TokenType.RefreshToken
             },
             OtherTokens = new List<AuthenticationToken>()
@@ -177,13 +177,13 @@ public class SingleSignOnApplicationSpec
             AccessToken = new AuthenticationToken
             {
                 Value = "anewccesstoken",
-                ExpiresOn = DateTime.UtcNow.AddHours(1),
+                ExpiresOnUtc = DateTime.UtcNow.AddHours(1),
                 Type = TokenType.AccessToken
             },
             RefreshToken = new AuthenticationToken
             {
                 Value = "anewrefreshtoken",
-                ExpiresOn = DateTime.UtcNow.AddDays(30),
+                ExpiresOnUtc = DateTime.UtcNow.AddDays(30),
                 Type = TokenType.RefreshToken
             },
             OtherTokens = new List<AuthenticationToken>()

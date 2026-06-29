@@ -10,7 +10,7 @@ public interface IDehydratableEntity : IIdentifiableEntity, IQueryableEntity
 {
     Optional<bool> IsDeleted { get; }
 
-    Optional<DateTime> LastPersistedAtUtc { get; }
+    Optional<DateTime> LastPersistedAt { get; }
 
     HydrationProperties Dehydrate();
 }

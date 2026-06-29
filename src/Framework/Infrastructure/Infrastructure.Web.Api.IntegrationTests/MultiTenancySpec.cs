@@ -1,5 +1,6 @@
 using System.Net;
 using ApiHost1;
+using Application.Persistence.Common;
 using Application.Resources.Shared;
 using CarsDomain;
 using Common.Extensions;
@@ -255,12 +256,12 @@ public class MultiTenancySpec
             var cars1 = (await Api.GetAsync(new SearchAllCarsRequest
             {
                 OrganizationId = organization1.Id,
-                Sort = "+LastPersistedAtUtc"
+                Sort = $"+{nameof(ReadModelEntity.LastPersistedAt)}"
             }, req => req.SetJWTBearerToken(loginA.AccessToken))).Content.Value.Cars;
             var cars2 = (await Api.GetAsync(new SearchAllCarsRequest
             {
                 OrganizationId = organization2.Id,
-                Sort = "+LastPersistedAtUtc"
+                Sort = $"+{nameof(ReadModelEntity.LastPersistedAt)}"
             }, req => req.SetJWTBearerToken(loginA.AccessToken))).Content.Value.Cars;
 
             // Proves the Data was logically partitioned 
@@ -283,11 +284,11 @@ public class MultiTenancySpec
 
             var carsRaw1 = (await repository1.QueryAsync(typeof(Car).GetEntityNameSafe(), Query.From<Car>()
                         .WhereAll()
-                        .OrderBy(car => car.LastPersistedAtUtc), PersistedEntityMetadata.FromType<Car>(),
+                        .OrderBy(car => car.LastPersistedAt), PersistedEntityMetadata.FromType<Car>(),
                     CancellationToken.None))
                 .Value.Results;
             var carsRaw2 = (await repository2.QueryAsync(typeof(Car).GetEntityNameSafe(),
-                Query.From<Car>().WhereAll().OrderBy(car => car.LastPersistedAtUtc),
+                Query.From<Car>().WhereAll().OrderBy(car => car.LastPersistedAt),
                 PersistedEntityMetadata.FromType<Car>(), CancellationToken.None)).Value.Results;
 
             // Proves the Data was physically partitioned 
