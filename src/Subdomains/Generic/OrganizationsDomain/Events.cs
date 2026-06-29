@@ -230,9 +230,13 @@ public static class Events
 #if TESTINGONLY
         // ReSharper disable once MemberHidesStaticFromOuterClass
         public static Domain.Events.Shared.Organizations.Onboarding.Deleted Deleted(Identifier id,
+            Identifier organizationId,
             Identifier deletedById)
         {
-            return new Domain.Events.Shared.Organizations.Onboarding.Deleted(id, deletedById);
+            return new Domain.Events.Shared.Organizations.Onboarding.Deleted(id, deletedById)
+            {
+                OrganizationId = organizationId
+            };
         }
 #endif
     }

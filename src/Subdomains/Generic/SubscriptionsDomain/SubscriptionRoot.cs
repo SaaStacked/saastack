@@ -755,7 +755,7 @@ public sealed partial class SubscriptionRoot : AggregateRootBase
             return Error.RuleViolation(Resources.SubscriptionRoot_DeleteSubscription_NotOwningEntityId);
         }
 
-        return RaisePermanentDeleteEvent(SubscriptionsDomain.Events.Deleted(Id, deleterId));
+        return RaisePermanentDeleteEvent(SubscriptionsDomain.Events.Deleted(Id, OwningEntityId, deleterId));
     }
 
     public Result<Error> DeleteSubscriptionByProvider(IBillingStateInterpreter interpreter, Identifier deleterId,

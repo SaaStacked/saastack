@@ -358,7 +358,7 @@ public sealed class OrganizationOnboardingRoot : AggregateRootBase
     public Result<Error> Destroy()
     {
         return RaisePermanentDeleteEvent(
-            OrganizationsDomain.Events.Onboarding.Deleted(Id, OrganizationId));
+            OrganizationsDomain.Events.Onboarding.Deleted(Id, OrganizationId, InitiatedById));
     }
 #endif
 }

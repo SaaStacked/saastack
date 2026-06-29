@@ -15,5 +15,7 @@ public sealed class Deleted : TombstoneDomainEvent
     public Deleted()
     {
     }
+
+    public required string OrganizationId { get; set; }
 }
 #endif

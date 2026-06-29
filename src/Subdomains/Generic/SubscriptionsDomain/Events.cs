@@ -47,9 +47,12 @@ public static class Events
         };
     }
 
-    public static Deleted Deleted(Identifier id, Identifier deletedById)
+    public static Deleted Deleted(Identifier id, Identifier owningEntityId, Identifier deletedById)
     {
-        return new Deleted(id, deletedById);
+        return new Deleted(id, deletedById)
+        {
+            OwningEntityId = owningEntityId
+        };
     }
 
     public static ManagedQuotasStarted ManagedQuotasStarted(Identifier id, Identifier owningEntityId,

@@ -202,7 +202,7 @@ public sealed class CarRoot : AggregateRootBase
             return Error.RuleViolation(Resources.CarRoot_NotDeletedByOwner);
         }
 
-        return RaisePermanentDeleteEvent(CarsDomain.Events.Deleted(Id, deleterId));
+        return RaisePermanentDeleteEvent(CarsDomain.Events.Deleted(Id, OrganizationId, deleterId));
     }
 
     public Result<Error> ReleaseUnavailability(TimeSlot slot)

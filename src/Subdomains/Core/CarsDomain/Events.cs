@@ -15,9 +15,12 @@ public static class Events
         };
     }
 
-    public static Deleted Deleted(Identifier id, Identifier deletedById)
+    public static Deleted Deleted(Identifier id, Identifier organizationId, Identifier deletedById)
     {
-        return new Deleted(id, deletedById);
+        return new Deleted(id, deletedById)
+        {
+            OrganizationId = organizationId
+        };
     }
 
     public static ManufacturerChanged ManufacturerChanged(Identifier id, Identifier organizationId,
