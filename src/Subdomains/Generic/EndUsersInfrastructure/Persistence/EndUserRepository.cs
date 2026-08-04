@@ -85,7 +85,6 @@ public class EndUserRepository : IEndUserRepository
             .Select(mje => mje.LastPersistedAt)
             .SelectFromJoin<Invitation, string>(mje => mje.InvitedEmailAddress, inv => inv.InvitedEmailAddress)
             .SelectFromJoin<Invitation, UserStatus>(mje => mje.Status, inv => inv.Status)
-            .OrderBy(mje => mje.LastPersistedAt)
             .WithSearchOptions(searchOptions);
 
         var queried = await _membershipUserQueries.QueryAsync(query, cancellationToken: cancellationToken);

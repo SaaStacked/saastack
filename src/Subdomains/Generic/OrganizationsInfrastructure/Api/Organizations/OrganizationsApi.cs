@@ -113,8 +113,8 @@ public class OrganizationsApi : IWebApiService
 
     public async Task<ApiSearchResult<OrganizationWithReferralCode, SearchAllOrganizationReferralsResponse>>
         GetReferralCodes(
-        SearchAllOrganizationReferralsRequest request,
-        CancellationToken cancellationToken)
+            SearchAllOrganizationReferralsRequest request,
+            CancellationToken cancellationToken)
     {
         var organizations =
             await _organizationsApplication.SearchAllOrganizationReferralsAsync(_callerFactory.Create(),
@@ -177,7 +177,8 @@ public class OrganizationsApi : IWebApiService
     {
         var members =
             await _organizationsApplication.ListMembersForOrganizationAsync(_callerFactory.Create(), request.Id,
-                request.ToSearchOptions(), request.ToGetOptions(), cancellationToken);
+                request.ToSearchOptions(defaultSort: nameof(OrganizationsApplication.Persistence.ReadModels.Organization
+                    .LastPersistedAt)), request.ToGetOptions(), cancellationToken);
 
         return () =>
             members.HandleApplicationResult(m =>
