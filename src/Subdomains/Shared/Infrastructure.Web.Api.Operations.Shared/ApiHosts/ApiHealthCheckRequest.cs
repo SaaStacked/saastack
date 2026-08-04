@@ -6,4 +6,4 @@ namespace Infrastructure.Web.Api.Operations.Shared.ApiHosts;
 ///     Displays the health of the API
 /// </summary>
 [Route("/health", OperationMethod.Get)]
-public class ApiHealthCheckRequest : UnTenantedRequest<ApiHealthCheckRequest, ApiHealthCheckResponse>;
+public class ApiHealthCheckRequest : UnTenantedGetRequest<ApiHealthCheckRequest, ApiHealthCheckResponse>;

@@ -9,7 +9,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 [Route("/oauth2/clients/{Id}/consent/status", OperationMethod.Get, AccessType.Token)]
 [Authorize(Roles.Platform_Standard, Features.Platform_PaidTrial)]
 public class
-    GetOAuth2ClientConsentStatusForCallerRequest : UnTenantedRequest<GetOAuth2ClientConsentStatusForCallerRequest,
+    GetOAuth2ClientConsentStatusForCallerRequest : UnTenantedGetRequest<GetOAuth2ClientConsentStatusForCallerRequest,
     GetOAuth2ClientConsentStatusResponse>
 {
     [Required] public string? Id { get; set; }

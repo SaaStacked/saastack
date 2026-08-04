@@ -8,7 +8,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 ///     Fetches the confirmation token for a registration of a person
 /// </summary>
 [Route("/credentials/confirm-registration", OperationMethod.Get, isTestingOnly: true)]
-public class GetPersonCredentialRegistrationConfirmationRequest : UnTenantedRequest<
+public class GetPersonCredentialRegistrationConfirmationRequest : UnTenantedGetRequest<
     GetPersonCredentialRegistrationConfirmationRequest,
     GetPersonCredentialRegistrationConfirmationResponse>
 {

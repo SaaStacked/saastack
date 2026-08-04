@@ -7,6 +7,6 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 /// </summary>
 [Route("/users/me", OperationMethod.Get, AccessType.Token)]
 [Authorize(Roles.Platform_Standard, Features.Platform_PaidTrial)]
-public class GetIdentityForCallerRequest : UnTenantedRequest<GetIdentityForCallerRequest, GetIdentityResponse>
+public class GetIdentityForCallerRequest : UnTenantedGetRequest<GetIdentityForCallerRequest, GetIdentityResponse>
 {
 }

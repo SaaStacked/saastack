@@ -26,6 +26,18 @@ public abstract class TenantedRequest<TRequest, TResponse> : WebRequest<TRequest
 }
 
 /// <summary>
+///     Defines the request of a GET API for an Organization
+/// </summary>
+public abstract class TenantedGetRequest<TRequest, TResponse> : GetRequest<TRequest, TResponse>, ITenantedRequest
+    where TResponse : IWebResponse
+    where TRequest : IWebRequest
+{
+    [Description(
+        "An ID of the Organization. If not provided, the ID of the default organization of the authenticated user (if any) is used")]
+    public string? OrganizationId { get; set; }
+}
+
+/// <summary>
 ///     Defines the request of a SEARCH API for an Organization
 /// </summary>
 public abstract class TenantedSearchRequest<TRequest, TResponse> : SearchRequest<TRequest, TResponse>, ITenantedRequest

@@ -7,7 +7,8 @@ namespace Infrastructure.Web.Api.Operations.Shared.BackEndForFrontEnd;
 ///     Fetches the named feature flag for the current authenticated user
 /// </summary>
 [Route("/flags/{Name}", OperationMethod.Get)]
-public class GetFeatureFlagForCallerRequest : UnTenantedRequest<GetFeatureFlagForCallerRequest, GetFeatureFlagResponse>
+public class
+    GetFeatureFlagForCallerRequest : UnTenantedGetRequest<GetFeatureFlagForCallerRequest, GetFeatureFlagResponse>
 {
     [Required] public string? Name { get; set; }
 }

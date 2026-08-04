@@ -9,7 +9,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 ///     This API can be called Anonymously (during password authentication), as well as after being authenticated
 /// </remarks>
 [Route("/credentials/mfa/authenticators", OperationMethod.Get)]
-public class ListCredentialMfaAuthenticatorsForCallerRequest : UnTenantedRequest<
+public class ListCredentialMfaAuthenticatorsForCallerRequest : UnTenantedGetRequest<
     ListCredentialMfaAuthenticatorsForCallerRequest, ListCredentialMfaAuthenticatorsForCallerResponse>
 {
     public string? MfaToken { get; set; }

@@ -12,6 +12,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 /// <response code="423">The user's account is suspended or disabled, and cannot be used</response>
 [Route("/oauth2/userinfo", OperationMethod.Get, AccessType.Token)]
 [Authorize(Roles.Platform_Standard)]
-public class GetUserInfoForCallerRequest : UnTenantedRequest<GetUserInfoForCallerRequest, GetUserInfoForCallerResponse>
+public class
+    GetUserInfoForCallerRequest : UnTenantedGetRequest<GetUserInfoForCallerRequest, GetUserInfoForCallerResponse>
 {
 }

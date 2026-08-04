@@ -14,6 +14,14 @@ public abstract class UnTenantedRequest<TRequest, TResponse> : WebRequest<TReque
     where TRequest : IWebRequest;
 
 /// <summary>
+///     Defines the request of a GET API not for an Organization
+/// </summary>
+public abstract class UnTenantedGetRequest<TRequest, TResponse> : GetRequest<TRequest, TResponse>,
+    IUnTenantedRequest
+    where TResponse : IWebResponse
+    where TRequest : IWebRequest;
+
+/// <summary>
 ///     Defines the request of a SEARCH API not for an Organization
 /// </summary>
 public abstract class UnTenantedSearchRequest<TRequest, TResponse> : SearchRequest<TRequest, TResponse>,

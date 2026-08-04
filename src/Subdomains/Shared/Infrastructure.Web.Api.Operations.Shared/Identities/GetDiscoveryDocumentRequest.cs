@@ -6,6 +6,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 ///     Fetches the discovery document for Open ID Connect
 /// </summary>
 [Route("/.well-known/openid-configuration", OperationMethod.Get)]
-public class GetDiscoveryDocumentRequest : UnTenantedRequest<GetDiscoveryDocumentRequest, GetDiscoveryDocumentResponse>
+public class
+    GetDiscoveryDocumentRequest : UnTenantedGetRequest<GetDiscoveryDocumentRequest, GetDiscoveryDocumentResponse>
 {
 }

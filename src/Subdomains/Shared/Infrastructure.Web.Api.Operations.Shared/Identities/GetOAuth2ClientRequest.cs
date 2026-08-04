@@ -8,7 +8,7 @@ namespace Infrastructure.Web.Api.Operations.Shared.Identities;
 /// </summary>
 [Route("/oauth2/clients/{Id}", OperationMethod.Get, AccessType.Token)]
 [Authorize(Roles.Platform_Operations)]
-public class GetOAuth2ClientRequest : UnTenantedRequest<GetOAuth2ClientRequest, GetOAuth2ClientWithSecretsResponse>
+public class GetOAuth2ClientRequest : UnTenantedGetRequest<GetOAuth2ClientRequest, GetOAuth2ClientWithSecretsResponse>
 {
     [Required] public string? Id { get; set; }
 }
