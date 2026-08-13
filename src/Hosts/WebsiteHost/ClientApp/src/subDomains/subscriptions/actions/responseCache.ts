@@ -1,4 +1,4 @@
-import type { CacheKeys } from '../../../framework/actions/ActionCommand.ts';
+import { TenantedCacheKey } from '../../../framework/constants.ts';
 
 const subscriptionCacheKeys = {
   all: ['subscriptions'],
@@ -6,8 +6,9 @@ const subscriptionCacheKeys = {
     query: ['subscriptions', 'pricing']
   },
   subscription: {
-    query: (organizationId: string) => [...subscriptionCacheKeys.all, organizationId],
-    mutate: (organizationId: string) => [subscriptionCacheKeys.subscription.query(organizationId)] as CacheKeys
+    all: [TenantedCacheKey, 'subscriptions'],
+    query: (organizationId: string) => [...subscriptionCacheKeys.subscription.all, organizationId],
+    mutate: (organizationId: string) => [subscriptionCacheKeys.subscription.query(organizationId)]
   }
 };
 

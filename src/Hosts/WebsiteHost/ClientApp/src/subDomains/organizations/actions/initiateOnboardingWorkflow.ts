@@ -20,5 +20,5 @@ export const InitiateOnboardingWorkflowAction = (organizationId: string) =>
     passThroughErrors: {
       409: OnboardingInitiationErrorCodes.already_initiated
     },
-    invalidateCacheKeys: organizationCacheKeys.organization.onboarding.initiate(organizationId)
+    invalidateCacheKeys: organizationCacheKeys.organization.onboarding.navigate(organizationId)
   });

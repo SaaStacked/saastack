@@ -23,6 +23,8 @@ export const anonymousUser = {
   roles: []
 } as unknown as UserProfileForCaller;
 
+export const TenantedCacheKey = 'tenanted';
+
 export namespace LocalStorageKeys {
   export const Theme = 'theme';
   export const IsPendingOAuth2Authorization = 'isPendingOAuth2Authorization';

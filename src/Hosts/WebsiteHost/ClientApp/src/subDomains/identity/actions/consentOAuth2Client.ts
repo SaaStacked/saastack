@@ -5,7 +5,7 @@ import {
   ConsentOAuth2ClientResponse
 } from '../../../framework/api/websiteHost';
 import { RoutePaths } from '../../../framework/constants.ts';
-import oAuth2CacheKeys from './responseCache.ts';
+import identityCacheKeys from './responseCache.ts';
 
 export const ConsentOAuth2ClientAction = (
   clientId: string,
@@ -35,5 +35,5 @@ export const ConsentOAuth2ClientAction = (
         window.location.replace(response.redirect.redirectUri); // no browser history
       }
     },
-    invalidateCacheKeys: oAuth2CacheKeys.client.consent.mutate(clientId)
+    invalidateCacheKeys: identityCacheKeys.oauth.client.consent.mutate(clientId)
   });

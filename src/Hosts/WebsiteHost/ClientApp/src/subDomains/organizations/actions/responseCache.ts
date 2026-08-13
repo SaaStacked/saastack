@@ -1,35 +1,25 @@
-import { CacheKeys } from '../../../framework/actions/ActionCommand.ts';
+import { TenantedCacheKey } from '../../../framework/constants.ts';
 import userProfileCacheKeys from '../../userProfiles/actions/responseCache.ts';
 
 const organizationCacheKeys = {
   all: ['organizations'],
   organization: {
     query: (organizationId: string) => [...organizationCacheKeys.all, organizationId],
-    mutate: (organizationId: string) => [organizationCacheKeys.organization.query(organizationId)] as CacheKeys,
-    switch: (organizationId: string) =>
-      [userProfileCacheKeys.me, organizationCacheKeys.organization.query(organizationId)] as CacheKeys,
+    mutate: (organizationId: string) => [organizationCacheKeys.organization.query(organizationId)],
     members: {
-      all: ['organizations', 'members'],
+      all: [TenantedCacheKey, 'organizations', 'members'],
       query: (organizationId: string) => [...organizationCacheKeys.organization.members.all, organizationId],
-      mutate: (organizationId: string) =>
-        [organizationCacheKeys.organization.members.query(organizationId)] as CacheKeys
+      mutate: (organizationId: string) => [organizationCacheKeys.organization.members.query(organizationId)]
     },
     onboarding: {
-      all: ['organizations', 'onboarding'],
+      all: [TenantedCacheKey, 'organizations', 'onboarding'],
       query: (organizationId: string) => [...organizationCacheKeys.organization.onboarding.all, organizationId],
-      initiate: (organizationId: string) =>
-        [
-          organizationCacheKeys.organization.query(organizationId),
-          organizationCacheKeys.organization.onboarding.query(organizationId)
-        ] as CacheKeys,
-      navigate: (organizationId: string) =>
-        [organizationCacheKeys.organization.onboarding.query(organizationId)] as CacheKeys,
-      complete: (organizationId: string) =>
-        [
-          userProfileCacheKeys.me,
-          organizationCacheKeys.organization.query(organizationId),
-          organizationCacheKeys.organization.onboarding.navigate(organizationId)
-        ] as CacheKeys
+      navigate: (organizationId: string) => [organizationCacheKeys.organization.onboarding.query(organizationId)],
+      complete: (organizationId: string) => [
+        userProfileCacheKeys.me,
+        organizationCacheKeys.organization.query(organizationId),
+        organizationCacheKeys.organization.onboarding.navigate(organizationId)
+      ]
     }
   }
 };

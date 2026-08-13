@@ -7,6 +7,9 @@ import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
+export type QueryCacheKeys = readonly string[] | ([] & { __brand: 'QueryCacheKeys' });
+export type QueryCacheKeysExpression<TRequestData = any> = QueryCacheKeys | ((request: TRequestData) => QueryCacheKeys);
+
 export interface ActionQueryConfiguration<
   TRequestData = any,
   ExpectedErrorCode extends string = '',
@@ -24,7 +27,7 @@ export interface ActionQueryConfiguration<
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
   // The cache keys array to use to store the response
-  cacheKey: readonly string[] | ((request: TRequestData) => readonly string[]);
+  cacheKey: QueryCacheKeysExpression<TRequestData>;
   // An optional TTL (in ms) to override the default cachePeriod
   cachePeriodMs?: number;
 }
@@ -49,7 +52,6 @@ export function useActionQuery<
   const { request, passThroughErrors, transform: onTransform, isTenanted, cacheKey, cachePeriodMs } = configuration;
 
   const { onError: handleError, expectedError, unexpectedError, clearErrors } = useApiErrorState(passThroughErrors);
-
   const offlineService = useOfflineService();
   const isOnline = offlineService?.status === 'online';
 
@@ -100,6 +102,8 @@ export function useActionQuery<
 
       setIsPending(false);
       setIsFetching(true);
+      setIsSuccess(false);
+      setIsError(false);
       clearErrorsRef.current();
 
       queryClient

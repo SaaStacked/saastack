@@ -131,11 +131,16 @@
     }
 
     a {
-        @apply text-brand-primary-600 hover:text-brand-primary-700 visited:text-brand-secondary-600 dark:visited:text-brand-secondary-400 underline;
+        @apply text-brand-primary-600 hover:text-brand-primary-700 visited:text-brand-secondary-800 dark:visited:text-brand-secondary-500 underline;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-medium text-brand-primary-900 dark:text-brand-primary-100;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply text-brand-primary-900 dark:text-brand-primary-200;
     }
 
     h1 {
@@ -148,5 +153,9 @@
 
     h3 {
         @apply text-xl;
+    }
+
+    p {
+        @apply text-neutral-900 dark:text-neutral-50;
     }
 }

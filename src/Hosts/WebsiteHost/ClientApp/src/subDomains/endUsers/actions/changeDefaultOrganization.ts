@@ -6,7 +6,6 @@ import {
 } from '../../../framework/api/apiHost1';
 import endUserCacheKeys from './responseCache';
 
-
 export const ChangeDefaultOrganizationAction = () =>
   useActionCommand<ChangeDefaultOrganizationRequest, ChangeDefaultOrganizationPatchResponse>({
     request: (request) =>
@@ -15,5 +14,5 @@ export const ChangeDefaultOrganizationAction = () =>
           ...request
         }
       }),
-    invalidateCacheKeys: endUserCacheKeys.users.me
+    invalidateCacheKeys: (req) => endUserCacheKeys.switchOrganization(req.organizationId)
   });

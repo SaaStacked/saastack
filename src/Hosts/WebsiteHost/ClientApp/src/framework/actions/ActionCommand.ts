@@ -6,7 +6,54 @@ import { recorder, SeverityLevel } from '../recorder.ts';
 import { ActionResult, ApiResponse, executeRequest, handleRequestError, modifyRequestData } from './Actions.ts';
 import useApiErrorState from './ApiErrorState.ts';
 
-export type CacheKeys = string[][] | ([] & { __brand: 'CacheKeys' });
+
+export type InvalidateCacheKeysExpression<TRequestData = any> =
+  | MutationCacheKeys
+  | ((request: TRequestData) => MutationCacheKeys);
+export type MutationCacheKeys = string[][] | ([] & { __brand: 'MutationCacheKeys' });
+export type MutationCacheKeysAdvancedExpression<TRequestData = any, TResponse = any> = {
+  key: InvalidateCacheKeysExpression<TRequestData>;
+  toQueryData?: (response: ApiResponse<TResponse>, request: TRequestData, previous: unknown) => unknown;
+};
+export type MutationCacheKey<TRequestData = any, TResponse = any> =
+  | InvalidateCacheKeysExpression<TRequestData>
+  | MutationCacheKeysAdvancedExpression<TRequestData, TResponse>;
+export type MutateCacheKeysExpression<TRequestData = any, TResponse = any> =
+  | MutationCacheKey<TRequestData, TResponse>
+  | Array<MutationCacheKey<TRequestData, TResponse>>
+  | ((
+      request: TRequestData
+    ) => MutationCacheKey<TRequestData, TResponse> | Array<MutationCacheKey<TRequestData, TResponse>>);
+
+function isCacheKeys(value: unknown): value is MutationCacheKeys {
+  return (
+    Array.isArray(value) &&
+    value.every((element) => Array.isArray(element) && element.every((part) => typeof part === 'string'))
+  );
+}
+
+function normalizeMutationKey<TRequestData, TResponse>(
+  expression: MutationCacheKey<TRequestData, TResponse>
+): MutationCacheKeysAdvancedExpression<TRequestData, TResponse> {
+  return isCacheKeys(expression) || typeof expression === 'function'
+    ? { key: expression as InvalidateCacheKeysExpression<TRequestData> }
+    : (expression as MutationCacheKeysAdvancedExpression<TRequestData, TResponse>);
+}
+
+function toMutationKeys<TRequestData, TResponse>(
+  mutateCacheKey:
+    | MutationCacheKey<TRequestData, TResponse>
+    | Array<MutationCacheKey<TRequestData, TResponse>>
+    | undefined
+): Array<MutationCacheKey<TRequestData, TResponse>> {
+  if (!mutateCacheKey) {
+    return [];
+  }
+  if (isCacheKeys(mutateCacheKey) || !Array.isArray(mutateCacheKey)) {
+    return [mutateCacheKey as MutationCacheKey<TRequestData, TResponse>];
+  }
+  return mutateCacheKey;
+}
 
 export interface ActionCommandConfiguration<
   TRequestData = any,
@@ -22,7 +69,9 @@ export interface ActionCommandConfiguration<
   // What kind of known errors are we expecting to handle ourselves
   passThroughErrors?: Record<number, ExpectedErrorCode>;
   // The keys in the request cache that we want to invalidate, in the case of successful response
-  invalidateCacheKeys?: CacheKeys;
+  invalidateCacheKeys?: InvalidateCacheKeysExpression<TRequestData>;
+  // The keys in the request cache that we want to mutate, in the case of successful response
+  mutateCacheKey?: MutateCacheKeysExpression<TRequestData, TResponse>;
 }
 
 // Use this hook for calling @hey-api (fetch) generated endpoints for POST, PUT, PATCH or DELETE.
@@ -35,11 +84,9 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
   configuration: ActionCommandConfiguration<TRequestData, ExpectedErrorCode, TResponse>
 ): ActionResult<TRequestData, ExpectedErrorCode, TResponse> {
   const { t: translate } = useTranslation();
-  const { request, passThroughErrors, onSuccess, invalidateCacheKeys } = configuration;
-
+  const { request, passThroughErrors, onSuccess, invalidateCacheKeys, mutateCacheKey } = configuration;
   const queryClient = useQueryClient();
   const { onError: handleError, expectedError, unexpectedError, clearErrors } = useApiErrorState(passThroughErrors);
-
   const offlineService = useOfflineService();
   let isOnline = offlineService && offlineService.status === 'online';
 
@@ -63,13 +110,30 @@ export function useActionCommand<TRequestData = any, TResponse = any, ExpectedEr
     onSuccess: (apiResponse: ApiResponse<TResponse>, requestData: TRequestData) => {
       recorder.traceDebug('ActionCommand: Mutation returned success');
       clearErrors();
-      if (invalidateCacheKeys && invalidateCacheKeys.length > 0) {
-        for (const cacheKey of invalidateCacheKeys) {
+
+      // Invalidate any cache keys first
+      const cacheKeys =
+        typeof invalidateCacheKeys === 'function' ? invalidateCacheKeys(requestData) : invalidateCacheKeys;
+      if (cacheKeys && cacheKeys.length > 0) {
+        for (const cacheKey of cacheKeys) {
           recorder.traceDebug('ActionCommand: clearing cache keyset: {Keys}', { cacheKey });
-          queryClient.removeQueries({
-            queryKey: cacheKey,
-            exact: false // we want to support partial matches
-          });
+          queryClient.removeQueries({ queryKey: cacheKey, exact: false });
+        }
+      }
+
+      // Mutate cache keys, but after invalidation so a freshly written value is not removed by a
+      // broader `invalidateCacheKeys` entry that overlaps the seeded key.
+      const resolvedUpdateCache = typeof mutateCacheKey === 'function' ? mutateCacheKey(requestData) : mutateCacheKey;
+      const mutationExpressions = toMutationKeys(resolvedUpdateCache);
+      for (const mutationExpression of mutationExpressions) {
+        const normalizedKeys = normalizeMutationKey(mutationExpression);
+        const mutationKeys =
+          typeof normalizedKeys.key === 'function' ? normalizedKeys.key(requestData) : normalizedKeys.key;
+        for (const mutationKey of mutationKeys) {
+          recorder.traceDebug('ActionCommand: seeding cache keyset, from response: {Keys}', { seedKey: mutationKey });
+          queryClient.setQueryData(mutationKey, (previous: unknown) =>
+            normalizedKeys.toQueryData ? normalizedKeys.toQueryData(apiResponse, requestData, previous) : apiResponse
+          );
         }
       }
 

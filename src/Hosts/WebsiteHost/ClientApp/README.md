@@ -16,7 +16,7 @@ We support a mixed mode environment, where you can use the dev server (with hot-
 
 * When you use `npm run dev` it starts a Vite dev server on port 5173, which serves the JavaScript files from the `src` folder.
 * When you use `npm run build` it compiles and bundles the JavaScript files from the `src` folder into a single bundle in the `wwwroot` folder.
-*
+
 > Note: some changes to some files (particularly those outside the `src` folder, like `translation.json` and any images), will require  you to run `npm run build` if running the dev server
 
 We are deliberately rendering the `Index.html` page server-side (see: `HomeController.cs`) for security purposes, thus we need to load the correct JavaScript and CSS files into `Index.html` at runtime both locally and in production.
@@ -66,17 +66,19 @@ We use [TanStack Query](https://tanstack.com/query/v4) and `QueryClient` directl
 
 The way it works is that you define an array of 'query keys' in the `cacheKey` property of a `ActionQuery` hook, then TanStack Query will use `QueryClient` to cache the successful response against that combination of keys in its cache, for a default period of time.
 
-While that set of keys has a "valid" (alive) cached response, repeated requests to the same `ActionQuery`, for the same data, will respond immediately with teh cached values, and will not need to go to the backend.
+While that set of keys has a "valid" (alive) cached response, repeated requests to any `ActionQuery`, for the same data (with the same cache key), will respond immediatley with the cached values - and will not issue any fetch to the backend.
 
-These cached responses will be automatically invalidated after a short period of time to live (TTL). By default, the cache is invalidated after 30 seconds (see: `AppProviders.tsx:QueryClientDefaultCacheTimeInMs`).
+These cached responses will be automatically invalidated after a short period of time to live (TTL).
+* By default, the cache is invalidated after 30 seconds (see: `AppProviders.tsx:QueryClientDefaultCacheTimeInMs`).
+* This can be overwridden by passing a `cachePeriodMs` property to the `ActionQuery` hook.
 
 > Short cache times (TTLs) are recommended since this client cannot guarantee that it will be the only consumer of the backend data collections. Other clients may have changed the backend data at the same time, and the cached responses in this client will be now be stale (relative to the backend), thus they need to be forced to be refreshed. Long TTLs (like minutes) are not appropriate for this kind of system. Short TTLs can still offer many benefits for clients.
 
-To prevent cached values going stale, before it automatically invalidates, and after data has been explicitly changed with a mutation API, we need to explicitly invalidate that cached data explicitly.
+To explicitly force cached values to go stale (before it automatically invalidates) and after data has been explicitly changed with a mutation API, we need to explicitly invalidate that cached data explicitly.
 
-When this client forces a change in that data (using `useMutation`), and we get a successful response, it should invalidate the cache for that query key set (and/or any related keysets). This then forces the next use of `QueryClient` to go to the backend to get the latest data.
+When this client forces a change in that data (using `useMutation`), and we get a successful response, it will invalidate the cache for that query key set (and/or any related keysets). This then forces the next useof `QueryClient` to go to the backend to get the latest data.
 
-When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keysets to invalidate in the `invalidateCacheKeys` property, and TanStack Query will remove all stored queries matching that collection of keysets.
+When using the `useMutation` hook, via an `ActionCommand` hook, we pass a set of keysets to invalidate in the `invalidateCacheKeys` property, and TanStack Query will remove all stored queries matching any key in that collection of keysets.
 
 We define some very simple cache key definitions in files like `src/subDomains/endUsers/actions/responseCache.ts`. Where we define a cumulative set of keys that can be used to invalidate the various caches that that specific subdomain manages.
 
@@ -86,17 +88,19 @@ Assuming the following definition:
 const resourceCacheKeys = {
   all: ['resources'] as const,
   resource: {
-    query: (resourceId: string) => ['resources', resourceId], //uses a single cache key for this specific resource (unique id) 
-    mutate: (resourceId: string) => [query(resourceId)] as CacheKeys, // invalidates the specific resource, and the whole collection of all resources
-    clear: (resourceId: string) => [['resources']] as CacheKeys // invalidates all resources, no matter what ID they have
+    query: (resourceId: string) => ['resources', resourceId], // uses a single cache key for this specific resource (unique id)
+    mutate: (resourceId: string) => [query(resourceId)], // invalidates only the specific resource
+    clear: (resourceId: string) => [['resources']] // invalidates all resources, no matter what resourceId they may have had
   }
 }; 
 ```
 
+> Please note that mutation keys are an array of arrays of keys, and not just a single array of keys. Whereas a query key is just an array of keys. To invalidate any specific cached query, you need to invalidate with a matching array of keys, in a mutation array of an array of keys.
+
 Guidelines:
+
 * When you call your ActionQuery class to fetch a specific resource: `cacheKey: resourceCacheKeys.resource.query(resourceId)`
 * When you call your ActionCommand class, to update a specific resource: `invalidateCacheKeys: resourceCacheKeys.resource.mutate(resourceId)`
-
 
 ## Testing
 

@@ -6,7 +6,7 @@ import {
   type GetOAuth2ClientConsentStatusForCallerData
 } from '../../../framework/api/apiHost1';
 import { RoutePaths } from '../../../framework/constants.ts';
-import oAuth2CacheKeys from './responseCache.ts';
+import identityCacheKeys from './responseCache.ts';
 
 export const GetOAuth2ClientConsentAction = (id: string, scope: string) =>
   useActionQuery<
@@ -25,7 +25,7 @@ export const GetOAuth2ClientConsentAction = (id: string, scope: string) =>
         }
       }),
     transform: (res) => res.status,
-    cacheKey: oAuth2CacheKeys.client.consent.query(id),
+    cacheKey: identityCacheKeys.oauth.client.consent.query(id),
     onSuccess: (_requestData, response, _statusCode, _headers) => {
       if (response.isConsented) {
         window.location.replace(RoutePaths.OAuth2Authorize); // no browser history

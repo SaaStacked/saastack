@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmptyResponse } from '../api/apiHost1';
 import { IOfflineService } from '../services/IOfflineService.ts';
 import { TestingProviders } from '../testing/TestingProviders.tsx';
-import { CacheKeys, useActionCommand } from './ActionCommand';
+import { MutationCacheKeys, useActionCommand } from './ActionCommand';
 import { ApiResponse } from './Actions.ts';
 
 
@@ -90,7 +90,7 @@ describe('useActionCommand', () => {
         passThroughErrors: {
           400: 'BadRequest'
         },
-        invalidateCacheKeys: [['acachekey']] as CacheKeys
+        invalidateCacheKeys: [['acachekey']] as MutationCacheKeys
       });
 
     beforeEach(() => {
@@ -351,7 +351,7 @@ describe('useActionCommand', () => {
     const mockSuccessfulRequest = vi.fn(
       async (_requestData: UntenantedRequestData): Promise<ApiResponse<TestResponse>> => {
         // Add a small delay to test loading states
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         return {
           data: { message: 'amessage' },
           error: undefined,
@@ -388,7 +388,7 @@ describe('useActionCommand', () => {
             organizationId: 'anotherorganizationid'
           } as TenantedRequestData,
           {
-            onSuccess: rez => expect(rez.response.message).toBe('amessage')
+            onSuccess: (rez) => expect(rez.response.message).toBe('amessage')
           }
         )
       );
